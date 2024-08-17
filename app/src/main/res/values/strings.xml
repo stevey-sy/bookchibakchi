@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">BookChigi BakChigi</string>
+    <string name="title_home">홈</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="title_setting">설정</string>
+    <string name="title_my_library">나의 서재</string>
+    <string name="title_community">Community</string>
+    <string name="title_record">기록</string>
+</resources>
