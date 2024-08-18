@@ -6,26 +6,28 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
+import androidx.lifecycle.ViewModelProvider
 import com.example.bookchigibakchigi.R
+import com.example.bookchigibakchigi.databinding.FragmentMyLibraryBinding
 
 class MyLibraryFragment : Fragment() {
 
-    companion object {
-        fun newInstance() = MyLibraryFragment()
-    }
+    private var _binding: FragmentMyLibraryBinding? = null
 
-    private val viewModel: MyLibraryViewModel by viewModels()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        // TODO: Use the ViewModel
-    }
+    private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return inflater.inflate(R.layout.fragment_my_library, container, false)
+        val myLibraryViewModel = ViewModelProvider(this).get(MyLibraryViewModel::class.java)
+
+        _binding = FragmentMyLibraryBinding.inflate(inflater, container, false)
+        val root: View = binding.root
+
+
+
+        return root
     }
 }

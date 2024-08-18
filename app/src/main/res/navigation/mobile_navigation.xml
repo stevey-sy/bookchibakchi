@@ -47,6 +47,12 @@
         android:label="@string/title_record"
         tools:layout="@layout/fragment_record" />
 
+    <fragment
+        android:id="@+id/navigation_pick_book"
+        android:name="com.example.bookchigibakchigi.ui.pickbook.PickBookFragment"
+        android:label="@string/title_record"
+        tools:layout="@layout/fragment_pick_book" />
+
 
 
 <!--    <fragment-->
