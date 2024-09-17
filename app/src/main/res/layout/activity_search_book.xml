@@ -14,7 +14,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="8dp">
+        android:padding="8dp"
+        android:layout_marginTop="20dp">
 
         <!-- EditText를 사용한 검색 입력 필드 -->
         <EditText
