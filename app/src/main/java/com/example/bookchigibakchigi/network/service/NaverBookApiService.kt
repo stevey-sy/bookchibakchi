@@ -1,6 +1,7 @@
 package com.example.bookchigibakchigi.network.service
 
 import androidx.core.os.BuildCompat
+import com.example.bookchigibakchigi.BuildConfig
 import com.example.bookchigibakchigi.network.model.NaverBookResponse
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -33,10 +34,8 @@ interface NaverBookService {
             // 네이버 API 호출을 위한 헤더 설정
             val headerInterceptor = Interceptor { chain ->
                 val request = chain.request().newBuilder()
-//                    .addHeader("X-Naver-Client-Id", BuildConfig.NAVER_CLIENT_ID)
-//                    .addHeader("X-Naver-Client-Secret", BuildConfig.NAVER_CLIENT_SECRET)
-                    .addHeader("X-Naver-Client-Id", "")
-                    .addHeader("X-Naver-Client-Secret", "")
+                    .addHeader("X-Naver-Client-Id", BuildConfig.NAVER_CLIENT_ID)
+                    .addHeader("X-Naver-Client-Secret", BuildConfig.NAVER_CLIENT_SECRET)
                     .build()
                 chain.proceed(request)
             }

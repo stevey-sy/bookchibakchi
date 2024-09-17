@@ -4,6 +4,7 @@ import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    id("kotlin-kapt")
 }
 
 android {
@@ -23,29 +24,17 @@ android {
 
     buildTypes {
         debug {
-
-//            buildConfigField("String","NAVER_CLIENT_ID",
-//                ""+localProperties["NAVER_CLIENT_ID"]+"")
-//            buildConfigField("String","NAVER_CLIENT_SECRET",
-//                localProperties["NAVER_CLIENT_SECRET"].toString()
-//            )
-//            buildConfigField("String", "NAVER_CLIENT_ID", "\"${localProperties["NAVER_CLIENT_ID"] ?: ""}\"")
-//            buildConfigField("String", "NAVER_CLIENT_SECRET", "\"${localProperties["NAVER_CLIENT_SECRET"] ?: ""}\"")
+            buildConfigField("String", "NAVER_CLIENT_ID", gradleLocalProperties(rootDir, providers).getProperty("NAVER_CLIENT_ID"))
+            buildConfigField("String", "NAVER_CLIENT_SECRET", gradleLocalProperties(rootDir, providers).getProperty("NAVER_CLIENT_SECRET"))
         }
         release {
-//            buildConfigField("String","NAVER_CLIENT_ID",
-//                localProperties["NAVER_CLIENT_ID"].toString()
-//            )
-//            buildConfigField("String","NAVER_CLIENT_SECRET",
-//                localProperties["NAVER_CLIENT_SECRET"].toString()
-//            )
-//            buildConfigField("String", "NAVER_CLIENT_ID", "\"${localProperties["NAVER_CLIENT_ID"] ?: ""}\"")
-//            buildConfigField("String", "NAVER_CLIENT_SECRET", "\"${localProperties["NAVER_CLIENT_SECRET"] ?: ""}\"")
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            buildConfigField("String", "NAVER_CLIENT_ID", gradleLocalProperties(rootDir, providers).getProperty("NAVER_CLIENT_ID"))
+            buildConfigField("String", "NAVER_CLIENT_SECRET", gradleLocalProperties(rootDir, providers).getProperty("NAVER_CLIENT_SECRET"))
         }
     }
     compileOptions {
@@ -63,19 +52,6 @@ android {
         buildConfig = true
     }
 }
-
-//fun getApiKey(propertyKey: String): String {
-//    return gradleLocalProperties("").getProperty(propertyKey)
-//}
-
-// android 블록 외부에 local.properties 파일 읽기 추가
-//val localProperties = Properties()
-//val localPropertiesFile = rootProject.file("local.properties")
-//if (localPropertiesFile.exists()) {
-//    localPropertiesFile.reader(Charsets.UTF_8).use { reader ->
-//        localProperties.load(reader)
-//    }
-//}
 
 dependencies {
 
@@ -101,6 +77,8 @@ dependencies {
 
     implementation (libs.logging.interceptor)
 
+    // glide
+    implementation (libs.github.glide)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

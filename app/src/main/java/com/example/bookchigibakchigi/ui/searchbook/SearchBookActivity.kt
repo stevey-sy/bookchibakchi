@@ -56,8 +56,6 @@ class SearchBookActivity : AppCompatActivity() {
             Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show()
         })
 
-        // 예시 검색어로 검색 수행
-//        bookViewModel.searchBooks("안드로이드")
         // 검색 버튼 클릭 리스너 설정
         val searchButton = findViewById<Button>(R.id.searchButton)
         val searchEditText = findViewById<EditText>(R.id.searchEditText)
