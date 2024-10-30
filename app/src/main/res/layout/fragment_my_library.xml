@@ -6,10 +6,10 @@
     android:orientation="vertical"
     tools:context=".ui.mylibrary.MyLibraryFragment">
 
-    <TextView
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvShelf"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
-        android:text="My Library" />
+        android:layout_marginHorizontal="12dp"/>
 
 </LinearLayout>

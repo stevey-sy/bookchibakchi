@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bookchigibakchigi.R
 import com.example.bookchigibakchigi.databinding.ActivitySearchBookBinding
 import com.example.bookchigibakchigi.network.service.NaverBookService
-import com.example.bookchigibakchigi.repository.BookRepository
+import com.example.bookchigibakchigi.repository.BookSearchRepository
 import com.example.bookchigibakchigi.ui.searchbook.adapter.BookAdapter
 import com.example.bookchigibakchigi.viewmodel.BookViewModel
 import com.example.bookchigibakchigi.viewmodel.BookViewModelFactory
@@ -22,7 +22,7 @@ import com.example.bookchigibakchigi.viewmodel.BookViewModelFactory
 class SearchBookActivity : AppCompatActivity() {
 
     private val bookViewModel: BookViewModel by viewModels {
-        BookViewModelFactory(BookRepository(NaverBookService.create()))
+        BookViewModelFactory(BookSearchRepository(NaverBookService.create()))
     }
 
     private lateinit var binding: ActivitySearchBookBinding

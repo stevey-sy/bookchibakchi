@@ -4,10 +4,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.bookchigibakchigi.network.model.NaverBookResponse
-import com.example.bookchigibakchigi.repository.BookRepository
+import com.example.bookchigibakchigi.repository.BookSearchRepository
 import kotlinx.coroutines.launch
 
-class BookViewModel(private val repository: BookRepository) : ViewModel() {
+class BookViewModel(private val repository: BookSearchRepository) : ViewModel() {
 
     // Nullable 타입으로 변경
     val bookSearchResults: LiveData<NaverBookResponse?> get() = repository.bookSearchResults
