@@ -65,15 +65,16 @@
         <ImageView
             android:id="@+id/ivBottom"
             android:layout_width="match_parent"
-            android:layout_height="8dp"
+            android:layout_height="20dp"
             android:layout_alignParentBottom="true"
             android:src="@drawable/shelf_center"
+            android:visibility="gone"
              />
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="8dp"
-            android:background="@color/gray"
+            android:layout_height="24dp"
+            android:background="@drawable/shelf_bottom"
             android:layout_alignParentBottom="true" />
 
     </RelativeLayout>

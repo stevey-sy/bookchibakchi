@@ -57,7 +57,7 @@ class BookShelfAdapter : RecyclerView.Adapter<BookShelfAdapter.BookShelfItemView
             }
 
             // 배경 Drawable 적용
-            binding.ivBottom.setBackgroundResource(drawableRes)
+//            binding.ivBottom.setBackgroundResource(drawableRes)
         }
     }
 
