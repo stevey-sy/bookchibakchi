@@ -1,10 +1,12 @@
 package com.example.bookchigibakchigi.ui.mylibrary.adapter
 
+import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.bookchigibakchigi.R
 import com.example.bookchigibakchigi.data.BookShelfItem
 import com.example.bookchigibakchigi.databinding.ItemBookShelfBinding
 
@@ -22,7 +24,7 @@ class BookShelfAdapter : RecyclerView.Adapter<BookShelfAdapter.BookShelfItemView
     }
 
     override fun onBindViewHolder(holder: BookShelfItemViewHolder, position: Int) {
-        holder.bind(dataList[position])
+        holder.bind(dataList[position], position)
     }
 
     fun setDataList(newList: List<BookShelfItem>) {
@@ -32,7 +34,8 @@ class BookShelfAdapter : RecyclerView.Adapter<BookShelfAdapter.BookShelfItemView
     }
 
     class BookShelfItemViewHolder(private val binding: ItemBookShelfBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(bookShelfItem: BookShelfItem) {
+        fun bind(bookShelfItem: BookShelfItem, position: Int) {
+            // 타입에 따른 뷰 가시성 처리
             binding.rlPlus.visibility = if (bookShelfItem.type == "0") View.VISIBLE else View.GONE
             if(bookShelfItem.type == "0") return
 
@@ -40,11 +43,21 @@ class BookShelfAdapter : RecyclerView.Adapter<BookShelfAdapter.BookShelfItemView
             if (bookShelfItem.imgUrl.isNotEmpty()) {
                 binding.ivBook.visibility = View.VISIBLE
                 Glide.with(binding.ivBook.context)
-                    .load(bookShelfItem.imgUrl) // URL을 여기 사용
-//                .placeholder(R.drawable.placeholder_image) // 로딩 중 보여줄 이미지 (선택사항)
-//                .error(R.drawable.error_image) // 에러 시 보여줄 이미지 (선택사항)
+                    .load(bookShelfItem.imgUrl)
                     .into(binding.ivBook)
             }
+
+            // 열 위치에 따라 배경 Drawable 설정
+            val context = binding.root.context
+            val drawableRes = when (position % 3) {
+                0 -> R.drawable.shelf_left // 왼쪽 아이템의 Drawable
+                1 -> R.drawable.shelf_center // 가운데 아이템의 Drawable
+                2 -> R.drawable.shelf_right // 오른쪽 아이템의 Drawable
+                else -> R.drawable.shelf_center // 기본 Drawable (예외 처리용)
+            }
+
+            // 배경 Drawable 적용
+            binding.ivBottom.setBackgroundResource(drawableRes)
         }
     }
 

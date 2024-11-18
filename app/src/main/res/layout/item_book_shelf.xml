@@ -18,7 +18,7 @@
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="200dp"
-            android:layout_above="@id/vBottom"
+            android:layout_above="@id/ivBottom"
             android:layout_centerInParent="true">
 
             <RelativeLayout
@@ -46,21 +46,35 @@
 
         </FrameLayout>
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/vBottom"
-            android:layout_width="match_parent"
-            android:layout_height="4dp"
-            android:layout_alignParentBottom="true"
-            app:cardElevation="50dp"
-            app:cardCornerRadius="0dp"
-            android:background="@color/gray" >
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:elevation="4dp"
-                android:background="@color/gray" />
+<!--        <androidx.cardview.widget.CardView-->
+<!--            android:id="@+id/vBottom"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="4dp"-->
+<!--            android:layout_alignParentBottom="true"-->
+<!--            app:cardElevation="50dp"-->
+<!--            app:cardCornerRadius="0dp"-->
+<!--            android:background="@color/gray" >-->
+<!--            <LinearLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="match_parent"-->
+<!--                android:elevation="4dp"-->
+<!--                android:background="@color/gray" />-->
 
-        </androidx.cardview.widget.CardView>
+<!--        </androidx.cardview.widget.CardView>-->
+
+        <ImageView
+            android:id="@+id/ivBottom"
+            android:layout_width="match_parent"
+            android:layout_height="8dp"
+            android:layout_alignParentBottom="true"
+            android:src="@drawable/shelf_center"
+             />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="8dp"
+            android:background="@color/gray"
+            android:layout_alignParentBottom="true" />
 
     </RelativeLayout>
 
