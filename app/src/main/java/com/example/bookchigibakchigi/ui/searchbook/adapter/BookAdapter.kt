@@ -25,6 +25,7 @@ class BookAdapter : ListAdapter<BookItem, BookAdapter.BookViewHolder>(BookDiffCa
         fun bind(bookItem: BookItem) {
             binding.book = bookItem  // 바인딩 객체에 데이터 설정
             binding.executePendingBindings()
+            binding.llBookImage.bringToFront();
         }
     }
 

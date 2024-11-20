@@ -8,28 +8,20 @@
             type="com.example.bookchigibakchigi.network.model.BookItem" />
     </data>
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="8dp">
+        android:layout_height="wrap_content">
 
-        <!-- 이미지 추가 (좌측에 위치) -->
-        <ImageView
-            android:id="@+id/bookImage"
-            android:layout_width="100dp"
-            android:layout_height="150dp"
-            android:layout_gravity="center"
-            android:scaleType="centerCrop"
-            android:layout_marginEnd="16dp"
-            app:imageUrl="@{book.image}" /> <!-- Glide를 활용한 커스텀 바인딩 어댑터로 이미지 로드 -->
-
-        <!-- 텍스트 정보는 이미지 우측에 수직으로 나열 -->
         <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
             android:orientation="vertical"
-            android:layout_weight="1">
+            android:layout_gravity="bottom"
+            android:paddingStart="110dp"
+            android:paddingEnd="0dp"
+            android:elevation="8dp"
+            android:background="@android:color/white"
+            android:layout_margin="8dp">
 
             <TextView
                 android:id="@+id/bookTitle"
@@ -38,6 +30,7 @@
                 android:text="@{book.title}"
                 android:textSize="16sp"
                 android:textStyle="bold"
+                android:textColor="@color/black"
                 android:layout_marginBottom="4dp" />
 
             <TextView
@@ -52,10 +45,31 @@
                 android:id="@+id/bookPublisher"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@{book.publisher}"
-                android:textStyle="italic" />
+                android:text="@{book.publisher}" />
 
         </LinearLayout>
 
-    </LinearLayout>
+        <LinearLayout
+            android:id="@+id/llBookImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:elevation="12dp"
+            android:background="@color/white"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginBottom="20dp">
+            <!-- 이미지 추가 (좌측에 위치) -->
+            <ImageView
+                android:id="@+id/bookImage"
+                android:layout_width="80dp"
+                android:layout_height="120dp"
+                android:scaleType="centerCrop"
+                android:layout_margin="4dp"
+                app:imageUrl="@{book.image}" />
+        </LinearLayout>
+
+
+    </FrameLayout>
+
+
 </layout>

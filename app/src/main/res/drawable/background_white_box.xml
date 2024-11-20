@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- res/drawable/rounded_background.xml -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- 그림자 효과 -->
+    <item>
+        <shape android:shape="rectangle">
+            <corners android:radius="8dp" />
+            <gradient
+                android:startColor="#20000000"
+            android:endColor="#00000000"
+            android:angle="270" />
+        </shape>
+    </item>
+
+    <!-- 배경 레이어 -->
+    <item android:left="4dp" android:top="4dp" android:right="4dp" android:bottom="4dp">
+        <shape android:shape="rectangle">
+            <corners android:radius="8dp" />
+            <gradient
+                android:startColor="#FFFFFF"
+            android:endColor="#F8F8F8"
+            android:angle="270" />
+        </shape>
+    </item>
+
+</layer-list>
