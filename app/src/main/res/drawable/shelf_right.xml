@@ -9,10 +9,24 @@
             android:viewportWidth="100"
             android:viewportHeight="50">
             <path
-                android:fillColor="#F0F0F0"
+                android:fillColor="#F0F4F8"
                 android:pathData="M 0,0 L100,0 L100,40 L0,50 Z" />
         </vector>
     </item>
+
+    <!-- 역삼각형 추가 -->
+    <item>
+        <vector
+            android:width="100dp"
+            android:height="50dp"
+            android:viewportWidth="100"
+            android:viewportHeight="50">
+            <path
+                android:fillColor="#FFFFFF"
+                android:pathData="M 100,0 L95,0 L100,10 Z" />
+        </vector>
+    </item>
+
 
     <!-- 흰색 선반 -->
     <item android:top="8dp"> <!-- 빨간색 바로 아래 -->
@@ -27,7 +41,7 @@
         <shape android:shape="rectangle">
             <gradient
                 android:startColor="#00000000"
-                android:endColor="#F0F0F0"
+                android:endColor="#F0F4F8"
                 android:angle="90" />
         </shape>
     </item>

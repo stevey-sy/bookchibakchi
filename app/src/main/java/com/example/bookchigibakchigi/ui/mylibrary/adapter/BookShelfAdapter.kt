@@ -4,6 +4,7 @@ import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.bookchigibakchigi.R
@@ -37,16 +38,6 @@ class BookShelfAdapter : RecyclerView.Adapter<BookShelfAdapter.BookShelfItemView
         fun bind(bookShelfItem: BookShelfItem, position: Int) {
             // 타입에 따른 뷰 가시성 처리
             binding.rlPlus.visibility = if (bookShelfItem.type == "0") View.VISIBLE else View.GONE
-            if(bookShelfItem.type == "0") return
-
-            binding.ivBook.visibility = if (bookShelfItem.type == "0") View.GONE else View.VISIBLE
-            if (bookShelfItem.imgUrl.isNotEmpty()) {
-                binding.ivBook.visibility = View.VISIBLE
-                Glide.with(binding.ivBook.context)
-                    .load(bookShelfItem.imgUrl)
-                    .into(binding.ivBook)
-            }
-
             // 열 위치에 따라 배경 Drawable 설정
             val context = binding.root.context
             val drawableRes = when (position % 3) {
@@ -57,7 +48,17 @@ class BookShelfAdapter : RecyclerView.Adapter<BookShelfAdapter.BookShelfItemView
             }
 
             // 배경 Drawable 적용
-//            binding.ivBottom.setBackgroundResource(drawableRes)
+            binding.vBottom.background = AppCompatResources.getDrawable(context, drawableRes)
+            if(bookShelfItem.type == "0") return
+
+            binding.ivBook.visibility = if (bookShelfItem.type == "0") View.GONE else View.VISIBLE
+            if (bookShelfItem.imgUrl.isNotEmpty()) {
+                binding.ivBook.visibility = View.VISIBLE
+                Glide.with(binding.ivBook.context)
+                    .load(bookShelfItem.imgUrl)
+                    .into(binding.ivBook)
+            }
+
         }
     }
 

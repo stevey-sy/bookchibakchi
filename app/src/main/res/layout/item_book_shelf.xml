@@ -8,18 +8,25 @@
             type="com.example.bookchigibakchigi.data.BookShelfItem" />
     </data>
 
-    <RelativeLayout
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:layout_height="wrap_content"
         android:layout_margin="0dp"
         android:padding="0dp"
         >
 
+        <View
+            android:id="@+id/vBottom"
+            android:layout_width="match_parent"
+            android:layout_height="28dp"
+            android:background="@drawable/shelf_right"
+            android:layout_gravity="bottom" />
+
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:layout_above="@id/ivBottom"
-            android:layout_centerInParent="true">
+            android:layout_height="150dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="16dp">
 
             <RelativeLayout
                 android:id="@+id/rlPlus"
@@ -46,38 +53,7 @@
 
         </FrameLayout>
 
-<!--        <androidx.cardview.widget.CardView-->
-<!--            android:id="@+id/vBottom"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="4dp"-->
-<!--            android:layout_alignParentBottom="true"-->
-<!--            app:cardElevation="50dp"-->
-<!--            app:cardCornerRadius="0dp"-->
-<!--            android:background="@color/gray" >-->
-<!--            <LinearLayout-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="match_parent"-->
-<!--                android:elevation="4dp"-->
-<!--                android:background="@color/gray" />-->
-
-<!--        </androidx.cardview.widget.CardView>-->
-
-        <ImageView
-            android:id="@+id/ivBottom"
-            android:layout_width="match_parent"
-            android:layout_height="20dp"
-            android:layout_alignParentBottom="true"
-            android:src="@drawable/shelf_center"
-            android:visibility="gone"
-             />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="24dp"
-            android:background="@drawable/shelf_bottom"
-            android:layout_alignParentBottom="true" />
-
-    </RelativeLayout>
+    </FrameLayout>
 
 
 
