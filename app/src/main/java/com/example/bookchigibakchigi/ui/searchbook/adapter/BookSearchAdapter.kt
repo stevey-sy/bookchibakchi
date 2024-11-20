@@ -9,7 +9,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.bookchigibakchigi.databinding.ItemBookSearchBinding
 import com.example.bookchigibakchigi.network.model.BookItem
 
-class BookAdapter : ListAdapter<BookItem, BookAdapter.BookViewHolder>(BookDiffCallback()) {
+class BookSearchAdapter(
+    private val onBookClick: (Int) -> Unit
+) : ListAdapter<BookItem, BookSearchAdapter.BookViewHolder>(BookDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BookViewHolder {
         val binding = ItemBookSearchBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -21,11 +23,19 @@ class BookAdapter : ListAdapter<BookItem, BookAdapter.BookViewHolder>(BookDiffCa
         holder.bind(item)
     }
 
-    class BookViewHolder(private val binding: ItemBookSearchBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class BookViewHolder(private val binding: ItemBookSearchBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(bookItem: BookItem) {
             binding.book = bookItem  // 바인딩 객체에 데이터 설정
             binding.executePendingBindings()
-            binding.llBookImage.bringToFront();
+
+            // 클릭 이벤트 처리
+            binding.root.setOnClickListener {
+                val position = adapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    onBookClick(position) // 람다 호출
+                }
+
+            }
         }
     }
 
@@ -37,5 +47,9 @@ class BookAdapter : ListAdapter<BookItem, BookAdapter.BookViewHolder>(BookDiffCa
         override fun areContentsTheSame(oldItem: BookItem, newItem: BookItem): Boolean {
             return oldItem == newItem
         }
+    }
+
+    interface OnBookClickListener {
+        fun onBookClick(position: Int)
     }
 }

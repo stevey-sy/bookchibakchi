@@ -3,8 +3,6 @@ package com.example.bookchigibakchigi.ui.searchbook
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Button
-import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
@@ -17,7 +15,7 @@ import com.example.bookchigibakchigi.R
 import com.example.bookchigibakchigi.databinding.ActivitySearchBookBinding
 import com.example.bookchigibakchigi.network.service.NaverBookService
 import com.example.bookchigibakchigi.repository.BookSearchRepository
-import com.example.bookchigibakchigi.ui.searchbook.adapter.BookAdapter
+import com.example.bookchigibakchigi.ui.searchbook.adapter.BookSearchAdapter
 import com.example.bookchigibakchigi.viewmodel.BookViewModel
 import com.example.bookchigibakchigi.viewmodel.BookViewModelFactory
 
@@ -49,7 +47,9 @@ class SearchBookActivity : AppCompatActivity() {
         }
 
         // RecyclerView 설정
-        val adapter = BookAdapter()
+        val adapter = BookSearchAdapter{ position ->
+            onBookItemClicked(position)
+        }
         binding.recyclerView.adapter = adapter
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
 
@@ -89,5 +89,10 @@ class SearchBookActivity : AppCompatActivity() {
             }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    private fun onBookItemClicked(position: Int) {
+        // 책 추가 dialog
+
     }
 }
