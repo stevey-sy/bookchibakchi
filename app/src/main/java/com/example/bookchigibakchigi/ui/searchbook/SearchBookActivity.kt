@@ -1,6 +1,8 @@
 package com.example.bookchigibakchigi.ui.searchbook
 
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
@@ -34,6 +36,12 @@ class SearchBookActivity : AppCompatActivity() {
         binding = ActivitySearchBookBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // Toolbar를 ActionBar로 설정
+        setSupportActionBar(binding.toolbar)
+        // 백버튼 제거
+        supportActionBar?.setDisplayHomeAsUpEnabled(false)
+        supportActionBar?.setHomeButtonEnabled(false)
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
@@ -56,17 +64,30 @@ class SearchBookActivity : AppCompatActivity() {
             Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show()
         })
 
-        // 검색 버튼 클릭 리스너 설정
-        val searchButton = findViewById<Button>(R.id.searchButton)
-        val searchEditText = findViewById<EditText>(R.id.searchEditText)
-
-        searchButton.setOnClickListener {
-            val query = searchEditText.text.toString()
+        binding.searchButton.setOnClickListener {
+            val query = binding.searchEditText.text.toString()
             if (query.isNotEmpty()) {
                 bookViewModel.searchBooks(query)
             } else {
                 Toast.makeText(this, "검색어를 입력하세요.", Toast.LENGTH_SHORT).show()
             }
+        }
+    }
+
+    // 메뉴 생성
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_search_book, menu) // 메뉴 파일 연결
+        return true
+    }
+
+    // 메뉴 아이템 클릭 이벤트 처리
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_close -> {
+                finish() // 닫기 버튼 클릭 시 Activity 종료
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
     }
 }

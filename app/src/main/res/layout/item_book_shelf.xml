@@ -18,7 +18,7 @@
         <View
             android:id="@+id/vBottom"
             android:layout_width="match_parent"
-            android:layout_height="28dp"
+            android:layout_height="30dp"
             android:background="@drawable/shelf_right"
             android:layout_gravity="bottom" />
 

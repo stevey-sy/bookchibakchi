@@ -28,10 +28,10 @@
     </item>
 
     <!-- 흰색 선반 -->
-    <item android:top="8dp"> <!-- 빨간색 바로 아래 -->
+    <item android:top="10dp"> <!-- 빨간색 바로 아래 -->
         <shape android:shape="rectangle">
             <solid android:color="#FFFFFF" /> <!-- 흰색 선반 -->
-            <size android:height="8dp" /> <!-- 선반 두께 -->
+            <size android:height="12dp" /> <!-- 선반 두께 -->
         </shape>
     </item>
 
