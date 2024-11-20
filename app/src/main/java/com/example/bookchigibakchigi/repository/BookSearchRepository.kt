@@ -7,7 +7,7 @@ import com.example.bookchigibakchigi.network.service.NaverBookService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class BookRepository(private val naverBookService: NaverBookService) {
+class BookSearchRepository(private val naverBookService: NaverBookService) {
 
     private val _bookSearchResults = MutableLiveData<NaverBookResponse?>()
     val bookSearchResults: LiveData<NaverBookResponse?> get() = _bookSearchResults

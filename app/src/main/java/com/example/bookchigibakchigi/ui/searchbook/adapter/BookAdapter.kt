@@ -6,13 +6,13 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.bookchigibakchigi.databinding.ItemBookBinding
+import com.example.bookchigibakchigi.databinding.ItemBookSearchBinding
 import com.example.bookchigibakchigi.network.model.BookItem
 
 class BookAdapter : ListAdapter<BookItem, BookAdapter.BookViewHolder>(BookDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BookViewHolder {
-        val binding = ItemBookBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding = ItemBookSearchBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return BookViewHolder(binding)
     }
 
@@ -21,7 +21,7 @@ class BookAdapter : ListAdapter<BookItem, BookAdapter.BookViewHolder>(BookDiffCa
         holder.bind(item)
     }
 
-    class BookViewHolder(private val binding: ItemBookBinding) : RecyclerView.ViewHolder(binding.root) {
+    class BookViewHolder(private val binding: ItemBookSearchBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(bookItem: BookItem) {
             binding.book = bookItem  // 바인딩 객체에 데이터 설정
             binding.executePendingBindings()

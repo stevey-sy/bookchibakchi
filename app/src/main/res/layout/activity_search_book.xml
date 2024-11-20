@@ -8,32 +8,55 @@
     android:orientation="vertical"
     tools:context=".ui.searchbook.SearchBookActivity">
 
+    <!-- AppBarLayout과 Toolbar -->
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/ThemeOverlay.AppCompat.Light">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@android:color/white"
+            app:title="@string/title_search_book"
+            app:titleTextColor="@android:color/black" />
+    </com.google.android.material.appbar.AppBarLayout>
 
     <!-- 검색창을 포함하는 LinearLayout -->
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:background="@drawable/search_text_input_box"
         android:padding="8dp"
-        android:layout_marginTop="20dp">
+        android:layout_margin="10dp">
 
         <!-- EditText를 사용한 검색 입력 필드 -->
         <EditText
             android:id="@+id/searchEditText"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:hint="책 검색"
+            android:hint="@string/hint_search_book"
             android:inputType="text"
+            android:background="@null"
+            android:layout_toStartOf="@id/searchButton"
             android:padding="8dp"/>
 
         <!-- 검색 버튼 -->
-        <Button
+        <ImageButton
             android:id="@+id/searchButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="검색"/>
-    </LinearLayout>
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/ic_search_white"
+            android:padding="8dp"
+            android:backgroundTint="@color/black"
+            android:scaleType="center"
+            android:contentDescription="Search button" />
+
+    </RelativeLayout>
 
     <!-- RecyclerView for displaying the search results -->
     <androidx.recyclerview.widget.RecyclerView
