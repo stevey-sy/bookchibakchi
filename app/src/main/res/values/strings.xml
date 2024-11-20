@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">BookChigi BakChigi</string>
+    <string name="b_archive">B.archive</string>
     <string name="title_home">홈</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>

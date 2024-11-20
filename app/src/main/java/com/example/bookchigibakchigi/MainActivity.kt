@@ -52,17 +52,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // 목적지에 따라 Toolbar 타이틀을 업데이트하는 함수
-    private fun updateToolbarTitle(destinationId: Int) {
-        when (destinationId) {
-            R.id.navigation_my_library -> binding.toolbar.title = getString(R.string.title_my_library)
-            R.id.navigation_pick_book -> binding.toolbar.title = getString(R.string.title_pick_book)
-            R.id.navigation_community -> binding.toolbar.title = getString(R.string.title_community)
-            R.id.navigation_record -> binding.toolbar.title = getString(R.string.title_record)
-            R.id.navigation_setting -> binding.toolbar.title = getString(R.string.title_setting)
-        }
-    }
-
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.nav_host_fragment_activity_main)
         return navController.navigateUp() || super.onSupportNavigateUp()
