@@ -10,6 +10,7 @@
     <string name="title_record">기록</string>
     <string name="title_pick_book">책 고르기</string>
     <string name="title_search_book">책 검색</string>
+    <string name="title_add_book">책 등록하기</string>
 
     <string name="hint_search_book">책을 검색해 보세요.</string>
 </resources>

@@ -1,20 +1,27 @@
 package com.example.bookchigibakchigi.ui.searchbook
 
+import android.content.Intent
 import android.os.Bundle
+import android.transition.Transition
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityOptionsCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bookchigibakchigi.R
 import com.example.bookchigibakchigi.databinding.ActivitySearchBookBinding
+import com.example.bookchigibakchigi.network.model.BookItem
 import com.example.bookchigibakchigi.network.service.NaverBookService
 import com.example.bookchigibakchigi.repository.BookSearchRepository
+import com.example.bookchigibakchigi.ui.addbook.AddBookActivity
 import com.example.bookchigibakchigi.ui.searchbook.adapter.BookSearchAdapter
 import com.example.bookchigibakchigi.viewmodel.BookViewModel
 import com.example.bookchigibakchigi.viewmodel.BookViewModelFactory
@@ -47,8 +54,8 @@ class SearchBookActivity : AppCompatActivity() {
         }
 
         // RecyclerView 설정
-        val adapter = BookSearchAdapter{ position ->
-            onBookItemClicked(position)
+        val adapter = BookSearchAdapter{ bookItem, sharedView->
+            onBookItemClicked(bookItem, sharedView)
         }
         binding.recyclerView.adapter = adapter
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
@@ -72,6 +79,20 @@ class SearchBookActivity : AppCompatActivity() {
                 Toast.makeText(this, "검색어를 입력하세요.", Toast.LENGTH_SHORT).show()
             }
         }
+
+        window.sharedElementReturnTransition.addListener(object : Transition.TransitionListener {
+            override fun onTransitionStart(transition: Transition) {
+                binding.recyclerView.itemAnimator = null // RecyclerView 애니메이터 비활성화
+            }
+
+            override fun onTransitionEnd(transition: Transition) {
+                binding.recyclerView.itemAnimator = DefaultItemAnimator() // 애니메이터 복원
+            }
+
+            override fun onTransitionCancel(transition: Transition) {}
+            override fun onTransitionPause(transition: Transition) {}
+            override fun onTransitionResume(transition: Transition) {}
+        })
     }
 
     // 메뉴 생성
@@ -91,8 +112,17 @@ class SearchBookActivity : AppCompatActivity() {
         }
     }
 
-    private fun onBookItemClicked(position: Int) {
-        // 책 추가 dialog
-
+    private fun onBookItemClicked(bookItem: BookItem, sharedView: View) {
+        // 책 추가 화면으로 이동
+        val intent = Intent(this, AddBookActivity::class.java).apply {
+            putExtra("bookItem", bookItem) // Book 객체 전달
+        }
+        // 트랜지션 애니메이션 설정
+        val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+            this,
+            sharedView, // 공유 요소 뷰 (예: 이미지)
+            "shared_element_image" // transitionName과 일치해야 함
+        )
+        startActivity(intent, options.toBundle())
     }
 }

@@ -2,6 +2,7 @@ package com.example.bookchigibakchigi.ui.searchbook.adapter
 
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -10,7 +11,7 @@ import com.example.bookchigibakchigi.databinding.ItemBookSearchBinding
 import com.example.bookchigibakchigi.network.model.BookItem
 
 class BookSearchAdapter(
-    private val onBookClick: (Int) -> Unit
+    private val onBookClick: (BookItem, View) -> Unit
 ) : ListAdapter<BookItem, BookSearchAdapter.BookViewHolder>(BookDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BookViewHolder {
@@ -32,9 +33,8 @@ class BookSearchAdapter(
             binding.root.setOnClickListener {
                 val position = adapterPosition
                 if (position != RecyclerView.NO_POSITION) {
-                    onBookClick(position) // 람다 호출
+                    onBookClick(bookItem, binding.llBookImage) // 람다 호출
                 }
-
             }
         }
     }
@@ -47,9 +47,5 @@ class BookSearchAdapter(
         override fun areContentsTheSame(oldItem: BookItem, newItem: BookItem): Boolean {
             return oldItem == newItem
         }
-    }
-
-    interface OnBookClickListener {
-        fun onBookClick(position: Int)
     }
 }

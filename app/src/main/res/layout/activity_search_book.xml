@@ -24,55 +24,63 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <!-- 검색창을 포함하는 LinearLayout -->
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:orientation="horizontal"
-        android:background="@drawable/search_text_input_box"
-        android:layout_marginTop="20dp"
-        android:layout_marginHorizontal="10dp"
-        android:layout_marginBottom="10dp">
-
-        <!-- EditText를 사용한 검색 입력 필드 -->
-        <EditText
-            android:id="@+id/searchEditText"
+        android:layout_height="wrap_content"
+        android:background="@color/activity_background">
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:hint="@string/hint_search_book"
-            android:inputType="text"
-            android:background="@null"
-            android:paddingStart="10dp"
-            android:layout_toStartOf="@id/flSearchBtn" />
+            android:layout_height="50dp"
+            android:orientation="horizontal"
+            android:background="@drawable/search_text_input_box"
+            android:layout_marginTop="20dp"
+            android:layout_marginHorizontal="10dp"
+            android:layout_marginBottom="10dp"
+            >
 
-        <!-- 검색 버튼 -->
-        <FrameLayout
-            android:id="@+id/flSearchBtn"
-            android:layout_width="50dp"
-            android:layout_height="match_parent"
-            android:background="@drawable/search_btn_box"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true">
+            <!-- EditText를 사용한 검색 입력 필드 -->
+            <EditText
+                android:id="@+id/searchEditText"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="@string/hint_search_book"
+                android:inputType="text"
+                android:background="@null"
+                android:paddingStart="10dp"
+                android:layout_toStartOf="@id/flSearchBtn" />
 
-            <ImageButton
-                android:id="@+id/searchButton"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:background="@drawable/ic_search_white"
-                android:padding="8dp"
-                android:backgroundTint="@color/white"
-                android:scaleType="center"
-                android:layout_gravity="center"
-                android:contentDescription="Search button" />
-        </FrameLayout>
+            <!-- 검색 버튼 -->
+            <FrameLayout
+                android:id="@+id/flSearchBtn"
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/search_btn_box"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true">
+
+                <ImageButton
+                    android:id="@+id/searchButton"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:background="@drawable/ic_search_white"
+                    android:padding="8dp"
+                    android:backgroundTint="@color/white"
+                    android:scaleType="center"
+                    android:layout_gravity="center"
+                    android:contentDescription="Search button" />
+            </FrameLayout>
 
 
-    </RelativeLayout>
+        </RelativeLayout>
+    </LinearLayout>
+
 
     <!-- RecyclerView for displaying the search results -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="10dp"/>
+        android:background="@color/activity_background"
+        android:paddingTop="10dp"/>
 
 </LinearLayout>
