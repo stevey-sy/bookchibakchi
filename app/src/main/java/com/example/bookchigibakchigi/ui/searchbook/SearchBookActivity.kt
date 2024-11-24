@@ -41,16 +41,10 @@ class SearchBookActivity : BaseActivity() {
         binding = ActivitySearchBookBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        addProgressBarToLayout(binding.root);
-
-        // Toolbar를 ActionBar로 설정
         setupToolbar(binding.toolbar)
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
+        addProgressBarToLayout(binding.root);
+
 
         // RecyclerView 설정
         val adapter = BookSearchAdapter{ bookItem, sharedView->
@@ -70,7 +64,6 @@ class SearchBookActivity : BaseActivity() {
                     adapter.submitList(it)
                 }
             }
-
         })
 
         // 로딩 상태 관찰
