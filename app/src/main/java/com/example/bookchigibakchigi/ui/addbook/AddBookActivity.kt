@@ -1,11 +1,16 @@
 package com.example.bookchigibakchigi.ui.addbook
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
+import android.animation.AnimatorSet
+import android.animation.ValueAnimator
 import android.os.Bundle
 import android.transition.Transition
 import android.transition.TransitionInflater
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ImageView
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -51,14 +56,6 @@ class AddBookActivity : AppCompatActivity() {
             insets
         }
 
-        // 공유 요소 트랜지션 설정
-        // 공유 요소 트랜지션 활성화
-        window.sharedElementEnterTransition = TransitionInflater.from(this)
-            .inflateTransition(R.transition.shared_element_transition)
-
-        window.sharedElementReturnTransition = TransitionInflater.from(this)
-            .inflateTransition(R.transition.shared_element_transition)
-
         viewModel.bookItem.observe(this) { bookItem ->
             bookItem?.let {
                 binding.tvBookTitle.text = it.title
@@ -69,22 +66,12 @@ class AddBookActivity : AppCompatActivity() {
             }
         }
 
-        window.sharedElementReturnTransition.addListener(object : Transition.TransitionListener {
-            override fun onTransitionStart(transition: Transition) {
-                // 트랜지션 시작 시, ScaleType을 동일하게 설정
-                binding.ivBook.scaleType = ImageView.ScaleType.CENTER_CROP
+        // 뒤로 가기 콜백 등록
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                animateImageViewSizeAndFinish() // 커스텀 애니메이션 호출
             }
-
-            override fun onTransitionEnd(transition: Transition) {
-                // 트랜지션 종료 후, 원래 ScaleType 복원
-                binding.ivBook.scaleType = ImageView.ScaleType.FIT_CENTER
-            }
-
-            override fun onTransitionCancel(transition: Transition) {}
-            override fun onTransitionPause(transition: Transition) {}
-            override fun onTransitionResume(transition: Transition) {}
         })
-
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -96,10 +83,52 @@ class AddBookActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_close -> {
-                supportFinishAfterTransition()
+                animateImageViewSizeAndFinish()
+//                supportFinishAfterTransition()
                 true
             }
             else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun animateImageViewSizeAndFinish() {
+        // 원하는 최종 크기
+        val targetWidth = resources.getDimensionPixelSize(R.dimen.image_width_small) // 80dp
+        val targetHeight = resources.getDimensionPixelSize(R.dimen.image_height_small) // 120dp
+
+        // 현재 크기 가져오기
+        val initialWidth = binding.ivBook.width
+        val initialHeight = binding.ivBook.height
+
+        // ValueAnimator 설정
+        val widthAnimator = ValueAnimator.ofInt(initialWidth, targetWidth)
+        val heightAnimator = ValueAnimator.ofInt(initialHeight, targetHeight)
+
+        // 애니메이션 리스너 추가
+        widthAnimator.addUpdateListener { animator ->
+            val newWidth = animator.animatedValue as Int
+            val layoutParams = binding.ivBook.layoutParams
+            layoutParams.width = newWidth
+            binding.ivBook.layoutParams = layoutParams
+        }
+
+        heightAnimator.addUpdateListener { animator ->
+            val newHeight = animator.animatedValue as Int
+            val layoutParams = binding.ivBook.layoutParams
+            layoutParams.height = newHeight
+            binding.ivBook.layoutParams = layoutParams
+        }
+
+        // 애니메이션 동시 실행
+        AnimatorSet().apply {
+            playTogether(widthAnimator, heightAnimator)
+            duration = 300 // 애니메이션 지속 시간 (ms)
+            addListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationEnd(animation: Animator) {
+                    supportFinishAfterTransition() // 애니메이션 끝난 후 Activity 종료
+                }
+            })
+            start()
         }
     }
 
