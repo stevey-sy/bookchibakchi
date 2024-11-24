@@ -2,17 +2,13 @@ package com.example.bookchigibakchigi.ui.searchbook
 
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.transition.Transition
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -67,8 +63,14 @@ class SearchBookActivity : BaseActivity() {
         // ViewModel의 LiveData 관찰
         bookViewModel.bookSearchResults.observe(this, Observer { response ->
             response?.let {
-                adapter.submitList(it)
+                if (it.isEmpty()) {
+                    showNoResults()
+                } else {
+                    showResults()
+                    adapter.submitList(it)
+                }
             }
+
         })
 
         // 로딩 상태 관찰
@@ -84,7 +86,7 @@ class SearchBookActivity : BaseActivity() {
             val query = binding.searchEditText.text.toString()
             if (query.isNotEmpty()) {
                 showProgressBar() // ProgressBar 표시
-                performSearch(query)
+                handleSearch(query)
             } else {
                 Toast.makeText(this, "검색어를 입력하세요.", Toast.LENGTH_SHORT).show()
             }
@@ -136,15 +138,19 @@ class SearchBookActivity : BaseActivity() {
         startActivity(intent, options.toBundle())
     }
 
-//    private fun showProgressBar() {
-//        binding.progressBar.visibility = View.VISIBLE
-//    }
-//
-//    private fun hideProgressBar() {
-//        binding.progressBar.visibility = View.GONE
-//    }
-
-    private fun performSearch(query: String) {
+    private fun handleSearch(query: String) {
         bookViewModel.searchBooks(query)
     }
+
+    private fun showNoResults() {
+        binding.recyclerView.visibility = View.GONE
+        binding.noResultsLayout.visibility = View.VISIBLE
+    }
+
+    private fun showResults() {
+        binding.recyclerView.visibility = View.VISIBLE
+        binding.noResultsLayout.visibility = View.GONE
+    }
+
+
 }
