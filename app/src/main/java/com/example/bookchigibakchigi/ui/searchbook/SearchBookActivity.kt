@@ -123,24 +123,6 @@ class SearchBookActivity : AppCompatActivity() {
             sharedView, // 공유 요소 뷰 (예: 이미지)
             "shared_element_image" // transitionName과 일치해야 함
         )
-
-//        val transitionPairs = getTransitionPairs(view)
-        /*
-        Activity 전환 옵션을 설정한다.
-        ImageView, TextView 두개의 View를 등록하였다.
-        */
-/*        val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
-            this, *transitionPairs.toTypedArray()
-        )*/
-
         startActivity(intent, options.toBundle())
     }
-
-//    private fun getTransitionPairs(view: View): List<Pair<View, String>> {
-//        val characterPair = Pair<View, String>(view.findViewById(R.id.ivCharacter), "transImage")
-//        val characterNamePair =
-//            Pair<View, String>(view.findViewById(R.id.tvCharacterName), "transName")
-//
-//        return listOf(characterPair, characterNamePair)
-//    }
 }
