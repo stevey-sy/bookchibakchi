@@ -2,10 +2,13 @@ package com.example.bookchigibakchigi.ui.searchbook
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.transition.Transition
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
@@ -21,12 +24,13 @@ import com.example.bookchigibakchigi.databinding.ActivitySearchBookBinding
 import com.example.bookchigibakchigi.network.model.BookItem
 import com.example.bookchigibakchigi.network.service.NaverBookService
 import com.example.bookchigibakchigi.repository.BookSearchRepository
+import com.example.bookchigibakchigi.ui.BaseActivity
 import com.example.bookchigibakchigi.ui.addbook.AddBookActivity
 import com.example.bookchigibakchigi.ui.searchbook.adapter.BookSearchAdapter
 import com.example.bookchigibakchigi.viewmodel.BookViewModel
 import com.example.bookchigibakchigi.viewmodel.BookViewModelFactory
 
-class SearchBookActivity : AppCompatActivity() {
+class SearchBookActivity : BaseActivity() {
 
     private val bookViewModel: BookViewModel by viewModels {
         BookViewModelFactory(BookSearchRepository(NaverBookService.create()))
@@ -41,11 +45,10 @@ class SearchBookActivity : AppCompatActivity() {
         binding = ActivitySearchBookBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        addProgressBarToLayout(binding.root);
+
         // Toolbar를 ActionBar로 설정
-        setSupportActionBar(binding.toolbar)
-        // 백버튼 제거
-        supportActionBar?.setDisplayHomeAsUpEnabled(false)
-        supportActionBar?.setHomeButtonEnabled(false)
+        setupToolbar(binding.toolbar)
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -57,15 +60,21 @@ class SearchBookActivity : AppCompatActivity() {
         val adapter = BookSearchAdapter{ bookItem, sharedView->
             onBookItemClicked(bookItem, sharedView)
         }
+
         binding.recyclerView.adapter = adapter
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
 
         // ViewModel의 LiveData 관찰
         bookViewModel.bookSearchResults.observe(this, Observer { response ->
             response?.let {
-                adapter.submitList(it.items)
+                adapter.submitList(it)
             }
         })
+
+        // 로딩 상태 관찰
+        bookViewModel.isLoading.observe(this) { isLoading ->
+            if (isLoading) showProgressBar() else hideProgressBar()
+        }
 
         bookViewModel.errorMessage.observe(this, Observer { errorMessage ->
             Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show()
@@ -74,7 +83,8 @@ class SearchBookActivity : AppCompatActivity() {
         binding.searchButton.setOnClickListener {
             val query = binding.searchEditText.text.toString()
             if (query.isNotEmpty()) {
-                bookViewModel.searchBooks(query)
+                showProgressBar() // ProgressBar 표시
+                performSearch(query)
             } else {
                 Toast.makeText(this, "검색어를 입력하세요.", Toast.LENGTH_SHORT).show()
             }
@@ -124,5 +134,17 @@ class SearchBookActivity : AppCompatActivity() {
             "shared_element_image" // transitionName과 일치해야 함
         )
         startActivity(intent, options.toBundle())
+    }
+
+//    private fun showProgressBar() {
+//        binding.progressBar.visibility = View.VISIBLE
+//    }
+//
+//    private fun hideProgressBar() {
+//        binding.progressBar.visibility = View.GONE
+//    }
+
+    private fun performSearch(query: String) {
+        bookViewModel.searchBooks(query)
     }
 }
