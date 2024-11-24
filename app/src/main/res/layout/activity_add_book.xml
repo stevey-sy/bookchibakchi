@@ -214,7 +214,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:gravity="center"
-                android:text="저장"
+                android:text="@string/button_save"
+                android:textColor="@color/white"
+                android:background="@color/black"
                 android:layout_alignParentBottom="true"/>
         </RelativeLayout>
 
