@@ -40,11 +40,8 @@ class SearchBookActivity : BaseActivity() {
         // 데이터 바인딩 객체 초기화
         binding = ActivitySearchBookBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        setupToolbar(binding.toolbar)
-
         addProgressBarToLayout(binding.root);
-
+        setupToolbar(binding.toolbar, binding.main)
 
         // RecyclerView 설정
         val adapter = BookSearchAdapter{ bookItem, sharedView->
@@ -64,6 +61,7 @@ class SearchBookActivity : BaseActivity() {
                     adapter.submitList(it)
                 }
             }
+
         })
 
         // 로딩 상태 관찰

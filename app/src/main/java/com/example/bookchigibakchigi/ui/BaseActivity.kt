@@ -42,11 +42,17 @@ abstract class BaseActivity : AppCompatActivity() {
     }
 
     // Toolbar 설정
-    protected fun setupToolbar(toolbar: Toolbar) {
+    protected fun setupToolbar(toolbar: Toolbar, rootView: View) {
         setSupportActionBar(toolbar)
         supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(false)
             setHomeButtonEnabled(false)
+        }
+
+        ViewCompat.setOnApplyWindowInsetsListener(rootView) { view, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            view.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
         }
     }
 

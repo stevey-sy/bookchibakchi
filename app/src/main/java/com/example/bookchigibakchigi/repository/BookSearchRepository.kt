@@ -16,7 +16,7 @@ class BookSearchRepository(private val naverBookService: NaverBookService) {
     suspend fun searchBooks(query: String, start: Int): NaverBookResponse? {
         return withContext(Dispatchers.IO) {
             try {
-                val response = naverBookService.searchBooks(query, start)
+                val response = naverBookService.searchBooks(query)
                 response // 성공적으로 데이터를 반환
             } catch (e: Exception) {
                 e.printStackTrace()
