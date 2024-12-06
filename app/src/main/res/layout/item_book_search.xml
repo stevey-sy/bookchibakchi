@@ -41,7 +41,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@{book.author}"
-                android:layout_marginBottom="4dp" />
+                android:layout_marginBottom="4dp"
+                android:maxLines="1"
+                android:ellipsize="end"/>
 
             <!-- 출판사 추가 -->
             <TextView

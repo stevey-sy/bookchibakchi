@@ -2,10 +2,11 @@ package com.example.bookchigibakchigi.ui.addbook
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.example.bookchigibakchigi.network.model.AladinBookItem
 import com.example.bookchigibakchigi.network.model.BookItem
 
 class AddBookActivityViewModelFactory(
-    private val book: BookItem?
+    private val book: AladinBookItem?
 ) : ViewModelProvider.Factory {
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {

@@ -19,6 +19,7 @@ import androidx.core.view.WindowInsetsCompat
 import com.bumptech.glide.Glide
 import com.example.bookchigibakchigi.R
 import com.example.bookchigibakchigi.databinding.ActivityAddBookBinding
+import com.example.bookchigibakchigi.network.model.AladinBookItem
 import com.example.bookchigibakchigi.network.model.BookItem
 
 class AddBookActivity : AppCompatActivity() {
@@ -27,8 +28,8 @@ class AddBookActivity : AppCompatActivity() {
 
     private val viewModel: AddBookActivityViewModel by viewModels {
         // Intent에서 BookItem? 데이터를 추출
-        val bookItem: BookItem? = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
-            intent.getParcelableExtra("bookItem", BookItem::class.java)
+        val bookItem: AladinBookItem? = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            intent.getParcelableExtra("bookItem", AladinBookItem::class.java)
         } else {
             @Suppress("DEPRECATION")
             intent.getParcelableExtra("bookItem")
@@ -44,6 +45,10 @@ class AddBookActivity : AppCompatActivity() {
         binding = ActivityAddBookBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // ViewModel 연결
+        binding.viewModel = viewModel
+        binding.lifecycleOwner = this
+
         // Toolbar를 ActionBar로 설정
         setSupportActionBar(binding.toolbar)
         // 백버튼 제거
@@ -54,16 +59,6 @@ class AddBookActivity : AppCompatActivity() {
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
-        }
-
-        viewModel.bookItem.observe(this) { bookItem ->
-            bookItem?.let {
-                binding.tvBookTitle.text = it.title
-                binding.tvAuthor.text = it.author
-                binding.tvPublisher.text = it.publisher
-                binding.tvIsbn.text = it.isbn
-                Glide.with(this).load(it.image).into(binding.ivBook)
-            }
         }
 
         // 뒤로 가기 콜백 등록

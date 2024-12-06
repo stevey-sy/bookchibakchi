@@ -9,5 +9,6 @@ data class SubInfo(
     val usedList: UsedListInfo?,
     val newBookList: List<NewBookInfo>?,
     val paperBookList: List<PaperBookInfo>?,
-    val fileFormatList: List<FileFormatInfo>?
+    val fileFormatList: List<FileFormatInfo>?,
+    val itemPage: Int
 ) : Parcelable
