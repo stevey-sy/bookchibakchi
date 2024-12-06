@@ -15,7 +15,7 @@ import retrofit2.http.Query
 interface AladinBookApiService {
 
     @GET("ItemSearch.aspx")
-    fun searchBooks(
+    suspend fun searchBooks(
         @Query("ttbkey") ttbKey: String = BuildConfig.ALADIN_TTB_KEY,
         @Query("Query") query: String,
         @Query("QueryType") queryType: String = "Keyword", // 기본값 설정
@@ -29,7 +29,7 @@ interface AladinBookApiService {
     ): Response<AladinBookResponse>
 
     companion object {
-        private const val BASE_URL = "http://www.aladin.co.kr/ttb/api/"
+        private const val BASE_URL = "https://www.aladin.co.kr/ttb/api/"
 
         fun create(): AladinBookApiService {
 
