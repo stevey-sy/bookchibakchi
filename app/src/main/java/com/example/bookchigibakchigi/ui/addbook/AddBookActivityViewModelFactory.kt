@@ -4,15 +4,17 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.bookchigibakchigi.network.model.AladinBookItem
 import com.example.bookchigibakchigi.network.model.BookItem
+import com.example.bookchigibakchigi.repository.AladinBookRepository
 
 class AddBookActivityViewModelFactory(
-    private val book: AladinBookItem?
+    private val itemId: String,
+    private val repository: AladinBookRepository
 ) : ViewModelProvider.Factory {
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(AddBookActivityViewModel::class.java)) {
-            return AddBookActivityViewModel().apply {
-                setBookItem(book)
+            return AddBookActivityViewModel(repository).apply {
+                getBookItem(itemId)
             } as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")

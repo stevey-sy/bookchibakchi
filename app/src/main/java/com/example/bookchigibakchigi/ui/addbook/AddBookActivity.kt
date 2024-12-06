@@ -21,22 +21,20 @@ import com.example.bookchigibakchigi.R
 import com.example.bookchigibakchigi.databinding.ActivityAddBookBinding
 import com.example.bookchigibakchigi.network.model.AladinBookItem
 import com.example.bookchigibakchigi.network.model.BookItem
+import com.example.bookchigibakchigi.network.service.AladinBookApiService
+import com.example.bookchigibakchigi.repository.AladinBookRepository
+import com.example.bookchigibakchigi.ui.BaseActivity
 
-class AddBookActivity : AppCompatActivity() {
+class AddBookActivity : BaseActivity() {
 
     private lateinit var binding: ActivityAddBookBinding
 
     private val viewModel: AddBookActivityViewModel by viewModels {
         // Intent에서 BookItem? 데이터를 추출
-        val bookItem: AladinBookItem? = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
-            intent.getParcelableExtra("bookItem", AladinBookItem::class.java)
-        } else {
-            @Suppress("DEPRECATION")
-            intent.getParcelableExtra("bookItem")
-        }
-
-        // ViewModelFactory에 전달
-        AddBookActivityViewModelFactory(bookItem)
+        val itemId = intent.getStringExtra("itemId") ?: throw IllegalArgumentException("itemId가 필요합니다.")
+        val apiService = AladinBookApiService.create()
+        val repository = AladinBookRepository(apiService)
+        AddBookActivityViewModelFactory(itemId, repository)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,22 +42,11 @@ class AddBookActivity : AppCompatActivity() {
         enableEdgeToEdge()
         binding = ActivityAddBookBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        setupToolbar(binding.toolbar, binding.main)
 
         // ViewModel 연결
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
-
-        // Toolbar를 ActionBar로 설정
-        setSupportActionBar(binding.toolbar)
-        // 백버튼 제거
-        supportActionBar?.setDisplayHomeAsUpEnabled(false)
-        supportActionBar?.setHomeButtonEnabled(false)
-
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
 
         // 뒤로 가기 콜백 등록
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {

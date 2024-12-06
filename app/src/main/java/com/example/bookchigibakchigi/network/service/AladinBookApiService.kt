@@ -2,10 +2,10 @@ package com.example.bookchigibakchigi.network.service
 
 
 import com.example.bookchigibakchigi.BuildConfig
-import com.example.bookchigibakchigi.network.model.AladinBookResponse
+import com.example.bookchigibakchigi.network.model.AladinBookDetailResponse
+import com.example.bookchigibakchigi.network.model.AladinBookSearchResponse
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
-import retrofit2.Call
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -23,10 +23,20 @@ interface AladinBookApiService {
         @Query("Start") start: Int = 1,
         @Query("MaxResults") maxResults: Int = 10,
         @Query("Sort") sort: String = "Accuracy",
-        @Query("Cover") cover: String = "Mid",
+        @Query("Cover") cover: String = "Big",
         @Query("Output") output: String = "JS",
         @Query("Version") version: String = "20131101"
-    ): Response<AladinBookResponse>
+    ): Response<AladinBookSearchResponse>
+
+    @GET("ItemLookUp.aspx")
+    suspend fun getBookDetail(
+        @Query("ttbkey") ttbKey: String = BuildConfig.ALADIN_TTB_KEY,
+        @Query("itemIdType") itemIdType: String = "ISBN",
+        @Query("ItemId") itemId: String, // 기본값 설정
+        @Query("Cover") cover: String = "Big",
+        @Query("Output") output: String = "JS",
+        @Query("Version") version: String = "20131101"
+    ): Response<AladinBookDetailResponse>
 
     companion object {
         private const val BASE_URL = "https://www.aladin.co.kr/ttb/api/"

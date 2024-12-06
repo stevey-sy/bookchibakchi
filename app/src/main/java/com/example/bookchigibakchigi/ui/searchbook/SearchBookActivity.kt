@@ -16,9 +16,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bookchigibakchigi.R
 import com.example.bookchigibakchigi.databinding.ActivitySearchBookBinding
 import com.example.bookchigibakchigi.network.model.AladinBookItem
-import com.example.bookchigibakchigi.network.model.BookItem
 import com.example.bookchigibakchigi.network.service.AladinBookApiService
-import com.example.bookchigibakchigi.repository.AladinBookSearchRepository
+import com.example.bookchigibakchigi.repository.AladinBookRepository
 import com.example.bookchigibakchigi.ui.BaseActivity
 import com.example.bookchigibakchigi.ui.addbook.AddBookActivity
 import com.example.bookchigibakchigi.ui.searchbook.adapter.BookSearchAdapter
@@ -26,7 +25,7 @@ import com.example.bookchigibakchigi.ui.searchbook.adapter.BookSearchAdapter
 class SearchBookActivity : BaseActivity() {
 
     private val viewModel: SearchBookActivityViewModel by viewModels {
-        SearchBookActivityViewModelFactory(AladinBookSearchRepository(AladinBookApiService.create()))
+        SearchBookActivityViewModelFactory(AladinBookRepository(AladinBookApiService.create()))
     }
 
     private lateinit var binding: ActivitySearchBookBinding
@@ -114,7 +113,8 @@ class SearchBookActivity : BaseActivity() {
     private fun onBookItemClicked(bookItem: AladinBookItem, sharedView: View) {
         // 책 추가 화면으로 이동
         val intent = Intent(this, AddBookActivity::class.java).apply {
-            putExtra("bookItem", bookItem) // Book 객체 전달
+            val itemId = bookItem.isbn13.takeIf { !it.isNullOrEmpty() } ?: bookItem.isbn
+            putExtra("itemId", itemId) // Book 객체 전달
         }
 //        // 트랜지션 애니메이션 설정
         val options = ActivityOptionsCompat.makeSceneTransitionAnimation(

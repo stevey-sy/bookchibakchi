@@ -5,10 +5,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.bookchigibakchigi.network.model.AladinBookItem
-import com.example.bookchigibakchigi.repository.AladinBookSearchRepository
+import com.example.bookchigibakchigi.repository.AladinBookRepository
 import kotlinx.coroutines.launch
 
-class SearchBookActivityViewModel(private val repository: AladinBookSearchRepository) : ViewModel() {
+class SearchBookActivityViewModel(private val repository: AladinBookRepository) : ViewModel() {
     private val _bookSearchResults = MutableLiveData<List<AladinBookItem>>()
     val bookSearchResults: LiveData<List<AladinBookItem>> get() = _bookSearchResults
 

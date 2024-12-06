@@ -1,6 +1,6 @@
 package com.example.bookchigibakchigi.network.model
 
-data class AladinBookResponse(
+data class AladinBookSearchResponse(
     val version: String,
     val title: String,
     val link: String,

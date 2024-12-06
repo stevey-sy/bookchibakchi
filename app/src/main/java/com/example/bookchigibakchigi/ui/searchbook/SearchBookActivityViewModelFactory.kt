@@ -2,10 +2,10 @@ package com.example.bookchigibakchigi.ui.searchbook
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.bookchigibakchigi.repository.AladinBookSearchRepository
+import com.example.bookchigibakchigi.repository.AladinBookRepository
 
 class SearchBookActivityViewModelFactory (
-private val repository: AladinBookSearchRepository
+private val repository: AladinBookRepository
 ) : ViewModelProvider.Factory {
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
