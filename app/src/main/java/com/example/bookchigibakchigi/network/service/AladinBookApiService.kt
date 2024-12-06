@@ -16,7 +16,7 @@ interface AladinBookApiService {
 
     @GET("ItemSearch.aspx")
     fun searchBooks(
-        @Query("ttbkey") ttbKey: String,
+        @Query("ttbkey") ttbKey: String = BuildConfig.ALADIN_TTB_KEY,
         @Query("Query") query: String,
         @Query("QueryType") queryType: String = "Keyword", // 기본값 설정
         @Query("SearchTarget") searchTarget: String = "Book", // 기본값 설정

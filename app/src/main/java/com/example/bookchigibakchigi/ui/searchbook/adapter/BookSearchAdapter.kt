@@ -8,11 +8,12 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.bookchigibakchigi.databinding.ItemBookSearchBinding
+import com.example.bookchigibakchigi.network.model.AladinBookItem
 import com.example.bookchigibakchigi.network.model.BookItem
 
 class BookSearchAdapter(
-    private val onBookClick: (BookItem, View) -> Unit
-) : ListAdapter<BookItem, BookSearchAdapter.BookViewHolder>(BookDiffCallback()) {
+    private val onBookClick: (AladinBookItem, View) -> Unit
+) : ListAdapter<AladinBookItem, BookSearchAdapter.BookViewHolder>(BookDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BookViewHolder {
         val binding = ItemBookSearchBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -25,7 +26,7 @@ class BookSearchAdapter(
     }
 
     inner class BookViewHolder(private val binding: ItemBookSearchBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(bookItem: BookItem) {
+        fun bind(bookItem: AladinBookItem) {
             binding.book = bookItem  // 바인딩 객체에 데이터 설정
             binding.executePendingBindings()
 
@@ -39,12 +40,12 @@ class BookSearchAdapter(
         }
     }
 
-    class BookDiffCallback : DiffUtil.ItemCallback<BookItem>() {
-        override fun areItemsTheSame(oldItem: BookItem, newItem: BookItem): Boolean {
+    class BookDiffCallback : DiffUtil.ItemCallback<AladinBookItem>() {
+        override fun areItemsTheSame(oldItem: AladinBookItem, newItem: AladinBookItem): Boolean {
             return oldItem.isbn == newItem.isbn
         }
 
-        override fun areContentsTheSame(oldItem: BookItem, newItem: BookItem): Boolean {
+        override fun areContentsTheSame(oldItem: AladinBookItem, newItem: AladinBookItem): Boolean {
             return oldItem == newItem
         }
     }

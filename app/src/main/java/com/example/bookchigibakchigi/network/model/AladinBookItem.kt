@@ -1,5 +1,9 @@
 package com.example.bookchigibakchigi.network.model
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 data class AladinBookItem(
     val title: String,
     val link: String,
@@ -23,4 +27,4 @@ data class AladinBookItem(
     val bestRank: Int?,
     val seriesInfo: SeriesInfo?,
     val subInfo: SubInfo?
-)
+) : Parcelable

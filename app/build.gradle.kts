@@ -27,6 +27,7 @@ android {
         debug {
             buildConfigField("String", "NAVER_CLIENT_ID", gradleLocalProperties(rootDir, providers).getProperty("NAVER_CLIENT_ID"))
             buildConfigField("String", "NAVER_CLIENT_SECRET", gradleLocalProperties(rootDir, providers).getProperty("NAVER_CLIENT_SECRET"))
+            buildConfigField("String", "ALADIN_TTB_KEY", gradleLocalProperties(rootDir, providers).getProperty("ALADIN_TTB_KEY"))
         }
         release {
             isMinifyEnabled = false
@@ -36,6 +37,7 @@ android {
             )
             buildConfigField("String", "NAVER_CLIENT_ID", gradleLocalProperties(rootDir, providers).getProperty("NAVER_CLIENT_ID"))
             buildConfigField("String", "NAVER_CLIENT_SECRET", gradleLocalProperties(rootDir, providers).getProperty("NAVER_CLIENT_SECRET"))
+            buildConfigField("String", "ALADIN_TTB_KEY", gradleLocalProperties(rootDir, providers).getProperty("ALADIN_TTB_KEY"))
         }
     }
     compileOptions {

@@ -10,26 +10,23 @@ import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.core.app.ActivityOptionsCompat
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bookchigibakchigi.R
 import com.example.bookchigibakchigi.databinding.ActivitySearchBookBinding
+import com.example.bookchigibakchigi.network.model.AladinBookItem
 import com.example.bookchigibakchigi.network.model.BookItem
-import com.example.bookchigibakchigi.network.service.NaverBookService
-import com.example.bookchigibakchigi.repository.BookSearchRepository
+import com.example.bookchigibakchigi.network.service.AladinBookApiService
+import com.example.bookchigibakchigi.repository.AladinBookSearchRepository
 import com.example.bookchigibakchigi.ui.BaseActivity
 import com.example.bookchigibakchigi.ui.addbook.AddBookActivity
 import com.example.bookchigibakchigi.ui.searchbook.adapter.BookSearchAdapter
-import com.example.bookchigibakchigi.viewmodel.BookViewModel
-import com.example.bookchigibakchigi.viewmodel.BookViewModelFactory
 
 class SearchBookActivity : BaseActivity() {
 
-    private val bookViewModel: BookViewModel by viewModels {
-        BookViewModelFactory(BookSearchRepository(NaverBookService.create()))
+    private val viewModel: SearchBookActivityViewModel by viewModels {
+        SearchBookActivityViewModelFactory(AladinBookSearchRepository(AladinBookApiService.create()))
     }
 
     private lateinit var binding: ActivitySearchBookBinding
@@ -52,7 +49,7 @@ class SearchBookActivity : BaseActivity() {
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
 
         // ViewModel의 LiveData 관찰
-        bookViewModel.bookSearchResults.observe(this, Observer { response ->
+        viewModel.bookSearchResults.observe(this, Observer { response ->
             response?.let {
                 if (it.isEmpty()) {
                     showNoResults()
@@ -61,15 +58,14 @@ class SearchBookActivity : BaseActivity() {
                     adapter.submitList(it)
                 }
             }
-
         })
 
         // 로딩 상태 관찰
-        bookViewModel.isLoading.observe(this) { isLoading ->
+        viewModel.isLoading.observe(this) { isLoading ->
             if (isLoading) showProgressBar() else hideProgressBar()
         }
 
-        bookViewModel.errorMessage.observe(this, Observer { errorMessage ->
+        viewModel.errorMessage.observe(this, Observer { errorMessage ->
             Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show()
         })
 
@@ -115,7 +111,7 @@ class SearchBookActivity : BaseActivity() {
         }
     }
 
-    private fun onBookItemClicked(bookItem: BookItem, sharedView: View) {
+    private fun onBookItemClicked(bookItem: AladinBookItem, sharedView: View) {
         // 책 추가 화면으로 이동
         val intent = Intent(this, AddBookActivity::class.java).apply {
             putExtra("bookItem", bookItem) // Book 객체 전달
@@ -130,7 +126,7 @@ class SearchBookActivity : BaseActivity() {
     }
 
     private fun handleSearch(query: String) {
-        bookViewModel.searchBooks(query)
+        viewModel.searchBooks(query)
     }
 
     private fun showNoResults() {

@@ -13,11 +13,10 @@ import retrofit2.Response
 class AladinBookSearchRepository(private val apiService: AladinBookApiService) {
 
     suspend fun searchBooks(
-        ttbKey: String,
         query: String
     ): List<AladinBookItem> {
         // Retrofit의 suspend 지원 메서드로 API 호출
-        val response = apiService.searchBooks(ttbKey, query)
+        val response = apiService.searchBooks(query = query)
         if (response.isSuccessful) {
             return response.body()?.item ?: emptyList()
         } else {
