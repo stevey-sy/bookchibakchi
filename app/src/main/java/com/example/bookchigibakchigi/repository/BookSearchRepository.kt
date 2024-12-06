@@ -9,24 +9,19 @@ import kotlinx.coroutines.withContext
 
 class BookSearchRepository(private val naverBookService: NaverBookService) {
 
-    // MutableLiveData를 Nullable 타입으로 변경
-    private val _bookSearchResults = MutableLiveData<NaverBookResponse?>()
-    val bookSearchResults: LiveData<NaverBookResponse?> get() = _bookSearchResults
-
     private val _errorMessage = MutableLiveData<String>()
     val errorMessage: LiveData<String> get() = _errorMessage
 
-    // 책 검색 메서드
-    suspend fun searchBooks(query: String) {
-        withContext(Dispatchers.IO) {
+    // 데이터 반환하도록 수정
+    suspend fun searchBooks(query: String, start: Int): NaverBookResponse? {
+        return withContext(Dispatchers.IO) {
             try {
                 val response = naverBookService.searchBooks(query)
-                _bookSearchResults.postValue(response)
+                response // 성공적으로 데이터를 반환
             } catch (e: Exception) {
                 e.printStackTrace()
-                // 에러 메시지 업데이트
                 _errorMessage.postValue("책 검색 중 오류가 발생했습니다.")
-                _bookSearchResults.postValue(null) // 여기도 Nullable 허용
+                null // 실패 시 null 반환
             }
         }
     }

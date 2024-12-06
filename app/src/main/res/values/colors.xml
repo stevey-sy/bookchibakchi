@@ -10,6 +10,7 @@
     <color name="gray">#BEBEBE</color>
     <color name="light_gray">#E5E4E2</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="activity_background">#F5F5F5</color>
     <color name="nav_item_selected_color">#FF000000</color> <!-- 선택된 항목의 색상 -->
     <color name="nav_item_unselected_color">#808080</color> <!-- 선택되지 않은 항목의 색상 -->
 </resources>
