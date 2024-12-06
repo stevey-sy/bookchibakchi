@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.bookchigibakchigi.network.model.AladinBookItem
 import com.example.bookchigibakchigi.network.model.BookItem
 import com.example.bookchigibakchigi.network.model.NaverBookResponse
 import com.example.bookchigibakchigi.repository.BookSearchRepository
@@ -12,6 +13,8 @@ import kotlinx.coroutines.launch
 class BookViewModel(private val repository: BookSearchRepository) : ViewModel() {
 
     private val _bookSearchResults = MutableLiveData<List<BookItem>>()
+    private val _aladinBookSearchResults = MutableLiveData<List<AladinBookItem>>()
+    val aladinBookSearchResults: LiveData<List<AladinBookItem>> get() = _aladinBookSearchResults
     val bookSearchResults: LiveData<List<BookItem>> get() = _bookSearchResults
     private val _errorMessage = MutableLiveData<String>()
     val errorMessage: LiveData<String> get() = repository.errorMessage
