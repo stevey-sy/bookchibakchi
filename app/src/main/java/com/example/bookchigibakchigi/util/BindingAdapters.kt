@@ -13,8 +13,7 @@ object BindingAdapters {
         Glide.with(view.context)
             .load(imageUrl)
             .apply(
-                RequestOptions()
-                .placeholder(R.drawable.img_book_placeholder)  // 로딩 중 표시할 기본 이미지
+                RequestOptions() // 로딩 중 표시할 기본 이미지
                 .error(R.drawable.img_book_placeholder))            // 오류 시 표시할 이미지
             .into(view)
     }

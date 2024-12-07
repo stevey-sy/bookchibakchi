@@ -22,7 +22,7 @@ data class AladinBookItem(
     val salesPoint: Int,
     val adult: Boolean,
     val fixedPrice: Boolean,
-    val customerReviewRank: Int,
+    val customerReviewRank: Float,
     val bestDuration: String?,
     val bestRank: Int?,
     val seriesInfo: SeriesInfo?,

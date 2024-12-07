@@ -10,6 +10,7 @@ import android.transition.TransitionInflater
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ImageView
+import android.widget.RatingBar
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
@@ -112,6 +113,17 @@ class AddBookActivity : BaseActivity() {
             })
             start()
         }
+    }
+
+    fun setRatingWithAnimation(ratingBar: RatingBar, rating: Float) {
+        val animator = ValueAnimator.ofFloat(0f, rating).apply {
+            duration = 1000 // 애니메이션 지속 시간
+            addUpdateListener { animation ->
+                val animatedValue = animation.animatedValue as Float
+                ratingBar.rating = animatedValue
+            }
+        }
+        animator.start()
     }
 
 
