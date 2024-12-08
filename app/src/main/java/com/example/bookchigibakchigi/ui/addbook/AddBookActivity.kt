@@ -9,6 +9,7 @@ import android.transition.Transition
 import android.transition.TransitionInflater
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.RatingBar
 import androidx.activity.OnBackPressedCallback
@@ -25,6 +26,7 @@ import com.example.bookchigibakchigi.network.model.BookItem
 import com.example.bookchigibakchigi.network.service.AladinBookApiService
 import com.example.bookchigibakchigi.repository.AladinBookRepository
 import com.example.bookchigibakchigi.ui.BaseActivity
+import com.google.android.material.bottomsheet.BottomSheetDialog
 
 class AddBookActivity : BaseActivity() {
 
@@ -55,6 +57,10 @@ class AddBookActivity : BaseActivity() {
                 animateImageViewSizeAndFinish() // 커스텀 애니메이션 호출
             }
         })
+
+        binding.tvNext.setOnClickListener {
+            showBottomSheet()
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -71,6 +77,26 @@ class AddBookActivity : BaseActivity() {
                 true
             }
             else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun showBottomSheet() {
+        val bottomSheetDialog = BottomSheetDialog(this, R.style.CustomBottomSheetDialog)
+        val view = layoutInflater.inflate(R.layout.dialog_add_book_option, null)
+        bottomSheetDialog.setContentView(view)
+        bottomSheetDialog.show()
+        // 추가 로직 (예: 버튼 클릭 이벤트)
+        view.findViewById<Button>(R.id.btnYes).setOnClickListener {
+            // 버튼 클릭 동작
+            bottomSheetDialog.dismiss()
+        }
+
+        view.findViewById<Button>(R.id.btnNo).setOnClickListener {
+            // 버튼 클릭 동작
+            bottomSheetDialog.dismiss()
+        }
+        view.findViewById<ImageView>(R.id.ivClose).setOnClickListener {
+            bottomSheetDialog.dismiss()
         }
     }
 

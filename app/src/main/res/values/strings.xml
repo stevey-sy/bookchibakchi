@@ -13,6 +13,7 @@
     <string name="title_add_book">책 등록하기</string>
 
     <string name="button_save">저장</string>
+    <string name="button_next">다음</string>
 
     <string name="hint_search_book">책을 검색해 보세요.</string>
     <string name="no_results_message">검색 결과가 없습니다.</string>

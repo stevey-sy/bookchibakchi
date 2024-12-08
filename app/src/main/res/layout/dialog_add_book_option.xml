@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@drawable/background_bottom_sheet">
+
+    <!-- 내용 추가 -->
+    <ImageView
+        android:id="@+id/ivClose"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_gravity="end"
+        android:src="@drawable/ic_close" />
+
+    <TextView
+        android:id="@+id/titleText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Q. 이 책을 읽을 예정입니까?"
+        android:textSize="18sp"
+        android:layout_gravity="center"
+        android:padding="8dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:orientation="horizontal"
+        android:weightSum="2"
+        android:layout_marginTop="10dp">
+
+        <Button
+            android:id="@+id/btnYes"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:text="네.\n읽을 예정입니다.\nor\n읽는 중입니다."
+            android:layout_weight="1"
+            android:layout_margin="4dp"
+            android:backgroundTint="@color/black"/>
+
+        <Button
+            android:id="@+id/btnNo"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:text="아니오.\n다 읽었습니다."
+            android:layout_weight="1"
+            android:layout_margin="4dp"
+            android:backgroundTint="@color/gray"/>
+
+    </LinearLayout>
+
+</LinearLayout>
