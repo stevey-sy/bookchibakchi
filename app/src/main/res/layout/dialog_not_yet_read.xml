@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@drawable/background_bottom_sheet">
+
+    <!-- 내용 추가 -->
+    <ImageView
+        android:id="@+id/ivClose"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_gravity="end"
+        android:src="@drawable/ic_close" />
+
+    <TextView
+        android:id="@+id/titleText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Q. 언제부터 읽을 예정인가요?"
+        android:textSize="18sp"
+        android:layout_gravity="center"
+        android:padding="8dp" />
+
+    <TextView
+        android:id="@+id/tvStartDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:layout_marginStart="15dp"
+        android:text="2024. 12. 13"
+        android:layout_gravity="center"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="6dp"
+        android:background="@color/light_gray" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Q. 하루에 읽을 페이지 수를 설정하고\n독서 시간을 계획해보세요"
+        android:textSize="18sp"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:padding="8dp"
+        android:layout_marginTop="20dp"/>
+
+    <EditText
+        android:id="@+id/etPagePerDay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:layout_marginStart="15dp"
+        android:layout_gravity="center"
+        android:hint="10"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="4dp"
+        android:background="@color/light_gray" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="예상 소요일"
+        android:textSize="18sp"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:padding="8dp"
+        android:layout_marginTop="20dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/tvEstimatedDay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="10"
+            android:textSize="35sp"
+            android:layout_gravity="bottom"
+            android:gravity="bottom"
+            android:padding="8dp"
+            android:layout_marginTop="20dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="일"
+            android:textSize="18sp"
+            android:layout_gravity="bottom"
+            android:padding="8dp"
+            android:layout_marginTop="20dp"/>
+
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="독서 완료 예정일"
+        android:textSize="18sp"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:padding="8dp"
+        android:layout_marginTop="20dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/tvCompletionYear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2024"
+            android:textSize="35sp"
+            android:layout_gravity="bottom"
+            android:gravity="bottom"
+            android:padding="8dp"
+            android:layout_marginTop="20dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="년"
+            android:textSize="18sp"
+            android:layout_gravity="bottom"
+            android:padding="8dp"
+            android:layout_marginTop="20dp"/>
+
+        <TextView
+            android:id="@+id/tvCompletionMonth"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="12"
+            android:textSize="35sp"
+            android:layout_gravity="bottom"
+            android:gravity="bottom"
+            android:padding="8dp"
+            android:layout_marginTop="20dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="월"
+            android:textSize="18sp"
+            android:layout_gravity="bottom"
+            android:padding="8dp"
+            android:layout_marginTop="20dp"/>
+
+        <TextView
+            android:id="@+id/tvCompletionDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="25"
+            android:textSize="35sp"
+            android:layout_gravity="bottom"
+            android:gravity="bottom"
+            android:padding="8dp"
+            android:layout_marginTop="20dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="일"
+            android:textSize="18sp"
+            android:layout_gravity="bottom"
+            android:padding="8dp"
+            android:layout_marginTop="20dp"/>
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btnSave"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:backgroundTint="@color/black"
+        android:text="@string/button_save"
+        android:layout_marginTop="20dp"/>
+
+
+</LinearLayout>
