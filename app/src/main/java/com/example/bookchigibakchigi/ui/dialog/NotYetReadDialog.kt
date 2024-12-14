@@ -45,24 +45,6 @@ class NotYetReadDialog (
 
         // 저장 버튼 클릭 이벤트
         view.findViewById<Button>(R.id.btnSave).setOnClickListener {
-            val pagesPerDay = editText.text.toString().toIntOrNull() ?: 0
-            if (pagesPerDay > 0) {
-                // 계산
-                val estimatedDays = calculateEstimatedDays(pageCnt, pagesPerDay)
-                val completionDate = calculateCompletionDate(startDate.toString(), estimatedDays)
-
-                // 결과 표시
-                estimatedDaysTextView.text = "$estimatedDays 일"
-                completionYearTextView.text = completionDate.first
-                completionMonthTextView.text = completionDate.second
-                completionDateTextView.text = completionDate.third
-
-                // 콜백 호출 및 다이얼로그 닫기
-                onSave(pagesPerDay)
-                dismiss()
-            } else {
-                Toast.makeText(context, "하루 페이지 수를 올바르게 입력해주세요.", Toast.LENGTH_SHORT).show()
-            }
         }
 
         // 닫기 버튼 이벤트
