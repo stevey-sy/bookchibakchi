@@ -35,7 +35,7 @@
             android:id="@+id/btnYes"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:text="네.\n읽을 예정입니다.\nor\n읽는 중입니다."
+            android:text="네.\n읽을 예정입니다."
             android:layout_weight="1"
             android:layout_margin="4dp"
             android:backgroundTint="@color/black"/>

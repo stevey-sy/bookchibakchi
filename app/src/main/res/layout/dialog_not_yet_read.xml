@@ -21,18 +21,34 @@
         android:layout_height="wrap_content"
         android:text="Q. 언제부터 읽을 예정인가요?"
         android:textSize="18sp"
+        android:textColor="@color/black"
         android:layout_gravity="center"
         android:padding="8dp" />
 
-    <TextView
-        android:id="@+id/tvStartDate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textStyle="bold"
-        android:textColor="@color/black"
-        android:layout_marginStart="15dp"
-        android:text="2024. 12. 13"
-        android:layout_gravity="center"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp">
+        <TextView
+            android:id="@+id/tvStartDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2024. 12. 13"
+            android:textSize="24sp"
+            android:layout_gravity="center"
+            android:layout_centerInParent="true"/>
+
+        <ImageView
+            android:id="@+id/ivCalendar"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginEnd="30dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerInParent="true"
+            android:src="@drawable/ic_calendar" />
+
+    </RelativeLayout>
+
+
 
     <View
         android:layout_width="match_parent"
@@ -45,6 +61,7 @@
         android:layout_height="wrap_content"
         android:text="Q. 하루에 읽을 페이지 수를 설정하고\n독서 시간을 계획해보세요"
         android:textSize="18sp"
+        android:textColor="@color/black"
         android:layout_gravity="center"
         android:gravity="center"
         android:padding="8dp"
@@ -54,11 +71,16 @@
         android:id="@+id/etPagePerDay"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textStyle="bold"
         android:textColor="@color/black"
-        android:layout_marginStart="15dp"
         android:layout_gravity="center"
-        android:hint="10"/>
+        android:background="@null"
+        android:textSize="24sp"
+        android:selectAllOnFocus="true"
+        android:inputType="number"
+        android:text="10"
+        android:gravity="center"
+        android:hint="페이지 수를 설정해주세요."
+        android:imeOptions="actionDone" />
 
     <View
         android:layout_width="match_parent"
@@ -69,29 +91,35 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="예상 소요일"
+        android:text="* 완독까지 예상 소요일"
         android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
         android:layout_gravity="center"
         android:gravity="center"
         android:padding="8dp"
-        android:layout_marginTop="20dp"/>
+        android:layout_marginTop="20dp"
+        android:visibility="gone"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:gravity="center">
+        android:gravity="center"
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/tvEstimatedDay"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="10"
-            android:textSize="35sp"
             android:layout_gravity="bottom"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/background_underline"
             android:gravity="bottom"
             android:padding="8dp"
-            android:layout_marginTop="20dp"/>
+            android:text="10"
+            android:textColor="@color/black"
+            android:textSize="35sp" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -108,8 +136,10 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="독서 완료 예정일"
+        android:text="* 독서 완료 예정일"
+        android:textColor="@color/black"
         android:textSize="18sp"
+        android:textStyle="bold"
         android:layout_gravity="center"
         android:gravity="center"
         android:padding="8dp"
@@ -127,9 +157,11 @@
             android:layout_height="wrap_content"
             android:text="2024"
             android:textSize="35sp"
+            android:textColor="@color/black"
             android:layout_gravity="bottom"
             android:gravity="bottom"
             android:padding="8dp"
+            android:background="@drawable/background_underline"
             android:layout_marginTop="20dp"/>
 
         <TextView
@@ -147,10 +179,12 @@
             android:layout_height="wrap_content"
             android:text="12"
             android:textSize="35sp"
+            android:textColor="@color/black"
             android:layout_gravity="bottom"
             android:gravity="bottom"
             android:padding="8dp"
-            android:layout_marginTop="20dp"/>
+            android:layout_marginTop="20dp"
+            android:background="@drawable/background_underline"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -166,11 +200,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="25"
+            android:textColor="@color/black"
             android:textSize="35sp"
             android:layout_gravity="bottom"
             android:gravity="bottom"
             android:padding="8dp"
-            android:layout_marginTop="20dp"/>
+            android:layout_marginTop="20dp"
+            android:background="@drawable/background_underline"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -190,6 +226,5 @@
         android:backgroundTint="@color/black"
         android:text="@string/button_save"
         android:layout_marginTop="20dp"/>
-
 
 </LinearLayout>

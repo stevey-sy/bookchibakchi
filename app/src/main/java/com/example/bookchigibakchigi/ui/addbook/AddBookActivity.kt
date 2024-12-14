@@ -12,10 +12,12 @@ import android.view.MenuItem
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.RatingBar
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.bumptech.glide.Glide
@@ -26,6 +28,7 @@ import com.example.bookchigibakchigi.network.model.BookItem
 import com.example.bookchigibakchigi.network.service.AladinBookApiService
 import com.example.bookchigibakchigi.repository.AladinBookRepository
 import com.example.bookchigibakchigi.ui.BaseActivity
+import com.example.bookchigibakchigi.ui.dialog.NotYetReadDialog
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.datepicker.MaterialDatePicker
 import java.util.Calendar
@@ -92,6 +95,20 @@ class AddBookActivity : BaseActivity() {
         view.findViewById<Button>(R.id.btnYes).setOnClickListener {
             // 버튼 클릭 동작
             bottomSheetDialog.dismiss()
+
+            val dialog = NotYetReadDialog(
+                context = this,
+                fragmentManager = supportFragmentManager,
+                pageCnt = viewModel.bookItem.value?.subInfo?.itemPage ?: 0, // 예제: 책의 총 페이지 수
+                onSave = { pagesPerDay ->
+                    // 저장 버튼 클릭 시 동작 정의
+                    Toast.makeText(this, "하루 $pagesPerDay 페이지 읽기로 저장되었습니다!", Toast.LENGTH_SHORT).show()
+                }
+            )
+
+            // 다이얼로그 표시
+            dialog.show()
+
         }
 
         view.findViewById<Button>(R.id.btnNo).setOnClickListener {
