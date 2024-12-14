@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "books")
 data class BookEntity(
-    @PrimaryKey val itemId: String, // 고유 ID
+    @PrimaryKey(autoGenerate = true) val itemId: Int = 0, // 자동 생성되는 ID
     val title: String,
     val author: String,
     val publisher: String,

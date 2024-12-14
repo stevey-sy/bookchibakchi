@@ -20,8 +20,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.example.bookchigibakchigi.R
+import com.example.bookchigibakchigi.data.database.AppDatabase
+import com.example.bookchigibakchigi.data.entity.BookEntity
 import com.example.bookchigibakchigi.databinding.ActivityAddBookBinding
 import com.example.bookchigibakchigi.network.model.AladinBookItem
 import com.example.bookchigibakchigi.network.model.BookItem
@@ -31,6 +34,10 @@ import com.example.bookchigibakchigi.ui.BaseActivity
 import com.example.bookchigibakchigi.ui.dialog.NotYetReadDialog
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.datepicker.MaterialDatePicker
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.Calendar
 import java.util.TimeZone
 
@@ -100,9 +107,33 @@ class AddBookActivity : BaseActivity() {
                 context = this,
                 fragmentManager = supportFragmentManager,
                 pageCnt = viewModel.bookItem.value?.subInfo?.itemPage ?: 0, // 예제: 책의 총 페이지 수
-                onSave = { pagesPerDay ->
+                onSave = { pagesPerDay, startDate->
                     // 저장 버튼 클릭 시 동작 정의
-                    Toast.makeText(this, "하루 $pagesPerDay 페이지 읽기로 저장되었습니다!", Toast.LENGTH_SHORT).show()
+                    val database = AppDatabase.getDatabase(this)
+                    val bookDao = database.bookDao()
+                    val book = BookEntity(
+                        title = viewModel.bookItem.value?.title ?: "",
+                        author = viewModel.bookItem.value?.author ?: "",
+                        publisher = viewModel.bookItem.value?.publisher ?: "",
+                        isbn = viewModel.bookItem.value?.isbn ?: "",
+                        coverImageUrl = viewModel.bookItem.value?.cover ?: "",
+                        bookType = "0", // 예시
+                        totalPageCnt = viewModel.bookItem.value?.subInfo?.itemPage ?: 0,
+                        processingPageCnt = pagesPerDay,
+                        startDate = startDate,
+                        endDate = ""
+                    )
+                    // 데이터를 저장합니다. CoroutineScope를 사용해 비동기 실행
+                    lifecycleScope.launch {
+                        try {
+                            bookDao.insertBook(book)
+                            Toast.makeText(this@AddBookActivity, "나의 보관소에 책이 저장되었습니다.", Toast.LENGTH_SHORT).show()
+                        } catch (e: Exception) {
+                            // 실패 시 예외 처리
+                            Toast.makeText(this@AddBookActivity, "책 저장에 실패했습니다: ${e.message}", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+
                 }
             )
 

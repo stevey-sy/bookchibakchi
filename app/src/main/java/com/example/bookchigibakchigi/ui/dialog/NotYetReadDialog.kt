@@ -13,8 +13,14 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import com.example.bookchigibakchigi.R
+import com.example.bookchigibakchigi.data.database.AppDatabase
+import com.example.bookchigibakchigi.data.entity.BookEntity
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.datepicker.MaterialDatePicker
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -24,7 +30,7 @@ class NotYetReadDialog (
     context: Context,
     private val fragmentManager: FragmentManager,
     private val pageCnt: Int, // 책의 총 페이지 수
-    private val onSave: (pagesPerDay: Int) -> Unit // 저장 버튼 클릭 시 호출되는 콜백
+    private val onSave: (pagesPerDay: Int, startDate: String) -> Unit // 저장 버튼 클릭 시 호출되는 콜백
 ) : BottomSheetDialog(context, R.style.CustomBottomSheetDialog) {
     init {
         // 레이아웃 inflate 및 설정
@@ -45,6 +51,8 @@ class NotYetReadDialog (
 
         // 저장 버튼 클릭 이벤트
         view.findViewById<Button>(R.id.btnSave).setOnClickListener {
+            onSave(editText.text.toString().toIntOrNull() ?: 0, startDate.text.toString())
+            dismiss()
         }
 
         // 닫기 버튼 이벤트
