@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity() {
 
         val appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.navigation_my_library,
+                R.id.navigation_book_detail,
                 R.id.navigation_pick_book,
                 R.id.navigation_community,
                 R.id.navigation_record,
@@ -71,7 +71,7 @@ class MainActivity : AppCompatActivity() {
         binding.toolbar.menu.clear()
 
         when (destinationId) {
-            R.id.navigation_my_library -> {
+            R.id.navigation_book_detail -> {
                 binding.toolbar.title = "B.archive"
                 binding.toolbar.inflateMenu(R.menu.menu_my_library)
             }
