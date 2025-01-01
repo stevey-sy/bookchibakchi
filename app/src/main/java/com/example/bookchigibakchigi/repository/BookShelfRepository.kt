@@ -1,16 +1,10 @@
 package com.example.bookchigibakchigi.repository
 
-import com.example.bookchigibakchigi.data.BookShelfItem
+import com.example.bookchigibakchigi.data.dao.BookDao
+import com.example.bookchigibakchigi.data.entity.BookEntity
 
-class BookShelfRepository {
-    fun getShelfItems(): List<BookShelfItem> {
-        return listOf(
-            BookShelfItem(1, "0", "title1", ""),
-            BookShelfItem(2, "0", "title1", ""),
-            BookShelfItem(3, "0", "title1", ""),
-            BookShelfItem(4, "0", "title1", ""),
-            BookShelfItem(5, "0", "title1", ""),
-            BookShelfItem(6, "0", "title1", ""),
-        )
+class BookShelfRepository(private val bookDao: BookDao) {
+    suspend fun getShelfItems(): List<BookEntity> {
+        return bookDao.getAllBooks()
     }
 }
