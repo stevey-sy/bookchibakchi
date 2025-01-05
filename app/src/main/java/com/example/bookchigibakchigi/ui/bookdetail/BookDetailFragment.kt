@@ -7,6 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.example.bookchigibakchigi.R
 import com.example.bookchigibakchigi.data.database.AppDatabase
 import com.example.bookchigibakchigi.databinding.FragmentBookDetailBinding
@@ -52,6 +54,12 @@ class BookDetailFragment : Fragment() {
 
         // Observe 현재 선택된 책 데이터
         viewModel.currentBook.observe(viewLifecycleOwner) { currentBook ->
+            Glide.with(view.context)
+                .load(currentBook.coverImageUrl)
+                .apply(
+                    RequestOptions() // 로딩 중 표시할 기본 이미지
+                        .error(R.drawable.img_book_placeholder))            // 오류 시 표시할 이미지
+                .into(binding.ivBackground)
             binding.tvBookTitle.text = currentBook.title
             binding.tvAuthor.text = currentBook.author
             binding.tvPublisher.text = currentBook.publisher
