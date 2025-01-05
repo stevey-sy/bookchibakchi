@@ -15,6 +15,9 @@ class MyLibraryViewModel(private val repository: BookShelfRepository) : ViewMode
     private val _bookShelfItems = MutableLiveData<List<BookEntity>>()
     val bookShelfItems: LiveData<List<BookEntity>> = _bookShelfItems
 
+    private val _currentBook = MutableLiveData<BookEntity>()
+    val currentBook: LiveData<BookEntity> = _currentBook
+
     init {
         loadShelfItems()
     }
@@ -23,6 +26,19 @@ class MyLibraryViewModel(private val repository: BookShelfRepository) : ViewMode
         viewModelScope.launch {
             val items = repository.getShelfItems() // suspend 함수 호출
             _bookShelfItems.value = items
+
+            // 첫 번째 책을 초기 선택값으로 설정
+            if (items.isNotEmpty()) {
+                _currentBook.value = items[0]
+            }
+        }
+    }
+
+    fun updateCurrentBook(position: Int) {
+        _bookShelfItems.value?.let { bookList ->
+            if (position in bookList.indices) {
+                _currentBook.value = bookList[position]
+            }
         }
     }
 }

@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import androidx.viewpager2.widget.ViewPager2
 import com.example.bookchigibakchigi.R
 import com.example.bookchigibakchigi.data.database.AppDatabase
 import com.example.bookchigibakchigi.databinding.FragmentBookDetailBinding
@@ -48,6 +49,21 @@ class BookDetailFragment : Fragment() {
         viewModel.bookShelfItems.observe(viewLifecycleOwner) { bookList ->
             adapter.setDataList(bookList)
         }
+
+        // Observe 현재 선택된 책 데이터
+        viewModel.currentBook.observe(viewLifecycleOwner) { currentBook ->
+            binding.tvBookTitle.text = currentBook.title
+            binding.tvAuthor.text = currentBook.author
+            binding.tvPublisher.text = currentBook.publisher
+        }
+
+        // ViewPager2의 PageChangeCallback 설정
+        binding.viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                viewModel.updateCurrentBook(position) // 선택된 페이지 업데이트
+            }
+        })
 
     }
 }

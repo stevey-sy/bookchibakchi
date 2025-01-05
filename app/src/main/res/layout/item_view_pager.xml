@@ -5,8 +5,9 @@
 
     <ImageView
         android:id="@+id/ivBook"
-        android:layout_width="120dp"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginHorizontal="40dp"
         android:adjustViewBounds="true"
         android:scaleType="fitCenter"
         android:layout_gravity="center|top"/>
