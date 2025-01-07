@@ -1,5 +1,6 @@
 package com.example.bookchigibakchigi.ui.bookdetail
 
+import android.animation.ValueAnimator
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -54,12 +55,6 @@ class BookDetailFragment : Fragment() {
 
         // Observe 현재 선택된 책 데이터
         viewModel.currentBook.observe(viewLifecycleOwner) { currentBook ->
-            Glide.with(view.context)
-                .load(currentBook.coverImageUrl)
-                .apply(
-                    RequestOptions() // 로딩 중 표시할 기본 이미지
-                        .error(R.drawable.img_book_placeholder))            // 오류 시 표시할 이미지
-                .into(binding.ivBackground)
             binding.tvBookTitle.text = currentBook.title
             binding.tvAuthor.text = currentBook.author
             binding.tvPublisher.text = currentBook.publisher
@@ -72,6 +67,33 @@ class BookDetailFragment : Fragment() {
                 viewModel.updateCurrentBook(position) // 선택된 페이지 업데이트
             }
         })
+
+        // 초기 진행률과 목표 진행률 설정
+        val initialProgress = 0
+        val targetProgress = 70 // 목표 진행률 (%)
+
+        // 프로그레스바 배경의 전체 길이 가져오기
+        binding.progressBarBackground.post {
+            val totalWidth = binding.progressBarBackground.width
+
+            // 애니메이션: 프로그레스바의 너비 늘리기
+            val progressBarAnimation = ValueAnimator.ofInt(initialProgress, targetProgress)
+            progressBarAnimation.duration = 1000 // 애니메이션 시간 (1초)
+            progressBarAnimation.addUpdateListener { animator ->
+                val progress = animator.animatedValue as Int
+                val progressWidth = (totalWidth * progress) / 100
+
+                // 프로그레스바 길이 업데이트
+                val params = binding.progressBarForeground.layoutParams
+                params.width = progressWidth
+                binding.progressBarForeground.layoutParams = params
+
+                // 진행 퍼센트 텍스트 위치와 내용 업데이트
+                binding.tvProgressPercentage.translationX = progressWidth.toFloat()
+                binding.tvProgressPercentage.text = "$progress%"
+            }
+            progressBarAnimation.start()
+        }
 
     }
 }

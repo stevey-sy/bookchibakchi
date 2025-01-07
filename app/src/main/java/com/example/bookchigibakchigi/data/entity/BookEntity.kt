@@ -16,4 +16,7 @@ data class BookEntity(
     val processingPageCnt: Int,
     val startDate: String,
     val endDate: String,
-)
+) {
+    val progressPercentage: Int
+        get() = if (totalPageCnt > 0) (processingPageCnt * 100) / totalPageCnt else 0
+}
