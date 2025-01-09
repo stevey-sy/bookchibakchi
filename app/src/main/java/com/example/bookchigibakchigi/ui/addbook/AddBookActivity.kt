@@ -119,9 +119,10 @@ class AddBookActivity : BaseActivity() {
                         coverImageUrl = viewModel.bookItem.value?.cover ?: "",
                         bookType = "0", // 예시
                         totalPageCnt = viewModel.bookItem.value?.subInfo?.itemPage ?: 0,
-                        processingPageCnt = pagesPerDay,
+                        challengePageCnt = pagesPerDay,
                         startDate = startDate,
-                        endDate = ""
+                        endDate = "",
+                        currentPageCnt = pagesPerDay
                     )
                     // 데이터를 저장합니다. CoroutineScope를 사용해 비동기 실행
                     lifecycleScope.launch {

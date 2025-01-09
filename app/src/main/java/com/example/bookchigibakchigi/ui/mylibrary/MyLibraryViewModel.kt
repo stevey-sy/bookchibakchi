@@ -30,6 +30,8 @@ class MyLibraryViewModel(private val repository: BookShelfRepository) : ViewMode
             // 첫 번째 책을 초기 선택값으로 설정
             if (items.isNotEmpty()) {
                 _currentBook.value = items[0]
+            } else {
+
             }
         }
     }

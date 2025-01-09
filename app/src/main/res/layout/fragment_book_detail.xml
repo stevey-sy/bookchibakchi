@@ -22,6 +22,17 @@
             android:layout_marginTop="20dp"
             tools:context=".ui.bookdetail.BookDetailFragment">
 
+            <!-- 책이 없을 때 표시할 텍스트 -->
+            <TextView
+                android:id="@+id/emptyStateView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="책을 추가해주세요!"
+                android:textSize="18sp"
+                android:textColor="@color/black"
+                app:isVisible="@{viewModel.bookShelfItems}" />
+
             <androidx.viewpager2.widget.ViewPager2
                 android:id="@+id/viewPager"
                 android:layout_width="match_parent"
@@ -75,7 +86,8 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="16dp">
+                    android:padding="16dp"
+                    app:isProgressBarVisible="@{viewModel.bookShelfItems}">
 
                     <!-- 진행 퍼센트를 표시하는 텍스트 -->
                     <TextView

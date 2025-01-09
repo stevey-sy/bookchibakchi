@@ -13,10 +13,11 @@ data class BookEntity(
     val coverImageUrl: String,
     val bookType: String,
     val totalPageCnt: Int,
-    val processingPageCnt: Int,
+    val currentPageCnt: Int,
+    val challengePageCnt: Int,
     val startDate: String,
     val endDate: String,
 ) {
     val progressPercentage: Int
-        get() = if (totalPageCnt > 0) (processingPageCnt * 100) / totalPageCnt else 0
+        get() = if (totalPageCnt > 0) (currentPageCnt * 100) / totalPageCnt else 0
 }
