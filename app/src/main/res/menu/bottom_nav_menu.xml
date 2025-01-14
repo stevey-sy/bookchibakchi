@@ -2,9 +2,9 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/navigation_my_library"
+        android:id="@+id/navigation_book_detail"
         android:icon="@drawable/ic_home_black_24dp"
-        android:title="@string/title_my_library" />
+        android:title="@string/b_archive" />
 
     <item
         android:id="@+id/navigation_pick_book"
