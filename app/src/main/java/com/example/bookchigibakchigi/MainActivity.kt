@@ -13,6 +13,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.bookchigibakchigi.databinding.ActivityMainBinding
+import com.example.bookchigibakchigi.ui.bookdetail.BookDetailFragment
 import com.example.bookchigibakchigi.ui.searchbook.SearchBookActivity
 
 class MainActivity : AppCompatActivity() {
@@ -53,6 +54,22 @@ class MainActivity : AppCompatActivity() {
         // NavController의 목적지가 변경될 때마다 Toolbar의 타이틀을 업데이트
         navController.addOnDestinationChangedListener { _, destination, _ ->
             updateToolbarForDestination(destination.id)
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        val navController = findNavController(R.id.nav_host_fragment_activity_main)
+        val currentDestination = navController.currentDestination?.id
+
+        if (currentDestination == R.id.navigation_book_detail) {
+            // BookDetailFragment를 찾아서 업데이트 트리거
+            val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_activity_main)
+            val fragment = navHostFragment?.childFragmentManager?.fragments?.firstOrNull()
+            if (fragment is BookDetailFragment) {
+                fragment.refreshContent() // Fragment의 refresh 메서드 호출
+            }
         }
     }
 

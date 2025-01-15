@@ -43,4 +43,8 @@ class MyLibraryViewModel(private val repository: BookShelfRepository) : ViewMode
             }
         }
     }
+
+    fun reloadBooks() {
+        loadShelfItems()
+    }
 }

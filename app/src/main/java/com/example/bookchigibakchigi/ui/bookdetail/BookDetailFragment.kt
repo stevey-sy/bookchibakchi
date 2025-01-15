@@ -56,4 +56,10 @@ class BookDetailFragment : Fragment() {
             }
         })
     }
+
+    fun refreshContent() {
+        // 필요한 데이터를 다시 가져오거나, 화면을 다시 그립니다.
+        viewModel.reloadBooks() // ViewModel에서 데이터 로드 메서드 호출
+        adapter.notifyDataSetChanged() // ViewPager의 데이터 업데이트
+    }
 }
