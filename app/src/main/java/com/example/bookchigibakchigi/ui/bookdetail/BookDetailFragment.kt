@@ -48,7 +48,16 @@ class BookDetailFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        // ViewPager2의 PageChangeCallback 설정
+        // ViewPager2 미리보기 설정
+        binding.viewPager.clipToPadding = false
+        val pageMarginPx = resources.getDimensionPixelOffset(R.dimen.pageMargin)
+        binding.viewPager.setPadding(pageMarginPx, 0, pageMarginPx, 0)
+
+        binding.viewPager.apply {
+            offscreenPageLimit = 2 // 양 옆의 아이템을 미리 렌더링
+            setPageTransformer(PreviewPageTransformer())
+        }
+
         binding.viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
