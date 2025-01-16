@@ -41,7 +41,8 @@ class MainActivity : AppCompatActivity() {
                 R.id.navigation_pick_book,
                 R.id.navigation_community,
                 R.id.navigation_record,
-                R.id.navigation_setting
+                R.id.navigation_setting,
+                R.id.navigation_my_library // Add this line
             )
         )
 
@@ -89,20 +90,44 @@ class MainActivity : AppCompatActivity() {
 
         when (destinationId) {
             R.id.navigation_book_detail -> {
-                binding.toolbar.title = "B.archive"
+                binding.toolbar.title = getString(R.string.b_archive)
                 binding.toolbar.inflateMenu(R.menu.menu_my_library)
+                binding.toolbar.menu.findItem(R.id.action_grid).isVisible = true
+                binding.toolbar.menu.findItem(R.id.action_horizontal).isVisible = false
+                supportActionBar?.setDisplayHomeAsUpEnabled(false)
+                supportActionBar?.setHomeButtonEnabled(false)
+            }
+            R.id.navigation_my_library -> {
+                binding.toolbar.title = getString(R.string.b_archive)
+                binding.toolbar.inflateMenu(R.menu.menu_my_library)
+                binding.toolbar.menu.findItem(R.id.action_horizontal).isVisible = true
+                binding.toolbar.menu.findItem(R.id.action_grid).isVisible = false
+                supportActionBar?.setDisplayHomeAsUpEnabled(false)
+                supportActionBar?.setHomeButtonEnabled(false)
             }
             R.id.navigation_pick_book -> {
-                binding.toolbar.title = "Pick a Book"
+                binding.toolbar.title = getString(R.string.title_pick_book)
+                supportActionBar?.setDisplayHomeAsUpEnabled(false)
+                supportActionBar?.setHomeButtonEnabled(false)
             }
             R.id.navigation_community -> {
-                binding.toolbar.title = "Community"
+                binding.toolbar.title = getString(R.string.title_community)
+                supportActionBar?.setDisplayHomeAsUpEnabled(false)
+                supportActionBar?.setHomeButtonEnabled(false)
             }
             R.id.navigation_record -> {
-                binding.toolbar.title = "Record"
+                binding.toolbar.title = getString(R.string.title_record)
+                supportActionBar?.setDisplayHomeAsUpEnabled(false)
+                supportActionBar?.setHomeButtonEnabled(false)
             }
             R.id.navigation_setting -> {
-                binding.toolbar.title = "Settings"
+                binding.toolbar.title = getString(R.string.title_setting)
+                supportActionBar?.setDisplayHomeAsUpEnabled(false)
+                supportActionBar?.setHomeButtonEnabled(false)
+            }
+            else -> {
+                supportActionBar?.setDisplayHomeAsUpEnabled(true)
+                supportActionBar?.setHomeButtonEnabled(true)
             }
         }
     }
@@ -111,6 +136,26 @@ class MainActivity : AppCompatActivity() {
         return when (item.itemId) {
             R.id.action_search -> {
                 moveToBookSearchActivity()
+                true
+            }
+            R.id.action_grid -> {
+                val navController = findNavController(R.id.nav_host_fragment_activity_main)
+                val currentDestination = navController.currentDestination?.id
+                if (currentDestination == R.id.navigation_book_detail) {
+                    navController.navigate(R.id.navigation_my_library)
+                } else {
+                    Toast.makeText(this, "Grid", Toast.LENGTH_SHORT).show()
+                }
+                true
+            }
+            R.id.action_horizontal -> {
+                val navController = findNavController(R.id.nav_host_fragment_activity_main)
+                val currentDestination = navController.currentDestination?.id
+                if (currentDestination == R.id.navigation_my_library) {
+                    navController.navigate(R.id.navigation_book_detail)
+                } else {
+                    Toast.makeText(this, "Horizontal", Toast.LENGTH_SHORT).show()
+                }
                 true
             }
             else -> super.onOptionsItemSelected(item)
