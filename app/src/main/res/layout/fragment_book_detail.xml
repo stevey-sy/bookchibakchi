@@ -61,7 +61,7 @@
                     android:textColor="@color/black"
                     android:layout_marginHorizontal="40dp"
                     android:gravity="center"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="10dp"
                     android:minLines="3"
                     android:text="@{viewModel.currentBook.title}"
                  />
@@ -73,7 +73,7 @@
                     android:textStyle="bold"
                     android:textColor="@color/gray"
                     android:layout_marginHorizontal="40dp"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="10dp"
                     android:gravity="center"
                     android:text="@{viewModel.currentBook.author}" />
 
@@ -84,14 +84,14 @@
                     android:textStyle="bold"
                     android:textColor="@color/gray"
                     android:layout_marginHorizontal="40dp"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="10dp"
                     android:gravity="center"
                     android:text="@{viewModel.currentBook.publisher}" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="16dp"
+                    android:padding="12dp"
                     app:isProgressBarVisible="@{viewModel.bookShelfItems}">
 
                     <!-- 진행 퍼센트를 표시하는 텍스트 -->
