@@ -6,6 +6,7 @@ import android.transition.Transition
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
@@ -73,6 +74,9 @@ class SearchBookActivity : BaseActivity() {
             if (query.isNotEmpty()) {
                 showProgressBar() // ProgressBar 표시
                 handleSearch(query)
+                // 키보드 숨기기
+                val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.hideSoftInputFromWindow(binding.searchEditText.windowToken, 0)
             } else {
                 Toast.makeText(this, "검색어를 입력하세요.", Toast.LENGTH_SHORT).show()
             }
