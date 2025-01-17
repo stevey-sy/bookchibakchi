@@ -9,7 +9,7 @@
             android:viewportWidth="100"
             android:viewportHeight="50">
             <path
-                android:fillColor="#F0F4F8"
+                android:fillColor="@color/book_shelf"
                 android:pathData="M 0,0 L100,0 L100,40 L0,50 Z" />
         </vector>
     </item>
@@ -41,7 +41,7 @@
         <shape android:shape="rectangle">
             <gradient
                 android:startColor="#00000000"
-                android:endColor="#F0F4F8"
+                android:endColor="@color/book_shelf"
                 android:angle="90" />
         </shape>
     </item>

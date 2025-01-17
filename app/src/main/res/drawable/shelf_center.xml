@@ -5,14 +5,14 @@
     <item>
         <vector
             android:width="100dp"
-            android:height="50dp"
+            android:height="70dp"
             android:viewportWidth="100"
-            android:viewportHeight="50">
-            <path
-                android:fillColor="#F0F4F8"
-                android:pathData="M 0,0 L100,0 L100,40 L0,50 Z" />
-        </vector>
-    </item>
+            android:viewportHeight="70">
+        <path
+            android:fillColor="@color/book_shelf"
+            android:pathData="M 0,0 L100,0 L100,60 L0,70 Z" /> <!-- 높이 조정 -->
+    </vector>
+</item>
 
     <!-- 흰색 선반 -->
     <item android:top="10dp"> <!-- 빨간색 바로 아래 -->
@@ -27,7 +27,7 @@
         <shape android:shape="rectangle">
             <gradient
                 android:startColor="#00000000"
-                android:endColor="#F0F4F8"
+                android:endColor="@color/book_shelf"
                 android:angle="90" />
         </shape>
     </item>
