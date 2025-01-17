@@ -74,7 +74,9 @@ class AddBookActivity : BaseActivity() {
         })
 
         binding.tvNext.setOnClickListener {
-            showBottomSheet()
+            // showBottomSheet()
+            // 저장 태워 그냥. 뭘 물어봐.
+            addBook()
         }
     }
 
@@ -92,6 +94,36 @@ class AddBookActivity : BaseActivity() {
                 true
             }
             else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun addBook() {
+        // 저장 버튼 클릭 시 동작 정의
+        val database = AppDatabase.getDatabase(this)
+        val bookDao = database.bookDao()
+        val book = BookEntity(
+            title = viewModel.bookItem.value?.title ?: "",
+            author = viewModel.bookItem.value?.author ?: "",
+            publisher = viewModel.bookItem.value?.publisher ?: "",
+            isbn = viewModel.bookItem.value?.isbn ?: "",
+            coverImageUrl = viewModel.bookItem.value?.cover ?: "",
+            bookType = "0", // 예시
+            totalPageCnt = viewModel.bookItem.value?.subInfo?.itemPage ?: 0,
+            challengePageCnt = 0,
+            startDate = "",
+            endDate = "",
+            currentPageCnt = 100
+        )
+        // 데이터를 저장합니다. CoroutineScope를 사용해 비동기 실행
+        lifecycleScope.launch {
+            try {
+                bookDao.insertBook(book)
+                Toast.makeText(this@AddBookActivity, "나의 서재에 책이 추가되었습니다.", Toast.LENGTH_SHORT).show()
+                finish()
+            } catch (e: Exception) {
+                // 실패 시 예외 처리
+                Toast.makeText(this@AddBookActivity, "책 저장에 실패했습니다: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
@@ -139,10 +171,8 @@ class AddBookActivity : BaseActivity() {
 
                 }
             )
-
             // 다이얼로그 표시
             dialog.show()
-
         }
 
         view.findViewById<Button>(R.id.btnNo).setOnClickListener {

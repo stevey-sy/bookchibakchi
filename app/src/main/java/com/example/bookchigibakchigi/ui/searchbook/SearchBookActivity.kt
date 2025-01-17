@@ -119,6 +119,8 @@ class SearchBookActivity : BaseActivity() {
         val intent = Intent(this, AddBookActivity::class.java).apply {
             val itemId = bookItem.isbn13.takeIf { !it.isNullOrEmpty() } ?: bookItem.isbn
             putExtra("itemId", itemId) // Book 객체 전달
+            val coverUrl = bookItem.cover.takeIf { !it.isNullOrEmpty() } ?: bookItem.cover
+            putExtra("coverUrl", coverUrl)
         }
 //        // 트랜지션 애니메이션 설정
         val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
