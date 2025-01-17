@@ -65,7 +65,7 @@
                             android:layout_height="180dp"
                             android:scaleType="centerCrop"
                             android:layout_margin="2dp"
-                            app:imageUrl="@{viewModel.bookItem.cover}" />
+                            app:imageUrl="@{viewModel.coverUrl}" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -288,7 +288,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:gravity="center"
-                android:text="@string/button_next"
+                android:text="@string/button_save"
                 android:textColor="@color/white"
                 android:background="@color/black"
                 android:layout_alignParentBottom="true"/>

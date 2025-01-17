@@ -8,13 +8,14 @@ import com.example.bookchigibakchigi.repository.AladinBookRepository
 
 class AddBookActivityViewModelFactory(
     private val itemId: String,
-    private val repository: AladinBookRepository
+    private val url: String,
+    private val repository: AladinBookRepository,
 ) : ViewModelProvider.Factory {
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(AddBookActivityViewModel::class.java)) {
             return AddBookActivityViewModel(repository).apply {
-                getBookItem(itemId)
+                getBookItem(itemId, url)
             } as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")

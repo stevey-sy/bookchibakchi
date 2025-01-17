@@ -18,11 +18,15 @@ class AddBookActivityViewModel (
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> get() = _isLoading
 
+    private val _coverUrl= MutableLiveData<String?>()
+    val coverUrl: LiveData<String?> get() = _coverUrl
+
     private val _errorMessage = MutableLiveData<String?>()
     val errorMessage: LiveData<String?> get() = _errorMessage
 
-    fun getBookItem(itemId: String) {
+    fun getBookItem(itemId: String, coverUrl: String) {
         _isLoading.value = true
+        _coverUrl.value = coverUrl
         viewModelScope.launch {
             try {
                 val book = repository.getBookDetail(itemId)

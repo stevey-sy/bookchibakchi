@@ -48,9 +48,11 @@ class AddBookActivity : BaseActivity() {
     private val viewModel: AddBookActivityViewModel by viewModels {
         // Intent에서 BookItem? 데이터를 추출
         val itemId = intent.getStringExtra("itemId") ?: throw IllegalArgumentException("itemId가 필요합니다.")
+        val coverUrl = intent.getStringExtra("coverUrl") ?: ""
+
         val apiService = AladinBookApiService.create()
         val repository = AladinBookRepository(apiService)
-        AddBookActivityViewModelFactory(itemId, repository)
+        AddBookActivityViewModelFactory(itemId, coverUrl, repository)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
