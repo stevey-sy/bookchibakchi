@@ -10,7 +10,6 @@ import com.example.bookchigibakchigi.data.entity.BookEntity
 import com.example.bookchigibakchigi.databinding.ItemViewPagerBinding
 
 class BookViewPagerAdapter(
-    private val onViewCreated: (View, Int) -> Unit,
     private val onItemClick: (BookEntity, Int, View) -> Unit
 ) : RecyclerView.Adapter<BookViewPagerAdapter.BookViewPagerViewHolder>(){
 
@@ -31,7 +30,6 @@ class BookViewPagerAdapter(
         holder.itemView.setOnClickListener {
             onItemClick(dataList[position], position, holder.itemView)
         }
-        onViewCreated(holder.itemView, position)
     }
 
     fun setDataList(newList: List<BookEntity>) {
@@ -40,7 +38,7 @@ class BookViewPagerAdapter(
         notifyDataSetChanged()
     }
 
-    class BookViewPagerViewHolder(private val binding: ItemViewPagerBinding) : RecyclerView.ViewHolder(binding.root) {
+    class BookViewPagerViewHolder(val binding: ItemViewPagerBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(bookEntity: BookEntity) {
             if (bookEntity.coverImageUrl.isNotEmpty()) {
                 binding.ivBook.visibility = View.VISIBLE
@@ -49,7 +47,6 @@ class BookViewPagerAdapter(
                     .into(binding.ivBook)
             }
         }
-
     }
 
 }

@@ -2,19 +2,7 @@
 <transitionSet xmlns:android="http://schemas.android.com/apk/res/android"
     android:transitionOrdering="together"
     android:duration="500">
-    <!-- 위치 및 크기 변화 효과 -->
-    <changeBounds
-        android:interpolator="@android:interpolator/fast_out_slow_in" />
-
-    <!-- 이미지 크기 및 비율 변화 효과 -->
-    <changeImageTransform
-        android:interpolator="@android:interpolator/fast_out_slow_in" />
-
-    <!-- 이미지 뷰의 크기, 회전 및 스케일 변화 효과 -->
-    <changeTransform
-        android:interpolator="@android:interpolator/fast_out_slow_in" />
-
-    <!-- 이미지 클립 경계 변화 -->
-    <changeClipBounds
-        android:interpolator="@android:interpolator/fast_out_slow_in" />
+    <changeBounds />
+    <changeTransform />
+    <changeImageTransform />
 </transitionSet>

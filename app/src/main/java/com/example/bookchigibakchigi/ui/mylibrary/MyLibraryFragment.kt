@@ -3,11 +3,13 @@ package com.example.bookchigibakchigi.ui.mylibrary
 import android.graphics.Rect
 import androidx.fragment.app.viewModels
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.fragment.app.commit
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.FragmentNavigatorExtras
@@ -18,6 +20,7 @@ import com.example.bookchigibakchigi.R
 import com.example.bookchigibakchigi.data.database.AppDatabase
 import com.example.bookchigibakchigi.databinding.FragmentMyLibraryBinding
 import com.example.bookchigibakchigi.repository.BookShelfRepository
+import com.example.bookchigibakchigi.ui.bookdetail.BookDetailFragment
 import com.example.bookchigibakchigi.ui.mylibrary.adapter.BookShelfAdapter
 import kotlinx.coroutines.launch
 
@@ -53,14 +56,30 @@ class MyLibraryFragment : Fragment() {
         adapter = BookShelfAdapter { bookEntity, position, sharedView ->
             val bundle = Bundle().apply {
                 putInt("itemId", bookEntity.itemId)
+                putString("coverUrl", bookEntity.coverImageUrl)
             }
 
             val extras = FragmentNavigatorExtras(
-                sharedView to "sharedElement_${bookEntity.itemId}" // transitionName과 일치해야 함
+                sharedView to "shared" // transitionName과 일치해야 함
             )
 
-
             findNavController().navigate(R.id.action_myLibrary_to_bookDetail, bundle, null, extras)
+
+//            // 전달할 데이터
+//            val fragment = BookDetailFragment().apply {
+//                arguments = Bundle().apply {
+//                    putInt("itemId", bookEntity.itemId)
+//                    putString("coverUrl", bookEntity.coverImageUrl)
+//                }
+//            }
+//
+//            // Fragment 전환
+//            parentFragmentManager.commit {
+//                setReorderingAllowed(true) // Fragment Transaction 최적화 허용
+//                addSharedElement(sharedView, sharedView.transitionName) // Shared Element Transition 설정
+//                replace(R.id.nav_host_fragment_activity_main, fragment)
+//                addToBackStack(null) // 백스택 추가
+//            }
         }
         binding.rvShelf.layoutManager = GridLayoutManager(context, 3)
         binding.rvShelf.adapter = adapter

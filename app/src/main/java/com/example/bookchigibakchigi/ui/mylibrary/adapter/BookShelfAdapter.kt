@@ -40,7 +40,8 @@ class BookShelfAdapter(
 
     class BookShelfItemViewHolder(private val binding: ItemBookShelfBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(bookEntity: BookEntity, position: Int, onItemClick: (BookEntity, Int, View) -> Unit) {
-            binding.ivBook.transitionName = "sharedElement_${bookEntity.itemId}"
+
+            binding.ivBook.transitionName = "shared"
 
             binding.root.setOnClickListener{
                 onItemClick(bookEntity, position, binding.ivBook)
@@ -61,7 +62,7 @@ class BookShelfAdapter(
             binding.ivBook.visibility = if (bookEntity.bookType == "0") View.GONE else View.VISIBLE
             if (bookEntity.coverImageUrl.isNotEmpty()) {
                 binding.ivBook.visibility = View.VISIBLE
-                Glide.with(binding.ivBook.context)
+                Glide.with(context)
                     .load(bookEntity.coverImageUrl)
                     .into(binding.ivBook)
                 binding.rlPlus.setBackgroundColor(Color.TRANSPARENT)

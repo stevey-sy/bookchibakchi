@@ -38,14 +38,31 @@
             android:clipChildren="false"
             tools:context=".ui.bookdetail.BookDetailFragment">
 
-            <androidx.viewpager2.widget.ViewPager2
-                android:id="@+id/viewPager"
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="300dp"
-                android:clipToPadding="false"
-                android:clipChildren="false"
-                android:overScrollMode="never"
-                app:submitBookList="@{viewModel.bookShelfItems}"/>
+                android:layout_height="300dp">
+
+                <androidx.viewpager2.widget.ViewPager2
+                    android:id="@+id/viewPager"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:clipToPadding="false"
+                    android:clipChildren="false"
+                    android:overScrollMode="never"
+                    app:submitBookList="@{viewModel.bookShelfItems}"
+                    android:visibility="gone"/>
+
+                <ImageView
+                    android:id="@+id/ivBook"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:clipToPadding="false"
+                    android:clipChildren="false"
+                    android:overScrollMode="never"
+                    android:transitionName="shared"/>
+
+            </FrameLayout>
+
 
             <LinearLayout
                 android:layout_width="match_parent"

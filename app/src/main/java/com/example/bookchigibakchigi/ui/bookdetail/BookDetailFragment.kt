@@ -3,10 +3,13 @@ package com.example.bookchigibakchigi.ui.bookdetail
 import android.animation.ValueAnimator
 import android.os.Bundle
 import android.transition.TransitionInflater
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import androidx.core.view.ViewCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
@@ -28,13 +31,8 @@ class BookDetailFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val transition = TransitionInflater.from(context).inflateTransition(R.transition.shared_element_transition).apply {
-            duration = 600 // 600ms 지속 시간
-            interpolator = android.view.animation.AccelerateDecelerateInterpolator() // 가속-감속 효과
-        }
-
-        sharedElementEnterTransition = transition
-        sharedElementReturnTransition = transition
+        sharedElementEnterTransition = TransitionInflater.from(requireContext())
+            .inflateTransition(R.transition.shared_element_transition)
     }
 
     override fun onCreateView(
@@ -45,12 +43,18 @@ class BookDetailFragment : Fragment() {
 
         // 전달된 itemId를 Bundle에서 가져오기
         val itemId = arguments?.getInt("itemId")
+        val coverUrl = arguments?.getString("coverUrl")
 
-        // 가져온 itemId 사용
-        if (itemId != null) {
-            println("전달받은 itemId: $itemId")
-        } else {
-            println("itemId가 전달되지 않았습니다.")
+        // Transition Name 설정
+        binding.ivBook.transitionName = "shared"
+
+        Log.d("TransitionCheck", "BookDetailFragment ivBook transitionName: ${binding.ivBook.transitionName}")
+
+        // Glide로 coverUrl을 ivBook에 로드
+        if (!coverUrl.isNullOrEmpty()) {
+            Glide.with(requireContext())
+                .load(coverUrl)
+                .into(binding.ivBook)
         }
 
         // ViewModel 초기화
@@ -64,10 +68,6 @@ class BookDetailFragment : Fragment() {
         binding.lifecycleOwner = viewLifecycleOwner
 
         adapter = BookViewPagerAdapter(
-            onViewCreated = { view, position ->
-                // 각 View가 생성된 이후 추가 작업
-                view.findViewById<View>(R.id.ivBook).transitionName = "sharedElement_$position"
-            },
             onItemClick = { bookEntity, position, sharedView ->
                 // 아이템 클릭 이벤트 처리
                 println("클릭된 아이템: ${bookEntity.itemId}, Position: $position")
@@ -83,7 +83,7 @@ class BookDetailFragment : Fragment() {
             if (initialPosition >= 0) {
                 binding.viewPager.setCurrentItem(initialPosition, false)
 
-                // ViewPager의 현재 아이템에 transitionName 설정
+                // ViewPager의 초기 Transition Name 설정
                 binding.viewPager.post {
                     val currentPage = binding.viewPager.findViewWithTag<View>("page_$initialPosition")
                     currentPage?.findViewById<View>(R.id.ivBook)?.transitionName = "sharedElement_${itemId}"
@@ -96,6 +96,8 @@ class BookDetailFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val itemImageView = binding.ivBook
+        ViewCompat.setTransitionName(itemImageView, "shared")
         // ViewPager2 미리보기 설정
         binding.viewPager.clipToPadding = false
         val pageMarginPx = resources.getDimensionPixelOffset(R.dimen.pageMargin)
