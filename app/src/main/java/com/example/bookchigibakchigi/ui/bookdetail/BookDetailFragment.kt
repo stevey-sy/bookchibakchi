@@ -2,6 +2,7 @@ package com.example.bookchigibakchigi.ui.bookdetail
 
 import android.animation.ValueAnimator
 import android.os.Bundle
+import android.transition.TransitionInflater
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -24,6 +25,17 @@ class BookDetailFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var viewModel: MyLibraryViewModel
     private lateinit var adapter: BookViewPagerAdapter
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val transition = TransitionInflater.from(context).inflateTransition(R.transition.shared_element_transition).apply {
+            duration = 600 // 600ms 지속 시간
+            interpolator = android.view.animation.AccelerateDecelerateInterpolator() // 가속-감속 효과
+        }
+
+        sharedElementEnterTransition = transition
+        sharedElementReturnTransition = transition
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -51,19 +63,30 @@ class BookDetailFragment : Fragment() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
-        adapter = BookViewPagerAdapter()
+        adapter = BookViewPagerAdapter(
+            onViewCreated = { view, position ->
+                // 각 View가 생성된 이후 추가 작업
+                view.findViewById<View>(R.id.ivBook).transitionName = "sharedElement_$position"
+            },
+            onItemClick = { bookEntity, position, sharedView ->
+                // 아이템 클릭 이벤트 처리
+                println("클릭된 아이템: ${bookEntity.itemId}, Position: $position")
+            }
+        )
         binding.viewPager.adapter = adapter
 
         // ViewModel 데이터 관찰 및 초기 화면 설정
         viewModel.bookShelfItems.observe(viewLifecycleOwner) { bookList ->
             adapter.setDataList(bookList) // Adapter에 데이터 설정
 
-            // 전달된 itemId로 position 찾기
-            itemId?.let { id ->
-                val initialPosition = bookList.indexOfFirst { it.itemId == id }
-                if (initialPosition >= 0) {
-                    // ViewPager의 현재 아이템을 설정
-                    binding.viewPager.setCurrentItem(initialPosition, false)
+            val initialPosition = bookList.indexOfFirst { it.itemId == itemId }
+            if (initialPosition >= 0) {
+                binding.viewPager.setCurrentItem(initialPosition, false)
+
+                // ViewPager의 현재 아이템에 transitionName 설정
+                binding.viewPager.post {
+                    val currentPage = binding.viewPager.findViewWithTag<View>("page_$initialPosition")
+                    currentPage?.findViewById<View>(R.id.ivBook)?.transitionName = "sharedElement_${itemId}"
                 }
             }
         }

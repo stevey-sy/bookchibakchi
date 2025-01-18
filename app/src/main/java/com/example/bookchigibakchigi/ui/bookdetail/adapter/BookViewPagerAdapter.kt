@@ -9,7 +9,10 @@ import com.bumptech.glide.Glide
 import com.example.bookchigibakchigi.data.entity.BookEntity
 import com.example.bookchigibakchigi.databinding.ItemViewPagerBinding
 
-class BookViewPagerAdapter : RecyclerView.Adapter<BookViewPagerAdapter.BookViewPagerViewHolder>(){
+class BookViewPagerAdapter(
+    private val onViewCreated: (View, Int) -> Unit,
+    private val onItemClick: (BookEntity, Int, View) -> Unit
+) : RecyclerView.Adapter<BookViewPagerAdapter.BookViewPagerViewHolder>(){
 
     private val dataList = mutableListOf<BookEntity>()
 
@@ -24,6 +27,11 @@ class BookViewPagerAdapter : RecyclerView.Adapter<BookViewPagerAdapter.BookViewP
 
     override fun onBindViewHolder(holder: BookViewPagerViewHolder, position: Int) {
         holder.bind(dataList[position])
+        // 아이템 클릭 리스너 설정
+        holder.itemView.setOnClickListener {
+            onItemClick(dataList[position], position, holder.itemView)
+        }
+        onViewCreated(holder.itemView, position)
     }
 
     fun setDataList(newList: List<BookEntity>) {

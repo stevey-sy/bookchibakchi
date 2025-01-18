@@ -14,7 +14,7 @@ import com.example.bookchigibakchigi.data.entity.BookEntity
 import com.example.bookchigibakchigi.databinding.ItemBookShelfBinding
 
 class BookShelfAdapter(
-    private val onItemClick: (BookEntity, Int) -> Unit // 클릭 리스너 추가
+    private val onItemClick: (BookEntity, Int, View) -> Unit // 클릭 리스너 추가
 ) : RecyclerView.Adapter<BookShelfAdapter.BookShelfItemViewHolder>() {
 
     private val dataList = mutableListOf<BookEntity>()
@@ -39,9 +39,11 @@ class BookShelfAdapter(
     }
 
     class BookShelfItemViewHolder(private val binding: ItemBookShelfBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(bookEntity: BookEntity, position: Int, onItemClick: (BookEntity, Int) -> Unit) {
+        fun bind(bookEntity: BookEntity, position: Int, onItemClick: (BookEntity, Int, View) -> Unit) {
+            binding.ivBook.transitionName = "sharedElement_${bookEntity.itemId}"
+
             binding.root.setOnClickListener{
-                onItemClick(bookEntity, position)
+                onItemClick(bookEntity, position, binding.ivBook)
             }
             // 타입에 따른 뷰 가시성 처리
             binding.rlPlus.visibility = if (bookEntity.bookType == "0") View.VISIBLE else View.GONE

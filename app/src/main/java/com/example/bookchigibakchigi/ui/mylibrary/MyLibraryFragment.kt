@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -49,11 +50,17 @@ class MyLibraryFragment : Fragment() {
             .get(MyLibraryViewModel::class.java)
 
         // RecyclerView 설정
-        adapter = BookShelfAdapter { bookEntity, position ->
+        adapter = BookShelfAdapter { bookEntity, position, sharedView ->
             val bundle = Bundle().apply {
                 putInt("itemId", bookEntity.itemId)
             }
-            findNavController().navigate(R.id.action_myLibrary_to_bookDetail, bundle)
+
+            val extras = FragmentNavigatorExtras(
+                sharedView to "sharedElement_${bookEntity.itemId}" // transitionName과 일치해야 함
+            )
+
+
+            findNavController().navigate(R.id.action_myLibrary_to_bookDetail, bundle, null, extras)
         }
         binding.rvShelf.layoutManager = GridLayoutManager(context, 3)
         binding.rvShelf.adapter = adapter

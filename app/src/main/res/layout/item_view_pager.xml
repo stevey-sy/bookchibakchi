@@ -11,6 +11,7 @@
         android:layout_marginHorizontal="40dp"
         android:adjustViewBounds="true"
         android:scaleType="fitCenter"
-        android:layout_gravity="center|top"/>
+        android:layout_gravity="center|top"
+        android:transitionName="sharedElement"/>
 
 </FrameLayout>
