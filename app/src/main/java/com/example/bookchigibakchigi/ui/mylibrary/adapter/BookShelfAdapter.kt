@@ -13,7 +13,9 @@ import com.example.bookchigibakchigi.data.BookShelfItem
 import com.example.bookchigibakchigi.data.entity.BookEntity
 import com.example.bookchigibakchigi.databinding.ItemBookShelfBinding
 
-class BookShelfAdapter : RecyclerView.Adapter<BookShelfAdapter.BookShelfItemViewHolder>() {
+class BookShelfAdapter(
+    private val onItemClick: (Int) -> Unit // 클릭 리스너 추가
+) : RecyclerView.Adapter<BookShelfAdapter.BookShelfItemViewHolder>() {
 
     private val dataList = mutableListOf<BookEntity>()
 
@@ -28,6 +30,9 @@ class BookShelfAdapter : RecyclerView.Adapter<BookShelfAdapter.BookShelfItemView
 
     override fun onBindViewHolder(holder: BookShelfItemViewHolder, position: Int) {
         holder.bind(dataList[position], position)
+        holder.itemView.setOnClickListener {
+            onItemClick(position) // 클릭 이벤트 처리
+        }
     }
 
     fun setDataList(newList: List<BookEntity>) {

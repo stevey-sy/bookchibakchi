@@ -48,7 +48,11 @@ class MyLibraryFragment : Fragment() {
             .get(MyLibraryViewModel::class.java)
 
         // RecyclerView 설정
-        adapter = BookShelfAdapter()
+        adapter = BookShelfAdapter { position ->
+            // 클릭된 아이템의 인덱스 사용
+//            handleItemClick(position)
+
+        }
         binding.rvShelf.layoutManager = GridLayoutManager(context, 3)
         binding.rvShelf.adapter = adapter
 
