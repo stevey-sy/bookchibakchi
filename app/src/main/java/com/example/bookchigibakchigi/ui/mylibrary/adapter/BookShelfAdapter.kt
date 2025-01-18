@@ -14,7 +14,7 @@ import com.example.bookchigibakchigi.data.entity.BookEntity
 import com.example.bookchigibakchigi.databinding.ItemBookShelfBinding
 
 class BookShelfAdapter(
-    private val onItemClick: (Int) -> Unit // 클릭 리스너 추가
+    private val onItemClick: (BookEntity, Int) -> Unit // 클릭 리스너 추가
 ) : RecyclerView.Adapter<BookShelfAdapter.BookShelfItemViewHolder>() {
 
     private val dataList = mutableListOf<BookEntity>()
@@ -29,10 +29,7 @@ class BookShelfAdapter(
     }
 
     override fun onBindViewHolder(holder: BookShelfItemViewHolder, position: Int) {
-        holder.bind(dataList[position], position)
-        holder.itemView.setOnClickListener {
-            onItemClick(position) // 클릭 이벤트 처리
-        }
+        holder.bind(dataList[position], position, onItemClick)
     }
 
     fun setDataList(newList: List<BookEntity>) {
@@ -42,7 +39,10 @@ class BookShelfAdapter(
     }
 
     class BookShelfItemViewHolder(private val binding: ItemBookShelfBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(bookEntity: BookEntity, position: Int) {
+        fun bind(bookEntity: BookEntity, position: Int, onItemClick: (BookEntity, Int) -> Unit) {
+            binding.root.setOnClickListener{
+                onItemClick(bookEntity, position)
+            }
             // 타입에 따른 뷰 가시성 처리
             binding.rlPlus.visibility = if (bookEntity.bookType == "0") View.VISIBLE else View.GONE
             // 열 위치에 따라 배경 Drawable 설정

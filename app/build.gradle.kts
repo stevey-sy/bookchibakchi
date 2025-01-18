@@ -73,6 +73,7 @@ dependencies {
     implementation(libs.androidx.fragment.ktx)
     implementation(libs.androidx.activity)
 
+
     // 네트워크 통신용 Retrofit
     implementation (libs.retrofit)
     implementation (libs.converter.gson)

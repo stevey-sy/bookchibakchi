@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.bookchigibakchigi.R
@@ -48,10 +49,11 @@ class MyLibraryFragment : Fragment() {
             .get(MyLibraryViewModel::class.java)
 
         // RecyclerView 설정
-        adapter = BookShelfAdapter { position ->
-            // 클릭된 아이템의 인덱스 사용
-//            handleItemClick(position)
-
+        adapter = BookShelfAdapter { bookEntity, position ->
+            val bundle = Bundle().apply {
+                putInt("itemId", bookEntity.itemId)
+            }
+            findNavController().navigate(R.id.action_myLibrary_to_bookDetail, bundle)
         }
         binding.rvShelf.layoutManager = GridLayoutManager(context, 3)
         binding.rvShelf.adapter = adapter

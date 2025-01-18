@@ -30,6 +30,17 @@ class BookDetailFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentBookDetailBinding.inflate(inflater, container, false)
+
+        // 전달된 itemId를 Bundle에서 가져오기
+        val itemId = arguments?.getInt("itemId")
+
+        // 가져온 itemId 사용
+        if (itemId != null) {
+            println("전달받은 itemId: $itemId")
+        } else {
+            println("itemId가 전달되지 않았습니다.")
+        }
+
         // ViewModel 초기화
         val bookDao = AppDatabase.getDatabase(requireContext()).bookDao()
         val repository = BookShelfRepository(bookDao)
@@ -42,6 +53,20 @@ class BookDetailFragment : Fragment() {
 
         adapter = BookViewPagerAdapter()
         binding.viewPager.adapter = adapter
+
+        // ViewModel 데이터 관찰 및 초기 화면 설정
+        viewModel.bookShelfItems.observe(viewLifecycleOwner) { bookList ->
+            adapter.setDataList(bookList) // Adapter에 데이터 설정
+
+            // 전달된 itemId로 position 찾기
+            itemId?.let { id ->
+                val initialPosition = bookList.indexOfFirst { it.itemId == id }
+                if (initialPosition >= 0) {
+                    // ViewPager의 현재 아이템을 설정
+                    binding.viewPager.setCurrentItem(initialPosition, false)
+                }
+            }
+        }
 
         return binding.root
     }

@@ -27,7 +27,11 @@
         android:id="@+id/navigation_my_library"
         android:name="com.example.bookchigibakchigi.ui.mylibrary.MyLibraryFragment"
         android:label="@string/title_my_library"
-        tools:layout="@layout/fragment_my_library" />
+        tools:layout="@layout/fragment_my_library" >
+        <action
+            android:id="@+id/action_myLibrary_to_bookDetail"
+            app:destination="@id/navigation_book_detail" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_community"
