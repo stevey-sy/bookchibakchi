@@ -1,8 +1,7 @@
-package com.example.bookchigibakchigi
+package com.example.bookchigibakchigi.ui
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
@@ -12,6 +11,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.example.bookchigibakchigi.R
 import com.example.bookchigibakchigi.databinding.ActivityMainBinding
 import com.example.bookchigibakchigi.ui.bookdetail.BookDetailFragment
 import com.example.bookchigibakchigi.ui.searchbook.SearchBookActivity
@@ -37,12 +37,13 @@ class MainActivity : AppCompatActivity() {
 
         val appBarConfiguration = AppBarConfiguration(
             setOf(
+                R.id.navigation_my_library, // Add this line
                 R.id.navigation_book_detail,
                 R.id.navigation_pick_book,
                 R.id.navigation_community,
                 R.id.navigation_record,
                 R.id.navigation_setting,
-                R.id.navigation_my_library // Add this line
+
             )
         )
 
