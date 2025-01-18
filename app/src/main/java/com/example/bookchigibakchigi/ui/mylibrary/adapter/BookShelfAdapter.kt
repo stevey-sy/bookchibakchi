@@ -41,7 +41,7 @@ class BookShelfAdapter(
     class BookShelfItemViewHolder(private val binding: ItemBookShelfBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(bookEntity: BookEntity, position: Int, onItemClick: (BookEntity, Int, View) -> Unit) {
 
-            binding.ivBook.transitionName = "shared"
+            binding.ivBook.transitionName = "sharedView_${bookEntity.itemId}"
 
             binding.root.setOnClickListener{
                 onItemClick(bookEntity, position, binding.ivBook)

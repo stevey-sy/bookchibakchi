@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.core.view.ViewCompat
+import androidx.core.view.doOnPreDraw
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
@@ -31,8 +32,10 @@ class BookDetailFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        sharedElementEnterTransition = TransitionInflater.from(requireContext())
-            .inflateTransition(R.transition.shared_element_transition)
+        // Transition 설정
+        val transition = TransitionInflater.from(context).inflateTransition(R.transition.shared_element_transition)
+        sharedElementEnterTransition = transition
+        sharedElementReturnTransition = transition
     }
 
     override fun onCreateView(
@@ -44,11 +47,9 @@ class BookDetailFragment : Fragment() {
         // 전달된 itemId를 Bundle에서 가져오기
         val itemId = arguments?.getInt("itemId")
         val coverUrl = arguments?.getString("coverUrl")
-
+        val transitionName = arguments?.getString("transitionName")
         // Transition Name 설정
-        binding.ivBook.transitionName = "shared"
-
-        Log.d("TransitionCheck", "BookDetailFragment ivBook transitionName: ${binding.ivBook.transitionName}")
+        binding.ivBook.transitionName = transitionName
 
         // Glide로 coverUrl을 ivBook에 로드
         if (!coverUrl.isNullOrEmpty()) {
@@ -56,6 +57,8 @@ class BookDetailFragment : Fragment() {
                 .load(coverUrl)
                 .into(binding.ivBook)
         }
+
+        Log.d("TransitionCheck", "BookDetailFragment ivBook transitionName: ${binding.ivBook.transitionName}")
 
         // ViewModel 초기화
         val bookDao = AppDatabase.getDatabase(requireContext()).bookDao()
@@ -96,15 +99,18 @@ class BookDetailFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val itemImageView = binding.ivBook
-        ViewCompat.setTransitionName(itemImageView, "shared")
+        postponeEnterTransition()
+        (binding.root.parent as? ViewGroup)?.doOnPreDraw {
+            startPostponedEnterTransition()
+        }
+
         // ViewPager2 미리보기 설정
         binding.viewPager.clipToPadding = false
         val pageMarginPx = resources.getDimensionPixelOffset(R.dimen.pageMargin)
         binding.viewPager.setPadding(pageMarginPx, 0, pageMarginPx, 0)
 
         binding.viewPager.apply {
-            offscreenPageLimit = 2 // 양 옆의 아이템을 미리 렌더링
+            offscreenPageLimit = 3 // 양 옆의 아이템을 미리 렌더링
             setPageTransformer(PreviewPageTransformer())
         }
 

@@ -48,7 +48,6 @@
                     android:layout_height="match_parent"
                     android:adjustViewBounds="true"
                     android:layout_alignParentBottom="true"
-                    android:transitionName="shared"
                     android:visibility="gone" />
 
             </RelativeLayout>

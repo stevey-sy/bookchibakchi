@@ -57,10 +57,11 @@ class MyLibraryFragment : Fragment() {
             val bundle = Bundle().apply {
                 putInt("itemId", bookEntity.itemId)
                 putString("coverUrl", bookEntity.coverImageUrl)
+                putString("transitionName", "sharedView_${bookEntity.itemId}")
             }
 
             val extras = FragmentNavigatorExtras(
-                sharedView to "shared" // transitionName과 일치해야 함
+                sharedView to "sharedView_${bookEntity.itemId}" // transitionName과 일치해야 함
             )
 
             findNavController().navigate(R.id.action_myLibrary_to_bookDetail, bundle, null, extras)
