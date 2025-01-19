@@ -41,6 +41,11 @@ class MyLibraryFragment : Fragment() {
         return root
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.reloadBooks() // 데이터 갱신
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -65,22 +70,6 @@ class MyLibraryFragment : Fragment() {
             )
 
             findNavController().navigate(R.id.action_myLibrary_to_bookDetail, bundle, null, extras)
-
-//            // 전달할 데이터
-//            val fragment = BookDetailFragment().apply {
-//                arguments = Bundle().apply {
-//                    putInt("itemId", bookEntity.itemId)
-//                    putString("coverUrl", bookEntity.coverImageUrl)
-//                }
-//            }
-//
-//            // Fragment 전환
-//            parentFragmentManager.commit {
-//                setReorderingAllowed(true) // Fragment Transaction 최적화 허용
-//                addSharedElement(sharedView, sharedView.transitionName) // Shared Element Transition 설정
-//                replace(R.id.nav_host_fragment_activity_main, fragment)
-//                addToBackStack(null) // 백스택 추가
-//            }
         }
         binding.rvShelf.layoutManager = GridLayoutManager(context, 3)
         binding.rvShelf.adapter = adapter
