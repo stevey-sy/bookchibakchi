@@ -25,11 +25,19 @@ class BookShelfAdapter(
     }
 
     override fun getItemCount(): Int {
-        return dataList.size
+        // 현재 데이터 개수를 기준으로 3의 배수로 맞춤
+        val rowCount = Math.ceil(dataList.size / 3.0).toInt() // 필요한 행의 개수
+        return rowCount * 3 // 3의 배수로 반환
     }
 
     override fun onBindViewHolder(holder: BookShelfItemViewHolder, position: Int) {
-        holder.bind(dataList[position], position, onItemClick)
+        if (position < dataList.size) {
+            // 실제 데이터가 있는 경우 표시
+            holder.bind(dataList[position], position, onItemClick)
+        } else {
+            // 빈 아이템을 처리
+            holder.bindEmpty(position)
+        }
     }
 
     fun setDataList(newList: List<BookEntity>) {
@@ -72,6 +80,20 @@ class BookShelfAdapter(
                 binding.rlPlus.setBackgroundResource(R.drawable.add)
             }
 
+        }
+
+        fun bindEmpty(position: Int) {
+            binding.ivBook.visibility = View.INVISIBLE
+            binding.rlPlus.visibility = View.INVISIBLE
+
+            val context = binding.root.context
+            val drawableRes = when (position % 3) {
+                0 -> R.drawable.shelf_left
+                1 -> R.drawable.shelf_center
+                2 -> R.drawable.shelf_right
+                else -> R.drawable.shelf_center
+            }
+            binding.vBottom.background = AppCompatResources.getDrawable(context, drawableRes)
         }
     }
 
