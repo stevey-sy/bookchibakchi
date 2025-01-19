@@ -83,6 +83,9 @@ class BookShelfAdapter(
         }
 
         fun bindEmpty(position: Int) {
+
+            binding.ivBook.transitionName = "sharedView_${position+1}"
+
             binding.ivBook.visibility = View.INVISIBLE
             binding.rlPlus.visibility = View.INVISIBLE
 

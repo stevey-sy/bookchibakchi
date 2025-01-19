@@ -119,6 +119,12 @@ class BookDetailFragment : Fragment() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
                 viewModel.updateCurrentBook(position) // 선택된 페이지 업데이트
+
+                // 현재 ViewPager의 Transition Name과 position 저장
+                val currentItem = viewModel.currentBook.value
+                val transitionName = "sharedView_${currentItem?.itemId}" // Transition Name 생성
+                findNavController().previousBackStackEntry?.savedStateHandle?.set("current_transition_name", transitionName)
+                findNavController().previousBackStackEntry?.savedStateHandle?.set("selected_position", position)
             }
         })
     }
