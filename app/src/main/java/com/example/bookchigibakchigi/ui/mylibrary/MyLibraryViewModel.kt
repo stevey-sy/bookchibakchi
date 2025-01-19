@@ -18,6 +18,10 @@ class MyLibraryViewModel(private val repository: BookShelfRepository) : ViewMode
     private val _currentBook = MutableLiveData<BookEntity>()
     val currentBook: LiveData<BookEntity> = _currentBook
 
+    // 현재 선택된 아이템의 위치를 저장할 변수
+    private val _currentPosition = MutableLiveData<Int>().apply { value = -1 } // 초기값: 선택 안 됨
+    val currentPosition: LiveData<Int> = _currentPosition
+
     init {
         loadShelfItems()
     }
@@ -40,11 +44,14 @@ class MyLibraryViewModel(private val repository: BookShelfRepository) : ViewMode
         _bookShelfItems.value?.let { bookList ->
             if (position in bookList.indices) {
                 _currentBook.value = bookList[position]
+                _currentPosition.value = position // 현재 선택된 위치 저장
             }
         }
     }
 
     fun reloadBooks() {
-        loadShelfItems()
+        if (_bookShelfItems.value.isNullOrEmpty()) {
+            loadShelfItems()
+        }
     }
 }

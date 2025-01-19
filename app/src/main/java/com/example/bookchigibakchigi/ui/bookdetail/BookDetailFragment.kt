@@ -9,9 +9,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.activity.addCallback
 import androidx.core.view.ViewCompat
 import androidx.core.view.doOnPreDraw
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
@@ -33,7 +35,8 @@ class BookDetailFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // Transition 설정
-        val transition = TransitionInflater.from(context).inflateTransition(R.transition.shared_element_transition)
+        val transition = TransitionInflater.from(context)
+            .inflateTransition(R.transition.shared_element_transition)
         sharedElementEnterTransition = transition
         sharedElementReturnTransition = transition
     }
@@ -46,19 +49,7 @@ class BookDetailFragment : Fragment() {
 
         // 전달된 itemId를 Bundle에서 가져오기
         val itemId = arguments?.getInt("itemId")
-        val coverUrl = arguments?.getString("coverUrl")
         val transitionName = arguments?.getString("transitionName") ?: ""
-        // Transition Name 설정
-//        binding.ivBook.transitionName = transitionName
-
-        // Glide로 coverUrl을 ivBook에 로드
-//        if (!coverUrl.isNullOrEmpty()) {
-//            Glide.with(requireContext())
-//                .load(coverUrl)
-//                .into(binding.ivBook)
-//        }
-
-//        Log.d("TransitionCheck", "BookDetailFragment ivBook transitionName: ${binding.ivBook.transitionName}")
 
         // ViewModel 초기화
         val bookDao = AppDatabase.getDatabase(requireContext()).bookDao()
@@ -92,8 +83,10 @@ class BookDetailFragment : Fragment() {
 
                 // ViewPager의 초기 Transition Name 설정
                 binding.viewPager.post {
-                    val currentPage = binding.viewPager.findViewWithTag<View>("page_$initialPosition")
-                    currentPage?.findViewById<View>(R.id.ivBook)?.transitionName = "sharedElement_${itemId}"
+                    val currentPage =
+                        binding.viewPager.findViewWithTag<View>("page_$initialPosition")
+                    currentPage?.findViewById<View>(R.id.ivBook)?.transitionName =
+                        "sharedElement_${itemId}"
                 }
             }
         }
@@ -104,9 +97,13 @@ class BookDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         postponeEnterTransition()
-//        (binding.root.parent as? ViewGroup)?.doOnPreDraw {
-//            startPostponedEnterTransition()
-//        }
+
+        // 시스템 Back 버튼 동작 커스터마이징
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            val currentPosition = binding.viewPager.currentItem
+            findNavController().previousBackStackEntry?.savedStateHandle?.set("selected_position", currentPosition)
+            findNavController().popBackStack()
+        }
 
         // ViewPager2 미리보기 설정
         binding.viewPager.clipToPadding = false
@@ -130,5 +127,9 @@ class BookDetailFragment : Fragment() {
         // 필요한 데이터를 다시 가져오거나, 화면을 다시 그립니다.
         viewModel.reloadBooks() // ViewModel에서 데이터 로드 메서드 호출
         adapter.notifyDataSetChanged() // ViewPager의 데이터 업데이트
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
     }
 }
