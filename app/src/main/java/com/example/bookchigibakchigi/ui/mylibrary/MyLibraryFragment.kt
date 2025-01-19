@@ -60,13 +60,15 @@ class MyLibraryFragment : Fragment() {
                 // RecyclerView의 ViewHolder 찾기
                 val selectedViewHolder = binding.rvShelf.findViewHolderForAdapterPosition(currentPosition)
                 scrollToPosition(currentPosition)
-                binding.rvShelf.post {
-                    val updatedViewHolder = binding.rvShelf.findViewHolderForAdapterPosition(currentPosition)
-                    if (updatedViewHolder?.itemView != null) {
-                        sharedElements[currentTransitionName] =
-                            updatedViewHolder.itemView.findViewById(R.id.ivBook)
-                    }
-                }
+//                binding.rvShelf.post {
+//                    val updatedViewHolder = binding.rvShelf.findViewHolderForAdapterPosition(currentPosition)
+//                    if (updatedViewHolder?.itemView != null) {
+//                        sharedElements[names[0]] =
+//                            updatedViewHolder.itemView.findViewById(R.id.ivBook)
+//                    }
+//                }
+                sharedElements[names[0]] =
+                    selectedViewHolder!!.itemView.findViewById(R.id.ivBook)
             }
         })
     }
@@ -84,16 +86,6 @@ class MyLibraryFragment : Fragment() {
         // ViewModel 초기화
         viewModel = ViewModelProvider(this, MyLibraryViewModelFactory(repository))
             .get(MyLibraryViewModel::class.java)
-
-
-        // Back Stack에서 전달된 데이터를 수신
-//        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Int>("selected_position")
-//            ?.observe(viewLifecycleOwner) { position ->
-//                if (position != null) {
-//                    viewModel.updateCurrentBook(position) // ViewModel 업데이트
-//                    scrollToPosition(position) // RecyclerView 스크롤
-//                }
-//            }
 
         findNavController().currentBackStackEntry?.savedStateHandle?.let { savedStateHandle ->
             savedStateHandle.getLiveData<Int>("selected_position").observe(viewLifecycleOwner) { position ->

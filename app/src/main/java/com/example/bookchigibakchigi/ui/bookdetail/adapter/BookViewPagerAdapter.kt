@@ -36,6 +36,7 @@ class BookViewPagerAdapter(
     }
 
     override fun onBindViewHolder(holder: BookViewPagerViewHolder, position: Int) {
+        holder.itemView.tag = "page_$position"
         holder.bind(dataList[position])
         // 아이템 클릭 리스너 설정
         holder.itemView.setOnClickListener {

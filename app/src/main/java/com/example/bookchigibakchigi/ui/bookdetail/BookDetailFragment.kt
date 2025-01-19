@@ -1,22 +1,16 @@
 package com.example.bookchigibakchigi.ui.bookdetail
 
-import android.animation.ValueAnimator
 import android.os.Bundle
 import android.transition.TransitionInflater
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.activity.addCallback
-import androidx.core.view.ViewCompat
-import androidx.core.view.doOnPreDraw
+import androidx.core.app.SharedElementCallback
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
 import com.example.bookchigibakchigi.R
 import com.example.bookchigibakchigi.data.database.AppDatabase
 import com.example.bookchigibakchigi.databinding.FragmentBookDetailBinding
@@ -91,6 +85,8 @@ class BookDetailFragment : Fragment() {
             }
         }
 
+        prepareSharedElementTransition()
+
         return binding.root
     }
 
@@ -105,7 +101,6 @@ class BookDetailFragment : Fragment() {
             findNavController().popBackStack()
         }
 
-        // ViewPager2 미리보기 설정
         binding.viewPager.clipToPadding = false
         val pageMarginPx = resources.getDimensionPixelOffset(R.dimen.pageMargin)
         binding.viewPager.setPadding(pageMarginPx, 0, pageMarginPx, 0)
@@ -133,6 +128,42 @@ class BookDetailFragment : Fragment() {
         // 필요한 데이터를 다시 가져오거나, 화면을 다시 그립니다.
         viewModel.reloadBooks() // ViewModel에서 데이터 로드 메서드 호출
         adapter.notifyDataSetChanged() // ViewPager의 데이터 업데이트
+    }
+
+    /**
+     * Prepares the shared element transition from and back to the grid fragment.
+     */
+    private fun prepareSharedElementTransition() {
+        val transition =
+            TransitionInflater.from(context)
+                .inflateTransition(R.transition.image_shared_element_transition)
+        sharedElementEnterTransition = transition
+
+        setEnterSharedElementCallback(
+            object : SharedElementCallback() {
+                override fun onMapSharedElements(
+                    names: List<String>,
+                    sharedElements: MutableMap<String, View>
+                ) {
+                    // ViewPager에서 현재 선택된 페이지의 Transition Name 가져오기
+                    val currentPosition = binding.viewPager.currentItem
+                    val currentItem = viewModel.currentBook.value
+
+                    if (currentItem == null) return
+
+                    val transitionName = "sharedView_${currentItem.itemId}"
+
+                    // ViewPager의 현재 페이지 View를 찾음
+                    val currentPage = binding.viewPager.findViewWithTag<View>("page_$currentPosition")
+                    val imageView = currentPage?.findViewById<View>(R.id.ivBook)
+
+                    if (imageView != null) {
+                        // names 리스트의 첫 번째 Transition Name에 매핑
+                        sharedElements[names[0]] = imageView
+                    }
+                }
+            }
+        )
     }
 
     override fun onDestroyView() {
