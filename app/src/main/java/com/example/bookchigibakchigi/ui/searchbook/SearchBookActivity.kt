@@ -3,9 +3,11 @@ package com.example.bookchigibakchigi.ui.searchbook
 import android.content.Intent
 import android.os.Bundle
 import android.transition.Transition
+import android.view.KeyEvent
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -72,13 +74,21 @@ class SearchBookActivity : BaseActivity() {
         binding.searchButton.setOnClickListener {
             val query = binding.searchEditText.text.toString()
             if (query.isNotEmpty()) {
-                showProgressBar() // ProgressBar 표시
                 handleSearch(query)
-                // 키보드 숨기기
-                val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-                imm.hideSoftInputFromWindow(binding.searchEditText.windowToken, 0)
             } else {
                 Toast.makeText(this, "검색어를 입력하세요.", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        binding.searchEditText.setOnEditorActionListener { textView, actionId, event ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH || event?.keyCode == KeyEvent.KEYCODE_ENTER) {
+                val query = textView.text.toString()
+                if (query.isNotBlank()) {
+                    handleSearch(query)
+                }
+                true // 이벤트 처리 완료
+            } else {
+                false // 이벤트 처리되지 않음
             }
         }
 
@@ -132,7 +142,10 @@ class SearchBookActivity : BaseActivity() {
     }
 
     private fun handleSearch(query: String) {
+        showProgressBar() // ProgressBar 표시
         viewModel.searchBooks(query)
+        val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(binding.searchEditText.windowToken, 0)
     }
 
     private fun showNoResults() {
