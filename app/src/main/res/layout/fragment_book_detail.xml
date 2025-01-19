@@ -49,13 +49,12 @@
                     android:clipToPadding="false"
                     android:clipChildren="false"
                     android:overScrollMode="never"
-                    app:submitBookList="@{viewModel.bookShelfItems}"
-                    android:visibility="gone"/>
+                    app:submitBookList="@{viewModel.bookShelfItems}" />
 
-                <ImageView
-                    android:id="@+id/ivBook"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"/>
+<!--                <ImageView-->
+<!--                    android:id="@+id/ivBook"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="match_parent"/>-->
 
             </FrameLayout>
 

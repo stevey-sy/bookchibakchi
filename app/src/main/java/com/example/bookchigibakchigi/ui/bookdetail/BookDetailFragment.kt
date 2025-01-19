@@ -47,18 +47,18 @@ class BookDetailFragment : Fragment() {
         // 전달된 itemId를 Bundle에서 가져오기
         val itemId = arguments?.getInt("itemId")
         val coverUrl = arguments?.getString("coverUrl")
-        val transitionName = arguments?.getString("transitionName")
+        val transitionName = arguments?.getString("transitionName") ?: ""
         // Transition Name 설정
-        binding.ivBook.transitionName = transitionName
+//        binding.ivBook.transitionName = transitionName
 
         // Glide로 coverUrl을 ivBook에 로드
-        if (!coverUrl.isNullOrEmpty()) {
-            Glide.with(requireContext())
-                .load(coverUrl)
-                .into(binding.ivBook)
-        }
+//        if (!coverUrl.isNullOrEmpty()) {
+//            Glide.with(requireContext())
+//                .load(coverUrl)
+//                .into(binding.ivBook)
+//        }
 
-        Log.d("TransitionCheck", "BookDetailFragment ivBook transitionName: ${binding.ivBook.transitionName}")
+//        Log.d("TransitionCheck", "BookDetailFragment ivBook transitionName: ${binding.ivBook.transitionName}")
 
         // ViewModel 초기화
         val bookDao = AppDatabase.getDatabase(requireContext()).bookDao()
@@ -71,9 +71,13 @@ class BookDetailFragment : Fragment() {
         binding.lifecycleOwner = viewLifecycleOwner
 
         adapter = BookViewPagerAdapter(
+            transitionName,
             onItemClick = { bookEntity, position, sharedView ->
                 // 아이템 클릭 이벤트 처리
                 println("클릭된 아이템: ${bookEntity.itemId}, Position: $position")
+            },
+            onImageLoaded = {
+                startPostponedEnterTransition()
             }
         )
         binding.viewPager.adapter = adapter
@@ -100,9 +104,9 @@ class BookDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         postponeEnterTransition()
-        (binding.root.parent as? ViewGroup)?.doOnPreDraw {
-            startPostponedEnterTransition()
-        }
+//        (binding.root.parent as? ViewGroup)?.doOnPreDraw {
+//            startPostponedEnterTransition()
+//        }
 
         // ViewPager2 미리보기 설정
         binding.viewPager.clipToPadding = false
