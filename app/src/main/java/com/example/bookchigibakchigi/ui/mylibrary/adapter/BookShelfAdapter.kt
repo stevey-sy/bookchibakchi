@@ -36,7 +36,7 @@ class BookShelfAdapter(
             holder.bind(dataList[position], position, onItemClick)
         } else {
             // 빈 아이템을 처리
-            holder.bindEmpty(position)
+            holder.bindEmpty(position, itemCount)
         }
     }
 
@@ -55,7 +55,7 @@ class BookShelfAdapter(
                 onItemClick(bookEntity, position, binding.ivBook)
             }
             // 타입에 따른 뷰 가시성 처리
-            binding.rlPlus.visibility = if (bookEntity.bookType == "0") View.VISIBLE else View.GONE
+//            binding.rlPlus.visibility = if (bookEntity.bookType == "0") View.VISIBLE else View.GONE
             // 열 위치에 따라 배경 Drawable 설정
             val context = binding.root.context
             val drawableRes = when (position % 3) {
@@ -68,26 +68,29 @@ class BookShelfAdapter(
             // 배경 Drawable 적용
             binding.vBottom.background = AppCompatResources.getDrawable(context, drawableRes)
             binding.ivBook.visibility = if (bookEntity.bookType == "0") View.GONE else View.VISIBLE
+            binding.vBookShadow.visibility = if (bookEntity.bookType == "0") View.GONE else View.VISIBLE
+            binding.ivPlant.visibility = View.INVISIBLE
             if (bookEntity.coverImageUrl.isNotEmpty()) {
                 binding.ivBook.visibility = View.VISIBLE
                 Glide.with(context)
                     .load(bookEntity.coverImageUrl)
                     .into(binding.ivBook)
-                binding.rlPlus.setBackgroundColor(Color.TRANSPARENT)
+//                binding.rlPlus.setBackgroundColor(Color.TRANSPARENT)
             } else {
                 // 이미지 URL이 비어 있는 경우 기본 이미지로 설정
                 binding.ivBook.visibility = View.GONE
-                binding.rlPlus.setBackgroundResource(R.drawable.add)
+//                binding.rlPlus.setBackgroundResource(R.drawable.add)
             }
 
         }
 
-        fun bindEmpty(position: Int) {
+        fun bindEmpty(position: Int, itemCount: Int) {
 
             binding.ivBook.transitionName = "sharedView_${position+1}"
 
             binding.ivBook.visibility = View.INVISIBLE
-            binding.rlPlus.visibility = View.INVISIBLE
+            binding.vBookShadow.visibility = View.INVISIBLE
+            binding.ivPlant.visibility = if (position == itemCount - 1) View.VISIBLE else View.INVISIBLE
 
             val context = binding.root.context
             val drawableRes = when (position % 3) {
