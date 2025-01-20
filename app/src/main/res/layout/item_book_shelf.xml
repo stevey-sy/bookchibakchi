@@ -41,8 +41,18 @@
                 android:paddingHorizontal="18dp"
                 >
 
+                <View
+                    android:id="@+id/vBookShadowUp"
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="2dp"
+                    android:background="@drawable/book_shadow_up"
+                    android:layout_alignParentEnd="true"/>
+
                 <ImageView
                     android:id="@+id/ivBook"
+                    android:layout_below="@id/vBookShadowUp"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:adjustViewBounds="true"

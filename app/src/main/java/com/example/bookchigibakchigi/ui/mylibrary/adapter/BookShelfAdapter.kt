@@ -68,7 +68,8 @@ class BookShelfAdapter(
             // 배경 Drawable 적용
             binding.vBottom.background = AppCompatResources.getDrawable(context, drawableRes)
             binding.ivBook.visibility = if (bookEntity.bookType == "0") View.GONE else View.VISIBLE
-            binding.vBookShadow.visibility = if (bookEntity.bookType == "0") View.GONE else View.VISIBLE
+            binding.vBookShadow.visibility = View.VISIBLE
+            binding.vBookShadowUp.visibility = View.VISIBLE
             binding.ivPlant.visibility = View.INVISIBLE
             if (bookEntity.coverImageUrl.isNotEmpty()) {
                 binding.ivBook.visibility = View.VISIBLE
@@ -90,6 +91,7 @@ class BookShelfAdapter(
 
             binding.ivBook.visibility = View.INVISIBLE
             binding.vBookShadow.visibility = View.INVISIBLE
+            binding.vBookShadowUp.visibility = View.INVISIBLE
             binding.ivPlant.visibility = if (position == itemCount - 1) View.VISIBLE else View.INVISIBLE
 
             val context = binding.root.context
