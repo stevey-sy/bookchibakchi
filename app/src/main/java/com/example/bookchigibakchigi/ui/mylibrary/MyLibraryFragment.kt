@@ -1,6 +1,7 @@
 package com.example.bookchigibakchigi.ui.mylibrary
 
 import android.app.SharedElementCallback
+import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
 import android.transition.TransitionInflater
@@ -21,6 +22,7 @@ import com.example.bookchigibakchigi.databinding.FragmentMyLibraryBinding
 import com.example.bookchigibakchigi.repository.BookShelfRepository
 import com.example.bookchigibakchigi.ui.MainActivity
 import com.example.bookchigibakchigi.ui.mylibrary.adapter.BookShelfAdapter
+import com.example.bookchigibakchigi.ui.searchbook.SearchBookActivity
 
 
 class MyLibraryFragment : Fragment() {
@@ -44,39 +46,6 @@ class MyLibraryFragment : Fragment() {
         return root
     }
 
-    private fun prepareTransitions() {
-        exitTransition = TransitionInflater.from(requireContext()).inflateTransition(R.transition.exit_transition)
-
-        setExitSharedElementCallback(object : androidx.core.app.SharedElementCallback() {
-            override fun onMapSharedElements(names: List<String>, sharedElements: MutableMap<String, View>) {
-                // 최신 Transition Name과 position 가져오기
-                val currentTransitionName = findNavController()
-                    .currentBackStackEntry?.savedStateHandle?.get<String>("current_transition_name")
-                val currentPosition = findNavController()
-                    .currentBackStackEntry?.savedStateHandle?.get<Int>("selected_position") ?: -1
-
-                if (currentTransitionName.isNullOrEmpty() || currentPosition == -1) return
-
-                // RecyclerView의 ViewHolder 찾기
-                val selectedViewHolder = binding.rvShelf.findViewHolderForAdapterPosition(currentPosition)
-                scrollToPosition(currentPosition)
-//                binding.rvShelf.post {
-//                    val updatedViewHolder = binding.rvShelf.findViewHolderForAdapterPosition(currentPosition)
-//                    if (updatedViewHolder?.itemView != null) {
-//                        sharedElements[names[0]] =
-//                            updatedViewHolder.itemView.findViewById(R.id.ivBook)
-//                    }
-//                }
-                sharedElements[names[0]] =
-                    selectedViewHolder!!.itemView.findViewById(R.id.ivBook)
-            }
-        })
-    }
-    override fun onResume() {
-        super.onResume()
-        viewModel.reloadBooks() // 데이터 갱신
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         // AppDatabase와 BookShelfRepository 생성
@@ -86,6 +55,9 @@ class MyLibraryFragment : Fragment() {
         // ViewModel 초기화
         viewModel = ViewModelProvider(this, MyLibraryViewModelFactory(repository))
             .get(MyLibraryViewModel::class.java)
+
+        binding.viewModel = viewModel
+        binding.lifecycleOwner = viewLifecycleOwner
 
         findNavController().currentBackStackEntry?.savedStateHandle?.let { savedStateHandle ->
             savedStateHandle.getLiveData<Int>("selected_position").observe(viewLifecycleOwner) { position ->
@@ -124,6 +96,11 @@ class MyLibraryFragment : Fragment() {
             }
         })
 
+        binding.btnSearchBook.setOnClickListener {
+            val intent = Intent(requireContext(), SearchBookActivity::class.java)
+            startActivity(intent)
+        }
+
         // Observe LiveData
         viewModel.bookShelfItems.observe(viewLifecycleOwner) { bookList ->
             adapter.setDataList(bookList)
@@ -138,6 +115,33 @@ class MyLibraryFragment : Fragment() {
                 }
             )
         }
+    }
+
+    fun refreshContent() {
+        // 필요한 데이터를 다시 가져오거나, 화면을 다시 그립니다.
+        viewModel.reloadBooks() // ViewModel에서 데이터 로드 메서드 호출
+    }
+
+    private fun prepareTransitions() {
+        exitTransition = TransitionInflater.from(requireContext()).inflateTransition(R.transition.exit_transition)
+
+        setExitSharedElementCallback(object : androidx.core.app.SharedElementCallback() {
+            override fun onMapSharedElements(names: List<String>, sharedElements: MutableMap<String, View>) {
+                // 최신 Transition Name과 position 가져오기
+                val currentTransitionName = findNavController()
+                    .currentBackStackEntry?.savedStateHandle?.get<String>("current_transition_name")
+                val currentPosition = findNavController()
+                    .currentBackStackEntry?.savedStateHandle?.get<Int>("selected_position") ?: -1
+
+                if (currentTransitionName.isNullOrEmpty() || currentPosition == -1) return
+
+                // RecyclerView의 ViewHolder 찾기
+                val selectedViewHolder = binding.rvShelf.findViewHolderForAdapterPosition(currentPosition)
+                scrollToPosition(currentPosition)
+                sharedElements[names[0]] =
+                    selectedViewHolder!!.itemView.findViewById(R.id.ivBook)
+            }
+        })
     }
 
     private fun scrollToPosition(position: Int) {

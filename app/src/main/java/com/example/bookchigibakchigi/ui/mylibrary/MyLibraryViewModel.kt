@@ -50,8 +50,9 @@ class MyLibraryViewModel(private val repository: BookShelfRepository) : ViewMode
     }
 
     fun reloadBooks() {
-        if (_bookShelfItems.value.isNullOrEmpty()) {
-            loadShelfItems()
-        }
+//        if (_bookShelfItems.value.isNullOrEmpty()) {
+//            loadShelfItems()
+//        }
+        loadShelfItems()
     }
 }

@@ -1,42 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:fab="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    tools:context=".ui.mylibrary.MyLibraryFragment">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvShelf"
+    <data>
+        <!-- ViewModel 선언 -->
+        <variable
+            name="viewModel"
+            type="com.example.bookchigibakchigi.ui.mylibrary.MyLibraryViewModel" />
+    </data>
+
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white"
-        android:layout_marginHorizontal="12dp"/>
+        xmlns:fab="http://schemas.android.com/apk/res-auto"
+        android:orientation="vertical"
+        tools:context=".ui.mylibrary.MyLibraryFragment">
 
-    <com.github.clans.fab.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|right"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:src="@drawable/ic_add_white"
-        fab:fab_colorNormal="@color/black"
-        fab:fab_colorPressed="@color/black"
-        fab:fab_colorRipple="@color/black"/>
 
-<!--    <com.google.android.material.floatingactionbutton.FloatingActionButton-->
-<!--        android:id="@+id/fab"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_gravity="end|bottom"-->
-<!--        android:layout_margin="16dp"-->
-<!--        android:src="@drawable/ic_white_add"-->
-<!--        android:contentDescription="Add item"-->
-<!--        app:fabSize="normal"-->
-<!--        app:tint="@null"-->
-<!--        android:backgroundTint="@color/black" />-->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvShelf"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            android:layout_marginHorizontal="12dp"/>
 
-</FrameLayout>
+        <!-- 저장한 책이 없을 때 보여줄 뷰 -->
+        <LinearLayout
+            android:id="@+id/emptyView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical"
+            app:isVisible="@{viewModel.bookShelfItems}"
+            android:background="@color/white">
+
+            <!-- 일러스트 이미지 -->
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:src="@drawable/img_reading"
+                android:scaleType="centerCrop"
+                android:contentDescription="Empty bookshelf image"
+                android:layout_marginBottom="16dp" />
+
+            <!-- 안내 텍스트 -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="당신의 첫 번째 책을 추가해보세요."
+                android:textSize="18sp"
+                android:textColor="@color/black"
+                android:layout_marginBottom="8dp"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="독서 진행도와 기억하고 싶은 문구를 기록할 수 있어요."
+                android:textSize="14sp"
+                android:textColor="@color/gray"
+                android:textStyle="bold" />
+
+            <!-- 액션 버튼 -->
+            <Button
+                android:id="@+id/btnSearchBook"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="책 검색하기"
+                android:backgroundTint="@color/black"
+                android:textColor="@color/white"
+                android:layout_marginTop="16dp"
+                android:paddingHorizontal="24dp"
+                android:paddingVertical="12dp" />
+
+        </LinearLayout>
+
+    </FrameLayout>
+
+
+</layout>

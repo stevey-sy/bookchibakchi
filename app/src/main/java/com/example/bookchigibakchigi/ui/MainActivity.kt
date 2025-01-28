@@ -14,6 +14,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.example.bookchigibakchigi.R
 import com.example.bookchigibakchigi.databinding.ActivityMainBinding
 import com.example.bookchigibakchigi.ui.bookdetail.BookDetailFragment
+import com.example.bookchigibakchigi.ui.mylibrary.MyLibraryFragment
 import com.example.bookchigibakchigi.ui.searchbook.SearchBookActivity
 
 class MainActivity : AppCompatActivity() {
@@ -71,6 +72,14 @@ class MainActivity : AppCompatActivity() {
             if (fragment is BookDetailFragment) {
                 fragment.refreshContent() // Fragment의 refresh 메서드 호출
             }
+        } else if (currentDestination == R.id.navigation_my_library) {
+            // BookDetailFragment를 찾아서 업데이트 트리거
+            val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_activity_main)
+            val fragment = navHostFragment?.childFragmentManager?.fragments?.firstOrNull()
+            if (fragment is MyLibraryFragment) {
+                fragment.refreshContent() // Fragment의 refresh 메서드 호출
+            }
+
         }
     }
 
@@ -163,7 +172,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun moveToBookSearchActivity() {
-        // SearchBookActivity를 시작
         val intent = Intent(this, SearchBookActivity::class.java)
         startActivity(intent)
     }
