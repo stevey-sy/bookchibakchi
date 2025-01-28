@@ -35,27 +35,6 @@ object BindingAdapters {
 //    }
 
     @JvmStatic
-    @BindingAdapter("progressPercentage")
-    fun setProgressBarWidth(view: View, progress: Int) {
-        // 부모 뷰의 전체 너비를 가져오기
-        val parentWidth = (view.parent as ViewGroup).width
-        val targetWidth = (parentWidth * progress) / 100 // 목표 너비 계산
-        val currentWidth = view.layoutParams.width
-
-        // ValueAnimator를 사용하여 애니메이션 구현
-        val animator = ValueAnimator.ofInt(currentWidth, targetWidth)
-        animator.duration = 300 // 애니메이션 지속 시간 (1초)
-        animator.addUpdateListener { animation ->
-            val animatedValue = animation.animatedValue as Int
-            val layoutParams = view.layoutParams
-            layoutParams.width = animatedValue
-            view.layoutParams = layoutParams
-        }
-        animator.start()
-    }
-
-
-    @JvmStatic
     @BindingAdapter("submitBookList")
     fun bindBookList(viewPager: ViewPager2, bookList: List<BookEntity>?) {
         if (bookList == null) return
@@ -75,5 +54,53 @@ object BindingAdapters {
     @BindingAdapter("isProgressBarVisible")
     fun setProgressBarVisibleVisibility(view: View, items: List<*>?) {
         view.visibility = if (items.isNullOrEmpty()) View.GONE else View.VISIBLE
+    }
+
+    @JvmStatic
+    @BindingAdapter("progressPercentage")
+    fun setProgressBarWidth(view: View, progress: Int) {
+        // 부모 뷰의 전체 너비를 가져오기
+        val parentWidth = (view.parent as ViewGroup).width
+        val targetWidth = (parentWidth * progress) / 100 // 목표 너비 계산
+        val currentWidth = view.layoutParams.width
+
+        // ValueAnimator를 사용하여 애니메이션 구현
+        val animator = ValueAnimator.ofInt(currentWidth, targetWidth)
+        animator.duration = 300 // 애니메이션 지속 시간 (1초)
+        animator.addUpdateListener { animation ->
+            val animatedValue = animation.animatedValue as Int
+            val layoutParams = view.layoutParams
+            layoutParams.width = animatedValue
+            view.layoutParams = layoutParams
+        }
+        animator.start()
+    }
+
+    @JvmStatic
+    @BindingAdapter("progressTranslation")
+    fun setProgressTranslation(view: View, percentage: Int) {
+        view.post {
+            // 부모 뷰 가져오기
+            val parentView = view.parent as? ViewGroup
+            val parentWidth = parentView?.width ?: 0 // 부모의 width 가져오기
+
+            // 부모의 width를 기준으로 percentage에 따른 목표 translationX 계산
+            val baseTranslationX = parentWidth * (percentage / 100f)
+
+            // 목표 translationX 값 (자신의 width의 절반만큼 빼기)
+            val targetTranslationX = baseTranslationX - (view.width / 2f)
+
+            // 현재 translationX 값 가져오기
+            val currentTranslationX = view.translationX
+
+            // ValueAnimator로 애니메이션 실행
+            val animator = ValueAnimator.ofFloat(currentTranslationX, targetTranslationX)
+            animator.duration = 300 // 애니메이션 지속 시간 (300ms)
+            animator.addUpdateListener { animation ->
+                val animatedValue = animation.animatedValue as Float
+                view.translationX = animatedValue // 애니메이션 값 적용
+            }
+            animator.start()
+        }
     }
 }

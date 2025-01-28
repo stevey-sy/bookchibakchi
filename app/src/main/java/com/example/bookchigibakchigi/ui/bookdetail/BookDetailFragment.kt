@@ -151,8 +151,6 @@ class BookDetailFragment : Fragment() {
 
                     if (currentItem == null) return
 
-                    val transitionName = "sharedView_${currentItem.itemId}"
-
                     // ViewPager의 현재 페이지 View를 찾음
                     val currentPage = binding.viewPager.findViewWithTag<View>("page_$currentPosition")
                     val imageView = currentPage?.findViewById<View>(R.id.ivBook)
