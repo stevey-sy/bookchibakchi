@@ -43,7 +43,6 @@ class MainActivity : AppCompatActivity() {
                 R.id.navigation_community,
                 R.id.navigation_record,
                 R.id.navigation_setting,
-
             )
         )
 
@@ -93,16 +92,16 @@ class MainActivity : AppCompatActivity() {
             R.id.navigation_book_detail -> {
                 binding.toolbar.title = getString(R.string.b_archive)
                 binding.toolbar.inflateMenu(R.menu.menu_my_library)
-                binding.toolbar.menu.findItem(R.id.action_grid).isVisible = true
-                binding.toolbar.menu.findItem(R.id.action_horizontal).isVisible = false
+//                binding.toolbar.menu.findItem(R.id.action_grid).isVisible = true
+//                binding.toolbar.menu.findItem(R.id.action_horizontal).isVisible = false
                 supportActionBar?.setDisplayHomeAsUpEnabled(false)
                 supportActionBar?.setHomeButtonEnabled(false)
             }
             R.id.navigation_my_library -> {
-                binding.toolbar.title = getString(R.string.b_archive)
+                 binding.toolbar.title = getString(R.string.b_archive)
                 binding.toolbar.inflateMenu(R.menu.menu_my_library)
-                binding.toolbar.menu.findItem(R.id.action_horizontal).isVisible = true
-                binding.toolbar.menu.findItem(R.id.action_grid).isVisible = false
+//                binding.toolbar.menu.findItem(R.id.action_horizontal).isVisible = true
+//                binding.toolbar.menu.findItem(R.id.action_grid).isVisible = false
                 supportActionBar?.setDisplayHomeAsUpEnabled(false)
                 supportActionBar?.setHomeButtonEnabled(false)
             }
