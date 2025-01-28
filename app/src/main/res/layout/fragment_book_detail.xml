@@ -201,6 +201,7 @@
                     android:weightSum="2">
 
                     <LinearLayout
+                        android:id="@+id/btnRecord"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:orientation="horizontal"
@@ -229,6 +230,7 @@
                         android:background="@color/white"/>
 
                     <LinearLayout
+                        android:id="@+id/btnMemo"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:orientation="horizontal"

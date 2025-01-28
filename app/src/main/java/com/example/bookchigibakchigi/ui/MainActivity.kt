@@ -42,7 +42,6 @@ class MainActivity : AppCompatActivity() {
                 R.id.navigation_book_detail,
                 R.id.navigation_pick_book,
                 R.id.navigation_community,
-                R.id.navigation_record,
                 R.id.navigation_setting,
             )
         )
@@ -121,11 +120,6 @@ class MainActivity : AppCompatActivity() {
             }
             R.id.navigation_community -> {
                 binding.toolbar.title = getString(R.string.title_community)
-                supportActionBar?.setDisplayHomeAsUpEnabled(false)
-                supportActionBar?.setHomeButtonEnabled(false)
-            }
-            R.id.navigation_record -> {
-                binding.toolbar.title = getString(R.string.title_record)
                 supportActionBar?.setDisplayHomeAsUpEnabled(false)
                 supportActionBar?.setHomeButtonEnabled(false)
             }

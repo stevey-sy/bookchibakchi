@@ -1,5 +1,6 @@
 package com.example.bookchigibakchigi.ui.bookdetail
 
+import android.content.Intent
 import android.os.Bundle
 import android.transition.TransitionInflater
 import android.util.Log
@@ -19,6 +20,8 @@ import com.example.bookchigibakchigi.repository.BookShelfRepository
 import com.example.bookchigibakchigi.ui.bookdetail.adapter.BookViewPagerAdapter
 import com.example.bookchigibakchigi.ui.mylibrary.MyLibraryViewModel
 import com.example.bookchigibakchigi.ui.mylibrary.MyLibraryViewModelFactory
+import com.example.bookchigibakchigi.ui.record.RecordActivity
+import com.example.bookchigibakchigi.ui.searchbook.SearchBookActivity
 
 class BookDetailFragment : Fragment() {
 
@@ -84,6 +87,11 @@ class BookDetailFragment : Fragment() {
                         "sharedElement_${itemId}"
                 }
             }
+        }
+
+        binding.btnRecord.setOnClickListener {
+            val intent = Intent(requireContext(), RecordActivity::class.java)
+            startActivity(intent)
         }
 
         prepareSharedElementTransition()
