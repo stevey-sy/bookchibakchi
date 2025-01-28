@@ -2,6 +2,7 @@ package com.example.bookchigibakchigi.ui.bookdetail
 
 import android.os.Bundle
 import android.transition.TransitionInflater
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -59,7 +60,7 @@ class BookDetailFragment : Fragment() {
             transitionName,
             onItemClick = { bookEntity, position, sharedView ->
                 // 아이템 클릭 이벤트 처리
-                println("클릭된 아이템: ${bookEntity.itemId}, Position: $position")
+                Log.d("TEST TEST","클릭된 아이템: ${bookEntity.itemId}, Position: $position")
             },
             onImageLoaded = {
                 startPostponedEnterTransition()

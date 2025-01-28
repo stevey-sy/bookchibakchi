@@ -59,21 +59,23 @@ object BindingAdapters {
     @JvmStatic
     @BindingAdapter("progressPercentage")
     fun setProgressBarWidth(view: View, progress: Int) {
-        // 부모 뷰의 전체 너비를 가져오기
-        val parentWidth = (view.parent as ViewGroup).width
-        val targetWidth = (parentWidth * progress) / 100 // 목표 너비 계산
-        val currentWidth = view.layoutParams.width
+        view.post {
+            // 부모 뷰의 전체 너비를 가져오기
+            val parentWidth = (view.parent as ViewGroup).width
+            val targetWidth = (parentWidth * progress) / 100 // 목표 너비 계산
+            val currentWidth = view.layoutParams.width
 
-        // ValueAnimator를 사용하여 애니메이션 구현
-        val animator = ValueAnimator.ofInt(currentWidth, targetWidth)
-        animator.duration = 300 // 애니메이션 지속 시간 (1초)
-        animator.addUpdateListener { animation ->
-            val animatedValue = animation.animatedValue as Int
-            val layoutParams = view.layoutParams
-            layoutParams.width = animatedValue
-            view.layoutParams = layoutParams
+            // ValueAnimator를 사용하여 애니메이션 구현
+            val animator = ValueAnimator.ofInt(currentWidth, targetWidth)
+            animator.duration = 300 // 애니메이션 지속 시간 (1초)
+            animator.addUpdateListener { animation ->
+                val animatedValue = animation.animatedValue as Int
+                val layoutParams = view.layoutParams
+                layoutParams.width = animatedValue
+                view.layoutParams = layoutParams
+            }
+            animator.start()
         }
-        animator.start()
     }
 
     @JvmStatic
