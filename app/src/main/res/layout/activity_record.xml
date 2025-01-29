@@ -4,61 +4,65 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout
+        android:id="@+id/main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:gravity="center"
         android:background="@color/black">
 
         <!-- 상단 닫기 버튼 -->
         <ImageView
             android:id="@+id/btnClose"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_gravity="start"
-            android:layout_margin="16dp"
-            android:src="@drawable/ic_close"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_gravity="end"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:src="@drawable/ic_close_white"
             android:contentDescription="닫기 버튼" />
 
-        <!-- 타이머 표시 -->
-        <TextView
-            android:id="@+id/tvTimer"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="00:00:00"
-            android:textSize="40sp"
-            android:textStyle="bold"
-            android:textColor="@color/white"
-            android:layout_marginTop="16dp" />
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_marginTop="60dp">
 
-        <!-- 상태 텍스트 -->
-        <TextView
-            android:id="@+id/tvStatus"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="읽고 있는 중..."
-            android:textSize="16sp"
-            android:textColor="@color/white"
-            android:layout_marginTop="8dp" />
+            <!-- 타이머 표시 -->
+            <TextView
+                android:id="@+id/tvTimer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="00:00:00"
+                android:textSize="40sp"
+                android:textStyle="bold"
+                android:textColor="@color/white"
+                android:layout_marginTop="16dp" />
 
-        <!-- 일시정지 버튼 -->
-        <ImageButton
-            android:id="@+id/btnPause"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:background="@color/black"
+            <!-- 상태 텍스트 -->
+            <TextView
+                android:id="@+id/tvStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="읽고 있는 중..."
+                android:textSize="16sp"
+                android:textColor="@color/white"
+                android:layout_marginTop="8dp" />
 
-            android:contentDescription="일시정지 버튼"
-            android:layout_marginTop="16dp" />
+            <!-- 일시정지 버튼 -->
+            <ImageButton
+                android:id="@+id/btnPause"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:background="@drawable/ic_pause_white"
+                android:scaleType="centerCrop"
+                android:contentDescription="일시정지 버튼"
+                android:layout_marginTop="16dp" />
 
-        <!-- 카운트다운 설정 버튼 -->
-        <Button
-            android:id="@+id/btnCountdown"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="⏳ 카운트 다운 설정"
-            android:textColor="@color/white"
-            android:layout_marginTop="16dp" />
+        </LinearLayout>
+
+
 
         <!-- 책 정보 카드 -->
         <LinearLayout
