@@ -57,6 +57,7 @@ class RecordActivity : BaseActivity() {
                 override fun onPreDraw(): Boolean {
                     binding.ivBookCover.viewTreeObserver.removeOnPreDrawListener(this)
                     supportStartPostponedEnterTransition()  // ✅ 애니메이션 시작
+                    viewModel.toggleTimer()
                     return true
                 }
             })

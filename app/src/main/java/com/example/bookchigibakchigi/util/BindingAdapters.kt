@@ -3,8 +3,10 @@ package com.example.bookchigibakchigi.util
 import android.animation.ValueAnimator
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
+import androidx.lifecycle.LiveData
 import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
@@ -103,6 +105,22 @@ object BindingAdapters {
                 view.translationX = animatedValue // 애니메이션 값 적용
             }
             animator.start()
+        }
+    }
+
+    @JvmStatic
+    @BindingAdapter("bindBackgroundColor")
+    fun bindBackgroundColor(view: View, color: LiveData<Int>?) {
+        color?.observeForever { resolvedColor ->
+            view.setBackgroundColor(view.context.getColor(resolvedColor))
+        }
+    }
+
+    @JvmStatic
+    @BindingAdapter("bindPauseButtonIcon")
+    fun bindPauseButtonIcon(view: ImageView, icon: Int?) {
+        icon?.let {
+            view.setImageResource(it) // ✅ 아이콘 변경
         }
     }
 }

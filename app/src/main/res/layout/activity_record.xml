@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:background="@color/black">
+        app:bindBackgroundColor="@{viewModel.backgroundColor}">
 
         <!-- 상단 닫기 버튼 -->
         <ImageView
@@ -40,7 +40,7 @@
                 android:id="@+id/tvTimer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="00:00:00"
+                android:text="@{viewModel.timerText}"
                 android:textSize="40sp"
                 android:textStyle="bold"
                 android:textColor="@color/white"
@@ -51,20 +51,21 @@
                 android:id="@+id/tvStatus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="읽고 있는 중..."
+                android:text="@{viewModel.status}"
                 android:textSize="16sp"
                 android:textColor="@color/white"
                 android:layout_marginTop="8dp" />
 
             <!-- 일시정지 버튼 -->
-            <ImageButton
+            <ImageView
                 android:id="@+id/btnPause"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
-                android:background="@drawable/ic_pause_white"
                 android:scaleType="centerCrop"
                 android:contentDescription="일시정지 버튼"
-                android:layout_marginTop="16dp" />
+                android:layout_marginTop="16dp"
+                app:bindPauseButtonIcon="@{viewModel.pauseButtonIcon}"
+                android:onClick="@{() -> viewModel.toggleTimer()}"/>
 
         </LinearLayout>
 
