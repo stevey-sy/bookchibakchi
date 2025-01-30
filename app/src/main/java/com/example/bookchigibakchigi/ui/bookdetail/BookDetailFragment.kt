@@ -27,6 +27,7 @@ class BookDetailFragment : Fragment() {
     private val viewModel: MainActivityViewModel by activityViewModels()
     private lateinit var adapter: BookViewPagerAdapter
     private var sharedView: View? = null
+    private var currentPagePosition = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,6 +37,7 @@ class BookDetailFragment : Fragment() {
         sharedElementEnterTransition = transition
         sharedElementReturnTransition = transition
     }
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -67,16 +69,18 @@ class BookDetailFragment : Fragment() {
         viewModel.bookShelfItems.observe(viewLifecycleOwner) { bookList ->
             adapter.setDataList(bookList) // Adapter에 데이터 설정
 
-            val initialPosition = bookList.indexOfFirst { it.itemId == itemId }
-            if (initialPosition >= 0) {
-                binding.viewPager.setCurrentItem(initialPosition, false)
+            viewModel.currentBook.value?.let { currentBook ->
+                val initialPosition = bookList.indexOfFirst { it.itemId == currentBook.itemId }
 
-                // ViewPager의 초기 Transition Name 설정
-                binding.viewPager.post {
-                    val currentPage =
-                        binding.viewPager.findViewWithTag<View>("page_$initialPosition")
-                    currentPage?.findViewById<View>(R.id.ivBook)?.transitionName =
-                        "sharedElement_${itemId}"
+                if (initialPosition >= 0) {
+                    binding.viewPager.setCurrentItem(initialPosition, false)
+
+                    // ViewPager의 초기 Transition Name 설정
+                    binding.viewPager.post {
+                        val currentPage = binding.viewPager.findViewWithTag<View>("page_$initialPosition")
+                        currentPage?.findViewById<View>(R.id.ivBook)?.transitionName =
+                            "sharedElement_${currentBook.itemId}"
+                    }
                 }
             }
         }
@@ -121,6 +125,8 @@ class BookDetailFragment : Fragment() {
         binding.viewPager.setPadding(pageMarginPx, 0, pageMarginPx, 0)
 
         binding.viewPager.apply {
+            clipToPadding = false  // ✅ 양옆 페이지 보이게 설정
+            clipChildren = false   // ✅ 양옆 페이지 보이게 설정
             offscreenPageLimit = 3 // 양 옆의 아이템을 미리 렌더링
             setPageTransformer(PreviewPageTransformer())
         }
@@ -131,6 +137,7 @@ class BookDetailFragment : Fragment() {
                 viewModel.updateCurrentBook(position) // 선택된 페이지 업데이트
                 sharedView = binding.viewPager.findViewWithTag<View>("page_$position")?.findViewById(R.id.ivBook)
                 // 현재 ViewPager의 Transition Name과 position 저장
+                currentPagePosition = position
                 val currentItem = viewModel.currentBook.value
                 val transitionName = "sharedView_${currentItem?.itemId}" // Transition Name 생성
                 findNavController().previousBackStackEntry?.savedStateHandle?.set("current_transition_name", transitionName)
@@ -139,10 +146,16 @@ class BookDetailFragment : Fragment() {
         })
     }
 
+    override fun onResume() {
+        super.onResume()
+//        refreshContent()
+    }
+
     fun refreshContent() {
         // 필요한 데이터를 다시 가져오거나, 화면을 다시 그립니다.
         viewModel.reloadBooks() // ViewModel에서 데이터 로드 메서드 호출
         adapter.notifyDataSetChanged() // ViewPager의 데이터 업데이트
+        binding.viewPager.setCurrentItem(0,false)
     }
 
     /**

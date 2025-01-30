@@ -17,8 +17,8 @@
         <!-- ImageView -->
         <ImageView
             android:id="@+id/ivBook"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="160dp"
+            android:layout_height="240dp"
             android:adjustViewBounds="true"
             android:scaleType="fitCenter"
             android:transitionName="sharedElement" />

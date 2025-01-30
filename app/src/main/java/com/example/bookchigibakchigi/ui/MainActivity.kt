@@ -71,26 +71,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-
-        val navController = findNavController(R.id.nav_host_fragment_activity_main)
-        val currentDestination = navController.currentDestination?.id
-
-        if (currentDestination == R.id.navigation_book_detail) {
-            // BookDetailFragment를 찾아서 업데이트 트리거
-            val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_activity_main)
-            val fragment = navHostFragment?.childFragmentManager?.fragments?.firstOrNull()
-            if (fragment is BookDetailFragment) {
-                fragment.refreshContent() // Fragment의 refresh 메서드 호출
-            }
-        } else if (currentDestination == R.id.navigation_my_library) {
-            // BookDetailFragment를 찾아서 업데이트 트리거
-            val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_activity_main)
-            val fragment = navHostFragment?.childFragmentManager?.fragments?.firstOrNull()
-            if (fragment is MyLibraryFragment) {
-                fragment.refreshContent() // Fragment의 refresh 메서드 호출
-            }
-
-        }
     }
 
     override fun onSupportNavigateUp(): Boolean {
