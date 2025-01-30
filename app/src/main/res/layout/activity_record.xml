@@ -3,6 +3,12 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <data>
+        <variable
+            name="viewModel"
+            type="com.example.bookchigibakchigi.ui.record.RecordActivityViewModel" />
+    </data>
+
     <LinearLayout
         android:id="@+id/main"
         android:layout_width="match_parent"
@@ -74,13 +80,23 @@
             android:orientation="horizontal"
             android:elevation="4dp">
 
-            <!-- 책 이미지 -->
-            <ImageView
-                android:id="@+id/ivBookCover"
-                android:layout_width="60dp"
-                android:layout_height="90dp"
-                android:contentDescription="책 표지"
-                android:scaleType="fitXY" />
+            <!-- 책 표지를 감싸는 CardView -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="4dp"
+                app:cardBackgroundColor="@android:color/white">
+
+                <!-- 책 이미지 -->
+                <ImageView
+                    android:id="@+id/ivBookCover"
+                    android:layout_width="60dp"
+                    android:layout_height="90dp"
+                    android:contentDescription="책 표지"
+                    android:scaleType="fitXY"
+                    app:imageUrl="@{viewModel.currentBook.coverImageUrl}" />
+            </androidx.cardview.widget.CardView>
 
             <!-- 책 정보 -->
             <LinearLayout
@@ -94,7 +110,7 @@
                     android:id="@+id/tvBookTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="거꾸로 읽는 세계사"
+                    android:text="@{viewModel.currentBook.title}"
                     android:textSize="18sp"
                     android:textColor="@color/white"
                     android:textStyle="bold" />
@@ -103,7 +119,7 @@
                     android:id="@+id/tvBookAuthor"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="유시민"
+                    android:text="@{viewModel.currentBook.author}"
                     android:textSize="14sp"
                     android:textColor="@color/white"
                     android:layout_marginTop="4dp" />
@@ -112,19 +128,11 @@
                     android:id="@+id/tvBookProgress"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="p. 10 / 404"
+                    android:text="@{viewModel.getBookProgressText()}"
                     android:textSize="14sp"
                     android:textColor="@color/white"
                     android:layout_marginTop="4dp" />
 
-                <!-- 노트 목록 버튼 -->
-                <Button
-                    android:id="@+id/btnNotes"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="📝 노트 목록"
-                    android:textColor="@color/white"
-                    android:layout_marginTop="8dp"/>
             </LinearLayout>
 
         </LinearLayout>
@@ -135,8 +143,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="✔ 완료"
-            android:textColor="@color/white"
-            android:layout_gravity="end"
+            android:backgroundTint="@color/white"
+            android:textColor="@color/black"
+            android:layout_gravity="center"
             android:layout_margin="16dp"/>
 
     </LinearLayout>

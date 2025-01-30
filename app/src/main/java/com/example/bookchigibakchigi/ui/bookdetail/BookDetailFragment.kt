@@ -8,27 +8,25 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.addCallback
+import androidx.core.app.ActivityOptionsCompat
 import androidx.core.app.SharedElementCallback
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import com.example.bookchigibakchigi.R
-import com.example.bookchigibakchigi.data.database.AppDatabase
 import com.example.bookchigibakchigi.databinding.FragmentBookDetailBinding
-import com.example.bookchigibakchigi.repository.BookShelfRepository
+import com.example.bookchigibakchigi.ui.MainActivityViewModel
 import com.example.bookchigibakchigi.ui.bookdetail.adapter.BookViewPagerAdapter
-import com.example.bookchigibakchigi.ui.mylibrary.MyLibraryViewModel
-import com.example.bookchigibakchigi.ui.mylibrary.MyLibraryViewModelFactory
 import com.example.bookchigibakchigi.ui.record.RecordActivity
-import com.example.bookchigibakchigi.ui.searchbook.SearchBookActivity
 
 class BookDetailFragment : Fragment() {
 
     private var _binding: FragmentBookDetailBinding? = null
     private val binding get() = _binding!!
-    private lateinit var viewModel: MyLibraryViewModel
+    private val viewModel: MainActivityViewModel by activityViewModels()
     private lateinit var adapter: BookViewPagerAdapter
+    private var sharedView: View? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,12 +46,6 @@ class BookDetailFragment : Fragment() {
         // 전달된 itemId를 Bundle에서 가져오기
         val itemId = arguments?.getInt("itemId")
         val transitionName = arguments?.getString("transitionName") ?: ""
-
-        // ViewModel 초기화
-        val bookDao = AppDatabase.getDatabase(requireContext()).bookDao()
-        val repository = BookShelfRepository(bookDao)
-        viewModel = ViewModelProvider(this, MyLibraryViewModelFactory(repository))
-            .get(MyLibraryViewModel::class.java)
 
         // ViewModel 바인딩
         binding.viewModel = viewModel
@@ -90,8 +82,22 @@ class BookDetailFragment : Fragment() {
         }
 
         binding.btnRecord.setOnClickListener {
-            val intent = Intent(requireContext(), RecordActivity::class.java)
-            startActivity(intent)
+            val selectedBook = viewModel.currentBook.value
+            selectedBook?.let { book ->
+                val intent = Intent(requireContext(), RecordActivity::class.java).apply {
+                    putExtra("currentBook", book)
+                }
+
+                sharedView = binding.viewPager.findViewWithTag<View>("page_${binding.viewPager.currentItem}")?.findViewById(R.id.ivBook)
+                sharedView!!.transitionName = "sharedView_${viewModel.currentBook.value?.itemId}"
+
+                val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                    requireActivity(),
+                    sharedView!!,  // 시작점 (ViewPager의 ImageView)
+                    sharedView!!.transitionName  // 동일한 transitionName 사용
+                )
+                startActivity(intent, options.toBundle())
+            }
         }
 
         prepareSharedElementTransition()
@@ -123,7 +129,7 @@ class BookDetailFragment : Fragment() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
                 viewModel.updateCurrentBook(position) // 선택된 페이지 업데이트
-
+                sharedView = binding.viewPager.findViewWithTag<View>("page_$position")?.findViewById(R.id.ivBook)
                 // 현재 ViewPager의 Transition Name과 position 저장
                 val currentItem = viewModel.currentBook.value
                 val transitionName = "sharedView_${currentItem?.itemId}" // Transition Name 생성

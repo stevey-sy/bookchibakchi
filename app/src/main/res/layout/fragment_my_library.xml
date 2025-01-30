@@ -7,7 +7,7 @@
         <!-- ViewModel 선언 -->
         <variable
             name="viewModel"
-            type="com.example.bookchigibakchigi.ui.mylibrary.MyLibraryViewModel" />
+            type="com.example.bookchigibakchigi.ui.MainActivityViewModel" />
     </data>
 
     <FrameLayout

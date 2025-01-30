@@ -7,12 +7,15 @@ import android.view.MenuItem
 import android.widget.Toast
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.bookchigibakchigi.R
+import com.example.bookchigibakchigi.data.database.AppDatabase
 import com.example.bookchigibakchigi.databinding.ActivityMainBinding
+import com.example.bookchigibakchigi.repository.BookShelfRepository
 import com.example.bookchigibakchigi.ui.bookdetail.BookDetailFragment
 import com.example.bookchigibakchigi.ui.mylibrary.MyLibraryFragment
 import com.example.bookchigibakchigi.ui.searchbook.SearchBookActivity
@@ -21,8 +24,15 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
+    private lateinit var viewModel: MainActivityViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val bookDao = AppDatabase.getDatabase(this).bookDao()
+        val repository = BookShelfRepository(bookDao)
+
+        viewModel = ViewModelProvider(this, MainActivityViewModelFactory(repository)).get(MainActivityViewModel::class.java)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -32,6 +42,7 @@ class MainActivity : AppCompatActivity() {
         // 백버튼 제거
         supportActionBar?.setDisplayHomeAsUpEnabled(false)
         supportActionBar?.setHomeButtonEnabled(false)
+
 
         val navView: BottomNavigationView = binding.navView
         val navController = findNavController(R.id.nav_host_fragment_activity_main)

@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
@@ -21,6 +22,7 @@ import com.example.bookchigibakchigi.data.database.AppDatabase
 import com.example.bookchigibakchigi.databinding.FragmentMyLibraryBinding
 import com.example.bookchigibakchigi.repository.BookShelfRepository
 import com.example.bookchigibakchigi.ui.MainActivity
+import com.example.bookchigibakchigi.ui.MainActivityViewModel
 import com.example.bookchigibakchigi.ui.mylibrary.adapter.BookShelfAdapter
 import com.example.bookchigibakchigi.ui.searchbook.SearchBookActivity
 
@@ -30,8 +32,9 @@ class MyLibraryFragment : Fragment() {
     private var _binding: FragmentMyLibraryBinding? = null
 
     private val binding get() = _binding!!
-    private lateinit var viewModel: MyLibraryViewModel
     private lateinit var adapter: BookShelfAdapter
+
+    private val viewModel: MainActivityViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -48,14 +51,6 @@ class MyLibraryFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        // AppDatabase와 BookShelfRepository 생성
-        val bookDao = AppDatabase.getDatabase(requireContext()).bookDao()
-        val repository = BookShelfRepository(bookDao)
-
-        // ViewModel 초기화
-        viewModel = ViewModelProvider(this, MyLibraryViewModelFactory(repository))
-            .get(MyLibraryViewModel::class.java)
-
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
