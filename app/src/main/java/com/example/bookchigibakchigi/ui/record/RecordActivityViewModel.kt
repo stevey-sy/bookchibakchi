@@ -67,7 +67,7 @@ class RecordActivityViewModel : ViewModel() {
         }.start()
     }
 
-    private fun pauseTimer() {
+    fun pauseTimer() {
         _isRecording.value = false
         _status.value = "일시정지됨"
         _pauseButtonIcon.value = R.drawable.ic_play_button

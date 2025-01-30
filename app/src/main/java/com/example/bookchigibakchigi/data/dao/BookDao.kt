@@ -21,4 +21,7 @@ interface BookDao {
     @Delete
     suspend fun deleteBook(book: BookEntity)
 
+    @Query("UPDATE books SET currentPageCnt = :currentPage WHERE itemId = :itemId")
+    suspend fun updateCurrentPage(itemId: Int, currentPage: Int)
+
 }

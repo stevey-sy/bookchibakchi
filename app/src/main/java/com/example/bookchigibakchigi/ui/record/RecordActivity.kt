@@ -1,17 +1,26 @@
 package com.example.bookchigibakchigi.ui.record
 
+import android.app.Dialog
 import android.os.Build
 import android.os.Bundle
 import android.transition.Transition
 import android.transition.TransitionInflater
+import android.view.LayoutInflater
+import android.view.ViewGroup
 import android.view.ViewTreeObserver
+import android.view.WindowManager
 import android.view.animation.AccelerateDecelerateInterpolator
+import android.widget.Button
+import android.widget.EditText
+import android.widget.LinearLayout
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import com.example.bookchigibakchigi.R
 import com.example.bookchigibakchigi.data.database.AppDatabase
 import com.example.bookchigibakchigi.data.entity.BookEntity
@@ -21,6 +30,7 @@ import com.example.bookchigibakchigi.repository.BookShelfRepository
 import com.example.bookchigibakchigi.ui.BaseActivity
 import com.example.bookchigibakchigi.ui.MainActivityViewModel
 import com.example.bookchigibakchigi.ui.MainActivityViewModelFactory
+import kotlinx.coroutines.launch
 
 class RecordActivity : BaseActivity() {
 
@@ -72,6 +82,49 @@ class RecordActivity : BaseActivity() {
         binding.btnClose.setOnClickListener {
             finish()
         }
+
+        binding.btnComplete.setOnClickListener {
+            viewModel.pauseTimer()
+            showPageInputDialog()
+        }
+    }
+
+    private fun showPageInputDialog() {
+        val dialog = Dialog(this)
+        val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_record_complete, null)
+
+        // ✅ 다이얼로그의 둥근 테두리를 적용 (배경 투명)
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+
+        dialog.setContentView(dialogView)
+        // ✅ Dialog 좌우 margin 적용 (10dp 여백)
+        val params = dialog.window?.attributes
+        params?.width = WindowManager.LayoutParams.MATCH_PARENT // 너비는 match_parent
+        params?.horizontalMargin = 0.1f // 좌우 margin (10dp 정도의 비율 적용)
+        dialog.window?.attributes = params
+        // ✅ Dialog 너비를 match_parent로 설정
+//        dialog.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+
+        val etPageInput = dialogView.findViewById<EditText>(R.id.etPageInput)
+        val btnCancel = dialogView.findViewById<Button>(R.id.btnCancel)
+        val btnConfirm = dialogView.findViewById<Button>(R.id.btnConfirm)
+
+        btnCancel.setOnClickListener { dialog.dismiss() }
+
+        btnConfirm.setOnClickListener {
+            val enteredText = etPageInput.text.toString()
+            if (enteredText.isNotEmpty()) {
+                val enteredPage = enteredText.toInt()
+                lifecycleScope.launch {  // ✅ CoroutineScope 내에서 suspend 함수 호출
+                    val bookDao = AppDatabase.getDatabase(this@RecordActivity).bookDao()
+                    bookDao.updateCurrentPage(viewModel.currentBook.value!!.itemId, enteredPage)
+                }
+                dialog.dismiss()
+                finish()
+            }
+        }
+
+        dialog.show()
     }
 
     private fun createSharedElementTransition(): Transition {
