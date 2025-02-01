@@ -9,7 +9,9 @@
     <color name="black">#FF000000</color>
     <color name="gray">#BEBEBE</color>
     <color name="light_gray">#E5E4E2</color>
-    <color name="book_shelf">#adb5db</color>
+    <color name="book_shelf">#BEBEBE</color>
+    <color name="book_shelf_shadow">#909090</color>
+    <color name="book_shelf_center">#F5F5F5</color>
     <color name="white">#FFFFFFFF</color>
     <color name="activity_background">#F5F5F5</color>
     <color name="nav_item_selected_color">#FF000000</color> <!-- 선택된 항목의 색상 -->
