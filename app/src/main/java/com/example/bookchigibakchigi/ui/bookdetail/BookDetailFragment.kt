@@ -69,16 +69,26 @@ class BookDetailFragment : Fragment() {
         )
         binding.viewPager.adapter = adapter
 
-        // ViewModel 데이터 관찰 및 초기 화면 설정
+
+// ViewModel 데이터 관찰 및 초기 화면 설정
         viewModel.bookShelfItems.observe(viewLifecycleOwner) { bookList ->
             adapter.setDataList(bookList) // Adapter에 데이터 설정
 
-            viewModel.currentBook.value?.let { currentBook ->
-                val targetPosition = bookList.indexOfFirst { it.itemId == currentBook.itemId }
+            // ✅ bookList에서 itemId와 일치하는 책 찾기
+            val targetBookItem = bookList.find { it.itemId == itemId }
+
+            // 찾은 책을 로그로 출력 (디버깅용)
+            Log.d("TEST TEST", "찾은 책: ${targetBookItem?.title}, itemId: ${targetBookItem?.itemId}")
+
+            // targetBookItem을 활용한 로직 추가 가능
+            targetBookItem?.let { book ->
+                val position = bookList.indexOf(book)
+
+                viewModel.setCurrentBook(book.itemId) // 선택된 책을 ViewModel에 반영
 
                 val totalItems = bookList.size // 전체 아이템 개수
-                val hasEnoughItemsForPreview = targetPosition in 1 until totalItems - 1
-                val isNearEnd = targetPosition >= totalItems - 3 // ✅ 마지막 3개 이내인지 확인
+                val hasEnoughItemsForPreview = position in 1 until totalItems - 1
+                val isNearEnd = position >= totalItems - 3 // ✅ 마지막 3개 이내인지 확인
 
                 // ✅ offscreenPageLimit을 동적으로 조정
                 binding.viewPager.offscreenPageLimit = when {
@@ -87,19 +97,42 @@ class BookDetailFragment : Fragment() {
                     else -> 1
                 }
 
-                if (targetPosition != currentPagePosition) {
-                    // ViewPager의 초기 Transition Name 설정
-                    binding.viewPager.post {
-                        if (targetPosition != currentPagePosition) {
-                            binding.viewPager.setCurrentItem(targetPosition, false)
-                        }
-                        val currentPage = binding.viewPager.findViewWithTag<View>("page_$targetPosition")
-                        currentPage?.findViewById<View>(R.id.ivBook)?.transitionName =
-                            "sharedElement_${currentBook.itemId}"
-                    }
-                }
+                binding.viewPager.setCurrentItem(position, false)
+                val currentPage = binding.viewPager.findViewWithTag<View>("page_$position")
+                currentPage?.findViewById<View>(R.id.ivBook)?.transitionName =
+                    "sharedView_${book.itemId}"
             }
         }
+
+//        viewModel.bookShelfItems.observe(viewLifecycleOwner) { bookList ->
+//            adapter.setDataList(bookList) // Adapter에 데이터 설정
+//
+//
+////            viewModel.currentBook.value?.let { currentBook ->
+////                val targetPosition = bookList.indexOfFirst { it.itemId == currentBook.itemId }
+////
+//                val totalItems = bookList.size // 전체 아이템 개수
+//                val hasEnoughItemsForPreview = targetPosition in 1 until totalItems - 1
+//                val isNearEnd = targetPosition >= totalItems - 3 // ✅ 마지막 3개 이내인지 확인
+//
+//                // ✅ offscreenPageLimit을 동적으로 조정
+//                binding.viewPager.offscreenPageLimit = when {
+//                    isNearEnd -> 2
+//                    hasEnoughItemsForPreview -> 3
+//                    else -> 1
+//                }
+////
+////                if (targetPosition != currentPagePosition) {
+////                    // ViewPager의 초기 Transition Name 설정
+////                    binding.viewPager.post {
+//                        binding.viewPager.setCurrentItem(targetPosition, false)
+//                        val currentPage = binding.viewPager.findViewWithTag<View>("page_$targetPosition")
+//                        currentPage?.findViewById<View>(R.id.ivBook)?.transitionName =
+//                            "sharedView_${currentBook.itemId}"
+////                    }
+////                }
+////            }
+//        }
 
         binding.btnRecord.setOnClickListener {
             val selectedBook = viewModel.currentBook.value

@@ -60,7 +60,7 @@ class MyLibraryFragment : Fragment() {
         findNavController().currentBackStackEntry?.savedStateHandle?.let { savedStateHandle ->
             savedStateHandle.getLiveData<Int>("selected_position").observe(viewLifecycleOwner) { position ->
                 if (position != null) {
-                    viewModel.setCurrentBook(position+1)
+//                    viewModel.setCurrentBook(position+1)
 //                    viewModel.updateCurrentBook(position) // ViewModel 업데이트
                     scrollToPosition(position) // RecyclerView 스크롤
                 }
@@ -75,7 +75,7 @@ class MyLibraryFragment : Fragment() {
         // RecyclerView 설정
         adapter = BookShelfAdapter { bookEntity, position, sharedView ->
 //            viewModel.updateCurrentBook(position)
-            viewModel.setCurrentBook(bookEntity.itemId)
+//            viewModel.setCurrentBook(bookEntity.itemId)
             val bundle = Bundle().apply {
                 putInt("itemId", bookEntity.itemId)
                 putString("transitionName", "sharedView_${bookEntity.itemId}")
