@@ -8,19 +8,23 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.bookchigibakchigi.data.entity.BookEntity
 import com.example.bookchigibakchigi.repository.BookShelfRepository
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class MainActivityViewModel(private val repository: BookShelfRepository) : ViewModel() {
     // 책 데이터를 저장할 LiveData
-    private val _bookShelfItems = MutableLiveData<List<BookEntity>>()
-    val bookShelfItems: LiveData<List<BookEntity>> = _bookShelfItems
+    // ✅ 책 데이터를 저장할 StateFlow
+    private val _bookShelfItems = MutableStateFlow<List<BookEntity>>(emptyList())
+    val bookShelfItems: StateFlow<List<BookEntity>> = _bookShelfItems.asStateFlow()
 
-    private val _currentBook = MutableLiveData<BookEntity>()
-    val currentBook: LiveData<BookEntity> = _currentBook
+    private val _currentBook = MutableStateFlow<BookEntity?>(null)
+    val currentBook: StateFlow<BookEntity?> = _currentBook.asStateFlow()
 
-    // 현재 선택된 아이템의 위치를 저장할 변수
-    private val _currentPosition = MutableLiveData<Int>().apply { value = -1 } // 초기값: 선택 안 됨
-    val currentPosition: LiveData<Int> = _currentPosition
+    // ✅ 현재 선택된 아이템의 위치를 저장할 변수 (초기값: -1)
+    private val _currentPosition = MutableStateFlow(-1)
+    val currentPosition: StateFlow<Int> = _currentPosition.asStateFlow()
 
     init {
         loadShelfItems()
@@ -30,18 +34,13 @@ class MainActivityViewModel(private val repository: BookShelfRepository) : ViewM
         viewModelScope.launch {
             val items = repository.getShelfItems() // suspend 함수 호출
             _bookShelfItems.value = items
-
-            // 첫 번째 책을 초기 선택값으로 설정
-            if (items.isEmpty()) {
-                _currentBook.value = items[0]
-            }
         }
     }
+
     fun updateCurrentBook(position: Int) {
-        _bookShelfItems.value?.let { bookList ->
-            if (position in bookList.indices) {
-                _currentBook.value = bookList[position]
-            }
+        val bookList = _bookShelfItems.value
+        if (position in bookList.indices) {
+            _currentBook.value = bookList[position]
         }
     }
 

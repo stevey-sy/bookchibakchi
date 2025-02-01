@@ -12,13 +12,17 @@ import androidx.core.app.ActivityOptionsCompat
 import androidx.core.app.SharedElementCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.example.bookchigibakchigi.R
 import com.example.bookchigibakchigi.databinding.FragmentBookDetailBinding
 import com.example.bookchigibakchigi.ui.MainActivityViewModel
 import com.example.bookchigibakchigi.ui.bookdetail.adapter.BookViewPagerAdapter
 import com.example.bookchigibakchigi.ui.record.RecordActivity
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 class BookDetailFragment : Fragment() {
 
@@ -65,25 +69,70 @@ class BookDetailFragment : Fragment() {
         )
         binding.viewPager.adapter = adapter
 
-        // ViewModel 데이터 관찰 및 초기 화면 설정
-        viewModel.bookShelfItems.observe(viewLifecycleOwner) { bookList ->
-            adapter.setDataList(bookList) // Adapter에 데이터 설정
+        lifecycleScope.launch {
+            viewModel.bookShelfItems.collectLatest { bookList ->
+                adapter.setDataList(bookList) // ✅ Adapter에 데이터 설정
 
-            viewModel.currentBook.value?.let { currentBook ->
-                val initialPosition = bookList.indexOfFirst { it.itemId == currentBook.itemId }
+                viewModel.currentBook.value?.let { currentBook ->
+                    val targetPosition = bookList.indexOfFirst { it.itemId == currentBook.itemId }
 
-                if (initialPosition >= 0) {
-                    binding.viewPager.setCurrentItem(initialPosition, false)
+                    val totalItems = bookList.size // ✅ 전체 아이템 개수
+                    val hasEnoughItemsForPreview = targetPosition in 1 until totalItems - 1
+                    val isNearEnd = targetPosition >= totalItems - 3 // ✅ 마지막 3개 이내인지 확인
 
-                    // ViewPager의 초기 Transition Name 설정
-                    binding.viewPager.post {
-                        val currentPage = binding.viewPager.findViewWithTag<View>("page_$initialPosition")
-                        currentPage?.findViewById<View>(R.id.ivBook)?.transitionName =
-                            "sharedElement_${currentBook.itemId}"
+                    // ✅ offscreenPageLimit을 동적으로 조정
+                    binding.viewPager.offscreenPageLimit = when {
+                        isNearEnd -> 2
+                        hasEnoughItemsForPreview -> 3
+                        else -> 1
+                    }
+
+                    if (targetPosition != currentPagePosition) {
+                        // ✅ ViewPager의 초기 Transition Name 설정
+                        binding.viewPager.post {
+                            if (targetPosition != currentPagePosition) {
+                                binding.viewPager.setCurrentItem(targetPosition, false)
+                            }
+                            val currentPage = binding.viewPager.findViewWithTag<View>("page_$targetPosition")
+                            currentPage?.findViewById<View>(R.id.ivBook)?.transitionName =
+                                "sharedElement_${currentBook.itemId}"
+                        }
                     }
                 }
             }
         }
+
+        // ViewModel 데이터 관찰 및 초기 화면 설정
+//        viewModel.bookShelfItems.observe(viewLifecycleOwner) { bookList ->
+//            adapter.setDataList(bookList) // Adapter에 데이터 설정
+//
+//            viewModel.currentBook.value?.let { currentBook ->
+//                val targetPosition = bookList.indexOfFirst { it.itemId == currentBook.itemId }
+//
+//                val totalItems = bookList.size // 전체 아이템 개수
+//                val hasEnoughItemsForPreview = targetPosition in 1 until totalItems - 1
+//                val isNearEnd = targetPosition >= totalItems - 3 // ✅ 마지막 3개 이내인지 확인
+//
+//                // ✅ offscreenPageLimit을 동적으로 조정
+//                binding.viewPager.offscreenPageLimit = when {
+//                    isNearEnd -> 2
+//                    hasEnoughItemsForPreview -> 3
+//                    else -> 1
+//                }
+//
+//                if (targetPosition != currentPagePosition) {
+//                    // ViewPager의 초기 Transition Name 설정
+//                    binding.viewPager.post {
+//                        if (targetPosition != currentPagePosition) {
+//                            binding.viewPager.setCurrentItem(targetPosition, false)
+//                        }
+//                        val currentPage = binding.viewPager.findViewWithTag<View>("page_$targetPosition")
+//                        currentPage?.findViewById<View>(R.id.ivBook)?.transitionName =
+//                            "sharedElement_${currentBook.itemId}"
+//                    }
+//                }
+//            }
+//        }
 
         binding.btnRecord.setOnClickListener {
             val selectedBook = viewModel.currentBook.value
@@ -127,7 +176,11 @@ class BookDetailFragment : Fragment() {
         binding.viewPager.apply {
             clipToPadding = false  // ✅ 양옆 페이지 보이게 설정
             clipChildren = false   // ✅ 양옆 페이지 보이게 설정
-            offscreenPageLimit = 3 // 양 옆의 아이템을 미리 렌더링
+//            offscreenPageLimit = 3
+//            (getChildAt(0) as RecyclerView).apply {
+//                setItemViewCacheSize(Int.MAX_VALUE) // 모든 아이템을 미리 로드
+//                recycledViewPool.clear() // 뷰 재사용 방지
+//            }
             setPageTransformer(PreviewPageTransformer())
         }
 
@@ -148,15 +201,8 @@ class BookDetailFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-//        refreshContent()
     }
 
-    fun refreshContent() {
-        // 필요한 데이터를 다시 가져오거나, 화면을 다시 그립니다.
-        viewModel.reloadBooks() // ViewModel에서 데이터 로드 메서드 호출
-        adapter.notifyDataSetChanged() // ViewPager의 데이터 업데이트
-        binding.viewPager.setCurrentItem(0,false)
-    }
 
     /**
      * Prepares the shared element transition from and back to the grid fragment.
