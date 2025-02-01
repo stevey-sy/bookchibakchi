@@ -16,6 +16,9 @@ interface BookDao {
     @Query("SELECT * FROM books WHERE itemId = :itemId")
     suspend fun getBookById(itemId: String): BookEntity?
 
+    @Query("SELECT * FROM books WHERE itemId = :itemId")
+    fun getBookById(itemId: Int): LiveData<BookEntity>
+
     @Query("SELECT * FROM books")
     fun getAllBooks(): LiveData<List<BookEntity>>
 

@@ -8,4 +8,8 @@ class BookShelfRepository(private val bookDao: BookDao) {
     fun getShelfItems(): LiveData<List<BookEntity>> {
         return bookDao.getAllBooks()
     }
+
+    fun getBookById(itemId: Int): LiveData<BookEntity> {
+        return bookDao.getBookById(itemId) // ✅ LiveData 반환
+    }
 }

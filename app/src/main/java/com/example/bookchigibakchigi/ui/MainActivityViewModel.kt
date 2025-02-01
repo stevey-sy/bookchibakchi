@@ -21,11 +21,9 @@ class MainActivityViewModel(private val repository: BookShelfRepository) : ViewM
     private val _currentPosition = MutableLiveData<Int>().apply { value = -1 } // 초기값: 선택 안 됨
     val currentPosition: LiveData<Int> = _currentPosition
 
-    fun updateCurrentBook(position: Int) {
-        bookShelfItems.value?.let { bookList ->
-            if (position in bookList.indices) {
-                _currentBook.value = bookList[position]
-            }
+    fun setCurrentBook(itemId: Int) {
+        repository.getBookById(itemId).observeForever { book ->
+            _currentBook.value = book
         }
     }
 }

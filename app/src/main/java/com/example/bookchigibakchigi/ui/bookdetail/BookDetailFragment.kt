@@ -154,7 +154,7 @@ class BookDetailFragment : Fragment() {
         binding.viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
-                viewModel.updateCurrentBook(position) // 선택된 페이지 업데이트
+                viewModel.setCurrentBook(position+1)
                 sharedView = binding.viewPager.findViewWithTag<View>("page_$position")?.findViewById(R.id.ivBook)
                 // 현재 ViewPager의 Transition Name과 position 저장
                 currentPagePosition = position
