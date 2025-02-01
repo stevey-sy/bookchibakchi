@@ -99,37 +99,37 @@ class MyLibraryFragment : Fragment() {
             startActivity(intent)
         }
 
-        lifecycleScope.launch {
-            viewModel.bookShelfItems.collectLatest { bookList ->
-                adapter.setDataList(bookList) // ✅ Adapter에 데이터 설정
-
-                // ✅ 데이터 로드 완료 후 Transition 시작
-                binding.rvShelf.viewTreeObserver.addOnPreDrawListener(
-                    object : ViewTreeObserver.OnPreDrawListener {
-                        override fun onPreDraw(): Boolean {
-                            binding.rvShelf.viewTreeObserver.removeOnPreDrawListener(this)
-                            startPostponedEnterTransition() // ✅ Transition 시작
-                            return true
-                        }
-                    }
-                )
-            }
-        }
-
-//        // Observe LiveData
-//        viewModel.bookShelfItems.observe(viewLifecycleOwner) { bookList ->
-//            adapter.setDataList(bookList)
-//            // 데이터 로드 완료 후 Transition 시작
-//            binding.rvShelf.viewTreeObserver.addOnPreDrawListener(
-//                object : ViewTreeObserver.OnPreDrawListener {
-//                    override fun onPreDraw(): Boolean {
-//                        binding.rvShelf.viewTreeObserver.removeOnPreDrawListener(this)
-//                        startPostponedEnterTransition() // Transition 시작
-//                        return true
+//        lifecycleScope.launch {
+//            viewModel.bookShelfItems.collectLatest { bookList ->
+//                adapter.setDataList(bookList) // ✅ Adapter에 데이터 설정
+//
+//                // ✅ 데이터 로드 완료 후 Transition 시작
+//                binding.rvShelf.viewTreeObserver.addOnPreDrawListener(
+//                    object : ViewTreeObserver.OnPreDrawListener {
+//                        override fun onPreDraw(): Boolean {
+//                            binding.rvShelf.viewTreeObserver.removeOnPreDrawListener(this)
+//                            startPostponedEnterTransition() // ✅ Transition 시작
+//                            return true
+//                        }
 //                    }
-//                }
-//            )
+//                )
+//            }
 //        }
+
+        // Observe LiveData
+        viewModel.bookShelfItems.observe(viewLifecycleOwner) { bookList ->
+            adapter.setDataList(bookList)
+            // 데이터 로드 완료 후 Transition 시작
+            binding.rvShelf.viewTreeObserver.addOnPreDrawListener(
+                object : ViewTreeObserver.OnPreDrawListener {
+                    override fun onPreDraw(): Boolean {
+                        binding.rvShelf.viewTreeObserver.removeOnPreDrawListener(this)
+                        startPostponedEnterTransition() // Transition 시작
+                        return true
+                    }
+                }
+            )
+        }
     }
 
     fun refreshContent() {
