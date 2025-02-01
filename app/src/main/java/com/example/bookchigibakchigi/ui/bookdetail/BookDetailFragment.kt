@@ -31,7 +31,7 @@ class BookDetailFragment : Fragment() {
     private val viewModel: MainActivityViewModel by activityViewModels()
     private lateinit var adapter: BookViewPagerAdapter
     private var sharedView: View? = null
-    private var currentPagePosition = 0
+    private var currentItemId = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,7 +50,7 @@ class BookDetailFragment : Fragment() {
         _binding = FragmentBookDetailBinding.inflate(inflater, container, false)
 
         // 전달된 itemId를 Bundle에서 가져오기
-        val itemId = arguments?.getInt("itemId")
+        currentItemId = arguments?.getInt("itemId")!!
         val transitionName = arguments?.getString("transitionName") ?: ""
 
         // ViewModel 바인딩
@@ -70,12 +70,12 @@ class BookDetailFragment : Fragment() {
         binding.viewPager.adapter = adapter
 
 
-// ViewModel 데이터 관찰 및 초기 화면 설정
+        // ViewModel 데이터 관찰 및 초기 화면 설정
         viewModel.bookShelfItems.observe(viewLifecycleOwner) { bookList ->
             adapter.setDataList(bookList) // Adapter에 데이터 설정
 
             // ✅ bookList에서 itemId와 일치하는 책 찾기
-            val targetBookItem = bookList.find { it.itemId == itemId }
+            val targetBookItem = bookList.find { it.itemId == currentItemId }
 
             // 찾은 책을 로그로 출력 (디버깅용)
             Log.d("TEST TEST", "찾은 책: ${targetBookItem?.title}, itemId: ${targetBookItem?.itemId}")
@@ -103,36 +103,6 @@ class BookDetailFragment : Fragment() {
                     "sharedView_${book.itemId}"
             }
         }
-
-//        viewModel.bookShelfItems.observe(viewLifecycleOwner) { bookList ->
-//            adapter.setDataList(bookList) // Adapter에 데이터 설정
-//
-//
-////            viewModel.currentBook.value?.let { currentBook ->
-////                val targetPosition = bookList.indexOfFirst { it.itemId == currentBook.itemId }
-////
-//                val totalItems = bookList.size // 전체 아이템 개수
-//                val hasEnoughItemsForPreview = targetPosition in 1 until totalItems - 1
-//                val isNearEnd = targetPosition >= totalItems - 3 // ✅ 마지막 3개 이내인지 확인
-//
-//                // ✅ offscreenPageLimit을 동적으로 조정
-//                binding.viewPager.offscreenPageLimit = when {
-//                    isNearEnd -> 2
-//                    hasEnoughItemsForPreview -> 3
-//                    else -> 1
-//                }
-////
-////                if (targetPosition != currentPagePosition) {
-////                    // ViewPager의 초기 Transition Name 설정
-////                    binding.viewPager.post {
-//                        binding.viewPager.setCurrentItem(targetPosition, false)
-//                        val currentPage = binding.viewPager.findViewWithTag<View>("page_$targetPosition")
-//                        currentPage?.findViewById<View>(R.id.ivBook)?.transitionName =
-//                            "sharedView_${currentBook.itemId}"
-////                    }
-////                }
-////            }
-//        }
 
         binding.btnRecord.setOnClickListener {
             val selectedBook = viewModel.currentBook.value
@@ -187,10 +157,10 @@ class BookDetailFragment : Fragment() {
         binding.viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
-                viewModel.setCurrentBook(position+1)
+                currentItemId = viewModel.bookShelfItems.value?.get(position)?.itemId ?: 0
+                viewModel.setCurrentBook(currentItemId)
                 sharedView = binding.viewPager.findViewWithTag<View>("page_$position")?.findViewById(R.id.ivBook)
                 // 현재 ViewPager의 Transition Name과 position 저장
-                currentPagePosition = position
                 val currentItem = viewModel.currentBook.value
                 val transitionName = "sharedView_${currentItem?.itemId}" // Transition Name 생성
                 findNavController().previousBackStackEntry?.savedStateHandle?.set("current_transition_name", transitionName)
