@@ -1,5 +1,6 @@
 package com.example.bookchigibakchigi.data.dao
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
@@ -16,7 +17,7 @@ interface BookDao {
     suspend fun getBookById(itemId: String): BookEntity?
 
     @Query("SELECT * FROM books")
-    suspend fun getAllBooks(): List<BookEntity>
+    fun getAllBooks(): LiveData<List<BookEntity>>
 
     @Delete
     suspend fun deleteBook(book: BookEntity)

@@ -99,23 +99,6 @@ class MyLibraryFragment : Fragment() {
             startActivity(intent)
         }
 
-//        lifecycleScope.launch {
-//            viewModel.bookShelfItems.collectLatest { bookList ->
-//                adapter.setDataList(bookList) // ✅ Adapter에 데이터 설정
-//
-//                // ✅ 데이터 로드 완료 후 Transition 시작
-//                binding.rvShelf.viewTreeObserver.addOnPreDrawListener(
-//                    object : ViewTreeObserver.OnPreDrawListener {
-//                        override fun onPreDraw(): Boolean {
-//                            binding.rvShelf.viewTreeObserver.removeOnPreDrawListener(this)
-//                            startPostponedEnterTransition() // ✅ Transition 시작
-//                            return true
-//                        }
-//                    }
-//                )
-//            }
-//        }
-
         // Observe LiveData
         viewModel.bookShelfItems.observe(viewLifecycleOwner) { bookList ->
             adapter.setDataList(bookList)
@@ -134,7 +117,7 @@ class MyLibraryFragment : Fragment() {
 
     fun refreshContent() {
         // 필요한 데이터를 다시 가져오거나, 화면을 다시 그립니다.
-        viewModel.reloadBooks() // ViewModel에서 데이터 로드 메서드 호출
+//        viewModel.reloadBooks() // ViewModel에서 데이터 로드 메서드 호출
     }
 
     private fun prepareTransitions() {
@@ -176,11 +159,6 @@ class MyLibraryFragment : Fragment() {
                 }
             }
         })
-    }
-
-    override fun onResume() {
-        super.onResume()
-        refreshContent()
     }
 
     override fun onDestroyView() {

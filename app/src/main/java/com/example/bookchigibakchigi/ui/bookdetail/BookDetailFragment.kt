@@ -69,39 +69,6 @@ class BookDetailFragment : Fragment() {
         )
         binding.viewPager.adapter = adapter
 
-//        lifecycleScope.launch {
-//            viewModel.bookShelfItems.collectLatest { bookList ->
-//                adapter.setDataList(bookList) // ✅ Adapter에 데이터 설정
-//
-//                viewModel.currentBook.value?.let { currentBook ->
-//                    val targetPosition = bookList.indexOfFirst { it.itemId == currentBook.itemId }
-//
-//                    val totalItems = bookList.size // ✅ 전체 아이템 개수
-//                    val hasEnoughItemsForPreview = targetPosition in 1 until totalItems - 1
-//                    val isNearEnd = targetPosition >= totalItems - 3 // ✅ 마지막 3개 이내인지 확인
-//
-//                    // ✅ offscreenPageLimit을 동적으로 조정
-//                    binding.viewPager.offscreenPageLimit = when {
-//                        isNearEnd -> 2
-//                        hasEnoughItemsForPreview -> 3
-//                        else -> 1
-//                    }
-//
-//                    if (targetPosition != currentPagePosition) {
-//                        // ✅ ViewPager의 초기 Transition Name 설정
-//                        binding.viewPager.post {
-//                            if (targetPosition != currentPagePosition) {
-//                                binding.viewPager.setCurrentItem(targetPosition, false)
-//                            }
-//                            val currentPage = binding.viewPager.findViewWithTag<View>("page_$targetPosition")
-//                            currentPage?.findViewById<View>(R.id.ivBook)?.transitionName =
-//                                "sharedElement_${currentBook.itemId}"
-//                        }
-//                    }
-//                }
-//            }
-//        }
-
         // ViewModel 데이터 관찰 및 초기 화면 설정
         viewModel.bookShelfItems.observe(viewLifecycleOwner) { bookList ->
             adapter.setDataList(bookList) // Adapter에 데이터 설정

@@ -12,8 +12,7 @@ import kotlinx.coroutines.launch
 
 class MainActivityViewModel(private val repository: BookShelfRepository) : ViewModel() {
     // 책 데이터를 저장할 LiveData
-    private val _bookShelfItems = MutableLiveData<List<BookEntity>>()
-    val bookShelfItems: LiveData<List<BookEntity>> = _bookShelfItems
+    val bookShelfItems: LiveData<List<BookEntity>> = repository.getShelfItems()
 
     private val _currentBook = MutableLiveData<BookEntity>()
     val currentBook: LiveData<BookEntity> = _currentBook
@@ -22,26 +21,12 @@ class MainActivityViewModel(private val repository: BookShelfRepository) : ViewM
     private val _currentPosition = MutableLiveData<Int>().apply { value = -1 } // 초기값: 선택 안 됨
     val currentPosition: LiveData<Int> = _currentPosition
 
-    init {
-        loadShelfItems()
-    }
-
-    private fun loadShelfItems() {
-        viewModelScope.launch {
-            val items = repository.getShelfItems() // suspend 함수 호출
-            _bookShelfItems.value = items
-        }
-    }
     fun updateCurrentBook(position: Int) {
-        _bookShelfItems.value?.let { bookList ->
+        bookShelfItems.value?.let { bookList ->
             if (position in bookList.indices) {
                 _currentBook.value = bookList[position]
             }
         }
-    }
-
-    fun reloadBooks() {
-        loadShelfItems()
     }
 }
 
