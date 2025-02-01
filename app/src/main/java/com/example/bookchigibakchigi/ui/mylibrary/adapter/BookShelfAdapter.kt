@@ -86,7 +86,7 @@ class BookShelfAdapter(
 
         fun bindEmpty(position: Int, itemCount: Int) {
 
-            binding.ivBook.transitionName = "sharedView_${position+1}"
+            binding.ivBook.transitionName = "sharedView_"
 
             binding.ivBook.visibility = View.INVISIBLE
             binding.vBookShadow.visibility = View.INVISIBLE
