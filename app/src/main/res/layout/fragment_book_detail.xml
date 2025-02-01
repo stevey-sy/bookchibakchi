@@ -70,14 +70,11 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:layout_marginTop="20dp"
-            android:clipToPadding="false"
-            android:clipChildren="false"
             tools:context=".ui.bookdetail.BookDetailFragment">
 
             <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="300dp">
+                android:layout_height="@dimen/_260sdp">
 
                 <androidx.viewpager2.widget.ViewPager2
                     android:id="@+id/viewPager"
@@ -86,6 +83,7 @@
                     android:clipToPadding="false"
                     android:clipChildren="false"
                     android:overScrollMode="never"
+                    android:layout_gravity="center"
                     app:submitBookList="@{viewModel.bookShelfItems}" />
 
             </FrameLayout>
@@ -95,7 +93,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:layout_marginHorizontal="20dp">
+                android:layout_marginHorizontal="@dimen/_20sdp">
 
                 <TextView
                     android:id="@+id/tvBookTitle"
@@ -103,9 +101,9 @@
                     android:layout_height="wrap_content"
                     android:textStyle="bold"
                     android:textColor="@color/black"
-                    android:layout_marginHorizontal="40dp"
+                    android:layout_marginHorizontal="@dimen/_20sdp"
                     android:gravity="center"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="@dimen/_6sdp"
                     android:minLines="3"
                     android:text="@{viewModel.currentBook.title}"
                  />
@@ -116,7 +114,7 @@
                     android:layout_height="wrap_content"
                     android:textStyle="bold"
                     android:textColor="@color/gray"
-                    android:layout_marginHorizontal="40dp"
+                    android:layout_marginHorizontal="@dimen/_20sdp"
                     android:layout_marginTop="4dp"
                     android:gravity="center"
                     android:text="@{viewModel.currentBook.author}" />
@@ -135,13 +133,17 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="12dp"
+                    android:padding="@dimen/_10sdp"
+                    android:clipToPadding="false"
+                    android:clipChildren="false"
                     app:isProgressBarVisible="@{viewModel.bookShelfItems}">
 
                     <LinearLayout
                         android:id="@+id/llProgressPercentage"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:clipToPadding="false"
+                        android:clipChildren="false"
                         app:progressTranslation="@{viewModel.currentBook.progressPercentage}"
                         android:orientation="vertical">
 
@@ -158,8 +160,8 @@
                             android:text='@{String.valueOf(viewModel.currentBook.progressPercentage) + "%"}' />
 
                         <View
-                            android:layout_width="10dp"
-                            android:layout_height="10dp"
+                            android:layout_width="@dimen/_8sdp"
+                            android:layout_height="@dimen/_8sdp"
                             android:layout_marginTop="-4dp"
                             android:background="@drawable/background_triangle"
                             android:layout_gravity="center"
@@ -195,7 +197,7 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
+                    android:layout_height="@dimen/_40sdp"
                     android:orientation="horizontal"
                     android:background="@drawable/background_rounded_rectangle_black"
                     android:weightSum="2">

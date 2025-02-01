@@ -72,6 +72,7 @@ dependencies {
     implementation(libs.androidx.legacy.support.v4)
     implementation(libs.androidx.fragment.ktx)
     implementation(libs.androidx.activity)
+    implementation(libs.sdp.android)
 
 
     // 네트워크 통신용 Retrofit
