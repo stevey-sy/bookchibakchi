@@ -20,11 +20,21 @@ data class BookEntity(
     val challengePageCnt: Int,
     val startDate: String,
     val endDate: String,
+    val elapsedTimeInSeconds: Int = 0,
+    val completedReadingCnt: Int = 0,
+
 ) : Parcelable {
     val progressPercentage: Int
         get() = if (totalPageCnt > 0) (currentPageCnt * 100) / totalPageCnt else 0
 
     fun getProgressText(): String {
         return "p. $currentPageCnt / $totalPageCnt"
+    }
+
+    fun getElapsedTimeFormatted(): String {
+        val hours = elapsedTimeInSeconds / 3600
+        val minutes = (elapsedTimeInSeconds % 3600) / 60
+        val seconds = elapsedTimeInSeconds % 60
+        return String.format("%02d:%02d:%02d", hours, minutes, seconds)
     }
 }

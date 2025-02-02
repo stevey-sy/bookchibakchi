@@ -130,7 +130,8 @@ class RecordActivity : BaseActivity() {
         btnAllComplete.setOnClickListener{
             lifecycleScope.launch {  // ✅ CoroutineScope 내에서 suspend 함수 호출
                 val bookDao = AppDatabase.getDatabase(this@RecordActivity).bookDao()
-                bookDao.updateCurrentPage(viewModel.currentBook.value!!.itemId, totalPageCount)
+                val elapsedTime = viewModel.elapsedTime / 1000
+                bookDao.updateReadingProgress(viewModel.currentBook.value!!.itemId, totalPageCount, elapsedTime.toInt())
                 dialog.dismiss()
 
                 binding.btnComplete.visibility = View.GONE
@@ -179,7 +180,8 @@ class RecordActivity : BaseActivity() {
                 val enteredPage = enteredText.toInt()
                 lifecycleScope.launch {  // ✅ CoroutineScope 내에서 suspend 함수 호출
                     val bookDao = AppDatabase.getDatabase(this@RecordActivity).bookDao()
-                    bookDao.updateCurrentPage(viewModel.currentBook.value!!.itemId, enteredPage)
+                    val elapsedTime = viewModel.elapsedTime / 1000
+                    bookDao.updateReadingProgress(viewModel.currentBook.value!!.itemId, enteredPage, elapsedTime.toInt())
                     dialog.dismiss()
                     finish()
                 }

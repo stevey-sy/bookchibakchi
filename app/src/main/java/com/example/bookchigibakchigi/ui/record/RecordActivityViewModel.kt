@@ -33,7 +33,7 @@ class RecordActivityViewModel : ViewModel() {
     private val _currentBook = MutableLiveData<BookEntity>()
     val currentBook: LiveData<BookEntity> = _currentBook
 
-    private var elapsedTime: Long = 0L  // 총 경과 시간 (밀리초 단위)
+    var elapsedTime: Long = 0L  // 총 경과 시간 (밀리초 단위)
     private var timer: CountDownTimer? = null  // 타이머 객체
 
     fun setCurrentBook(book: BookEntity) {
