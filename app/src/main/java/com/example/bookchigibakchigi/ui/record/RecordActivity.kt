@@ -1,8 +1,11 @@
 package com.example.bookchigibakchigi.ui.record
 
 import android.app.Dialog
+import android.content.Context
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.transition.Transition
 import android.transition.TransitionInflater
 import android.view.LayoutInflater
@@ -10,9 +13,11 @@ import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.view.WindowManager
 import android.view.animation.AccelerateDecelerateInterpolator
+import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
@@ -85,11 +90,13 @@ class RecordActivity : BaseActivity() {
 
         binding.btnComplete.setOnClickListener {
             viewModel.pauseTimer()
-            showPageInputDialog()
+            viewModel.currentBook.value?.let { it1 ->
+                showPageInputDialog(it1.currentPageCnt, it1.totalPageCnt)
+            }
         }
     }
 
-    private fun showPageInputDialog() {
+    private fun showPageInputDialog(currentPageCnt: Int, totalPageCount: Int) {
         val dialog = Dialog(this)
         val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_record_complete, null)
 
@@ -106,8 +113,22 @@ class RecordActivity : BaseActivity() {
 //        dialog.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
 
         val etPageInput = dialogView.findViewById<EditText>(R.id.etPageInput)
-        val btnCancel = dialogView.findViewById<Button>(R.id.btnCancel)
-        val btnConfirm = dialogView.findViewById<Button>(R.id.btnConfirm)
+        val tvTotalPages = dialogView.findViewById<TextView>(R.id.tvTotalPages)
+        val btnCancel = dialogView.findViewById<TextView>(R.id.btnCancel)
+        val btnConfirm = dialogView.findViewById<TextView>(R.id.btnConfirm)
+        val btnAllComplete = dialogView.findViewById<TextView>(R.id.btnAllComplete)
+
+        etPageInput.setText(currentPageCnt.toString())  // 현재 읽은 페이지 기본 입력
+        tvTotalPages.text = "/ $totalPageCount" // 총 페이지 수 표시
+
+        btnAllComplete.setOnClickListener{
+            lifecycleScope.launch {  // ✅ CoroutineScope 내에서 suspend 함수 호출
+                val bookDao = AppDatabase.getDatabase(this@RecordActivity).bookDao()
+                bookDao.updateCurrentPage(viewModel.currentBook.value!!.itemId, totalPageCount)
+                dialog.dismiss()
+                finish()
+            }
+        }
 
         btnCancel.setOnClickListener { dialog.dismiss() }
 
@@ -118,13 +139,22 @@ class RecordActivity : BaseActivity() {
                 lifecycleScope.launch {  // ✅ CoroutineScope 내에서 suspend 함수 호출
                     val bookDao = AppDatabase.getDatabase(this@RecordActivity).bookDao()
                     bookDao.updateCurrentPage(viewModel.currentBook.value!!.itemId, enteredPage)
+                    dialog.dismiss()
+                    finish()
                 }
-                dialog.dismiss()
-                finish()
             }
         }
 
         dialog.show()
+
+        // ✅ 다이얼로그가 표시된 후 키보드를 자동으로 띄우고, EditText 전체 선택
+        Handler(Looper.getMainLooper()).postDelayed({
+            etPageInput.requestFocus() // 포커스 설정
+            etPageInput.selectAll() // 텍스트 전체 선택
+
+            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.showSoftInput(etPageInput, InputMethodManager.SHOW_IMPLICIT) // 키보드 표시
+        }, 100)
     }
 
     private fun createSharedElementTransition(): Transition {

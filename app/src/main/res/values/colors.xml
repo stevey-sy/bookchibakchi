@@ -9,6 +9,7 @@
     <color name="black">#FF000000</color>
     <color name="gray">#BEBEBE</color>
     <color name="light_gray">#E5E4E2</color>
+    <color name="yellow">#FFDE21</color>
     <color name="book_shelf">#BEBEBE</color>
     <color name="book_shelf_shadow">#c5c5c5</color>
     <color name="book_shelf_center">#F5F5F5</color>

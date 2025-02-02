@@ -4,66 +4,104 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:background="@drawable/background_rounded"
-    android:padding="24dp">
+    android:background="@drawable/background_rounded">
 
     <!-- 제목 -->
     <TextView
-    android:id="@+id/tvDialogTitle"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="마지막으로 읽은 페이지를 입력해주세요."
-    android:textSize="18sp"
-    android:textStyle="bold"
-    android:textColor="@color/black"
-    android:layout_gravity="center"
-    android:paddingBottom="12dp"/>
-
-        <!-- 페이지 입력 -->
-    <EditText
-    android:id="@+id/etPageInput"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:hint="읽은 페이지 수 입력"
-    android:inputType="number"
-    android:background="@drawable/background_edittext"
-    android:padding="12dp"
-    android:textSize="16sp"/>
-
-        <!-- 버튼 영역 -->
-    <LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:gravity="end"
-    android:paddingTop="12dp">
-
-        <Button
-            android:id="@+id/btnCancel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="취소"
-            android:textColor="@color/black"
-            android:background="@android:color/transparent"/>
-
-        <Button
-            android:id="@+id/btnConfirm"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="확인"
-            android:textColor="@color/white"
-            android:backgroundTint="@color/black"
-            android:layout_marginStart="8dp"/>
-    </LinearLayout>
-
-    <Button
-        android:id="@+id/btnAllComplete"
+        android:id="@+id/tvDialogTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="마지막으로 읽은 페이지를 입력해주세요."
+        android:textSize="18sp"
+        android:layout_marginTop="@dimen/_20sdp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:layout_gravity="center"
+        android:paddingBottom="12dp"/>
+
+    <!-- 페이지 입력 + 총 페이지 수 표시 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="@dimen/_20sdp"
+        android:gravity="center">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="p. "
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            />
+
+        <!-- 읽은 페이지 입력 -->
+        <EditText
+            android:id="@+id/etPageInput"
+            android:layout_width="@dimen/_80sdp"
+            android:layout_height="wrap_content"
+            android:hint="마지막 페이지"
+            android:inputType="number"
+            android:gravity="center"
+            android:background="@drawable/background_edittext"
+            android:textColorHighlight="@android:color/darker_gray"
+            android:padding="12dp"
+            android:textSize="16sp"/>
+
+        <!-- 총 페이지 수 -->
+        <TextView
+            android:id="@+id/tvTotalPages"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=" / 300"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:paddingStart="8dp"/>
+    </LinearLayout>
+
+    <!-- 버튼 영역 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_40sdp"
+        android:orientation="horizontal"
+        android:gravity="center"
+
+        android:layout_marginTop="@dimen/_20sdp"
+        android:layout_weight="2">
+
+        <TextView
+            android:id="@+id/btnCancel"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="취소"
+            android:textColor="@color/black"
+            android:background="@color/light_gray"/>
+
+        <TextView
+            android:id="@+id/btnConfirm"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="확인"
+            android:textColor="@color/white"
+            android:background="@color/black"
+            />
+    </LinearLayout>
+
+    <!-- "다 읽었습니다" 버튼 -->
+    <TextView
+        android:id="@+id/btnAllComplete"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_40sdp"
         android:layout_gravity="end"
-        android:text="다 읽었습니다."
-        android:textColor="@color/white"
-        android:backgroundTint="@color/black"
-        android:layout_marginStart="8dp"/>
+        android:gravity="center"
+        android:textStyle="bold"
+        android:text="✔ 다 읽었습니다!"
+        android:background="@drawable/background_bottom_rounded"
+        android:textColor="@color/yellow"
+ />
 
 </LinearLayout>

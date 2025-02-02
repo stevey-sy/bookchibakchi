@@ -93,8 +93,10 @@ class BookShelfAdapter(
             binding.vBookShadow.visibility = View.INVISIBLE
             binding.vBookShadowUp.visibility = View.INVISIBLE
             binding.ivPlant.visibility = if (position == itemCount - 1) View.VISIBLE else View.INVISIBLE
-            binding.ivClock.visibility = if (position == itemCount - 3) View.VISIBLE else View.INVISIBLE
-            binding.ivFlower.visibility = if (position == itemCount - 5) View.VISIBLE else View.INVISIBLE
+//            binding.ivClock.visibility = if (position == itemCount - 3) View.VISIBLE else View.INVISIBLE
+//            binding.ivFlower.visibility = if (position == itemCount - 5) View.VISIBLE else View.INVISIBLE
+            binding.ivClock.visibility = View.INVISIBLE
+            binding.ivFlower.visibility = View.INVISIBLE
 
             val context = binding.root.context
             val drawableRes = when (position % 3) {
