@@ -87,15 +87,18 @@ object BindingAdapters {
     @BindingAdapter("progressTranslation")
     fun setProgressTranslation(view: View, percentage: Int) {
         view.post {
-            // 부모 뷰 가져오기
             val parentView = view.parent as? ViewGroup
             val parentWidth = parentView?.width ?: 0 // 부모의 width 가져오기
+            val viewWidth = view.width // 현재 뷰의 width
 
-            // 부모의 width를 기준으로 percentage에 따른 목표 translationX 계산
-            val baseTranslationX = parentWidth * (percentage / 100f)
+            // ✅ 100%일 때 부모 width를 초과하지 않도록 조정
+            val baseTranslationX = (parentWidth * (percentage / 100f)).coerceAtMost(parentWidth - viewWidth.toFloat())
 
             // 목표 translationX 값 (자신의 width의 절반만큼 빼기)
-            val targetTranslationX = baseTranslationX - (view.width / 2f)
+            var targetTranslationX = baseTranslationX - (viewWidth / 2f)
+            if(percentage == 100) {
+                targetTranslationX = baseTranslationX - (viewWidth / 4f)
+            }
 
             // 현재 translationX 값 가져오기
             val currentTranslationX = view.translationX
