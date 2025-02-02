@@ -9,147 +9,227 @@
             type="com.example.bookchigibakchigi.ui.record.RecordActivityViewModel" />
     </data>
 
-    <LinearLayout
+    <FrameLayout
         android:id="@+id/main"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        app:bindBackgroundColor="@{viewModel.backgroundColor}">
-
-        <!-- 상단 닫기 버튼 -->
-        <ImageView
-            android:id="@+id/btnClose"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
-            android:layout_gravity="end"
-            android:layout_marginTop="20dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
-            android:src="@drawable/ic_close_white"
-            android:contentDescription="닫기 버튼" />
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical"
-            android:gravity="center"
-            android:layout_marginTop="60dp">
+            app:bindBackgroundColor="@{viewModel.backgroundColor}">
 
-            <!-- 타이머 표시 -->
-            <TextView
-                android:id="@+id/tvTimer"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@{viewModel.timerText}"
-                android:textSize="40sp"
-                android:textStyle="bold"
-                android:textColor="@color/white"
-                android:layout_marginTop="16dp" />
-
-            <!-- 상태 텍스트 -->
-            <TextView
-                android:id="@+id/tvStatus"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@{viewModel.status}"
-                android:textSize="16sp"
-                android:textColor="@color/white"
-                android:layout_marginTop="8dp" />
-
-            <!-- 일시정지 버튼 -->
+            <!-- 상단 닫기 버튼 -->
             <ImageView
-                android:id="@+id/btnPause"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:scaleType="centerCrop"
-                android:contentDescription="일시정지 버튼"
-                android:layout_marginTop="16dp"
-                app:bindPauseButtonIcon="@{viewModel.pauseButtonIcon}"
-                android:onClick="@{() -> viewModel.toggleTimer()}"/>
+                android:id="@+id/btnClose"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_gravity="end"
+                android:layout_marginTop="20dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                app:bindSrc="@{viewModel.closeButtonIcon}"
+                android:contentDescription="닫기 버튼" />
 
-        </LinearLayout>
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_200sdp"
+                android:layout_marginTop="60dp">
 
+                <LinearLayout
+                    android:id="@+id/llTimer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center">
 
+                    <!-- 타이머 표시 -->
+                    <TextView
+                        android:id="@+id/tvTimer"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@{viewModel.timerText}"
+                        android:textSize="40sp"
+                        android:textStyle="bold"
+                        app:bindTextColor="@{viewModel.textColor}"
+                        android:layout_marginTop="16dp" />
 
-        <!-- 책 정보 카드 -->
-        <LinearLayout
-            android:id="@+id/bookInfoContainer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:padding="16dp"
-            android:orientation="horizontal"
-            android:elevation="4dp">
+                    <!-- 상태 텍스트 -->
+                    <TextView
+                        android:id="@+id/tvStatus"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@{viewModel.status}"
+                        android:textSize="16sp"
+                        app:bindTextColor="@{viewModel.textColor}"
+                        android:layout_marginTop="8dp" />
 
-            <!-- 책 표지를 감싸는 CardView -->
-            <androidx.cardview.widget.CardView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="4dp"
-                app:cardBackgroundColor="@android:color/white">
+                    <!-- 일시정지 버튼 -->
+                    <ImageView
+                        android:id="@+id/btnPause"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:scaleType="centerCrop"
+                        android:contentDescription="일시정지 버튼"
+                        android:layout_marginTop="16dp"
+                        app:bindPauseButtonIcon="@{viewModel.pauseButtonIcon}"
+                        android:onClick="@{() -> viewModel.toggleTimer()}"/>
 
-                <!-- 책 이미지 -->
-                <ImageView
-                    android:id="@+id/ivBookCover"
-                    android:layout_width="60dp"
-                    android:layout_height="90dp"
-                    android:contentDescription="책 표지"
-                    android:scaleType="fitXY"
-                    app:imageUrl="@{viewModel.currentBook.coverImageUrl}" />
-            </androidx.cardview.widget.CardView>
+                </LinearLayout>
 
-            <!-- 책 정보 -->
+                <LinearLayout
+                    android:id="@+id/llCongrats"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <com.airbnb.lottie.LottieAnimationView
+                        android:id="@+id/animViewComplete"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_100sdp"
+                        app:lottie_autoPlay="false"
+                        app:lottie_loop="false" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="축하합니다! 한 권의 책을 완독했어요! 🎉"
+                        android:textSize="18sp"
+                        android:textColor="@color/black"
+                        android:textStyle="bold"
+                        android:gravity="center"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="총 소요시간"
+                        android:textSize="18sp"
+                        android:textColor="@color/black"
+                        android:textStyle="bold"
+                        android:gravity="center"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        />
+
+                    <TextView
+                        android:id="@+id/tvTotalReadingTime"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="06:00:24"
+                        android:textSize="26sp"
+                        android:textColor="@color/black"
+                        android:textStyle="bold"
+                        android:gravity="center"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        />
+
+                </LinearLayout>
+            </FrameLayout>
+
+            <!-- 책 정보 카드 -->
             <LinearLayout
-                android:layout_width="0dp"
+                android:id="@+id/bookInfoContainer"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                android:paddingStart="12dp">
+                android:layout_marginTop="32dp"
+                android:padding="16dp"
+                android:orientation="horizontal"
+                android:elevation="4dp">
 
-                <TextView
-                    android:id="@+id/tvBookTitle"
+                <!-- 책 표지를 감싸는 CardView -->
+                <androidx.cardview.widget.CardView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{viewModel.currentBook.title}"
-                    android:textSize="18sp"
-                    android:textColor="@color/white"
-                    android:textStyle="bold" />
+                    app:cardCornerRadius="8dp"
+                    app:cardElevation="4dp"
+                    app:cardBackgroundColor="@android:color/white">
 
-                <TextView
-                    android:id="@+id/tvBookAuthor"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@{viewModel.currentBook.author}"
-                    android:textSize="14sp"
-                    android:textColor="@color/white"
-                    android:layout_marginTop="4dp" />
+                    <!-- 책 이미지 -->
+                    <ImageView
+                        android:id="@+id/ivBookCover"
+                        android:layout_width="60dp"
+                        android:layout_height="90dp"
+                        android:contentDescription="책 표지"
+                        android:scaleType="fitXY"
+                        app:imageUrl="@{viewModel.currentBook.coverImageUrl}" />
+                </androidx.cardview.widget.CardView>
 
-                <TextView
-                    android:id="@+id/tvBookProgress"
-                    android:layout_width="wrap_content"
+                <!-- 책 정보 -->
+                <LinearLayout
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="@{viewModel.getBookProgressText()}"
-                    android:textSize="14sp"
-                    android:textColor="@color/white"
-                    android:layout_marginTop="4dp" />
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:paddingStart="12dp">
+
+                    <TextView
+                        android:id="@+id/tvBookTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@{viewModel.currentBook.title}"
+                        android:textSize="18sp"
+                        app:bindTextColor="@{viewModel.textColor}"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvBookAuthor"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@{viewModel.currentBook.author}"
+                        android:textSize="14sp"
+                        app:bindTextColor="@{viewModel.textColor}"
+                        android:layout_marginTop="4dp" />
+
+                    <TextView
+                        android:id="@+id/tvBookProgress"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@{viewModel.getBookProgressText()}"
+                        android:textSize="14sp"
+                        app:bindTextColor="@{viewModel.textColor}"
+                        android:layout_marginTop="4dp" />
+
+                </LinearLayout>
 
             </LinearLayout>
 
+            <!-- 완료 버튼 -->
+            <Button
+                android:id="@+id/btnComplete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="✔ 완료"
+                android:backgroundTint="@color/white"
+                android:textColor="@color/black"
+                android:layout_gravity="center"
+                android:layout_margin="16dp"/>
+
+            <!-- 완료 버튼 -->
+            <Button
+                android:id="@+id/btnOut"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="✔ 나가기"
+                android:backgroundTint="@color/white"
+                android:textColor="@color/black"
+                android:layout_gravity="center"
+                android:layout_margin="16dp"
+                android:visibility="gone"/>
+
         </LinearLayout>
 
-        <!-- 완료 버튼 -->
-        <Button
-            android:id="@+id/btnComplete"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="✔ 완료"
-            android:backgroundTint="@color/white"
-            android:textColor="@color/black"
-            android:layout_gravity="center"
-            android:layout_margin="16dp"/>
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/animView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:lottie_rawRes="@raw/anim_congrats" />
 
-    </LinearLayout>
+    </FrameLayout>
+
+
 
 
 </layout>

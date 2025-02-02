@@ -1,10 +1,13 @@
 package com.example.bookchigibakchigi.util
 
 import android.animation.ValueAnimator
+import android.graphics.drawable.ColorDrawable
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
 import androidx.lifecycle.LiveData
 import androidx.viewpager2.widget.ViewPager2
@@ -108,11 +111,41 @@ object BindingAdapters {
         }
     }
 
+
     @JvmStatic
     @BindingAdapter("bindBackgroundColor")
     fun bindBackgroundColor(view: View, color: LiveData<Int>?) {
         color?.observeForever { resolvedColor ->
-            view.setBackgroundColor(view.context.getColor(resolvedColor))
+            val context = view.context
+            val newColor = ContextCompat.getColor(context, resolvedColor)
+
+            // ✅ 현재 배경색 가져오기 (없으면 기본 투명색)
+            val oldColor = (view.background as? ColorDrawable)?.color ?: ContextCompat.getColor(context, android.R.color.transparent)
+
+            // ✅ ValueAnimator를 사용한 색상 변화 애니메이션 적용
+            ValueAnimator.ofArgb(oldColor, newColor).apply {
+                duration = 500 // 0.5초 동안 애니메이션 적용
+                addUpdateListener { animator ->
+                    view.setBackgroundColor(animator.animatedValue as Int)
+                }
+                start() // 애니메이션 시작
+            }
+        }
+    }
+
+    @JvmStatic
+    @BindingAdapter("bindTextColor")
+    fun bindTextColor(view: TextView, color: LiveData<Int>?) {
+        color?.observeForever { resolvedColor ->
+            view.setTextColor(view.context.getColor(resolvedColor))
+        }
+    }
+
+    @JvmStatic
+    @BindingAdapter("bindSrc")
+    fun bindSrc(view: ImageView, src: LiveData<Int>?) {
+        src?.observeForever { resolvedSrc ->
+            view.setImageResource(resolvedSrc)
         }
     }
 

@@ -1,5 +1,6 @@
 package com.example.bookchigibakchigi.ui.record
 
+import android.animation.Animator
 import android.app.Dialog
 import android.content.Context
 import android.os.Build
@@ -9,6 +10,7 @@ import android.os.Looper
 import android.transition.Transition
 import android.transition.TransitionInflater
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.view.WindowManager
@@ -94,6 +96,10 @@ class RecordActivity : BaseActivity() {
                 showPageInputDialog(it1.currentPageCnt, it1.totalPageCnt)
             }
         }
+
+        binding.btnOut.setOnClickListener {
+            finish()
+        }
     }
 
     private fun showPageInputDialog(currentPageCnt: Int, totalPageCount: Int) {
@@ -126,7 +132,42 @@ class RecordActivity : BaseActivity() {
                 val bookDao = AppDatabase.getDatabase(this@RecordActivity).bookDao()
                 bookDao.updateCurrentPage(viewModel.currentBook.value!!.itemId, totalPageCount)
                 dialog.dismiss()
-                finish()
+
+                binding.btnComplete.visibility = View.GONE
+                binding.btnOut.visibility = View.VISIBLE
+
+                // llTimer fadeOut 처리
+                binding.llTimer.animate()
+                    .alpha(0f) // 투명도 0으로 설정
+                    .setDuration(500) // 0.5초 동안 애니메이션 실행
+                    .withEndAction {
+                        binding.llTimer.visibility = View.INVISIBLE // 애니메이션 후 GONE 처리
+                        binding.llCongrats.visibility = View.VISIBLE
+                    }
+                    .start()
+
+                binding.animView.setAnimation(R.raw.anim_congrats)
+                binding.animView.playAnimation()
+
+                binding.animViewComplete.setAnimation(R.raw.anim_complete)
+                binding.animViewComplete.playAnimation()
+
+                binding.animViewComplete.addAnimatorListener(object : Animator.AnimatorListener {
+                    override fun onAnimationStart(animation: Animator) {
+                    }
+
+                    override fun onAnimationEnd(animation: Animator) {
+                        binding.animViewComplete.progress = 0.8F
+                    }
+
+                    override fun onAnimationCancel(animation: Animator) {
+
+                    }
+
+                    override fun onAnimationRepeat(animation: Animator) {
+
+                    }
+                })
             }
         }
 

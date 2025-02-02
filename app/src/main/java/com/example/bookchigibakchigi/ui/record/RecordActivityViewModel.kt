@@ -24,6 +24,12 @@ class RecordActivityViewModel : ViewModel() {
     private val _backgroundColor = MutableLiveData<Int>(R.color.black) // 초기 배경색: 흰색
     val backgroundColor: LiveData<Int> get() = _backgroundColor
 
+    private val _textColor = MutableLiveData<Int>(R.color.white) // 초기 배경색: 흰색
+    val textColor: LiveData<Int> get() = _textColor
+
+    private val _closeButtonIcon = MutableLiveData<Int>(R.drawable.ic_close_white)
+    val closeButtonIcon: LiveData<Int> get() = _closeButtonIcon
+
     private val _currentBook = MutableLiveData<BookEntity>()
     val currentBook: LiveData<BookEntity> = _currentBook
 
@@ -56,6 +62,8 @@ class RecordActivityViewModel : ViewModel() {
         _status.value = "읽고 있는 중..."
         _pauseButtonIcon.value = R.drawable.ic_pause_white
         _backgroundColor.value = R.color.black
+        _textColor.value = R.color.white
+        _closeButtonIcon.value = R.drawable.ic_close_white
 
         timer = object : CountDownTimer(Long.MAX_VALUE, 1000) { // 무한 타이머 (1초마다 갱신)
             override fun onTick(millisUntilFinished: Long) {
@@ -71,7 +79,9 @@ class RecordActivityViewModel : ViewModel() {
         _isRecording.value = false
         _status.value = "일시정지됨"
         _pauseButtonIcon.value = R.drawable.ic_play_button
-        _backgroundColor.value = R.color.gray
+        _backgroundColor.value = R.color.white
+        _textColor.value = R.color.black
+        _closeButtonIcon.value = R.drawable.ic_close_black
         timer?.cancel()
     }
 
