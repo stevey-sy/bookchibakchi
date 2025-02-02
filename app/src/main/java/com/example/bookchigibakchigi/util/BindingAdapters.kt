@@ -88,17 +88,20 @@ object BindingAdapters {
     fun setProgressTranslation(view: View, percentage: Int) {
         view.post {
             val parentView = view.parent as? ViewGroup
-            val parentWidth = parentView?.width ?: 0 // 부모의 width 가져오기
-            val viewWidth = view.width // 현재 뷰의 width
+            val parentWidth = parentView?.width ?: 0  // 부모 width 가져오기
+            var viewWidth = view.width // 현재 뷰의 width
 
-            // ✅ 100%일 때 부모 width를 초과하지 않도록 조정
-            val baseTranslationX = (parentWidth * (percentage / 100f)).coerceAtMost(parentWidth - viewWidth.toFloat())
-
-            // 목표 translationX 값 (자신의 width의 절반만큼 빼기)
-            var targetTranslationX = baseTranslationX - (viewWidth / 2f)
-            if(percentage == 100) {
-                targetTranslationX = baseTranslationX - (viewWidth / 4f)
+            // ⚠️ viewWidth가 0이면, 뷰 측정이 끝나지 않았을 가능성이 있음 → postDelayed 사용
+            if (viewWidth == 0) {
+                view.postDelayed({ setProgressTranslation(view, percentage) }, 50)
+                return@post
             }
+
+            // ✅ 부모 width에 대한 비율로 translationX 계산
+            val baseTranslationX = (parentWidth * (percentage / 100f)).coerceAtMost(parentWidth.toFloat())
+
+            // ✅ 텍스트뷰의 width를 고려하여 중앙 정렬 (뷰 width의 절반만큼 빼기)
+            val targetTranslationX = (baseTranslationX - viewWidth / 2)
 
             // 현재 translationX 값 가져오기
             val currentTranslationX = view.translationX
@@ -113,7 +116,6 @@ object BindingAdapters {
             animator.start()
         }
     }
-
 
     @JvmStatic
     @BindingAdapter("bindBackgroundColor")

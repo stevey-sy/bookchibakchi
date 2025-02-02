@@ -76,7 +76,8 @@
 
             <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/_260sdp">
+                android:layout_height="@dimen/_230sdp"
+                android:layout_marginTop="@dimen/_20sdp">
 
                 <androidx.viewpager2.widget.ViewPager2
                     android:id="@+id/viewPager"
@@ -85,7 +86,6 @@
                     android:clipToPadding="false"
                     android:clipChildren="false"
                     android:overScrollMode="never"
-                    android:layout_gravity="center"
                     app:submitBookList="@{viewModel.bookShelfItems}" />
 
             </FrameLayout>
@@ -138,6 +138,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingVertical="@dimen/_8sdp"
+                    android:layout_marginHorizontal="@dimen/_10sdp"
                     android:clipToPadding="false"
                     android:clipChildren="false"
                     app:isProgressBarVisible="@{viewModel.bookShelfItems}">
@@ -148,7 +149,6 @@
                         android:layout_height="wrap_content"
                         android:clipToPadding="false"
                         android:clipChildren="false"
-                        android:layout_marginHorizontal="@dimen/_10sdp"
                         app:progressTranslation="@{viewModel.currentBook.progressPercentage}"
                         android:orientation="vertical">
 
@@ -182,7 +182,6 @@
                         android:layout_below="@id/llProgressPercentage"
                         android:background="@drawable/rounded_progress_bar_gray"
                         android:layout_marginBottom="8dp"
-                        android:layout_marginHorizontal="@dimen/_10sdp"
                         android:layout_alignParentStart="true"
                         android:layout_alignParentEnd="true" />
 
@@ -194,7 +193,6 @@
                         android:layout_below="@id/llProgressPercentage"
                         android:background="@drawable/rounded_progress_bar_black"
                         android:layout_alignParentStart="true"
-                        android:layout_marginHorizontal="@dimen/_10sdp"
                         android:layout_marginBottom="8dp"
                         app:progressPercentage="@{viewModel.currentBook.progressPercentage}"/>
 
