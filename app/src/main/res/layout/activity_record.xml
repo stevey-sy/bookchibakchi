@@ -192,6 +192,14 @@
                         app:bindTextColor="@{viewModel.textColor}"
                         android:layout_marginTop="4dp" />
 
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@{viewModel.currentBook.getElapsedTimeFormatted()}"
+                        android:textSize="14sp"
+                        app:bindTextColor="@{viewModel.textColor}"
+                        android:layout_marginTop="4dp" />
+
                 </LinearLayout>
 
             </LinearLayout>
