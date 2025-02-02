@@ -29,16 +29,6 @@ object BindingAdapters {
             .into(view)
     }
 
-//    @JvmStatic
-//    @BindingAdapter("progressPercentage")
-//    fun setProgressBarWidth(view: View, progress: Int) {
-//        val parentWidth = (view.parent as ViewGroup).width // 부모 뷰의 전체 너비 가져오기
-//        val newWidth = (parentWidth * progress) / 100      // 진행도에 따른 너비 계산
-//        val layoutParams = view.layoutParams
-//        layoutParams.width = newWidth
-//        view.layoutParams = layoutParams
-//    }
-
     @JvmStatic
     @BindingAdapter("submitBookList")
     fun bindBookList(viewPager: ViewPager2, bookList: List<BookEntity>?) {
