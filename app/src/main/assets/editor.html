@@ -26,14 +26,20 @@
         .ql-font-gungsuh { font-family: 'Gungsuh', serif; } /* 궁서체 */
         .ql-font-batang { font-family: 'Batang', serif; } /* 바탕체 */
         .ql-font-nanum-myeongjo { font-family: 'Nanum Myeongjo', serif; } /* 나눔 명조 */
+
+        /* 폰트 크기 추가 */
+        .ql-size-small { font-size: 12px; }
+        .ql-size-normal { font-size: 16px; }
+        .ql-size-large { font-size: 24px; }
+        .ql-size-huge { font-size: 32px; }
     </style>
 </head>
 <body>
 
 <!-- Quill Toolbar -->
-<!-- Quill Editor -->
 <div id="toolbar">
     <span class="ql-formats">
+        <!-- 폰트 선택 -->
         <select class="ql-font">
             <option selected></option>
             <option value="nanum">Nanum Gothic</option>
@@ -46,6 +52,15 @@
             <option value="times">Times New Roman</option>
             <option value="cursive">Cursive</option>
             <option value="monospace">Monospace</option>
+        </select>
+    </span>
+    <span class="ql-formats">
+        <!-- 폰트 크기 선택 -->
+        <select class="ql-size">
+            <option value="small">작게</option>
+            <option selected>기본</option>
+            <option value="large">크게</option>
+            <option value="huge">아주 크게</option>
         </select>
     </span>
     <span class="ql-formats">
@@ -64,6 +79,8 @@
         </select>
     </span>
 </div>
+
+<!-- Quill Editor -->
 <div id="editor-container"></div>
 
 <!-- Save Button -->
