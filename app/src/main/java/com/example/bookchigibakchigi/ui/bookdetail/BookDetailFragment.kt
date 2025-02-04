@@ -20,6 +20,7 @@ import com.example.bookchigibakchigi.R
 import com.example.bookchigibakchigi.databinding.FragmentBookDetailBinding
 import com.example.bookchigibakchigi.ui.MainActivityViewModel
 import com.example.bookchigibakchigi.ui.bookdetail.adapter.BookViewPagerAdapter
+import com.example.bookchigibakchigi.ui.memo.MemoActivity
 import com.example.bookchigibakchigi.ui.record.RecordActivity
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -121,6 +122,13 @@ class BookDetailFragment : Fragment() {
                 )
                 startActivity(intent, options.toBundle())
             }
+        }
+
+        binding.btnMemo.setOnClickListener {
+
+            val intent = Intent(requireContext(), MemoActivity::class.java)
+            startActivity(intent)
+
         }
 
         prepareSharedElementTransition()

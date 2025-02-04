@@ -74,8 +74,6 @@ class AddBookActivity : BaseActivity() {
         })
 
         binding.tvNext.setOnClickListener {
-            // showBottomSheet()
-            // 저장 태워 그냥. 뭘 물어봐.
             addBook()
         }
     }
