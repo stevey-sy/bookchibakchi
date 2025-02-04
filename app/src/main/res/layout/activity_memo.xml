@@ -10,6 +10,21 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+        <!-- AppBarLayout과 Toolbar -->
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/ThemeOverlay.AppCompat.Light">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@android:color/white"
+                app:title="@string/title_add_memo"
+                app:titleTextColor="@android:color/black" />
+        </com.google.android.material.appbar.AppBarLayout>
+
         <WebView
             android:id="@+id/webView"
             android:layout_width="match_parent"
