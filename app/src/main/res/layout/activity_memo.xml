@@ -4,6 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".ui.memo.MemoActivity">
 
+    <data>
+        <variable
+            name="viewModel"
+            type="com.example.bookchigibakchigi.ui.memo.MemoActivityViewModel" />
+    </data>
+
     <LinearLayout
         android:id="@+id/main"
         android:layout_width="match_parent"
@@ -25,10 +31,76 @@
                 app:titleTextColor="@android:color/black" />
         </com.google.android.material.appbar.AppBarLayout>
 
-        <WebView
-            android:id="@+id/webView"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/bookInfoContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:padding="16dp"
+                android:orientation="horizontal"
+                android:elevation="4dp">
+
+                <!-- 책 표지를 감싸는 CardView -->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="8dp"
+                    app:cardElevation="4dp"
+                    app:cardBackgroundColor="@android:color/white">
+
+                    <!-- 책 이미지 -->
+                    <ImageView
+                        android:id="@+id/ivBookCover"
+                        android:layout_width="60dp"
+                        android:layout_height="90dp"
+                        android:contentDescription="책 표지"
+                        android:scaleType="fitXY"
+                        app:imageUrl="@{viewModel.currentBook.coverImageUrl}" />
+                </androidx.cardview.widget.CardView>
+
+                <!-- 책 정보 -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:paddingStart="12dp">
+
+                    <TextView
+                        android:id="@+id/tvBookTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@{viewModel.currentBook.title}"
+                        android:textSize="18sp"
+                        android:textColor="@color/black"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvBookAuthor"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@{viewModel.currentBook.author}"
+                        android:textSize="14sp"
+                        android:textColor="@color/black"
+                        android:layout_marginTop="4dp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <WebView
+                android:id="@+id/webView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </LinearLayout>
+
+
 
 
 

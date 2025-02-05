@@ -1,16 +1,23 @@
 package com.example.bookchigibakchigi.ui.memo
 
+import android.os.Build
 import android.os.Bundle
+import android.transition.Transition
+import android.transition.TransitionInflater
 import android.view.Menu
 import android.view.MenuItem
+import android.view.ViewTreeObserver
+import android.view.animation.AccelerateDecelerateInterpolator
 import android.webkit.JavascriptInterface
 import android.webkit.WebViewClient
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.bookchigibakchigi.R
+import com.example.bookchigibakchigi.data.entity.BookEntity
 import com.example.bookchigibakchigi.databinding.ActivityAddBookBinding
 import com.example.bookchigibakchigi.databinding.ActivityMemoBinding
 import com.example.bookchigibakchigi.ui.BaseActivity
@@ -18,21 +25,50 @@ import com.example.bookchigibakchigi.ui.BaseActivity
 class MemoActivity : BaseActivity() {
 
     private lateinit var binding: ActivityMemoBinding
+    private val viewModel: MemoActivityViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        window.sharedElementEnterTransition = createSharedElementTransition()
+        window.sharedElementReturnTransition = createSharedElementTransition()
         enableEdgeToEdge()
         binding = ActivityMemoBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        supportPostponeEnterTransition()
+
         setupToolbar(binding.toolbar, binding.main)
+
+        val book: BookEntity? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            intent.getParcelableExtra("currentBook", BookEntity::class.java)
+        } else {
+            @Suppress("DEPRECATION")
+            intent.getParcelableExtra("currentBook")
+        }
+
+        binding.viewModel = viewModel
+        binding.lifecycleOwner = this
+
+        // ✅ ViewModel에 데이터 저장
+        book?.let {
+            viewModel.setCurrentBook(it)  // LiveData 업데이트
+            binding.ivBookCover.transitionName = "sharedView_${it.itemId}"
+            binding.ivBookCover.viewTreeObserver.addOnPreDrawListener(object : ViewTreeObserver.OnPreDrawListener {
+                override fun onPreDraw(): Boolean {
+                    binding.ivBookCover.viewTreeObserver.removeOnPreDrawListener(this)
+                    supportStartPostponedEnterTransition()  // ✅ 애니메이션 시작
+                    return true
+                }
+            })
+        }
+
+        setupWebView()
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-
-        setupWebView()
     }
 
     private fun setupWebView() {
@@ -80,5 +116,13 @@ class MemoActivity : BaseActivity() {
         binding.webView.evaluateJavascript("getEditorContent();") { html ->
             println("에디터 내용: $html")
         }
+    }
+
+    private fun createSharedElementTransition(): Transition {
+        return TransitionInflater.from(this)
+            .inflateTransition(R.transition.image_shared_element_transition).apply {
+                duration = 500  // 애니메이션 지속 시간 (ms)
+                interpolator = AccelerateDecelerateInterpolator()  // 부드러운 가속/감속 효과
+            }
     }
 }
