@@ -89,6 +89,27 @@
                         android:textColor="@color/black"
                         android:layout_marginTop="4dp" />
 
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="p."
+                            android:textSize="14sp"
+                            android:textColor="@color/black"
+                            android:layout_marginTop="4dp" />
+
+                        <EditText
+                            android:id="@+id/etPage"
+                            android:layout_width="@dimen/_60sdp"
+                            android:layout_height="@dimen/_40sdp"
+                            android:gravity="center"/>
+
+                    </LinearLayout>
+
                 </LinearLayout>
 
             </LinearLayout>

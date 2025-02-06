@@ -84,22 +84,39 @@
 <div id="editor-container"></div>
 
 <!-- Save Button -->
-<button onclick="saveContent()">저장</button>
+<button class="save-button" onclick="saveContent()">저장</button>
+
+<style>
+    .save-button {
+        background-color: #000;
+        color: #fff;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+    .save-button:hover {
+        background-color: #222; /* 살짝 밝은 검정 */
+    }
+</style>
 
 <script>
     var quill = new Quill('#editor-container', {
         modules: { toolbar: '#toolbar' },
-        theme: 'snow'
+        theme: 'snow',
+        placeholder: '책 속의 기억에 남는 문구를 기록해보세요.'
     });
 
-    function saveContent() {
-        var htmlContent = quill.root.innerHTML;
-        Android.saveText(htmlContent);
-    }
+        function saveContent() {
+            var htmlContent = quill.root.innerHTML;
+            Android.saveText(htmlContent);
+        }
 
-    function getEditorContent() {
-        return quill.root.innerHTML;
-    }
+        function getEditorContent() {
+            return quill.root.innerHTML;
+        }
 </script>
 
 </body>
