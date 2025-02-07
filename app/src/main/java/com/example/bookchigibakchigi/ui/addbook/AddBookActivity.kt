@@ -121,6 +121,12 @@ class AddBookActivity : BaseActivity() {
         // 데이터를 저장합니다. CoroutineScope를 사용해 비동기 실행
         lifecycleScope.launch {
             try {
+                val isExists = bookDao.isBookExists(book.isbn) > 0
+                if (isExists) {
+                    Toast.makeText(this@AddBookActivity, "이미 저장된 책입니다.", Toast.LENGTH_SHORT).show()
+                    return@launch
+                }
+
                 bookDao.insertBook(book)
                 Toast.makeText(this@AddBookActivity, "나의 서재에 책이 추가되었습니다.", Toast.LENGTH_SHORT).show()
                 finish()
