@@ -27,4 +27,13 @@ data class AladinBookItem(
     val bestRank: Int?,
     val seriesInfo: SeriesInfo?,
     val subInfo: SubInfo?
-) : Parcelable
+) : Parcelable {
+    fun getAuthorText(): String {
+        val authorText = if (author.contains("(지은이)")) {
+            author.substringBefore("(지은이)").trim() // "(지은이)" 이전 문자열 추출 및 공백 제거
+        } else {
+            author
+        }
+        return authorText
+    }
+}
