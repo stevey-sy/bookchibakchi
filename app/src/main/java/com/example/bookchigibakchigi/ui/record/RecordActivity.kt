@@ -38,6 +38,7 @@ import com.example.bookchigibakchigi.ui.BaseActivity
 import com.example.bookchigibakchigi.ui.MainActivityViewModel
 import com.example.bookchigibakchigi.ui.MainActivityViewModelFactory
 import kotlinx.coroutines.launch
+import kotlin.math.min
 
 class RecordActivity : BaseActivity() {
 
@@ -177,7 +178,9 @@ class RecordActivity : BaseActivity() {
         btnConfirm.setOnClickListener {
             val enteredText = etPageInput.text.toString()
             if (enteredText.isNotEmpty()) {
-                val enteredPage = enteredText.toInt()
+                var enteredPage = enteredText.toInt()
+                enteredPage = min(enteredPage, totalPageCount)
+
                 lifecycleScope.launch {  // ✅ CoroutineScope 내에서 suspend 함수 호출
                     val bookDao = AppDatabase.getDatabase(this@RecordActivity).bookDao()
                     val elapsedTime = viewModel.elapsedTime / 1000
