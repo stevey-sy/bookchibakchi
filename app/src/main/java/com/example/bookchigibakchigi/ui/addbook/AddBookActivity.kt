@@ -110,8 +110,14 @@ class AddBookActivity : BaseActivity() {
             challengePageCnt = 0,
             startDate = "",
             endDate = "",
-            currentPageCnt = 100
+            currentPageCnt = 0
         )
+
+        if(book.title.isEmpty() || book.author.isEmpty() || book.publisher.isEmpty() || book.isbn.isEmpty()) {
+            Toast.makeText(this@AddBookActivity, "책 저장에 실패했습니다. 잠시 후에 다시 시도해주세요. ", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         // 데이터를 저장합니다. CoroutineScope를 사용해 비동기 실행
         lifecycleScope.launch {
             try {

@@ -167,11 +167,6 @@ class BookDetailFragment : Fragment() {
         binding.viewPager.apply {
             clipToPadding = false  // ✅ 양옆 페이지 보이게 설정
             clipChildren = false   // ✅ 양옆 페이지 보이게 설정
-//            offscreenPageLimit = 3
-//            (getChildAt(0) as RecyclerView).apply {
-//                setItemViewCacheSize(Int.MAX_VALUE) // 모든 아이템을 미리 로드
-//                recycledViewPool.clear() // 뷰 재사용 방지
-//            }
             setPageTransformer(PreviewPageTransformer())
         }
 
