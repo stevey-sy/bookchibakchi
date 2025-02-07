@@ -87,6 +87,7 @@ class BookDetailFragment : Fragment() {
 
                 viewModel.setCurrentBook(book.itemId) // 선택된 책을 ViewModel에 반영
 
+
                 val totalItems = bookList.size // 전체 아이템 개수
                 val hasEnoughItemsForPreview = position in 1 until totalItems - 1
                 val isNearEnd = position >= totalItems - 3 // ✅ 마지막 3개 이내인지 확인
@@ -175,6 +176,7 @@ class BookDetailFragment : Fragment() {
                 super.onPageSelected(position)
                 currentItemId = viewModel.bookShelfItems.value?.get(position)?.itemId ?: 0
                 viewModel.setCurrentBook(currentItemId)
+                binding.tvBookTitle.isSelected = true
                 sharedView = binding.viewPager.findViewWithTag<View>("page_$position")?.findViewById(R.id.ivBook)
                 // 현재 ViewPager의 Transition Name과 position 저장
                 val currentItem = viewModel.currentBook.value

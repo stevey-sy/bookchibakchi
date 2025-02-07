@@ -109,7 +109,12 @@
                     android:gravity="center"
                     android:layout_marginTop="@dimen/_6sdp"
                     android:textSize="16sp"
-                    android:minLines="3"
+                    android:maxLines="3"
+                    android:ellipsize="marquee"
+                    android:marqueeRepeatLimit="marquee_forever"
+                    android:singleLine="true"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
                     android:text="@{viewModel.currentBook.title}"
                  />
 
@@ -119,9 +124,10 @@
                     android:layout_height="wrap_content"
                     android:textStyle="bold"
                     android:textColor="@color/gray"
+                    android:layout_marginTop="@dimen/_10sdp"
                     android:layout_marginHorizontal="@dimen/_20sdp"
                     android:gravity="center"
-                    android:text="@{viewModel.currentBook.author}" />
+                    android:text="@{viewModel.currentBook.getAuthorText()}" />
 
 <!--                <TextView-->
 <!--                    android:id="@+id/tvPublisher"-->
