@@ -20,6 +20,7 @@ import com.example.bookchigibakchigi.R
 import com.example.bookchigibakchigi.databinding.FragmentBookDetailBinding
 import com.example.bookchigibakchigi.ui.MainActivityViewModel
 import com.example.bookchigibakchigi.ui.bookdetail.adapter.BookViewPagerAdapter
+import com.example.bookchigibakchigi.ui.card.CardActivity
 import com.example.bookchigibakchigi.ui.memo.MemoActivity
 import com.example.bookchigibakchigi.ui.record.RecordActivity
 import kotlinx.coroutines.flow.collectLatest
@@ -128,19 +129,25 @@ class BookDetailFragment : Fragment() {
         binding.btnMemo.setOnClickListener {
             val selectedBook = viewModel.currentBook.value
             selectedBook?.let { book ->
-                val intent = Intent(requireContext(), MemoActivity::class.java).apply {
+//                val intent = Intent(requireContext(), MemoActivity::class.java).apply {
+//                    putExtra("currentBook", book)
+//                }
+
+                val intent = Intent(requireContext(), CardActivity::class.java).apply {
                     putExtra("currentBook", book)
                 }
 
-                sharedView = binding.viewPager.findViewWithTag<View>("page_${binding.viewPager.currentItem}")?.findViewById(R.id.ivBook)
-                sharedView!!.transitionName = "sharedView_${viewModel.currentBook.value?.itemId}"
+                startActivity(intent)
 
-                val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
-                    requireActivity(),
-                    sharedView!!,  // 시작점 (ViewPager의 ImageView)
-                    sharedView!!.transitionName  // 동일한 transitionName 사용
-                )
-                startActivity(intent, options.toBundle())
+//                sharedView = binding.viewPager.findViewWithTag<View>("page_${binding.viewPager.currentItem}")?.findViewById(R.id.ivBook)
+//                sharedView!!.transitionName = "sharedView_${viewModel.currentBook.value?.itemId}"
+//
+//                val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+//                    requireActivity(),
+//                    sharedView!!,  // 시작점 (ViewPager의 ImageView)
+//                    sharedView!!.transitionName  // 동일한 transitionName 사용
+//                )
+//                startActivity(intent, options.toBundle())
             }
 
         }

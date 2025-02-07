@@ -11,6 +11,7 @@
     <string name="title_pick_book">책 고르기</string>
     <string name="title_search_book">책 검색</string>
     <string name="title_add_book">책 등록하기</string>
+    <string name="title_add_card">카드 작성하기</string>
     <string name="title_add_memo">메모 작성하기</string>
 
     <string name="button_save">저장</string>
