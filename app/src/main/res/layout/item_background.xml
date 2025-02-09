@@ -8,9 +8,9 @@
     android:layout_margin="@dimen/_8sdp">
 
     <ImageView
-    android:id="@+id/ivBackgroundItem"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:scaleType="centerCrop" />
+        android:id="@+id/ivBackgroundItem"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop" />
 
 </androidx.cardview.widget.CardView>

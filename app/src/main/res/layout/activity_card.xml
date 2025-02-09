@@ -33,8 +33,8 @@
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginVertical="@dimen/_40sdp"
-                android:layout_marginHorizontal="@dimen/_20sdp"
+                android:layout_marginVertical="@dimen/_30sdp"
+                android:layout_marginHorizontal="@dimen/_40sdp"
                 android:layout_above="@id/rvBackground">
 
                 <androidx.cardview.widget.CardView

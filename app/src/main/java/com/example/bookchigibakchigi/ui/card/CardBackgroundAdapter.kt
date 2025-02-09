@@ -10,13 +10,20 @@ import com.example.bookchigibakchigi.R
 
 class CardBackgroundAdapter(
     private val items: List<Int>,
-    private val onItemSelected: (Int) -> Unit
+    private val itemWidth: Int,
+    private val onItemSelected: (Int) -> Unit,
 ) : RecyclerView.Adapter<CardBackgroundAdapter.ViewHolder>() {
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val imageView: ImageView = view.findViewById(R.id.ivBackgroundItem)
 
         fun bind(imageRes: Int) {
+            // 아이템 크기 동적 설정
+            val layoutParams = itemView.layoutParams
+            layoutParams.width = itemWidth // 동적 너비 설정
+            layoutParams.height = itemWidth
+            itemView.layoutParams = layoutParams
+
             if (imageRes == R.drawable.img_dummy) {
                 imageView.setImageResource(R.drawable.img_dummy) // Glide 대신 사용
             } else {

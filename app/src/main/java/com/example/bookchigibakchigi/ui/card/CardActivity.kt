@@ -1,6 +1,7 @@
 package com.example.bookchigibakchigi.ui.card
 
 import android.content.Context
+import android.content.res.Resources
 import android.os.Build
 import android.os.Bundle
 import android.os.VibrationEffect
@@ -61,8 +62,15 @@ class CardActivity : BaseActivity() {
             .load(R.drawable.img_blue_sky)
             .into(binding.ivBackground)
 
+
+        // 화면 너비 가져오기
+        val screenWidth = Resources.getSystem().displayMetrics.widthPixels
+
+        // 아이템 너비 계산 (화면 너비를 5등분)
+        val itemWidth = screenWidth / 6
+
         // RecyclerView 설정
-        adapter = CardBackgroundAdapter(paddedImages) { selectedImage ->
+        adapter = CardBackgroundAdapter(paddedImages, itemWidth) { selectedImage ->
             Glide.with(this)
                 .load(selectedImage)
                 .into(binding.ivBackground)
@@ -85,6 +93,23 @@ class CardActivity : BaseActivity() {
 
 //        val snapHelper = CustomSnapHelper(this)
 //        snapHelper.attachToRecyclerView(binding.rvBackground)
+        binding.rvBackground.post {
+            val initialPosition = 2 // 실제 데이터 첫 번째 아이템 (가짜 데이터 이후)
+            (binding.rvBackground.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(
+                initialPosition,
+                (screenWidth / 2) - (itemWidth / 2) // 첫 번째 아이템을 중앙에 맞춤
+            )
+
+            // SnapHelper로 중앙 위치 강제 스냅
+            snapHelper.findSnapView(binding.rvBackground.layoutManager)?.let { snapView ->
+                val layoutManager = binding.rvBackground.layoutManager as LinearLayoutManager
+                val position = layoutManager.getPosition(snapView)
+                if (position != lastSelectedPosition) {
+                    lastSelectedPosition = position
+                    Glide.with(this).load(paddedImages[position]).into(binding.ivBackground)
+                }
+            }
+        }
 
         // 스크롤이 멈추면 선택된 아이템 감지 + 진동 효과 추가
         binding.rvBackground.addOnScrollListener(object : RecyclerView.OnScrollListener() {
