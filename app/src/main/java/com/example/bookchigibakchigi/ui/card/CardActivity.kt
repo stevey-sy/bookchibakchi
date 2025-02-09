@@ -7,8 +7,12 @@ import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.ViewTreeObserver
+import android.widget.FrameLayout
+import android.widget.LinearLayout
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -69,6 +73,13 @@ class CardActivity : BaseActivity() {
         // 아이템 너비 계산 (화면 너비를 5등분)
         val itemWidth = screenWidth / 6
 
+        // 🔹 llAim 동적 설정
+        val aimLayoutParams = FrameLayout.LayoutParams(itemWidth, itemWidth).apply {
+            gravity = android.view.Gravity.CENTER // 중앙에 고정
+        }
+        binding.llAim.layoutParams = aimLayoutParams
+        binding.llAim.setBackgroundResource(R.drawable.background_item_selected)
+
         // RecyclerView 설정
         adapter = CardBackgroundAdapter(paddedImages, itemWidth) { selectedImage ->
             Glide.with(this)
@@ -87,29 +98,50 @@ class CardActivity : BaseActivity() {
             })
         }
 
-//        // pagerSnapHelper 적용 → 한 칸씩 이동
+        // PagerSnapHelper 적용
         val snapHelper = PagerSnapHelper()
         snapHelper.attachToRecyclerView(binding.rvBackground)
 
-//        val snapHelper = CustomSnapHelper(this)
-//        snapHelper.attachToRecyclerView(binding.rvBackground)
-        binding.rvBackground.post {
-            val initialPosition = 2 // 실제 데이터 첫 번째 아이템 (가짜 데이터 이후)
-            (binding.rvBackground.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(
-                initialPosition,
-                (screenWidth / 2) - (itemWidth / 2) // 첫 번째 아이템을 중앙에 맞춤
-            )
+        // llAim의 렌더링 완료 후 RecyclerView 초기 위치 설정
+        val globalLayoutListener = object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                // llAim의 크기와 위치가 설정된 후 실행
+                binding.llAim.viewTreeObserver.removeOnGlobalLayoutListener(this) // 여기서 'this'는 리스너 객체를 참조
 
-            // SnapHelper로 중앙 위치 강제 스냅
-            snapHelper.findSnapView(binding.rvBackground.layoutManager)?.let { snapView ->
+                // llAim의 시작점
+                val llAimStart = binding.llAim.left
+                Log.d("DEBUG", "llAimStart: $llAimStart") // llAim의 시작점 로그 출력
+
+                // RecyclerView 세 번째 아이템의 시작점
                 val layoutManager = binding.rvBackground.layoutManager as LinearLayoutManager
-                val position = layoutManager.getPosition(snapView)
-                if (position != lastSelectedPosition) {
-                    lastSelectedPosition = position
-                    Glide.with(this).load(paddedImages[position]).into(binding.ivBackground)
+                val snapView = layoutManager.findViewByPosition(2) // 세 번째 아이템 뷰
+
+                // SnapView(세 번째 아이템)가 존재할 경우 위치 조정
+                snapView?.let {
+                    val rvItemStart = it.left
+                    Log.d("DEBUG", "rvBackground third item start: $rvItemStart") // 세 번째 아이템의 시작점 로그 출력
+
+                    // 오프셋 계산: llAimStart와 rvItemStart의 차이만큼 조정
+                    val offset = llAimStart - rvItemStart
+                    Log.d("DEBUG", "Offset to adjust: $offset") // 오프셋 로그 출력
+
+                    // 스크롤 이동: 세 번째 아이템을 llAim에 정확히 맞춤
+                    layoutManager.scrollToPositionWithOffset(0, offset)
+
+                    // SnapHelper로 중앙 위치 강제 스냅
+                    snapHelper.findSnapView(binding.rvBackground.layoutManager)?.let { snapView ->
+                        val position = layoutManager.getPosition(snapView)
+                        if (position != lastSelectedPosition) {
+                            lastSelectedPosition = position
+                            Glide.with(this@CardActivity).load(paddedImages[position]).into(binding.ivBackground)
+                        }
+                    }
                 }
             }
         }
+
+        // ViewTreeObserver에 리스너 추가
+        binding.llAim.viewTreeObserver.addOnGlobalLayoutListener(globalLayoutListener)
 
         // 스크롤이 멈추면 선택된 아이템 감지 + 진동 효과 추가
         binding.rvBackground.addOnScrollListener(object : RecyclerView.OnScrollListener() {

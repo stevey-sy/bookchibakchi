@@ -35,7 +35,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginVertical="@dimen/_30sdp"
                 android:layout_marginHorizontal="@dimen/_40sdp"
-                android:layout_above="@id/rvBackground">
+                android:layout_above="@id/flBackgroundSelector">
 
                 <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
@@ -54,12 +54,28 @@
 
             </FrameLayout>
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvBackground"
+            <FrameLayout
+                android:id="@+id/flBackgroundSelector"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/black"
-                android:layout_alignParentBottom="true"/>
+                android:layout_alignParentBottom="true">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvBackground"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/black" />
+
+                <LinearLayout
+                    android:id="@+id/llAim"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@drawable/background_item_selected"/>
+
+            </FrameLayout>
+
+
 
         </RelativeLayout>
 
