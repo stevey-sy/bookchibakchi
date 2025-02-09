@@ -27,19 +27,30 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent" >
+            android:layout_height="match_parent"
+            android:background="@color/black">
 
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/black">
+                android:layout_marginVertical="@dimen/_40sdp"
+                android:layout_marginHorizontal="@dimen/_20sdp"
+                android:layout_above="@id/rvBackground">
 
-                <ImageView
-                    android:id="@+id/ivBackground"
+                <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:adjustViewBounds="true"
-                    android:scaleType="fitCenter"/>
+                    app:cardElevation="4dp"
+                    app:cardCornerRadius="16dp"
+                    app:cardBackgroundColor="@android:color/transparent">
+
+                    <ImageView
+                        android:id="@+id/ivBackground"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:adjustViewBounds="true"
+                        android:scaleType="centerCrop" />
+                </androidx.cardview.widget.CardView>
 
             </FrameLayout>
 
@@ -51,8 +62,6 @@
                 android:layout_alignParentBottom="true"/>
 
         </RelativeLayout>
-
-
 
     </LinearLayout>
 
