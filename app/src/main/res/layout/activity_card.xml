@@ -65,7 +65,9 @@
                     android:text="@{viewModel.bookInfo}"
                     android:elevation="8dp"
                     android:layout_gravity="center"
-                    android:background="@null"/>
+                    android:background="@null"
+                    android:textSize="14sp"
+                    android:fontFamily="@font/maruburi_bold"/>
 
 
             </FrameLayout>
