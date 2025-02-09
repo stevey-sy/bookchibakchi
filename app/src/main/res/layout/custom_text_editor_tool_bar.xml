@@ -1,0 +1,32 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:background="#EEEEEE"
+    android:padding="8dp">
+
+    <!-- 텍스트 컬러 변경 버튼 -->
+    <ImageView
+        android:id="@+id/btnTextColor"
+        android:layout_width="@dimen/_20sdp"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_warning"
+        android:adjustViewBounds="true"/>
+
+    <!-- 텍스트 크기 변경 버튼 -->
+    <ImageView
+        android:id="@+id/btnTextSize"
+        android:layout_width="@dimen/_20sdp"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_warning"
+        android:adjustViewBounds="true"/>
+
+    <!-- 텍스트 배경색 변경 버튼 -->
+    <ImageView
+        android:id="@+id/btnTextBackgroundColor"
+        android:layout_width="@dimen/_20sdp"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_warning"
+        android:adjustViewBounds="true"/>
+
+</LinearLayout>
