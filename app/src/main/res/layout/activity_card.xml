@@ -4,6 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".ui.card.CardActivity">
 
+    <data>
+        <variable
+            name="viewModel"
+            type="com.example.bookchigibakchigi.ui.card.CardActivityViewModel" />
+    </data>
+
     <LinearLayout
         android:id="@+id/main"
         android:layout_width="match_parent"
@@ -28,7 +34,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/black">
+            android:background="@color/transparent">
 
             <FrameLayout
                 android:layout_width="match_parent"
@@ -55,7 +61,12 @@
                 <EditText
                     android:id="@+id/etBookTitle"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:text="@{viewModel.bookInfo}"
+                    android:elevation="8dp"
+                    android:layout_gravity="center"
+                    android:background="@null"/>
+
 
             </FrameLayout>
 

@@ -12,9 +12,8 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.ViewTreeObserver
 import android.widget.FrameLayout
-import android.widget.LinearLayout
 import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
+import androidx.activity.viewModels
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -22,13 +21,15 @@ import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.bookchigibakchigi.R
+import com.example.bookchigibakchigi.data.entity.BookEntity
 import com.example.bookchigibakchigi.databinding.ActivityCardBinding
-import com.example.bookchigibakchigi.databinding.ActivityMemoBinding
 import com.example.bookchigibakchigi.ui.BaseActivity
+import com.example.bookchigibakchigi.ui.card.adapter.CardBackgroundAdapter
 
 class CardActivity : BaseActivity() {
 
     private lateinit var binding: ActivityCardBinding
+    private val viewModel : CardActivityViewModel by viewModels()
     private lateinit var adapter: CardBackgroundAdapter
     // 실제 데이터 리스트
     private val actualImages = listOf(
@@ -61,6 +62,23 @@ class CardActivity : BaseActivity() {
         }
         setupToolbar(binding.toolbar, binding.main)
 
+        val book: BookEntity? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            intent.getParcelableExtra("currentBook", BookEntity::class.java)
+        } else {
+            @Suppress("DEPRECATION")
+            intent.getParcelableExtra("currentBook")
+        }
+
+        binding.viewModel = viewModel
+        binding.lifecycleOwner = this
+
+        // ✅ ViewModel에 데이터 저장
+        book?.let {
+            viewModel.setCurrentBook(it)  // LiveData 업데이트
+            viewModel.setBookInfo(book.title)
+        }
+
+
         // 기본 배경 설정 (Glide 사용)
         Glide.with(this)
             .load(R.drawable.img_blue_sky)
@@ -73,7 +91,7 @@ class CardActivity : BaseActivity() {
         // 아이템 너비 계산 (화면 너비를 5등분)
         val itemWidth = screenWidth / 6
 
-        // 🔹 llAim 동적 설정
+        // llAim 동적 설정
         val aimLayoutParams = FrameLayout.LayoutParams(itemWidth, itemWidth).apply {
             gravity = android.view.Gravity.CENTER // 중앙에 고정
         }
@@ -161,6 +179,8 @@ class CardActivity : BaseActivity() {
                         Glide.with(this@CardActivity)
                             .load(paddedImages[position])
                             .into(binding.ivBackground)
+
+                        binding.etBookTitle.bringToFront();
                     }
                 }
             }
