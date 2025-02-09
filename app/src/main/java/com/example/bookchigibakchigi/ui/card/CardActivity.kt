@@ -10,6 +10,7 @@ import android.os.VibratorManager
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.MotionEvent
 import android.view.ViewTreeObserver
 import android.widget.FrameLayout
 import androidx.activity.enableEdgeToEdge
@@ -158,6 +159,8 @@ class CardActivity : BaseActivity() {
             }
         }
 
+        setupMovableEditText()
+
         // ViewTreeObserver에 리스너 추가
         binding.llAim.viewTreeObserver.addOnGlobalLayoutListener(globalLayoutListener)
 
@@ -200,6 +203,39 @@ class CardActivity : BaseActivity() {
                 true
             }
             else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun setupMovableEditText() {
+        var dX = 0f
+        var dY = 0f
+
+        binding.etBookTitle.setOnTouchListener { view, event ->
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    // 터치 시작 시 X, Y 오프셋 계산
+                    dX = view.x - event.rawX
+                    dY = view.y - event.rawY
+                    true
+                }
+
+                MotionEvent.ACTION_MOVE -> {
+                    // 터치 이동 시 EditText의 위치 변경
+                    view.animate()
+                        .x(event.rawX + dX)
+                        .y(event.rawY + dY)
+                        .setDuration(0)
+                        .start()
+                    true
+                }
+
+                MotionEvent.ACTION_UP -> {
+                    // 터치 종료 시 추가 작업 가능
+                    true
+                }
+
+                else -> false
+            }
         }
     }
 

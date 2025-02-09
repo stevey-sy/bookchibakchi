@@ -16,6 +16,10 @@ class CardActivityViewModel : ViewModel() {
         bookInfo.value = title
     }
 
+    fun getBookInfoText(): String {
+        return "${bookInfo.value ?: ""} 中에서.."
+    }
+
     fun setCurrentBook(book: BookEntity) {
         _currentBook.value = book
     }
