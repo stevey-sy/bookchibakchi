@@ -1,7 +1,9 @@
 package com.example.bookchigibakchigi.ui.card
 
 import android.content.Context
+import android.content.Intent
 import android.content.res.Resources
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.os.VibrationEffect
@@ -11,7 +13,9 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.MotionEvent
+import android.view.View
 import android.view.ViewTreeObserver
+import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
@@ -32,6 +36,9 @@ class CardActivity : BaseActivity() {
     private lateinit var binding: ActivityCardBinding
     private val viewModel : CardActivityViewModel by viewModels()
     private lateinit var adapter: CardBackgroundAdapter
+    var isDragging = false
+    var dX = 0f
+    var dY = 0f
     // 실제 데이터 리스트
     private val actualImages = listOf(
         R.drawable.img_blue_sky,
@@ -62,7 +69,32 @@ class CardActivity : BaseActivity() {
             insets
         }
         setupToolbar(binding.toolbar, binding.main)
+        initViewModel(intent)
+        initBackgroundSelectView()
+        initSnapHelper()
+        //        setupMovableEditText()
+        initFocusChangeListener()
+        initClickListener()
+//        initEditTextTouchListener()
+    }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_add_card, menu) // 메뉴 파일 연결
+        return true
+    }
+
+    // 메뉴 아이템 클릭 이벤트 처리
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_close -> {
+                finish()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun initViewModel(intent: Intent) {
         val book: BookEntity? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             intent.getParcelableExtra("currentBook", BookEntity::class.java)
         } else {
@@ -78,13 +110,27 @@ class CardActivity : BaseActivity() {
             viewModel.setCurrentBook(it)  // LiveData 업데이트
             viewModel.setBookInfo(book.title)
         }
+    }
+
+    private fun initClickListener() {
+        binding.main.setOnClickListener {
+            binding.etBookTitle.clearFocus()
+            hideKeyboard()
+        }
+    }
+
+    private fun hideKeyboard() {
+        val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        val view = currentFocus ?: binding.main // currentFocus가 null이면 루트 뷰 사용
+        inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
+    }
 
 
+    private fun initBackgroundSelectView() {
         // 기본 배경 설정 (Glide 사용)
         Glide.with(this)
             .load(R.drawable.img_blue_sky)
             .into(binding.ivBackground)
-
 
         // 화면 너비 가져오기
         val screenWidth = Resources.getSystem().displayMetrics.widthPixels
@@ -116,7 +162,62 @@ class CardActivity : BaseActivity() {
                 setMaxRecycledViews(0, 10)
             })
         }
+    }
 
+    private fun initEditTextTouchListener() {
+        binding.etBookTitle.setOnTouchListener { view, event ->
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    // 터치가 테두리 영역에서 발생했는지 확인
+                    if (isTouchOnBorder(view, event)) {
+                        isDragging = true // 드래그 시작 플래그 설정
+                        dX = view.x - event.rawX
+                        dY = view.y - event.rawY
+                        true // 이동 이벤트 처리
+                    } else {
+                        isDragging = false
+                        false // 기본 동작 (텍스트 수정 등) 처리
+                    }
+                }
+
+                MotionEvent.ACTION_MOVE -> {
+                    if (isDragging) {
+                        // 드래그 동작
+                        view.animate()
+                            .x(event.rawX + dX)
+                            .y(event.rawY + dY)
+                            .setDuration(0)
+                            .start()
+                        true
+                    } else {
+                        false
+                    }
+                }
+
+                MotionEvent.ACTION_UP -> {
+                    isDragging = false // 드래그 종료
+                    view.performClick() // 접근성을 위한 performClick 호출
+                    true
+                }
+
+                else -> false
+            }
+        }
+    }
+
+    // 테두리 영역에 터치가 발생했는지 확인하는 함수
+    private fun isTouchOnBorder(view: View, event: MotionEvent): Boolean {
+        val borderWidth = 20 // 테두리 영역의 두께 (px 단위, dp로 계산 가능)
+        val x = event.x
+        val y = event.y
+        val width = view.width
+        val height = view.height
+
+        // 터치가 뷰의 테두리 내에서 발생했는지 확인
+        return x < borderWidth || x > width - borderWidth || y < borderWidth || y > height - borderWidth
+    }
+
+    private fun initSnapHelper() {
         // PagerSnapHelper 적용
         val snapHelper = PagerSnapHelper()
         snapHelper.attachToRecyclerView(binding.rvBackground)
@@ -159,8 +260,6 @@ class CardActivity : BaseActivity() {
             }
         }
 
-        setupMovableEditText()
-
         // ViewTreeObserver에 리스너 추가
         binding.llAim.viewTreeObserver.addOnGlobalLayoutListener(globalLayoutListener)
 
@@ -190,19 +289,15 @@ class CardActivity : BaseActivity() {
         })
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_add_card, menu) // 메뉴 파일 연결
-        return true
-    }
-
-    // 메뉴 아이템 클릭 이벤트 처리
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.action_close -> {
-                finish()
-                true
+    private fun initFocusChangeListener() {
+        binding.etBookTitle.onFocusChangeListener = View.OnFocusChangeListener { view, hasFocus ->
+            if (hasFocus) {
+                // 포커스가 있을 때 배경 변경
+                binding.etBookTitle.setBackgroundResource(R.drawable.background_edit_text_has_focus)
+            } else {
+                // 포커스가 없을 때 배경 원래대로 변경
+                binding.etBookTitle.setBackgroundResource(R.drawable.background_edit_text_no_focus)
             }
-            else -> super.onOptionsItemSelected(item)
         }
     }
 
@@ -230,14 +325,21 @@ class CardActivity : BaseActivity() {
                 }
 
                 MotionEvent.ACTION_UP -> {
-                    // 터치 종료 시 추가 작업 가능
+                    // performClick 호출로 클릭 이벤트 처리
+                    view.performClick()
                     true
                 }
 
                 else -> false
             }
         }
+
+        // performClick을 오버라이드하여 접근성 이벤트를 처리
+        binding.etBookTitle.setOnClickListener {
+            // 필요하다면 클릭 이벤트 로직을 여기에 작성
+        }
     }
+
 
     private fun vibrate() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {// API 레벨 31 (Android 12) 이상에서는 VibratorManager 사용
