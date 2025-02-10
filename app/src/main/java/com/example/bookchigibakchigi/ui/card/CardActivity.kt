@@ -3,7 +3,6 @@ package com.example.bookchigibakchigi.ui.card
 import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
-import android.graphics.Color
 import android.graphics.Rect
 import android.os.Build
 import android.os.Bundle
@@ -16,7 +15,6 @@ import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewTreeObserver
-import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
 import androidx.activity.enableEdgeToEdge
@@ -77,6 +75,7 @@ class CardActivity : BaseActivity() {
         //        setupMovableEditText()
         initFocusChangeListener()
         initClickListener()
+        initCustomToolbar()
 //        initEditTextTouchListener()
     }
 
@@ -118,6 +117,10 @@ class CardActivity : BaseActivity() {
         binding.main.setOnClickListener {
             binding.etBookTitle.clearFocus()
             hideKeyboard()
+        }
+
+        binding.btnTextColor.setOnClickListener {
+
         }
     }
 
@@ -291,14 +294,70 @@ class CardActivity : BaseActivity() {
         })
     }
 
+    private fun initCustomToolbar() {
+//        binding.root.viewTreeObserver.addOnGlobalLayoutListener {
+//            val rect = Rect()
+//            binding.root.getWindowVisibleDisplayFrame(rect)
+//
+//            val screenHeight = binding.root.rootView.height
+//            val keypadHeight = screenHeight - rect.bottom
+//
+//            if (keypadHeight > screenHeight * 0.15) { // 키보드가 올라왔을 때
+//                binding.customToolbar.visibility = View.VISIBLE
+//                binding.customToolbar.y = (rect.bottom - binding.customToolbar.height).toFloat()
+//                binding.customToolbar.animate()
+//                    .translationY((rect.bottom - binding.customToolbar.height).toFloat()) // 키보드 바로 위로 이동
+//                    .setDuration(200)
+//                    .start()
+//            } else { // 키보드가 내려갔을 때
+//                binding.customToolbar.animate()
+//                    .translationY(screenHeight.toFloat()) // 화면 아래로 숨김
+//                    .setDuration(200)
+//                    .withEndAction {
+//                        binding.customToolbar.visibility = View.GONE
+//                    }
+//                    .start()
+//            }
+//        }
+        val rootView = window.decorView.findViewById<View>(android.R.id.content)
+
+        rootView.viewTreeObserver.addOnGlobalLayoutListener {
+            val rect = Rect()
+            rootView.getWindowVisibleDisplayFrame(rect)
+
+            val screenHeight = rootView.height
+            val keypadHeight = screenHeight - rect.bottom
+
+            if (keypadHeight > screenHeight * 0.15) { // 키보드가 올라왔는지 확인
+                Log.d("KeyboardHeight", "키보드 높이: $keypadHeight px")
+//                binding.customToolbar.y = (keypadHeight + binding.customToolbar.height).toFloat()
+                binding.customToolbar.visibility = View.VISIBLE
+                binding.customToolbar.animate()
+                    .translationY((-keypadHeight + binding.customToolbar.height).toFloat()) // 키보드 바로 위로 이동
+                    .setInterpolator(android.view.animation.DecelerateInterpolator())
+                    .setDuration(600)
+                    .start()
+            } else {
+                binding.customToolbar.visibility = View.GONE
+                binding.customToolbar.animate()
+                    .translationY((keypadHeight + binding.customToolbar.height).toFloat()) // 키보드 바로 위로 이동
+                    .setDuration(200)
+                    .start()
+            }
+        }
+
+    }
+
     private fun initFocusChangeListener() {
         binding.etBookTitle.onFocusChangeListener = View.OnFocusChangeListener { view, hasFocus ->
             if (hasFocus) {
                 // 포커스가 있을 때 배경 변경
                 binding.etBookTitle.setBackgroundResource(R.drawable.background_edit_text_has_focus)
+                binding.customToolbar.visibility = View.VISIBLE
             } else {
                 // 포커스가 없을 때 배경 원래대로 변경
                 binding.etBookTitle.setBackgroundResource(R.drawable.background_edit_text_no_focus)
+                binding.customToolbar.visibility = View.GONE
             }
         }
     }
@@ -339,6 +398,9 @@ class CardActivity : BaseActivity() {
         // performClick을 오버라이드하여 접근성 이벤트를 처리
         binding.etBookTitle.setOnClickListener {
             // 필요하다면 클릭 이벤트 로직을 여기에 작성
+            if (binding.customToolbar.visibility == View.GONE) {
+                binding.customToolbar.visibility = View.VISIBLE
+            }
         }
     }
 

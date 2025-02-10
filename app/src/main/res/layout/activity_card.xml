@@ -31,67 +31,112 @@
                 app:titleTextColor="@android:color/black" />
         </com.google.android.material.appbar.AppBarLayout>
 
-        <RelativeLayout
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/transparent">
+            android:layout_height="match_parent">
 
-            <FrameLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginVertical="@dimen/_30sdp"
-                android:layout_marginHorizontal="@dimen/_40sdp"
-                android:layout_above="@id/flBackgroundSelector">
+                android:background="@color/transparent">
 
-                <androidx.cardview.widget.CardView
+                <FrameLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:cardElevation="4dp"
-                    app:cardCornerRadius="16dp"
-                    app:cardBackgroundColor="@android:color/transparent">
+                    android:layout_marginVertical="@dimen/_30sdp"
+                    android:layout_marginHorizontal="@dimen/_40sdp"
+                    android:layout_above="@id/flBackgroundSelector">
 
-                    <ImageView
-                        android:id="@+id/ivBackground"
+                    <androidx.cardview.widget.CardView
                         android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        app:cardElevation="4dp"
+                        app:cardCornerRadius="16dp"
+                        app:cardBackgroundColor="@android:color/transparent">
+
+                        <ImageView
+                            android:id="@+id/ivBackground"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:adjustViewBounds="true"
+                            android:scaleType="centerCrop" />
+                    </androidx.cardview.widget.CardView>
+
+                    <EditText
+                        android:id="@+id/etBookTitle"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:adjustViewBounds="true"
-                        android:scaleType="centerCrop" />
-                </androidx.cardview.widget.CardView>
+                        android:text="@{viewModel.getBookInfoText()}"
+                        android:elevation="8dp"
+                        android:layout_gravity="center"
+                        android:background="@null"
+                        android:textSize="12sp"
+                        android:fontFamily="@font/maruburi_bold"/>
+                </FrameLayout>
 
-                <EditText
-                    android:id="@+id/etBookTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@{viewModel.getBookInfoText()}"
-                    android:elevation="8dp"
-                    android:layout_gravity="center"
-                    android:background="@null"
-                    android:textSize="12sp"
-                    android:fontFamily="@font/maruburi_bold"/>
-            </FrameLayout>
-
-            <FrameLayout
-                android:id="@+id/flBackgroundSelector"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true">
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rvBackground"
+                <FrameLayout
+                    android:id="@+id/flBackgroundSelector"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/black" />
+                    android:layout_alignParentBottom="true">
 
-                <LinearLayout
-                    android:id="@+id/llAim"
-                    android:layout_width="wrap_content"
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rvBackground"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/black" />
+
+                    <LinearLayout
+                        android:id="@+id/llAim"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:background="@drawable/background_item_selected"/>
+
+                </FrameLayout>
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:id="@+id/customToolbar"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_40sdp"
+                android:orientation="horizontal"
+                android:layout_gravity="bottom"
+                android:visibility="gone"
+                android:background="#EEEEEE">
+
+                <!-- 텍스트 컬러 변경 버튼 -->
+                <ImageView
+                    android:id="@+id/btnTextColor"
+                    android:layout_width="@dimen/_20sdp"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:background="@drawable/background_item_selected"/>
+                    android:src="@drawable/ic_warning"
+                    android:adjustViewBounds="true"/>
 
-            </FrameLayout>
+                <!-- 텍스트 크기 변경 버튼 -->
+                <ImageView
+                    android:id="@+id/btnTextSize"
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_warning"
+                    android:adjustViewBounds="true"/>
 
-        </RelativeLayout>
+                <!-- 텍스트 배경색 변경 버튼 -->
+                <ImageView
+                    android:id="@+id/btnTextBackgroundColor"
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_warning"
+                    android:adjustViewBounds="true"/>
+
+            </LinearLayout>
+
+
+
+        </FrameLayout>
+
+
     </LinearLayout>
 
 </layout>
