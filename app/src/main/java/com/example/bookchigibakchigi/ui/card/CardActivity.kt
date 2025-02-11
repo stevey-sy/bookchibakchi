@@ -41,8 +41,8 @@ class CardActivity : BaseActivity() {
     var dY = 0f
     // 실제 데이터 리스트
     private val actualImages = listOf(
-        R.drawable.img_blue_sky,
         R.drawable.img_light_blue_sky,
+        R.drawable.img_blue_sky,
         R.drawable.img_night_sky,
         R.drawable.img_pink_sky,
         R.drawable.img_forest,
@@ -133,9 +133,9 @@ class CardActivity : BaseActivity() {
 
     private fun initBackgroundSelectView() {
         // 기본 배경 설정 (Glide 사용)
-        Glide.with(this)
-            .load(R.drawable.img_blue_sky)
-            .into(binding.ivBackground)
+//        Glide.with(this)
+//            .load(R.drawable.img_blue_sky)
+//            .into(binding.ivBackground)
 
         // 화면 너비 가져오기
         val screenWidth = Resources.getSystem().displayMetrics.widthPixels
