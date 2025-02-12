@@ -72,7 +72,7 @@ class CardActivity : BaseActivity() {
         initViewModel(intent)
         initBackgroundSelectView()
         initSnapHelper()
-        //        setupMovableEditText()
+        setupMovableEditText()
         initFocusChangeListener()
         initClickListener()
         initCustomToolbar()
@@ -352,11 +352,11 @@ class CardActivity : BaseActivity() {
         binding.etBookTitle.onFocusChangeListener = View.OnFocusChangeListener { view, hasFocus ->
             if (hasFocus) {
                 // 포커스가 있을 때 배경 변경
-                binding.etBookTitle.setBackgroundResource(R.drawable.background_edit_text_has_focus)
+                binding.rlBookTitle.setBackgroundResource(R.drawable.background_edit_text_has_focus)
                 binding.customToolbar.visibility = View.VISIBLE
             } else {
                 // 포커스가 없을 때 배경 원래대로 변경
-                binding.etBookTitle.setBackgroundResource(R.drawable.background_edit_text_no_focus)
+                binding.rlBookTitle.setBackgroundResource(R.drawable.background_edit_text_no_focus)
                 binding.customToolbar.visibility = View.GONE
             }
         }
@@ -366,7 +366,7 @@ class CardActivity : BaseActivity() {
         var dX = 0f
         var dY = 0f
 
-        binding.etBookTitle.setOnTouchListener { view, event ->
+        binding.rlBookTitle.setOnTouchListener { view, event ->
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
                     // 터치 시작 시 X, Y 오프셋 계산
@@ -396,14 +396,13 @@ class CardActivity : BaseActivity() {
         }
 
         // performClick을 오버라이드하여 접근성 이벤트를 처리
-        binding.etBookTitle.setOnClickListener {
-            // 필요하다면 클릭 이벤트 로직을 여기에 작성
-            if (binding.customToolbar.visibility == View.GONE) {
-                binding.customToolbar.visibility = View.VISIBLE
-            }
-        }
+//        binding.etBookTitle.setOnClickListener {
+//            // 필요하다면 클릭 이벤트 로직을 여기에 작성
+//            if (binding.customToolbar.visibility == View.GONE) {
+//                binding.customToolbar.visibility = View.VISIBLE
+//            }
+//        }
     }
-
 
     private fun vibrate() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {// API 레벨 31 (Android 12) 이상에서는 VibratorManager 사용
