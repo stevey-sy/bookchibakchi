@@ -37,6 +37,7 @@ class CardActivity : BaseActivity() {
     private val viewModel : CardActivityViewModel by viewModels()
     private lateinit var adapter: CardBackgroundAdapter
     var isDragging = false
+    var isMovable = false
     var dX = 0f
     var dY = 0f
     // 실제 데이터 리스트
@@ -115,12 +116,21 @@ class CardActivity : BaseActivity() {
 
     private fun initClickListener() {
         binding.main.setOnClickListener {
+            isMovable = false
+            binding.etBookTitle.setBackgroundResource(R.drawable.background_edit_text_no_focus)
             binding.etBookTitle.clearFocus()
             hideKeyboard()
         }
 
         binding.btnTextColor.setOnClickListener {
 
+        }
+
+        binding.btnMove.setOnClickListener {
+            isMovable = true
+            binding.etBookTitle.setBackgroundResource(R.drawable.background_edit_text_has_focus)
+            binding.etBookTitle.clearFocus()
+            hideKeyboard()
         }
     }
 
@@ -352,11 +362,9 @@ class CardActivity : BaseActivity() {
         binding.etBookTitle.onFocusChangeListener = View.OnFocusChangeListener { view, hasFocus ->
             if (hasFocus) {
                 // 포커스가 있을 때 배경 변경
-                binding.rlBookTitle.setBackgroundResource(R.drawable.background_edit_text_has_focus)
                 binding.customToolbar.visibility = View.VISIBLE
             } else {
                 // 포커스가 없을 때 배경 원래대로 변경
-                binding.rlBookTitle.setBackgroundResource(R.drawable.background_edit_text_no_focus)
                 binding.customToolbar.visibility = View.GONE
             }
         }
@@ -366,7 +374,8 @@ class CardActivity : BaseActivity() {
         var dX = 0f
         var dY = 0f
 
-        binding.rlBookTitle.setOnTouchListener { view, event ->
+        binding.etBookTitle.setOnTouchListener { view, event ->
+            if(!isMovable) {return@setOnTouchListener false}
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
                     // 터치 시작 시 X, Y 오프셋 계산

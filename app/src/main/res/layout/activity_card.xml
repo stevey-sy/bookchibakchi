@@ -63,26 +63,38 @@
                             android:scaleType="centerCrop" />
                     </androidx.cardview.widget.CardView>
 
-                    <RelativeLayout
-                        android:id="@+id/rlBookTitle"
+<!--                    <RelativeLayout-->
+<!--                        android:id="@+id/rlBookTitle"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:elevation="8dp"-->
+<!--                        android:layout_gravity="center"-->
+<!--                        android:layout_margin="@dimen/_4sdp"-->
+<!--                        android:padding="@dimen/_4sdp">-->
+
+<!--                        <EditText-->
+<!--                            android:id="@+id/etBookTitle"-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:text="@{viewModel.getBookInfoText()}"-->
+<!--                            android:layout_centerInParent="true"-->
+<!--                            android:background="@null"-->
+<!--                            android:textSize="12sp"-->
+<!--                            android:fontFamily="@font/maruburi_bold"/>-->
+
+<!--                    </RelativeLayout>-->
+
+                    <EditText
+                        android:id="@+id/etBookTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:elevation="8dp"
+                        android:text="@{viewModel.getBookInfoText()}"
                         android:layout_gravity="center"
-                        android:layout_margin="@dimen/_4sdp"
-                        android:padding="@dimen/_4sdp">
-
-                        <EditText
-                            android:id="@+id/etBookTitle"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@{viewModel.getBookInfoText()}"
-                            android:layout_centerInParent="true"
-                            android:background="@null"
-                            android:textSize="12sp"
-                            android:fontFamily="@font/maruburi_bold"/>
-
-                    </RelativeLayout>
+                        android:elevation="8dp"
+                        android:padding="@dimen/_4sdp"
+                        android:background="@null"
+                        android:textSize="12sp"
+                        android:fontFamily="@font/maruburi_bold"/>
 
 
                 </FrameLayout>
@@ -145,6 +157,16 @@
                     android:layout_width="@dimen/_20sdp"
                     android:layout_height="wrap_content"
                     android:src="@drawable/ic_text_background_color"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="@dimen/_20sdp"
+                    android:adjustViewBounds="true"/>
+
+                <!-- 텍스트 배경색 변경 버튼 -->
+                <ImageView
+                    android:id="@+id/btnMove"
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_move"
                     android:layout_gravity="center"
                     android:layout_marginStart="@dimen/_20sdp"
                     android:adjustViewBounds="true"/>
