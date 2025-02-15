@@ -134,7 +134,7 @@
 
                 <!-- 텍스트 컬러 변경 버튼 -->
                 <ImageView
-                    android:id="@+id/btnTextColor"
+                    android:id="@+id/btnTextSize"
                     android:layout_width="@dimen/_20sdp"
                     android:layout_height="wrap_content"
                     android:src="@drawable/ic_text_size"
@@ -143,7 +143,7 @@
 
                 <!-- 텍스트 크기 변경 버튼 -->
                 <ImageView
-                    android:id="@+id/btnTextSize"
+                    android:id="@+id/btnTextColor"
                     android:layout_width="@dimen/_20sdp"
                     android:layout_height="wrap_content"
                     android:src="@drawable/ic_text_color_change"
@@ -172,6 +172,46 @@
                     android:adjustViewBounds="true"/>
 
             </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/colorPickerLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="@dimen/_10sdp"
+                android:background="@drawable/background_rounded"
+                android:visibility="gone"
+                android:layout_marginBottom="@dimen/_10sdp"
+                android:elevation="8dp"
+                android:gravity="center">
+
+                <!-- 예제: 색상 선택 버튼 -->
+                <ImageView
+                    android:id="@+id/colorBlack"
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="@dimen/_20sdp"
+                    android:layout_margin="@dimen/_5sdp"
+                    android:background="@color/black"
+                    android:clickable="true" />
+
+                <ImageView
+                    android:id="@+id/colorWhite"
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="@dimen/_20sdp"
+                    android:layout_margin="@dimen/_5sdp"
+                    android:background="@color/white"
+                    android:clickable="true" />
+
+                <ImageView
+                    android:id="@+id/colorRed"
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="@dimen/_20sdp"
+                    android:layout_margin="@dimen/_5sdp"
+                    android:background="@color/red"
+                    android:clickable="true" />
+
+            </LinearLayout>
+
 
 
 

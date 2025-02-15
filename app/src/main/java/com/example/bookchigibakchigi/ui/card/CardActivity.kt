@@ -120,10 +120,21 @@ class CardActivity : BaseActivity() {
             binding.etBookTitle.setBackgroundResource(R.drawable.background_edit_text_no_focus)
             binding.etBookTitle.clearFocus()
             hideKeyboard()
+            binding.colorPickerLayout.visibility = View.GONE
         }
 
         binding.btnTextColor.setOnClickListener {
-
+            // TextColor 선택 레이아웃 토글
+            if (binding.colorPickerLayout.visibility == View.GONE) {
+                binding.colorPickerLayout.visibility = View.VISIBLE
+                binding.colorPickerLayout.animate()
+                    .translationY(0f)
+                    .setInterpolator(android.view.animation.DecelerateInterpolator())
+                    .setDuration(300)
+                    .start()
+            } else {
+                binding.colorPickerLayout.visibility = View.GONE
+            }
         }
 
         binding.btnMove.setOnClickListener {
@@ -131,6 +142,26 @@ class CardActivity : BaseActivity() {
             binding.etBookTitle.setBackgroundResource(R.drawable.background_edit_text_has_focus)
             binding.etBookTitle.clearFocus()
             hideKeyboard()
+        }
+
+        initColorPickerListener()
+    }
+
+    private fun initColorPickerListener() {
+        // 각 색상 선택 버튼에 클릭 리스너 추가
+        binding.colorBlack.setOnClickListener {
+            binding.etBookTitle.setTextColor(resources.getColor(R.color.black, theme))
+            binding.colorPickerLayout.visibility = View.GONE
+        }
+
+        binding.colorWhite.setOnClickListener {
+            binding.etBookTitle.setTextColor(resources.getColor(R.color.white, theme))
+            binding.colorPickerLayout.visibility = View.GONE
+        }
+
+        binding.colorRed.setOnClickListener {
+            binding.etBookTitle.setTextColor(resources.getColor(R.color.red, theme))
+            binding.colorPickerLayout.visibility = View.GONE
         }
     }
 
