@@ -114,10 +114,28 @@
 
             </LinearLayout>
 
-            <WebView
-                android:id="@+id/webView"
+<!--            <WebView-->
+<!--                android:id="@+id/webView"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="match_parent" />-->
+
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:background="@drawable/background_gray_stroke"
+                android:padding="@dimen/_10sdp"
+                android:layout_marginHorizontal="@dimen/_10sdp"
+                >
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="책 속의 기억에 남는 문구를 기록해보세요."
+                    android:background="@null"
+                    />
+
+            </LinearLayout>
 
         </LinearLayout>
 

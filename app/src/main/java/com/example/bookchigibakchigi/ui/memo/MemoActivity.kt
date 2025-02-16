@@ -62,7 +62,7 @@ class MemoActivity : BaseActivity() {
             })
         }
 
-        setupWebView()
+//        setupWebView()
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -71,18 +71,18 @@ class MemoActivity : BaseActivity() {
         }
     }
 
-    private fun setupWebView() {
-        val webView = binding.webView
-
-        // WebView 설정
-        webView.settings.javaScriptEnabled = true
-        webView.settings.domStorageEnabled = true  // 로컬 저장 지원
-        webView.webViewClient = WebViewClient()  // 내부 WebView에서 실행
-        webView.addJavascriptInterface(EditorBridge(), "Android") // JS와 연결
-
-        // 에디터 HTML 파일 로드
-        webView.loadUrl("file:///android_asset/editor.html")
-    }
+//    private fun setupWebView() {
+//        val webView = binding.webView
+//
+//        // WebView 설정
+//        webView.settings.javaScriptEnabled = true
+//        webView.settings.domStorageEnabled = true  // 로컬 저장 지원
+//        webView.webViewClient = WebViewClient()  // 내부 WebView에서 실행
+//        webView.addJavascriptInterface(EditorBridge(), "Android") // JS와 연결
+//
+//        // 에디터 HTML 파일 로드
+//        webView.loadUrl("file:///android_asset/editor.html")
+//    }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_add_memo, menu) // 메뉴 파일 연결
@@ -112,11 +112,11 @@ class MemoActivity : BaseActivity() {
     }
 
     // WebView에서 현재 입력된 HTML을 가져오는 함수
-    fun getEditorContent() {
-        binding.webView.evaluateJavascript("getEditorContent();") { html ->
-            println("에디터 내용: $html")
-        }
-    }
+//    fun getEditorContent() {
+//        binding.webView.evaluateJavascript("getEditorContent();") { html ->
+//            println("에디터 내용: $html")
+//        }
+//    }
 
     private fun createSharedElementTransition(): Transition {
         return TransitionInflater.from(this)
