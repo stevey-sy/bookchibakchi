@@ -74,6 +74,9 @@ dependencies {
     implementation(libs.androidx.activity)
     implementation(libs.sdp.android)
     implementation(libs.lottie)
+    implementation (libs.text.recognition)
+    implementation (libs.text.recognition.korean)
+    implementation(libs.android.image.cropper)
 
 
     // 네트워크 통신용 Retrofit

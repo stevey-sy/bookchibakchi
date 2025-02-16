@@ -1,30 +1,38 @@
 package com.example.bookchigibakchigi.ui.bookdetail
 
 import android.content.Intent
+import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.transition.TransitionInflater
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.Toast
 import androidx.activity.addCallback
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.app.SharedElementCallback
+import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.example.bookchigibakchigi.R
 import com.example.bookchigibakchigi.databinding.FragmentBookDetailBinding
+import com.example.bookchigibakchigi.ui.crop.CropActivity
 import com.example.bookchigibakchigi.ui.MainActivityViewModel
 import com.example.bookchigibakchigi.ui.bookdetail.adapter.BookViewPagerAdapter
-import com.example.bookchigibakchigi.ui.card.CardActivity
-import com.example.bookchigibakchigi.ui.memo.MemoActivity
 import com.example.bookchigibakchigi.ui.record.RecordActivity
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.mlkit.vision.common.InputImage
+import com.google.mlkit.vision.text.TextRecognition
+import com.google.mlkit.vision.text.korean.KoreanTextRecognizerOptions
+import java.io.File
 
 class BookDetailFragment : Fragment() {
 
@@ -34,6 +42,10 @@ class BookDetailFragment : Fragment() {
     private lateinit var adapter: BookViewPagerAdapter
     private var sharedView: View? = null
     private var currentItemId = 0
+    private val CAMERA_REQUEST_CODE = 1001
+    private lateinit var permissionLauncher: ActivityResultLauncher<Array<String>>
+    private lateinit var takePictureLauncher: ActivityResultLauncher<Uri>
+    private lateinit var capturedImageUri: Uri
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,6 +54,34 @@ class BookDetailFragment : Fragment() {
             .inflateTransition(R.transition.shared_element_transition)
         sharedElementEnterTransition = transition
         sharedElementReturnTransition = transition
+
+        permissionLauncher = registerForActivityResult(
+            ActivityResultContracts.RequestMultiplePermissions()
+        ) { permissions ->
+            val cameraPermissionGranted = permissions[android.Manifest.permission.CAMERA] ?: false
+//            val storagePermissionGranted =
+//                permissions[android.Manifest.permission.READ_MEDIA_IMAGES] ?: false
+
+            if (cameraPermissionGranted) {
+                // 권한이 모두 허용된 경우 카메라 호출
+                launchCamera()
+            } else {
+                // 권한이 거부된 경우
+                Toast.makeText(requireContext(), "카메라 및 저장소 권한이 필요합니다.", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        // ActivityResultLauncher 초기화
+        takePictureLauncher = registerForActivityResult(ActivityResultContracts.TakePicture()) { success ->
+            if (success) {
+                val intent = Intent(requireContext(), CropActivity::class.java).apply {
+                    putExtra("IMAGE_URI", capturedImageUri.toString()) // Uri를 String으로 변환하여 전달
+                }
+                startActivity(intent)
+            } else {
+                Toast.makeText(requireContext(), "사진 촬영이 취소되었습니다.", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
 
@@ -129,25 +169,26 @@ class BookDetailFragment : Fragment() {
         binding.btnMemo.setOnClickListener {
             val selectedBook = viewModel.currentBook.value
             selectedBook?.let { book ->
-                val intent = Intent(requireContext(), MemoActivity::class.java).apply {
-                    putExtra("currentBook", book)
-                }
+//                val intent = Intent(requireContext(), MemoActivity::class.java).apply {
+//                    putExtra("currentBook", book)
+//                }
+
+//                sharedView = binding.viewPager.findViewWithTag<View>("page_${binding.viewPager.currentItem}")?.findViewById(R.id.ivBook)
+//                sharedView!!.transitionName = "sharedView_${viewModel.currentBook.value?.itemId}"
+//
+//                val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+//                    requireActivity(),
+//                    sharedView!!,  // 시작점 (ViewPager의 ImageView)
+//                    sharedView!!.transitionName  // 동일한 transitionName 사용
+//                )
+//                startActivity(intent, options.toBundle())
 
 //                val intent = Intent(requireContext(), CardActivity::class.java).apply {
 //                    putExtra("currentBook", book)
 //                }
-
+//
 //                startActivity(intent)
-
-                sharedView = binding.viewPager.findViewWithTag<View>("page_${binding.viewPager.currentItem}")?.findViewById(R.id.ivBook)
-                sharedView!!.transitionName = "sharedView_${viewModel.currentBook.value?.itemId}"
-
-                val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
-                    requireActivity(),
-                    sharedView!!,  // 시작점 (ViewPager의 ImageView)
-                    sharedView!!.transitionName  // 동일한 transitionName 사용
-                )
-                startActivity(intent, options.toBundle())
+                showBottomSheet()
             }
 
         }
@@ -155,6 +196,21 @@ class BookDetailFragment : Fragment() {
         prepareSharedElementTransition()
 
         return binding.root
+    }
+
+    private fun checkPermissions(): Boolean {
+        val cameraPermission = android.Manifest.permission.CAMERA
+        val readMediaPermission = android.Manifest.permission.READ_MEDIA_IMAGES
+
+        return (requireContext().checkSelfPermission(cameraPermission) == android.content.pm.PackageManager.PERMISSION_GRANTED)
+    }
+
+    private fun requestPermissions() {
+        val permissions = arrayOf(
+            android.Manifest.permission.CAMERA,
+            android.Manifest.permission.READ_MEDIA_IMAGES
+        )
+        permissionLauncher.launch(permissions)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -231,6 +287,68 @@ class BookDetailFragment : Fragment() {
                 }
             }
         )
+    }
+
+    private fun launchCamera() {
+        val photoFile = createImageFile()
+        capturedImageUri = getFileUri(photoFile)
+        takePictureLauncher.launch(capturedImageUri)
+    }
+
+    private fun createImageFile(): File {
+        val storageDir = requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        return File.createTempFile(
+            "JPEG_${System.currentTimeMillis()}_",
+            ".jpg",
+            storageDir
+        )
+    }
+
+    private fun getFileUri(file: File): Uri {
+        return FileProvider.getUriForFile(
+            requireContext(),
+            "${requireContext().packageName}.provider",
+            file
+        )
+    }
+    private fun showBottomSheet() {
+        val bottomSheetDialog = BottomSheetDialog(requireContext(), R.style.CustomBottomSheetDialog)
+        val view = layoutInflater.inflate(R.layout.dialog_select_memo_create_type, null)
+        bottomSheetDialog.setContentView(view)
+        bottomSheetDialog.show()
+        // 추가 로직 (예: 버튼 클릭 이벤트)
+        view.findViewById<Button>(R.id.btnCamera).setOnClickListener {
+            if (checkPermissions()) {
+                // 권한이 이미 허용된 경우 카메라 실행
+                launchCamera()
+            } else {
+                // 권한 요청
+                requestPermissions()
+            }
+        }
+
+        view.findViewById<Button>(R.id.btnSelf).setOnClickListener {
+            // 버튼 클릭 동작
+        }
+    }
+
+    private fun processImageForOCR(imageBitmap: Bitmap) {
+        val image = InputImage.fromBitmap(imageBitmap, 0)
+        val recognizer = TextRecognition.getClient(KoreanTextRecognizerOptions.Builder().build())
+
+        recognizer.process(image)
+            .addOnSuccessListener { visionText ->
+                if (visionText.textBlocks.isEmpty()) {
+                    Toast.makeText(requireContext(), "텍스트를 인식하지 못했습니다.", Toast.LENGTH_SHORT).show()
+                    return@addOnSuccessListener
+                }
+                val recognizedText = visionText.text
+                Log.d("OCR_RESULT", "인식된 텍스트: $recognizedText")
+            }
+            .addOnFailureListener { e ->
+                Log.e("OCR_ERROR", "OCR 실패: ${e.message}")
+                Toast.makeText(requireContext(), "텍스트 인식 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
+            }
     }
 
     override fun onDestroyView() {
