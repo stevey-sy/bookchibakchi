@@ -2,8 +2,13 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:id="@+id/action_save"
+        android:icon="@drawable/ic_disk"
+        android:title="저장"
+        app:showAsAction="always" />
+    <item
         android:id="@+id/action_close"
-        android:icon="@drawable/ic_close"
-        android:title="@string/title_add_card"
+        android:icon="@drawable/ic_cross"
+        android:title="닫기"
         app:showAsAction="always" />
 </menu>
