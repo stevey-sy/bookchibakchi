@@ -63,28 +63,19 @@
                             android:scaleType="centerCrop" />
                     </androidx.cardview.widget.CardView>
 
-<!--                    <RelativeLayout-->
-<!--                        android:id="@+id/rlBookTitle"-->
-<!--                        android:layout_width="wrap_content"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:elevation="8dp"-->
-<!--                        android:layout_gravity="center"-->
-<!--                        android:layout_margin="@dimen/_4sdp"-->
-<!--                        android:padding="@dimen/_4sdp">-->
+                    <com.example.bookchigibakchigi.ui.component.MovableEditText
+                        android:id="@+id/etBookContent"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@{viewModel.bookContentText}"
+                        android:layout_gravity="center"
+                        android:elevation="8dp"
+                        android:padding="@dimen/_4sdp"
+                        android:background="@null"
+                        android:textSize="16sp"
+                        android:fontFamily="@font/maruburi_bold"/>
 
-<!--                        <EditText-->
-<!--                            android:id="@+id/etBookTitle"-->
-<!--                            android:layout_width="wrap_content"-->
-<!--                            android:layout_height="wrap_content"-->
-<!--                            android:text="@{viewModel.getBookInfoText()}"-->
-<!--                            android:layout_centerInParent="true"-->
-<!--                            android:background="@null"-->
-<!--                            android:textSize="12sp"-->
-<!--                            android:fontFamily="@font/maruburi_bold"/>-->
-
-<!--                    </RelativeLayout>-->
-
-                    <EditText
+                    <com.example.bookchigibakchigi.ui.component.MovableEditText
                         android:id="@+id/etBookTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -179,11 +170,11 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:padding="@dimen/_10sdp"
-                android:background="@drawable/background_rounded"
-                android:visibility="gone"
+                android:background="@drawable/background_rounded_gray"
                 android:layout_marginBottom="@dimen/_10sdp"
                 android:elevation="8dp"
-                android:gravity="center">
+                android:gravity="center"
+                android:visibility="gone">
 
                 <!-- 예제: 색상 선택 버튼 -->
                 <ImageView
