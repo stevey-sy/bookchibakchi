@@ -9,62 +9,19 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:gravity="center"
+        android:layout_marginStart="@dimen/_10sdp"
         android:layout_marginTop="@dimen/_20sdp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="16sp"
-            android:text="* 페이지를 입력해주세요."
+            android:textColor="@color/black"
+            android:text="* 텍스트를 확인해주세요."
             android:textStyle="bold" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="12sp"
-            android:text="(선택사항입니다.)" />
-
-
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="@dimen/_20sdp"
-        android:gravity="center">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="p. "
-            android:textSize="16sp"
-            android:textColor="@color/black"
-            />
-
-        <!-- 읽은 페이지 입력 -->
-        <EditText
-            android:id="@+id/etPageInput"
-            android:layout_width="@dimen/_80sdp"
-            android:layout_height="wrap_content"
-            android:hint="0"
-            android:inputType="number"
-            android:gravity="center"
-            android:background="@drawable/background_edittext"
-            android:textColorHighlight="@android:color/darker_gray"
-            android:padding="12dp"
-            android:textSize="16sp"/>
-    </LinearLayout>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="16sp"
-        android:text="* 텍스트를 확인해주세요."
-        android:textStyle="bold"
-        android:gravity="center"
-        android:layout_marginTop="@dimen/_20sdp"/>
 
     <EditText
         android:id="@+id/etRecognizedText"
@@ -79,6 +36,45 @@
         android:textSize="14sp"
         android:layout_margin="@dimen/_10sdp"/>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:gravity="end"
+        android:layout_marginEnd="@dimen/_10sdp"
+        android:layout_marginTop="@dimen/_20sdp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="p. "
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            />
+
+        <!-- 읽은 페이지 입력 -->
+        <EditText
+            android:id="@+id/etPageInput"
+            android:layout_width="@dimen/_60sdp"
+            android:layout_height="wrap_content"
+            android:hint="0"
+            android:inputType="number"
+            android:gravity="center"
+            android:background="@drawable/background_edittext"
+            android:textColorHighlight="@android:color/darker_gray"
+            android:padding="4dp"
+            android:textSize="16sp"/>
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="12sp"
+        android:layout_gravity="end"
+        android:layout_marginEnd="@dimen/_10sdp"
+        android:textColor="@color/black"
+        android:text="* page 입력은 선택사항입니다." />
+
     <!-- 버튼 레이아웃 -->
     <LinearLayout
         android:layout_width="match_parent"
@@ -89,14 +85,14 @@
 
         <!-- 다시 시도 버튼 -->
         <TextView
-            android:id="@+id/btnRetry"
+            android:id="@+id/btnCancel"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
             android:background="@color/black"
             android:textColor="@color/white"
-            android:text="다시 시도" />
+            android:text="취소" />
 
         <View
             android:layout_width="1dp"

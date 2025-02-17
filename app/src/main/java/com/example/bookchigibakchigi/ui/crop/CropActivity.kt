@@ -1,7 +1,9 @@
 package com.example.bookchigibakchigi.ui.crop
 
+import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -14,8 +16,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.bookchigibakchigi.R
+import com.example.bookchigibakchigi.data.entity.BookEntity
 import com.example.bookchigibakchigi.databinding.ActivityCropBinding
 import com.example.bookchigibakchigi.ui.BaseActivity
+import com.example.bookchigibakchigi.ui.card.CardActivity
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.korean.KoreanTextRecognizerOptions
@@ -23,6 +27,7 @@ import com.google.mlkit.vision.text.korean.KoreanTextRecognizerOptions
 class CropActivity : BaseActivity() {
     private lateinit var binding: ActivityCropBinding
     private lateinit var imageUri: Uri
+    private var currentBook: BookEntity? = null // BookEntity 타입이라고 가정
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -38,6 +43,21 @@ class CropActivity : BaseActivity() {
         val uriString = intent.getStringExtra("IMAGE_URI")
         if (uriString != null) {
             imageUri = Uri.parse(uriString)
+        }
+
+        // currentBook 가져오기
+        val intentBook: BookEntity? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            intent.getParcelableExtra("currentBook", BookEntity::class.java)
+        } else {
+            @Suppress("DEPRECATION")
+            intent.getParcelableExtra("currentBook")
+        }
+
+        // currentBook 데이터 확인
+        intentBook?.let { book ->
+            Log.d("CropActivity", "Current Book Title: ${book.title}")
+            Log.d("CropActivity", "Current Book ID: ${book.itemId}")
+            currentBook = book
         }
 
         binding.cropImageView.setImageUriAsync(imageUri)
@@ -109,24 +129,37 @@ class CropActivity : BaseActivity() {
 
         // 레이아웃 내 View 참조
         val etRecognizedText = dialogView.findViewById<EditText>(R.id.etRecognizedText)
-        val btnRetry = dialogView.findViewById<TextView>(R.id.btnRetry)
+        val etPageInput = dialogView.findViewById<EditText>(R.id.etPageInput)
+        val btnCancel = dialogView.findViewById<TextView>(R.id.btnCancel)
         val btnConfirm = dialogView.findViewById<TextView>(R.id.btnConfirm)
 
         // 인식된 텍스트를 EditText에 설정
         etRecognizedText.setText(recognizedText)
 
-        // 복사 버튼 클릭 이벤트
-        btnRetry.setOnClickListener {
-//            Toast.makeText(this, "텍스트가 복사되었습니다.", Toast.LENGTH_SHORT).show()
+        // 취소 버튼 클릭 이벤트
+        btnCancel.setOnClickListener {
+            dialog.dismiss()
         }
 
-        // 닫기 버튼 클릭 이벤트
+        // 확인 버튼 클릭 이벤트
         btnConfirm.setOnClickListener {
             dialog.dismiss()
+            val copiedText = etRecognizedText.text.toString()
+            val copiedPage = etPageInput.text.toString()
+
+            val intent = Intent(this, CardActivity::class.java).apply {
+                putExtra("copiedText", copiedText)
+                putExtra("copiedPage", copiedPage)
+                putExtra("currentBook", currentBook)
+            }
+
+            startActivity(intent)
         }
 
         // Dialog에 커스텀 뷰 설정
         dialog.setView(dialogView)
         dialog.show()
+
+        etRecognizedText.requestFocus()
     }
 }

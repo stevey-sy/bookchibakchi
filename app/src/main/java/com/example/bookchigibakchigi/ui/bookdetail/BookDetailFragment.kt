@@ -76,7 +76,9 @@ class BookDetailFragment : Fragment() {
             if (success) {
                 val intent = Intent(requireContext(), CropActivity::class.java).apply {
                     putExtra("IMAGE_URI", capturedImageUri.toString()) // Uri를 String으로 변환하여 전달
+                    putExtra("currentBook", viewModel.currentBook.value)
                 }
+
                 startActivity(intent)
             } else {
                 Toast.makeText(requireContext(), "사진 촬영이 취소되었습니다.", Toast.LENGTH_SHORT).show()
@@ -330,25 +332,6 @@ class BookDetailFragment : Fragment() {
         view.findViewById<Button>(R.id.btnSelf).setOnClickListener {
             // 버튼 클릭 동작
         }
-    }
-
-    private fun processImageForOCR(imageBitmap: Bitmap) {
-        val image = InputImage.fromBitmap(imageBitmap, 0)
-        val recognizer = TextRecognition.getClient(KoreanTextRecognizerOptions.Builder().build())
-
-        recognizer.process(image)
-            .addOnSuccessListener { visionText ->
-                if (visionText.textBlocks.isEmpty()) {
-                    Toast.makeText(requireContext(), "텍스트를 인식하지 못했습니다.", Toast.LENGTH_SHORT).show()
-                    return@addOnSuccessListener
-                }
-                val recognizedText = visionText.text
-                Log.d("OCR_RESULT", "인식된 텍스트: $recognizedText")
-            }
-            .addOnFailureListener { e ->
-                Log.e("OCR_ERROR", "OCR 실패: ${e.message}")
-                Toast.makeText(requireContext(), "텍스트 인식 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
-            }
     }
 
     override fun onDestroyView() {
