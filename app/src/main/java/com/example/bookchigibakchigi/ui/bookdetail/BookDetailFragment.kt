@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.activity.result.ActivityResultLauncher
@@ -313,24 +314,48 @@ class BookDetailFragment : Fragment() {
             file
         )
     }
+    private fun showCameraDialog() {
+        val bottomSheetDialog = BottomSheetDialog(requireContext(), R.style.CustomBottomSheetDialog)
+        val view = layoutInflater.inflate(R.layout.dialog_select_photo_type, null)
+        bottomSheetDialog.setContentView(view)
+        bottomSheetDialog.show()
+        view.findViewById<LinearLayout>(R.id.llCamera).setOnClickListener {
+            bottomSheetDialog.dismiss()
+            onCameraBtnClicked()
+        }
+
+        view.findViewById<LinearLayout>(R.id.llGallery).setOnClickListener {
+            // 버튼 클릭 동작
+            bottomSheetDialog.dismiss()
+        }
+
+    }
     private fun showBottomSheet() {
         val bottomSheetDialog = BottomSheetDialog(requireContext(), R.style.CustomBottomSheetDialog)
         val view = layoutInflater.inflate(R.layout.dialog_select_memo_create_type, null)
         bottomSheetDialog.setContentView(view)
         bottomSheetDialog.show()
         // 추가 로직 (예: 버튼 클릭 이벤트)
-        view.findViewById<Button>(R.id.btnCamera).setOnClickListener {
-            if (checkPermissions()) {
-                // 권한이 이미 허용된 경우 카메라 실행
-                launchCamera()
-            } else {
-                // 권한 요청
-                requestPermissions()
-            }
+        view.findViewById<LinearLayout>(R.id.llMicrophone).setOnClickListener {
+            bottomSheetDialog.dismiss()
+        }
+        view.findViewById<LinearLayout>(R.id.llCamera).setOnClickListener {
+            bottomSheetDialog.dismiss()
+            showCameraDialog()
         }
 
-        view.findViewById<Button>(R.id.btnSelf).setOnClickListener {
+        view.findViewById<LinearLayout>(R.id.llKeyboard).setOnClickListener {
             // 버튼 클릭 동작
+        }
+    }
+
+    private fun onCameraBtnClicked() {
+        if (checkPermissions()) {
+            // 권한이 이미 허용된 경우 카메라 실행
+            launchCamera()
+        } else {
+            // 권한 요청
+            requestPermissions()
         }
     }
 

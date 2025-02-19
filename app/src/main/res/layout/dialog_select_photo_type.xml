@@ -22,7 +22,7 @@
         android:padding="8dp"
         android:textColor="@color/black"
         android:textStyle="bold"
-        android:text="책 속의 기억에 남는 문구를 기록합니다."
+        android:text="사진을 가져올 방법을 선택해주세요."
         android:textSize="18sp" />
 
     <LinearLayout
@@ -32,7 +32,7 @@
         android:orientation="vertical" >
 
         <LinearLayout
-            android:id="@+id/llMicrophone"
+            android:id="@+id/llGallery"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_40sdp"
             android:orientation="horizontal"
@@ -43,7 +43,7 @@
             <ImageView
                 android:layout_width="@dimen/_15sdp"
                 android:layout_height="@dimen/_15sdp"
-                android:background="@drawable/ic_microphone"
+                android:background="@drawable/ic_gallery"
                 android:layout_gravity="center" />
 
             <TextView
@@ -54,7 +54,7 @@
                 android:textSize="14sp"
                 android:layout_gravity="center"
                 android:layout_marginStart="@dimen/_10sdp"
-                android:text="음성인식으로 가져오기" />
+                android:text="겔러리에서 가져오기" />
 
         </LinearLayout>
 
@@ -86,32 +86,6 @@
 
         </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/llKeyboard"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/_40sdp"
-            android:orientation="horizontal"
-            android:background="@drawable/background_rounded_rectangle_black"
-            android:layout_marginTop="@dimen/_8sdp"
-            android:gravity="center">
-
-            <ImageView
-                android:layout_width="@dimen/_15sdp"
-                android:layout_height="@dimen/_15sdp"
-                android:background="@drawable/ic_keyboard"
-                android:layout_gravity="center" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/white"
-                android:gravity="center"
-                android:textSize="14sp"
-                android:layout_gravity="center"
-                android:layout_marginStart="@dimen/_10sdp"
-                android:text="직접 입력하기" />
-
-        </LinearLayout>
 
 
     </LinearLayout>
