@@ -82,7 +82,7 @@
                 android:textSize="14sp"
                 android:layout_gravity="center"
                 android:layout_marginStart="@dimen/_10sdp"
-                android:text="사진으로 가져오기" />
+                android:text="사진 촬영으로 가져오기" />
 
         </LinearLayout>
 
