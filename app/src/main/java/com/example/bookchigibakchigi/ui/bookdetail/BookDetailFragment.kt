@@ -28,6 +28,7 @@ import com.example.bookchigibakchigi.databinding.FragmentBookDetailBinding
 import com.example.bookchigibakchigi.ui.crop.CropActivity
 import com.example.bookchigibakchigi.ui.MainActivityViewModel
 import com.example.bookchigibakchigi.ui.bookdetail.adapter.BookViewPagerAdapter
+import com.example.bookchigibakchigi.ui.microphone.MicrophoneActivity
 import com.example.bookchigibakchigi.ui.record.RecordActivity
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.mlkit.vision.common.InputImage
@@ -338,6 +339,7 @@ class BookDetailFragment : Fragment() {
         // 추가 로직 (예: 버튼 클릭 이벤트)
         view.findViewById<LinearLayout>(R.id.llMicrophone).setOnClickListener {
             bottomSheetDialog.dismiss()
+            moveToMicrophoneActivity()
         }
         view.findViewById<LinearLayout>(R.id.llCamera).setOnClickListener {
             bottomSheetDialog.dismiss()
@@ -357,6 +359,11 @@ class BookDetailFragment : Fragment() {
             // 권한 요청
             requestPermissions()
         }
+    }
+
+    private fun moveToMicrophoneActivity() {
+        val intent = Intent(requireContext(), MicrophoneActivity::class.java)
+        startActivity(intent)
     }
 
     override fun onDestroyView() {
