@@ -43,7 +43,7 @@
                     android:textColor="@color/black"
                     android:textSize="16sp"
                     android:textStyle="bold"
-                    android:text="버튼을 누른 상태에서 문구를 읽어주세요"
+                    android:text="버튼을 누른 상태에서 기록하고 싶은 문구를 읽어주세요"
                     android:layout_marginBottom="@dimen/_20sdp"/>
 
                 <ImageView
