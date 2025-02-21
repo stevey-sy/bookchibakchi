@@ -33,6 +33,7 @@ import com.example.bookchigibakchigi.databinding.ActivityCardBinding
 import com.example.bookchigibakchigi.ui.BaseActivity
 import com.example.bookchigibakchigi.ui.card.adapter.CardBackgroundAdapter
 import com.example.bookchigibakchigi.ui.component.MovableEditText
+import com.example.bookchigibakchigi.util.VibrationUtil
 
 class CardActivity : BaseActivity() {
 
@@ -388,7 +389,7 @@ class CardActivity : BaseActivity() {
 
                     if (position != lastSelectedPosition) { // 새로운 아이템이 선택되었을 때만 실행
                         lastSelectedPosition = position
-                        vibrate() // ✅ 진동 효과 실행
+                        VibrationUtil.vibrate(this@CardActivity, 100) // ✅ 진동 효과 실행
 
                         // 선택된 이미지 변경
                         Glide.with(this@CardActivity)
@@ -485,22 +486,5 @@ class CardActivity : BaseActivity() {
 //                binding.customToolbar.visibility = View.VISIBLE
 //            }
 //        }
-    }
-
-    private fun vibrate() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {// API 레벨 31 (Android 12) 이상에서는 VibratorManager 사용
-            val vibratorManager =
-                getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
-            val vibrator = vibratorManager.defaultVibrator
-            vibrator.vibrate(VibrationEffect.createOneShot(50, VibrationEffect.DEFAULT_AMPLITUDE))
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            // API 레벨 26 (Android 8.0) 이상에서는 Vibrator 사용
-            val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-            vibrator.vibrate(VibrationEffect.createOneShot(50, VibrationEffect.DEFAULT_AMPLITUDE))
-        } else {
-            // API 레벨 26 미만에서는 Vibrator 사용 (deprecated 방식)
-            val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-            vibrator.vibrate(50)
-        }
     }
 }
