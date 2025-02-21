@@ -4,6 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".ui.microphone.MicrophoneActivity">
 
+    <data>
+        <variable
+            name="viewModel"
+            type="com.example.bookchigibakchigi.ui.microphone.MicrophoneActivityViewModel" />
+    </data>
+
     <LinearLayout
         android:id="@+id/main"
         android:layout_width="match_parent"
@@ -27,7 +33,8 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            app:bindBackgroundColor="@{viewModel.backgroundColor}">
 
             <LinearLayout
                 android:id="@+id/llContent"
@@ -35,29 +42,42 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical"
                 android:gravity="center"
+                android:layout_marginHorizontal="@dimen/_12sdp"
                 android:layout_above="@id/tvNext">
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:id="@+id/tvHeader"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black"
-                    android:textSize="16sp"
+                    android:textColor="@{viewModel.textColor}"
+                    android:textSize="20sp"
                     android:textStyle="bold"
-                    android:text="버튼을 누른 상태에서 기록하고 싶은 문구를 읽어주세요"
-                    android:layout_marginBottom="@dimen/_20sdp"/>
+                    android:text="@{viewModel.headerText}"
+                    android:gravity="center"
+                    android:layout_marginBottom="@dimen/_80sdp"/>
 
-                <ImageView
-                    android:id="@+id/ivMicrophone"
-                    android:layout_width="@dimen/_50sdp"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_microphone_black"
-                    android:adjustViewBounds="true"
-                    android:layout_gravity="center"/>
+
+                <RelativeLayout
+                    android:layout_width="@dimen/_70sdp"
+                    android:layout_height="@dimen/_70sdp"
+                    android:background="@drawable/background_circle_border_gray">
+
+                    <ImageView
+                        android:id="@+id/ivMicrophone"
+                        android:layout_width="@dimen/_50sdp"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_microphone_black"
+                        android:adjustViewBounds="true"
+                        android:layout_centerInParent="true"/>
+
+                </RelativeLayout>
+
 
                 <EditText
                     android:id="@+id/etResult"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_20sdp"/>
 
             </LinearLayout>
 
