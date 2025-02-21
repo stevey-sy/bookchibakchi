@@ -26,10 +26,10 @@ class MicrophoneActivityViewModel(application: Application) : AndroidViewModel(a
     private val _textColor = MutableLiveData<Int>()
     val textColor: LiveData<Int> get() = _textColor
 
-    private val _backgroundColor = MutableLiveData<Int>(R.color.black) // 초기 배경색: 흰색
+    private val _backgroundColor = MutableLiveData<Int>(R.color.white) // 초기 배경색: 흰색
     val backgroundColor: LiveData<Int> get() = _backgroundColor
 
-    private val _recognizedText = MutableLiveData<String>()
+    private val _recognizedText = MutableLiveData<String>().apply { value = "" } // 초기 텍스트는 빈 값
     val recognizedText: LiveData<String> get() = _recognizedText
 
     private val speechRecognizer: SpeechRecognizer = SpeechRecognizer.createSpeechRecognizer(application)
@@ -47,14 +47,15 @@ class MicrophoneActivityViewModel(application: Application) : AndroidViewModel(a
 
             override fun onError(error: Int) {
                 _isRecording.value = false
-                _recognizedText.value = "음성 인식 실패. 다시 시도해 주세요."
+                appendRecognizedText("음성 인식 실패. 다시 시도해 주세요.")
                 updateHeaderState()
             }
 
             override fun onResults(results: Bundle?) {
                 _isRecording.value = false
                 val matches = results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
-                _recognizedText.value = matches?.firstOrNull() ?: "음성을 인식하지 못했습니다."
+                val newText = matches?.firstOrNull() ?: "음성을 인식하지 못했습니다."
+                appendRecognizedText(newText)
                 updateHeaderState()
             }
 
@@ -78,6 +79,18 @@ class MicrophoneActivityViewModel(application: Application) : AndroidViewModel(a
 
     fun stopListening() {
         speechRecognizer.stopListening()
+    }
+
+    /**
+     * 음성 인식 결과를 누적하여 저장하는 함수
+     */
+    private fun appendRecognizedText(newText: String) {
+        val currentText = _recognizedText.value ?: "" // 기존 값 가져오기
+        _recognizedText.value = if (currentText.isNotEmpty()) {
+            "$currentText\n$newText" // 기존 텍스트 + 줄바꿈 후 새로운 텍스트 추가
+        } else {
+            newText // 기존 텍스트가 비어있다면 그냥 추가
+        }
     }
 
     private fun updateHeaderState() {

@@ -41,10 +41,6 @@ class MicrophoneActivity : BaseActivity() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
 
-        viewModel.recognizedText.observe(this) { text ->
-            binding.etResult.setText(text)
-        }
-
         // 마이크 버튼 이벤트 설정
         binding.ivMicrophone.setOnTouchListener { _, event ->
             when (event.action) {
