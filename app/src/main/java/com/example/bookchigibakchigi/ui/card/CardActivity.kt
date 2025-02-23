@@ -204,8 +204,10 @@ class CardActivity : BaseActivity() {
                 val newY = titleY - binding.etBookContent.height - 20 // etBookTitle 위쪽으로 이동 (간격 20px 추가)
 
                 binding.etBookContent.y = newY // etBookContent 위치 변경
-                binding.etBookContent.selectAll()
                 binding.etBookContent.requestFocus()
+
+                // 마지막 자리로 커서 이동
+                binding.etBookContent.setSelection(binding.etBookContent.text.length)
             }
         })
     }
