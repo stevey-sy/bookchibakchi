@@ -135,7 +135,7 @@ class CardActivity : BaseActivity() {
 //            binding.etBookContent.isMovable = false
 //            binding.etBookContent.setBackgroundResource(R.drawable.background_edit_text_no_focus)
 //            binding.etBookContent.clearFocus()
-
+            binding.etBookContent.isMovable = false
             binding.flBookContent.isMovable = false
             binding.flBookContent.setBackgroundResource(R.drawable.background_edit_text_no_focus)
             binding.flBookContent.clearFocus()
@@ -164,6 +164,7 @@ class CardActivity : BaseActivity() {
 //            binding.etBookContent.setBackgroundResource(R.drawable.background_edit_text_has_focus)
 //            binding.etBookContent.clearFocus()
 
+            binding.etBookContent.isMovable = true
             binding.flBookContent.isMovable = true
             binding.flBookContent.setBackgroundResource(R.drawable.background_edit_text_has_focus)
             binding.etBookContent.clearFocus()
