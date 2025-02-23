@@ -11,11 +11,18 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.bookchigibakchigi.R
+import com.example.bookchigibakchigi.data.entity.BookEntity
 import com.example.bookchigibakchigi.util.VibrationUtil
 
 class MicrophoneActivityViewModel(application: Application) : AndroidViewModel(application) {
 
     private val context = getApplication<Application>()
+
+    private val _currentBook = MutableLiveData<BookEntity>()
+    val currentBook: LiveData<BookEntity> = _currentBook
+    fun setCurrentBook(book: BookEntity) {
+        _currentBook.value = book
+    }
 
     private val _isRecording = MutableLiveData<Boolean>().apply { value = false }
     val isRecording: LiveData<Boolean> get() = _isRecording

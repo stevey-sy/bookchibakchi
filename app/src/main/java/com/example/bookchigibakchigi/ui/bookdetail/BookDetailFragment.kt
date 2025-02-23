@@ -31,9 +31,6 @@ import com.example.bookchigibakchigi.ui.bookdetail.adapter.BookViewPagerAdapter
 import com.example.bookchigibakchigi.ui.microphone.MicrophoneActivity
 import com.example.bookchigibakchigi.ui.record.RecordActivity
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.mlkit.vision.common.InputImage
-import com.google.mlkit.vision.text.TextRecognition
-import com.google.mlkit.vision.text.korean.KoreanTextRecognizerOptions
 import java.io.File
 
 class BookDetailFragment : Fragment() {
@@ -173,25 +170,6 @@ class BookDetailFragment : Fragment() {
         binding.btnMemo.setOnClickListener {
             val selectedBook = viewModel.currentBook.value
             selectedBook?.let { book ->
-//                val intent = Intent(requireContext(), MemoActivity::class.java).apply {
-//                    putExtra("currentBook", book)
-//                }
-
-//                sharedView = binding.viewPager.findViewWithTag<View>("page_${binding.viewPager.currentItem}")?.findViewById(R.id.ivBook)
-//                sharedView!!.transitionName = "sharedView_${viewModel.currentBook.value?.itemId}"
-//
-//                val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
-//                    requireActivity(),
-//                    sharedView!!,  // 시작점 (ViewPager의 ImageView)
-//                    sharedView!!.transitionName  // 동일한 transitionName 사용
-//                )
-//                startActivity(intent, options.toBundle())
-
-//                val intent = Intent(requireContext(), CardActivity::class.java).apply {
-//                    putExtra("currentBook", book)
-//                }
-//
-//                startActivity(intent)
                 showBottomSheet()
             }
 
@@ -362,7 +340,10 @@ class BookDetailFragment : Fragment() {
     }
 
     private fun moveToMicrophoneActivity() {
-        val intent = Intent(requireContext(), MicrophoneActivity::class.java)
+        val intent = Intent(requireContext(), MicrophoneActivity::class.java).apply {
+            putExtra("currentBook", viewModel.currentBook.value)
+        }
+
         startActivity(intent)
     }
 

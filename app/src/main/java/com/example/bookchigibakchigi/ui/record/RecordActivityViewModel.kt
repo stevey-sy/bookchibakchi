@@ -40,7 +40,6 @@ class RecordActivityViewModel : ViewModel() {
         _currentBook.value = book
     }
 
-
     fun getBookProgressText(): LiveData<String> {
         val progressText = MutableLiveData<String>()
         _currentBook.observeForever { book ->
