@@ -7,15 +7,14 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.FrameLayout
 
 @SuppressLint("AppCompatCustomView")
-class MovableEditText @JvmOverloads constructor(
+class MovableFrameLayout @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
-) : EditText(context, attrs, defStyleAttr) {
-
-    var savedBackgroundColor: Int? = null //
+) : FrameLayout(context, attrs, defStyleAttr) {
 
     var isMovable: Boolean = false // 외부에서 제어 가능하도록 설정
     private var dX = 0f
@@ -67,13 +66,5 @@ class MovableEditText @JvmOverloads constructor(
     override fun performClick(): Boolean {
         return super.performClick()
     }
-
-//    override fun onFocusChanged(focused: Boolean, direction: Int, previouslyFocusedRect: Rect?) {
-//        super.onFocusChanged(focused, direction, previouslyFocusedRect)
-//        if (!focused && savedBackgroundColor != null) {
-//            // 포커스를 잃었을 때, 기존 배경색 복원
-//            this.setBackgroundColor(savedBackgroundColor!!)
-//        }
-//    }
 
 }
