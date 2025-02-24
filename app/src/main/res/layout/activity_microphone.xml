@@ -90,6 +90,8 @@
                 android:textColor="@color/white"
                 android:gravity="center"
                 android:text="다음"
+                android:textSize="@dimen/_14sdp"
+                android:textStyle="bold"
                 android:layout_alignParentBottom="true"/>
 
         </RelativeLayout>

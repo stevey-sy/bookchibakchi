@@ -32,9 +32,6 @@ import com.example.bookchigibakchigi.ui.bookdetail.adapter.BookViewPagerAdapter
 import com.example.bookchigibakchigi.ui.microphone.MicrophoneActivity
 import com.example.bookchigibakchigi.ui.record.RecordActivity
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.mlkit.vision.common.InputImage
-import com.google.mlkit.vision.text.TextRecognition
-import com.google.mlkit.vision.text.korean.KoreanTextRecognizerOptions
 import java.io.File
 
 class BookDetailFragment : Fragment() {
@@ -360,7 +357,10 @@ class BookDetailFragment : Fragment() {
     }
 
     private fun moveToMicrophoneActivity() {
-        val intent = Intent(requireContext(), MicrophoneActivity::class.java)
+        val intent = Intent(requireContext(), MicrophoneActivity::class.java).apply {
+            putExtra("currentBook", viewModel.currentBook.value)
+        }
+
         startActivity(intent)
     }
 

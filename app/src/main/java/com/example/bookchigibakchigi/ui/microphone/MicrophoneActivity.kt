@@ -1,7 +1,9 @@
 package com.example.bookchigibakchigi.ui.microphone
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -16,8 +18,10 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.bookchigibakchigi.R
+import com.example.bookchigibakchigi.data.entity.BookEntity
 import com.example.bookchigibakchigi.databinding.ActivityMicrophoneBinding
 import com.example.bookchigibakchigi.ui.BaseActivity
+import com.example.bookchigibakchigi.ui.card.CardActivity
 
 class MicrophoneActivity : BaseActivity() {
 
@@ -30,6 +34,7 @@ class MicrophoneActivity : BaseActivity() {
         binding = ActivityMicrophoneBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setupToolbar(binding.toolbar, binding.main)
+        window.statusBarColor = ContextCompat.getColor(this, R.color.white)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
@@ -41,6 +46,17 @@ class MicrophoneActivity : BaseActivity() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
 
+        val book: BookEntity? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            intent.getParcelableExtra("currentBook", BookEntity::class.java)
+        } else {
+            @Suppress("DEPRECATION")
+            intent.getParcelableExtra("currentBook")
+        }
+
+        book?.let {
+            viewModel.setCurrentBook(it)  // LiveData 업데이트
+        }
+
         // 마이크 버튼 이벤트 설정
         binding.ivMicrophone.setOnTouchListener { _, event ->
             when (event.action) {
@@ -48,6 +64,17 @@ class MicrophoneActivity : BaseActivity() {
                 MotionEvent.ACTION_UP -> viewModel.stopListening()
             }
             false
+        }
+
+        binding.tvNext.setOnClickListener {
+            val copiedText = viewModel.recognizedText.value
+            val currentBook = viewModel.currentBook.value
+            val intent = Intent(this, CardActivity::class.java).apply {
+                putExtra("copiedText", copiedText)
+                putExtra("currentBook", currentBook)
+            }
+
+            startActivity(intent)
         }
     }
 

@@ -6,16 +6,24 @@ import android.os.Bundle
 import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.bookchigibakchigi.R
+import com.example.bookchigibakchigi.data.entity.BookEntity
 import com.example.bookchigibakchigi.util.VibrationUtil
 
 class MicrophoneActivityViewModel(application: Application) : AndroidViewModel(application) {
 
     private val context = getApplication<Application>()
+
+    private val _currentBook = MutableLiveData<BookEntity>()
+    val currentBook: LiveData<BookEntity> = _currentBook
+    fun setCurrentBook(book: BookEntity) {
+        _currentBook.value = book
+    }
 
     private val _isRecording = MutableLiveData<Boolean>().apply { value = false }
     val isRecording: LiveData<Boolean> get() = _isRecording
@@ -47,15 +55,20 @@ class MicrophoneActivityViewModel(application: Application) : AndroidViewModel(a
 
             override fun onError(error: Int) {
                 _isRecording.value = false
-                appendRecognizedText("음성 인식 실패. 다시 시도해 주세요.")
                 updateHeaderState()
+                // Toast 로 "음성 인식 실패. 다시 시도해 주세요." 짧게 보여주기
+                Toast.makeText(context, "음성 인식 실패. 다시 시도해 주세요.", Toast.LENGTH_SHORT).show()
             }
 
             override fun onResults(results: Bundle?) {
                 _isRecording.value = false
                 val matches = results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
-                val newText = matches?.firstOrNull() ?: "음성을 인식하지 못했습니다."
-                appendRecognizedText(newText)
+                val newText = matches?.firstOrNull() ?: ""
+                if(matches.isNullOrEmpty()) {
+                    Toast.makeText(context, "음성 인식 실패. 다시 시도해 주세요.", Toast.LENGTH_SHORT).show()
+                } else {
+                    appendRecognizedText(newText)
+                }
                 updateHeaderState()
             }
 

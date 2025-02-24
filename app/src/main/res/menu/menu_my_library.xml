@@ -15,8 +15,14 @@
         app:showAsAction="always"
         android:visible="false"/>
     <item
+        android:id="@+id/action_filter"
+        android:icon="@drawable/ic_filter_24"
+        android:title="Filter"
+        app:showAsAction="always" />
+    <item
         android:id="@+id/action_search"
-        android:icon="@drawable/ic_search_black"
+        android:icon="@drawable/ic_plus_24"
         android:title="Search"
         app:showAsAction="always" />
+
 </menu>

@@ -63,17 +63,31 @@
                             android:scaleType="centerCrop" />
                     </androidx.cardview.widget.CardView>
 
-                    <com.example.bookchigibakchigi.ui.component.MovableEditText
-                        android:id="@+id/etBookContent"
+                    <com.example.bookchigibakchigi.ui.component.MovableFrameLayout
+                        android:id="@+id/flBookContent"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@{viewModel.bookContentText}"
                         android:layout_gravity="center"
-                        android:elevation="8dp"
                         android:padding="@dimen/_4sdp"
-                        android:background="@null"
-                        android:textSize="16sp"
-                        android:fontFamily="@font/maruburi_bold"/>
+                        android:elevation="8dp">
+
+                        <com.example.bookchigibakchigi.ui.component.MovableEditText
+                            android:id="@+id/etBookContent"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@{viewModel.bookContentText}"
+                            android:padding="@dimen/_4sdp"
+                            android:background="@null"
+                            android:textSize="16sp"
+                            android:fontFamily="@font/maruburi_bold"/>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/background_edit_text_has_focus"/>
+
+                    </com.example.bookchigibakchigi.ui.component.MovableFrameLayout>
+
 
                     <com.example.bookchigibakchigi.ui.component.MovableEditText
                         android:id="@+id/etBookTitle"
@@ -194,11 +208,98 @@
                     android:clickable="true" />
 
                 <ImageView
+                    android:id="@+id/colorGray"
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="@dimen/_20sdp"
+                    android:layout_margin="@dimen/_5sdp"
+                    android:background="@color/gray"
+                    android:clickable="true" />
+
+                <ImageView
                     android:id="@+id/colorRed"
                     android:layout_width="@dimen/_20sdp"
                     android:layout_height="@dimen/_20sdp"
                     android:layout_margin="@dimen/_5sdp"
                     android:background="@color/red"
+                    android:clickable="true" />
+
+                <ImageView
+                    android:id="@+id/colorBlue"
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="@dimen/_20sdp"
+                    android:layout_margin="@dimen/_5sdp"
+                    android:background="@color/blue"
+                    android:clickable="true" />
+
+                <ImageView
+                    android:id="@+id/colorYellow"
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="@dimen/_20sdp"
+                    android:layout_margin="@dimen/_5sdp"
+                    android:background="@color/yellow"
+                    android:clickable="true" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/bgColorPickerLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="@dimen/_10sdp"
+                android:background="@drawable/background_rounded_gray"
+                android:layout_marginBottom="@dimen/_10sdp"
+                android:elevation="8dp"
+                android:gravity="center"
+                android:visibility="gone">
+
+                <!-- 예제: 색상 선택 버튼 -->
+                <ImageView
+                    android:id="@+id/bgColorBlack"
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="@dimen/_20sdp"
+                    android:layout_margin="@dimen/_5sdp"
+                    android:background="@color/black"
+                    android:clickable="true" />
+
+                <ImageView
+                    android:id="@+id/bgColorWhite"
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="@dimen/_20sdp"
+                    android:layout_margin="@dimen/_5sdp"
+                    android:background="@color/white"
+                    android:clickable="true" />
+
+                <ImageView
+                    android:id="@+id/bgColorMint"
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="@dimen/_20sdp"
+                    android:layout_margin="@dimen/_5sdp"
+                    android:background="@color/mint"
+                    android:clickable="true" />
+
+                <ImageView
+                    android:id="@+id/bgColorYellow"
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="@dimen/_20sdp"
+                    android:layout_margin="@dimen/_5sdp"
+                    android:background="@color/yellow_highlight"
+                    android:clickable="true" />
+
+                <ImageView
+                    android:id="@+id/bgColorSky"
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="@dimen/_20sdp"
+                    android:layout_margin="@dimen/_5sdp"
+                    android:background="@color/sky"
+                    android:clickable="true" />
+
+                <ImageView
+                    android:id="@+id/bgColorPurple"
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="@dimen/_20sdp"
+                    android:layout_margin="@dimen/_5sdp"
+                    android:background="@color/purple"
                     android:clickable="true" />
 
             </LinearLayout>

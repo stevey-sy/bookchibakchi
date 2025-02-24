@@ -18,6 +18,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewTreeObserver
 import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import android.widget.FrameLayout
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
@@ -131,8 +132,13 @@ class CardActivity : BaseActivity() {
 
     private fun initClickListener() {
         binding.main.setOnClickListener {
+//            binding.etBookContent.isMovable = false
+//            binding.etBookContent.setBackgroundResource(R.drawable.background_edit_text_no_focus)
+//            binding.etBookContent.clearFocus()
             binding.etBookContent.isMovable = false
-            binding.etBookContent.setBackgroundResource(R.drawable.background_edit_text_no_focus)
+            binding.flBookContent.isMovable = false
+            binding.flBookContent.setBackgroundResource(R.drawable.background_edit_text_no_focus)
+            binding.flBookContent.clearFocus()
             binding.etBookContent.clearFocus()
 
             binding.etBookTitle.isMovable = false
@@ -142,48 +148,25 @@ class CardActivity : BaseActivity() {
             hideKeyboard()
 
             binding.colorPickerLayout.visibility = View.GONE
+            binding.bgColorPickerLayout.visibility = View.GONE
+        }
+
+        binding.btnTextBackgroundColor.setOnClickListener {
+            showColorPicker(binding.bgColorPickerLayout)
         }
 
         binding.btnTextColor.setOnClickListener {
-            if (binding.colorPickerLayout.visibility == View.GONE) {
-                binding.colorPickerLayout.viewTreeObserver.addOnGlobalLayoutListener(object :
-                    ViewTreeObserver.OnGlobalLayoutListener {
-                    override fun onGlobalLayout() {
-                        // 리스너 제거 (한 번만 실행)
-                        binding.colorPickerLayout.viewTreeObserver.removeOnGlobalLayoutListener(this)
-
-                        // customToolbar의 Y 좌표 가져오기
-                        val toolbarY = binding.customToolbar.y
-
-                        // colorPickerLayout의 높이 가져오기
-                        val pickerHeight = binding.colorPickerLayout.height.toFloat()
-                        // 20dp를 px로 변환
-                        val marginInPx = TypedValue.applyDimension(
-                            TypedValue.COMPLEX_UNIT_DIP,
-                            20f, // 20dp
-                            resources.displayMetrics
-                        )
-
-                        // 새로운 Y 위치 설정 (customToolbar 위 + margin 추가)
-                        val newY = toolbarY - pickerHeight - marginInPx
-                        binding.colorPickerLayout.y = newY
-
-                        // View 표시
-                        binding.colorPickerLayout.visibility = View.VISIBLE
-                    }
-                })
-
-                // 레이아웃 변경 후 높이를 정확히 측정할 수 있도록 `VISIBLE`로 설정
-                binding.colorPickerLayout.visibility = View.INVISIBLE
-                binding.colorPickerLayout.requestLayout() // 레이아웃 강제 업데이트
-            } else {
-                binding.colorPickerLayout.visibility = View.GONE
-            }
+            showColorPicker(binding.colorPickerLayout)
         }
 
         binding.btnMove.setOnClickListener {
+//            binding.etBookContent.isMovable = true
+//            binding.etBookContent.setBackgroundResource(R.drawable.background_edit_text_has_focus)
+//            binding.etBookContent.clearFocus()
+
             binding.etBookContent.isMovable = true
-            binding.etBookContent.setBackgroundResource(R.drawable.background_edit_text_has_focus)
+            binding.flBookContent.isMovable = true
+            binding.flBookContent.setBackgroundResource(R.drawable.background_edit_text_has_focus)
             binding.etBookContent.clearFocus()
 
             binding.etBookTitle.isMovable = true
@@ -193,7 +176,54 @@ class CardActivity : BaseActivity() {
         }
 
         initColorPickerListener()
+        initBackgroundColorPickerListener()
     }
+
+    private fun showColorPicker(layout: View) {
+        if (layout.visibility == View.GONE) {
+            layout.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    // 리스너 제거 (한 번만 실행)
+                    layout.viewTreeObserver.removeOnGlobalLayoutListener(this)
+
+                    // 화면의 전체 너비 가져오기
+                    val screenWidth = resources.displayMetrics.widthPixels.toFloat()
+                    // colorPickerLayout 또는 bgColorPickerLayout의 너비 가져오기
+                    val pickerWidth = layout.width.toFloat()
+                    // 가운데 정렬할 X 좌표 계산
+                    val newX = (screenWidth - pickerWidth) / 2
+
+                    // customToolbar의 Y 좌표 가져오기
+                    val toolbarY = binding.customToolbar.y
+
+                    // colorPickerLayout 또는 bgColorPickerLayout의 높이 가져오기
+                    val pickerHeight = layout.height.toFloat()
+                    // 20dp를 px로 변환
+                    val marginInPx = TypedValue.applyDimension(
+                        TypedValue.COMPLEX_UNIT_DIP,
+                        20f, // 20dp
+                        resources.displayMetrics
+                    )
+
+                    // 새로운 Y 위치 설정 (customToolbar 위 + margin 추가)
+                    val newY = toolbarY - pickerHeight - marginInPx
+
+                    layout.x = newX
+                    layout.y = newY
+
+                    // View 표시
+                    layout.visibility = View.VISIBLE
+                }
+            })
+
+            // 레이아웃 변경 후 높이를 정확히 측정할 수 있도록 `VISIBLE`로 설정
+            layout.visibility = View.INVISIBLE
+            layout.requestLayout() // 레이아웃 강제 업데이트
+        } else {
+            layout.visibility = View.GONE
+        }
+    }
+
 
     private fun adjustBookContentPosition() {
         binding.etBookTitle.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
@@ -201,11 +231,13 @@ class CardActivity : BaseActivity() {
                 binding.etBookTitle.viewTreeObserver.removeOnGlobalLayoutListener(this) // 리스너 제거하여 불필요한 호출 방지
 
                 val titleY = binding.etBookTitle.y // etBookTitle의 y 좌표
-                val newY = titleY - binding.etBookContent.height - 20 // etBookTitle 위쪽으로 이동 (간격 20px 추가)
+                val newY = titleY - binding.flBookContent.height - 20 // etBookTitle 위쪽으로 이동 (간격 20px 추가)
 
-                binding.etBookContent.y = newY // etBookContent 위치 변경
-                binding.etBookContent.selectAll()
+                binding.flBookContent.y = newY // etBookContent 위치 변경
                 binding.etBookContent.requestFocus()
+
+                // 마지막 자리로 커서 이동
+                binding.etBookContent.setSelection(binding.etBookContent.text.length)
             }
         })
     }
@@ -214,11 +246,14 @@ class CardActivity : BaseActivity() {
         val colorClickListener = View.OnClickListener { view ->
             val focusedView = currentFocus // 현재 포커스를 가진 View 가져오기
 
-            if (focusedView is MovableEditText) { // 포커스를 가진 View가 MovableEditText인지 확인
+            if (focusedView is EditText) { // 포커스를 가진 View가 MovableEditText인지 확인
                 val color = when (view.id) {
                     R.id.colorBlack -> resources.getColor(R.color.black, theme)
                     R.id.colorWhite -> resources.getColor(R.color.white, theme)
                     R.id.colorRed -> resources.getColor(R.color.red, theme)
+                    R.id.colorBlue -> resources.getColor(R.color.blue, theme)
+                    R.id.colorYellow -> resources.getColor(R.color.yellow, theme)
+                    R.id.colorGray -> resources.getColor(R.color.gray, theme)
                     else -> return@OnClickListener
                 }
 
@@ -231,6 +266,38 @@ class CardActivity : BaseActivity() {
         binding.colorBlack.setOnClickListener(colorClickListener)
         binding.colorWhite.setOnClickListener(colorClickListener)
         binding.colorRed.setOnClickListener(colorClickListener)
+        binding.colorGray.setOnClickListener(colorClickListener)
+        binding.colorBlue.setOnClickListener(colorClickListener)
+        binding.colorYellow.setOnClickListener(colorClickListener)
+    }
+
+    private fun initBackgroundColorPickerListener() {
+        val bgColorClickListener = View.OnClickListener { view ->
+            val focusedView = currentFocus // 현재 포커스를 가진 View 가져오기
+
+            if (focusedView is EditText) { // 포커스를 가진 View가 MovableEditText인지 확인
+                val bgColor = when (view.id) {
+                    R.id.bgColorBlack -> resources.getColor(R.color.black, theme)
+                    R.id.bgColorWhite -> resources.getColor(R.color.white, theme)
+                    R.id.bgColorMint -> resources.getColor(R.color.mint, theme)
+                    R.id.bgColorSky -> resources.getColor(R.color.sky, theme)
+                    R.id.bgColorYellow -> resources.getColor(R.color.yellow_highlight, theme)
+                    R.id.bgColorPurple -> resources.getColor(R.color.purple, theme)
+                    else -> return@OnClickListener
+                }
+
+                focusedView.setBackgroundColor(bgColor) // 포커스를 가진 EditText에 배경색 적용
+                binding.bgColorPickerLayout.visibility = View.GONE
+            }
+        }
+
+        // 배경색 변경 버튼에 공통 리스너 적용
+        binding.bgColorBlack.setOnClickListener(bgColorClickListener)
+        binding.bgColorWhite.setOnClickListener(bgColorClickListener)
+        binding.bgColorMint.setOnClickListener(bgColorClickListener)
+        binding.bgColorSky.setOnClickListener(bgColorClickListener)
+        binding.bgColorYellow.setOnClickListener(bgColorClickListener)
+        binding.bgColorPurple.setOnClickListener(bgColorClickListener)
     }
 
     private fun hideKeyboard() {
