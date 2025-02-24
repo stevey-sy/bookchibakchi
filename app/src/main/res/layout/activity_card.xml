@@ -81,25 +81,30 @@
                             android:textSize="16sp"
                             android:fontFamily="@font/maruburi_bold"/>
 
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:background="@drawable/background_edit_text_has_focus"/>
 
                     </com.example.bookchigibakchigi.ui.component.MovableFrameLayout>
 
-
-                    <com.example.bookchigibakchigi.ui.component.MovableEditText
-                        android:id="@+id/etBookTitle"
+                    <com.example.bookchigibakchigi.ui.component.MovableFrameLayout
+                        android:id="@+id/flBookTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@{viewModel.getBookInfoText()}"
                         android:layout_gravity="center"
-                        android:elevation="8dp"
                         android:padding="@dimen/_4sdp"
-                        android:background="@null"
-                        android:textSize="12sp"
-                        android:fontFamily="@font/maruburi_bold"/>
+                        android:elevation="8dp">
+
+                        <com.example.bookchigibakchigi.ui.component.MovableEditText
+                            android:id="@+id/etBookTitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@{viewModel.getBookInfoText()}"
+                            android:padding="@dimen/_4sdp"
+                            android:background="@null"
+                            android:textSize="12sp"
+                            android:fontFamily="@font/maruburi_bold"/>
+
+
+                    </com.example.bookchigibakchigi.ui.component.MovableFrameLayout>
+
 
 
                 </FrameLayout>

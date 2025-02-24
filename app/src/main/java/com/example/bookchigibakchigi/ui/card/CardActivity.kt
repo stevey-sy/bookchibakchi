@@ -142,8 +142,10 @@ class CardActivity : BaseActivity() {
             binding.etBookContent.clearFocus()
 
             binding.etBookTitle.isMovable = false
-            binding.etBookTitle.setBackgroundResource(R.drawable.background_edit_text_no_focus)
+            binding.flBookTitle.isMovable = false
+            binding.flBookTitle.setBackgroundResource(R.drawable.background_edit_text_no_focus)
             binding.etBookTitle.clearFocus()
+            binding.flBookTitle.clearFocus()
 
             hideKeyboard()
 
@@ -170,7 +172,8 @@ class CardActivity : BaseActivity() {
             binding.etBookContent.clearFocus()
 
             binding.etBookTitle.isMovable = true
-            binding.etBookTitle.setBackgroundResource(R.drawable.background_edit_text_has_focus)
+            binding.flBookTitle.isMovable = true
+            binding.flBookTitle.setBackgroundResource(R.drawable.background_edit_text_has_focus)
             binding.etBookTitle.clearFocus()
             hideKeyboard()
         }
@@ -226,11 +229,11 @@ class CardActivity : BaseActivity() {
 
 
     private fun adjustBookContentPosition() {
-        binding.etBookTitle.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+        binding.flBookTitle.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
-                binding.etBookTitle.viewTreeObserver.removeOnGlobalLayoutListener(this) // 리스너 제거하여 불필요한 호출 방지
+                binding.flBookTitle.viewTreeObserver.removeOnGlobalLayoutListener(this) // 리스너 제거하여 불필요한 호출 방지
 
-                val titleY = binding.etBookTitle.y // etBookTitle의 y 좌표
+                val titleY = binding.flBookTitle.y // etBookTitle의 y 좌표
                 val newY = titleY - binding.flBookContent.height - 20 // etBookTitle 위쪽으로 이동 (간격 20px 추가)
 
                 binding.flBookContent.y = newY // etBookContent 위치 변경
@@ -309,9 +312,6 @@ class CardActivity : BaseActivity() {
 
     private fun initBackgroundSelectView() {
         // 기본 배경 설정 (Glide 사용)
-//        Glide.with(this)
-//            .load(R.drawable.img_blue_sky)
-//            .into(binding.ivBackground)
 
         // 화면 너비 가져오기
         val screenWidth = Resources.getSystem().displayMetrics.widthPixels
@@ -343,59 +343,6 @@ class CardActivity : BaseActivity() {
                 setMaxRecycledViews(0, 10)
             })
         }
-    }
-
-    private fun initEditTextTouchListener() {
-        binding.etBookTitle.setOnTouchListener { view, event ->
-            when (event.action) {
-                MotionEvent.ACTION_DOWN -> {
-                    // 터치가 테두리 영역에서 발생했는지 확인
-                    if (isTouchOnBorder(view, event)) {
-                        isDragging = true // 드래그 시작 플래그 설정
-                        dX = view.x - event.rawX
-                        dY = view.y - event.rawY
-                        true // 이동 이벤트 처리
-                    } else {
-                        isDragging = false
-                        false // 기본 동작 (텍스트 수정 등) 처리
-                    }
-                }
-
-                MotionEvent.ACTION_MOVE -> {
-                    if (isDragging) {
-                        // 드래그 동작
-                        view.animate()
-                            .x(event.rawX + dX)
-                            .y(event.rawY + dY)
-                            .setDuration(0)
-                            .start()
-                        true
-                    } else {
-                        false
-                    }
-                }
-
-                MotionEvent.ACTION_UP -> {
-                    isDragging = false // 드래그 종료
-                    view.performClick() // 접근성을 위한 performClick 호출
-                    true
-                }
-
-                else -> false
-            }
-        }
-    }
-
-    // 테두리 영역에 터치가 발생했는지 확인하는 함수
-    private fun isTouchOnBorder(view: View, event: MotionEvent): Boolean {
-        val borderWidth = 20 // 테두리 영역의 두께 (px 단위, dp로 계산 가능)
-        val x = event.x
-        val y = event.y
-        val width = view.width
-        val height = view.height
-
-        // 터치가 뷰의 테두리 내에서 발생했는지 확인
-        return x < borderWidth || x > width - borderWidth || y < borderWidth || y > height - borderWidth
     }
 
     private fun initSnapHelper() {
@@ -497,61 +444,5 @@ class CardActivity : BaseActivity() {
                     .start()
             }
         }
-
-    }
-
-//    private fun initFocusChangeListener() {
-//        binding.etBookTitle.onFocusChangeListener = View.OnFocusChangeListener { view, hasFocus ->
-//            if (hasFocus) {
-//                // 포커스가 있을 때 배경 변경
-//                binding.customToolbar.visibility = View.VISIBLE
-//            } else {
-//                // 포커스가 없을 때 배경 원래대로 변경
-//                binding.customToolbar.visibility = View.GONE
-//            }
-//        }
-//    }
-
-    private fun setupMovableEditText() {
-        var dX = 0f
-        var dY = 0f
-
-        binding.etBookTitle.setOnTouchListener { view, event ->
-            if(!isMovable) {return@setOnTouchListener false}
-            when (event.action) {
-                MotionEvent.ACTION_DOWN -> {
-                    // 터치 시작 시 X, Y 오프셋 계산
-                    dX = view.x - event.rawX
-                    dY = view.y - event.rawY
-                    true
-                }
-
-                MotionEvent.ACTION_MOVE -> {
-                    // 터치 이동 시 EditText의 위치 변경
-                    view.animate()
-                        .x(event.rawX + dX)
-                        .y(event.rawY + dY)
-                        .setDuration(0)
-                        .start()
-                    true
-                }
-
-                MotionEvent.ACTION_UP -> {
-                    // performClick 호출로 클릭 이벤트 처리
-                    view.performClick()
-                    true
-                }
-
-                else -> false
-            }
-        }
-
-        // performClick을 오버라이드하여 접근성 이벤트를 처리
-//        binding.etBookTitle.setOnClickListener {
-//            // 필요하다면 클릭 이벤트 로직을 여기에 작성
-//            if (binding.customToolbar.visibility == View.GONE) {
-//                binding.customToolbar.visibility = View.VISIBLE
-//            }
-//        }
     }
 }
