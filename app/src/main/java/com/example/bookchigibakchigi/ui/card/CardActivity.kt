@@ -1,8 +1,11 @@
 package com.example.bookchigibakchigi.ui.card
 
+import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.graphics.Rect
 import android.net.Uri
 import android.os.Build
@@ -10,6 +13,7 @@ import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
+import android.provider.MediaStore
 import android.util.Log
 import android.util.TypedValue
 import android.view.Menu
@@ -20,6 +24,7 @@ import android.view.ViewTreeObserver
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.FrameLayout
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.core.view.ViewCompat
@@ -98,6 +103,10 @@ class CardActivity : BaseActivity() {
                 finish()
                 true
             }
+            R.id.action_save -> {
+                onSaveClicked()
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -162,9 +171,6 @@ class CardActivity : BaseActivity() {
         }
 
         binding.btnMove.setOnClickListener {
-//            binding.etBookContent.isMovable = true
-//            binding.etBookContent.setBackgroundResource(R.drawable.background_edit_text_has_focus)
-//            binding.etBookContent.clearFocus()
 
             binding.etBookContent.isMovable = true
             binding.flBookContent.isMovable = true
@@ -443,6 +449,72 @@ class CardActivity : BaseActivity() {
                     .setDuration(200)
                     .start()
             }
+        }
+    }
+
+    private fun onSaveClicked() {
+        // 이미지 파일 저장
+        // imageFileName
+        // textContent
+        // isbn
+        // bookTitle
+        // createdAt
+        // binding.flCapture 영역을 Bitmap으로 캡처
+        val captureView = binding.flCapture
+        val bitmap = Bitmap.createBitmap(captureView.width, captureView.height, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bitmap)
+        captureView.draw(canvas)
+
+        // MediaStore를 사용해 Bitmap 저장 (Android Q 이상 지원)
+        val savedImageUri = saveImageToGallery(bitmap)
+        if (savedImageUri != null) {
+            Toast.makeText(this, "이미지가 저장되었습니다.", Toast.LENGTH_SHORT).show()
+            // 저장된 이미지를 갤러리 앱으로 열기 (옵션)
+            val intent = Intent(Intent.ACTION_VIEW).apply {
+                setDataAndType(savedImageUri, "image/*")
+                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            }
+            startActivity(intent)
+        } else {
+            Toast.makeText(this, "이미지 저장에 실패했습니다.", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun saveImageToGallery(bitmap: Bitmap): Uri? {
+        val filename = "card_${System.currentTimeMillis()}.jpg"
+        val resolver = contentResolver
+        // Android Q 이상과 이하의 저장 위치를 구분
+        val imageCollection: Uri = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
+        } else {
+            MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+        }
+        val contentValues = ContentValues().apply {
+            put(MediaStore.Images.Media.DISPLAY_NAME, filename)
+            put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                put(MediaStore.Images.Media.IS_PENDING, 1)
+            }
+        }
+
+        return try {
+            // 이미지 정보 등록 및 OutputStream 열기
+            val imageUri = resolver.insert(imageCollection, contentValues)
+            imageUri?.let { uri ->
+                resolver.openOutputStream(uri)?.use { outputStream ->
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 90, outputStream)
+                }
+                // 저장 완료 후 IS_PENDING 플래그 해제
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    contentValues.clear()
+                    contentValues.put(MediaStore.Images.Media.IS_PENDING, 0)
+                    resolver.update(uri, contentValues, null, null)
+                }
+            }
+            imageUri
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
         }
     }
 }
