@@ -15,6 +15,7 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.app.SharedElementCallback
@@ -47,6 +48,7 @@ class BookDetailFragment : Fragment() {
     private val CAMERA_REQUEST_CODE = 1001
     private lateinit var permissionLauncher: ActivityResultLauncher<Array<String>>
     private lateinit var takePictureLauncher: ActivityResultLauncher<Uri>
+    private lateinit var pickImageLauncher: ActivityResultLauncher<PickVisualMediaRequest>
     private lateinit var capturedImageUri: Uri
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -84,6 +86,18 @@ class BookDetailFragment : Fragment() {
                 startActivity(intent)
             } else {
                 Toast.makeText(requireContext(), "사진 촬영이 취소되었습니다.", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        pickImageLauncher = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+            if (uri != null) {
+                val intent = Intent(requireContext(), CropActivity::class.java).apply {
+                    putExtra("IMAGE_URI", uri.toString())
+                    putExtra("currentBook", viewModel.currentBook.value)
+                }
+                startActivity(intent)
+            } else {
+                Toast.makeText(requireContext(), "사진 선택이 취소되었습니다.", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -173,25 +187,6 @@ class BookDetailFragment : Fragment() {
         binding.btnMemo.setOnClickListener {
             val selectedBook = viewModel.currentBook.value
             selectedBook?.let { book ->
-//                val intent = Intent(requireContext(), MemoActivity::class.java).apply {
-//                    putExtra("currentBook", book)
-//                }
-
-//                sharedView = binding.viewPager.findViewWithTag<View>("page_${binding.viewPager.currentItem}")?.findViewById(R.id.ivBook)
-//                sharedView!!.transitionName = "sharedView_${viewModel.currentBook.value?.itemId}"
-//
-//                val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
-//                    requireActivity(),
-//                    sharedView!!,  // 시작점 (ViewPager의 ImageView)
-//                    sharedView!!.transitionName  // 동일한 transitionName 사용
-//                )
-//                startActivity(intent, options.toBundle())
-
-//                val intent = Intent(requireContext(), CardActivity::class.java).apply {
-//                    putExtra("currentBook", book)
-//                }
-//
-//                startActivity(intent)
                 showBottomSheet()
             }
 
@@ -328,6 +323,9 @@ class BookDetailFragment : Fragment() {
         view.findViewById<LinearLayout>(R.id.llGallery).setOnClickListener {
             // 버튼 클릭 동작
             bottomSheetDialog.dismiss()
+            pickImageLauncher.launch(
+                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+            )
         }
 
     }
