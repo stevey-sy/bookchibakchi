@@ -481,6 +481,7 @@ class CardActivity : BaseActivity() {
     }
 
     private fun saveImageToGallery(bitmap: Bitmap): Uri? {
+        // filename -> 책 isbn_currentTime.jpg
         val filename = "card_${System.currentTimeMillis()}.jpg"
         val resolver = contentResolver
         // Android Q 이상과 이하의 저장 위치를 구분

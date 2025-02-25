@@ -5,15 +5,11 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import kotlinx.parcelize.Parcelize
 
-
-data class PhotoCard(
-    val id: String,
-    val fileName: String,
-    val textObjects: List<TextObject>,
-    val backgroundImageName: String,
-    val width: Float,
-    val height: Float,
+@Parcelize
+@Entity(tableName = "photo_card")
+data class PhotoCardEntity(
+    @PrimaryKey(autoGenerate = true) val id: Long = 0,
+    val imageFileName: String,
     val isbn: String,
-    val createdAt: String,
-    val likeCnt: Int,
-)
+    val createdAt: Long // timestamp
+) : Parcelable
