@@ -39,17 +39,15 @@ import com.example.bookchigibakchigi.databinding.ActivityCardBinding
 import com.example.bookchigibakchigi.ui.BaseActivity
 import com.example.bookchigibakchigi.ui.card.adapter.CardBackgroundAdapter
 import com.example.bookchigibakchigi.ui.component.MovableEditText
+import com.example.bookchigibakchigi.ui.shared.viewmodel.BookViewModel
 import com.example.bookchigibakchigi.util.VibrationUtil
+import java.io.File
+import java.io.FileOutputStream
 
 class CardActivity : BaseActivity() {
 
     private lateinit var binding: ActivityCardBinding
-    private val viewModel : CardActivityViewModel by viewModels()
     private lateinit var adapter: CardBackgroundAdapter
-    private var isDragging = false
-    private var isMovable = false
-    private var dX = 0f
-    private var dY = 0f
     // 실제 데이터 리스트
     private val actualImages = listOf(
         R.drawable.img_light_blue_sky,
@@ -121,7 +119,7 @@ class CardActivity : BaseActivity() {
 
         val copiedText = intent.getStringExtra("copiedText")
         if (copiedText != null) {
-            viewModel.setBookContent(copiedText)
+            binding.etBookContent.setText(copiedText)
         }
 
         val copiedPage = intent.getStringExtra("copiedPage")
@@ -129,13 +127,13 @@ class CardActivity : BaseActivity() {
 
         }
 
-        binding.viewModel = viewModel
+        binding.viewModel = bookViewModel
         binding.lifecycleOwner = this
 
         // ✅ ViewModel에 데이터 저장
         book?.let {
-            viewModel.setCurrentBook(it)  // LiveData 업데이트
-            viewModel.setBookInfo(book.title)
+            bookViewModel.setBook(it)  // LiveData 업데이트
+            binding.etBookTitle.setText(book.title)
         }
     }
 
@@ -453,30 +451,46 @@ class CardActivity : BaseActivity() {
     }
 
     private fun onSaveClicked() {
-        // 이미지 파일 저장
-        // imageFileName
-        // textContent
-        // isbn
-        // bookTitle
-        // createdAt
         // binding.flCapture 영역을 Bitmap으로 캡처
         val captureView = binding.flCapture
         val bitmap = Bitmap.createBitmap(captureView.width, captureView.height, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
         captureView.draw(canvas)
 
-        // MediaStore를 사용해 Bitmap 저장 (Android Q 이상 지원)
-        val savedImageUri = saveImageToGallery(bitmap)
-        if (savedImageUri != null) {
-            Toast.makeText(this, "이미지가 저장되었습니다.", Toast.LENGTH_SHORT).show()
-            // 저장된 이미지를 갤러리 앱으로 열기 (옵션)
-            val intent = Intent(Intent.ACTION_VIEW).apply {
-                setDataAndType(savedImageUri, "image/*")
-                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            }
-            startActivity(intent)
+        // 내부 저장소에 이미지 저장
+        val savedFilePath = saveImageToInternalStorage(bitmap)
+        if (savedFilePath != null) {
+            Toast.makeText(this, "이미지가 내부 저장소에 저장되었습니다.", Toast.LENGTH_SHORT).show()
+            // DB에 데이터 저장
         } else {
             Toast.makeText(this, "이미지 저장에 실패했습니다.", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun saveImageDataToDatabase() {
+        //
+    }
+
+    /**
+     * 앱 내부 저장소에 Bitmap을 저장하는 함수
+     * @param bitmap 저장할 이미지
+     * @return 저장된 파일의 경로 (실패 시 null 반환)
+     */
+    private fun saveImageToInternalStorage(bitmap: Bitmap): String? {
+        return try {
+            val isbn = bookViewModel.currentBook.value?.isbn
+            val fileName = "${isbn}_${System.currentTimeMillis()}.png" // 파일 이름 (예: photo_1709000000000.png)
+            val file = File(filesDir, fileName) // 내부 저장소에 저장할 파일 경로 설정
+
+            val outputStream = FileOutputStream(file)
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream) // PNG 형식으로 저장
+            outputStream.flush()
+            outputStream.close()
+
+            file.absolutePath // 저장된 파일 경로 반환
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
         }
     }
 
