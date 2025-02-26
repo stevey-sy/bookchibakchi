@@ -1,4 +1,4 @@
-package com.example.bookchigibakchigi.repository
+package com.example.bookchigibakchigi.data.repository
 
 import androidx.lifecycle.LiveData
 import com.example.bookchigibakchigi.data.dao.BookDao

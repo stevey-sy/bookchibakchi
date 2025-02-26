@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.bookchigibakchigi.network.model.AladinBookItem
 import com.example.bookchigibakchigi.network.model.BookItem
 import com.example.bookchigibakchigi.network.model.NaverBookResponse
-import com.example.bookchigibakchigi.repository.BookSearchRepository
+import com.example.bookchigibakchigi.data.repository.BookSearchRepository
 import kotlinx.coroutines.launch
 
 class BookViewModel(private val repository: BookSearchRepository) : ViewModel() {

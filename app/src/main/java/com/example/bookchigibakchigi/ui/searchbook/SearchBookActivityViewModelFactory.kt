@@ -2,7 +2,7 @@ package com.example.bookchigibakchigi.ui.searchbook
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.bookchigibakchigi.repository.AladinBookRepository
+import com.example.bookchigibakchigi.data.repository.AladinBookRepository
 
 class SearchBookActivityViewModelFactory (
 private val repository: AladinBookRepository

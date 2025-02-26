@@ -1,4 +1,4 @@
-package com.example.bookchigibakchigi.repository
+package com.example.bookchigibakchigi.data.repository
 
 import com.example.bookchigibakchigi.network.model.AladinBookItem
 import com.example.bookchigibakchigi.network.service.AladinBookApiService

@@ -7,7 +7,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.example.bookchigibakchigi.ui.card.CardActivityViewModel" />
+            type="com.example.bookchigibakchigi.ui.shared.viewmodel.BookViewModel" />
     </data>
 
     <LinearLayout
@@ -77,7 +77,7 @@
                             android:id="@+id/etBookContent"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@{viewModel.bookContentText}"
+                            android:text=""
                             android:padding="@dimen/_4sdp"
                             android:background="@null"
                             android:textSize="16sp"
@@ -98,7 +98,7 @@
                             android:id="@+id/etBookTitle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@{viewModel.getBookInfoText()}"
+                            android:text=""
                             android:padding="@dimen/_4sdp"
                             android:background="@null"
                             android:textSize="12sp"

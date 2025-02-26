@@ -21,7 +21,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.bookchigibakchigi.R
 import com.example.bookchigibakchigi.data.database.AppDatabase
 import com.example.bookchigibakchigi.databinding.FragmentMyLibraryBinding
-import com.example.bookchigibakchigi.repository.BookShelfRepository
+import com.example.bookchigibakchigi.data.repository.BookShelfRepository
 import com.example.bookchigibakchigi.ui.MainActivity
 import com.example.bookchigibakchigi.ui.MainActivityViewModel
 import com.example.bookchigibakchigi.ui.mylibrary.adapter.BookShelfAdapter

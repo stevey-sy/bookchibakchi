@@ -15,7 +15,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.example.bookchigibakchigi.R
 import com.example.bookchigibakchigi.data.database.AppDatabase
 import com.example.bookchigibakchigi.databinding.ActivityMainBinding
-import com.example.bookchigibakchigi.repository.BookShelfRepository
+import com.example.bookchigibakchigi.data.repository.BookShelfRepository
 import com.example.bookchigibakchigi.ui.bookdetail.BookDetailFragment
 import com.example.bookchigibakchigi.ui.mylibrary.MyLibraryFragment
 import com.example.bookchigibakchigi.ui.searchbook.SearchBookActivity

@@ -29,7 +29,7 @@ import com.example.bookchigibakchigi.databinding.ActivityAddBookBinding
 import com.example.bookchigibakchigi.network.model.AladinBookItem
 import com.example.bookchigibakchigi.network.model.BookItem
 import com.example.bookchigibakchigi.network.service.AladinBookApiService
-import com.example.bookchigibakchigi.repository.AladinBookRepository
+import com.example.bookchigibakchigi.data.repository.AladinBookRepository
 import com.example.bookchigibakchigi.ui.BaseActivity
 import com.example.bookchigibakchigi.ui.dialog.NotYetReadDialog
 import com.google.android.material.bottomsheet.BottomSheetDialog

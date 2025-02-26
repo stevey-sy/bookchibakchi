@@ -7,7 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.bookchigibakchigi.data.entity.BookEntity
-import com.example.bookchigibakchigi.repository.BookShelfRepository
+import com.example.bookchigibakchigi.data.repository.BookShelfRepository
 import kotlinx.coroutines.launch
 
 class MainActivityViewModel(private val repository: BookShelfRepository) : ViewModel() {

@@ -7,16 +7,19 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ProgressBar
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.bookchigibakchigi.R
+import com.example.bookchigibakchigi.ui.shared.viewmodel.BookViewModel
 import com.google.android.material.progressindicator.CircularProgressIndicator
 
 abstract class BaseActivity : AppCompatActivity() {
 
     private var progressBar: ProgressBar? = null
+    val bookViewModel : BookViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
         super.onCreate(savedInstanceState, persistentState)
