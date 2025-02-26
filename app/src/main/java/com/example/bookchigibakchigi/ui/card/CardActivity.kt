@@ -29,18 +29,24 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.bookchigibakchigi.R
 import com.example.bookchigibakchigi.data.entity.BookEntity
+import com.example.bookchigibakchigi.data.entity.CardTextEntity
+import com.example.bookchigibakchigi.data.entity.PhotoCardEntity
 import com.example.bookchigibakchigi.databinding.ActivityCardBinding
 import com.example.bookchigibakchigi.ui.BaseActivity
 import com.example.bookchigibakchigi.ui.card.adapter.CardBackgroundAdapter
 import com.example.bookchigibakchigi.ui.component.MovableEditText
 import com.example.bookchigibakchigi.ui.shared.viewmodel.BookViewModel
 import com.example.bookchigibakchigi.util.VibrationUtil
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
 
@@ -467,8 +473,42 @@ class CardActivity : BaseActivity() {
         }
     }
 
-    private fun saveImageDataToDatabase() {
-        //
+    private fun savePhotoCardDataToDatabase(filePath: String) {
+        val imageFileName = filePath // ✅ 내부 저장소에 이미지 저장
+        val book = bookViewModel.currentBook.value ?: return // ✅ 현재 선택된 책 정보 가져오기
+        val content = binding.etBookContent.text.toString() // ✅ 사용자가 입력한 텍스트 내용 가져오기
+        val textColor = binding.etBookContent.currentTextColor // ✅ 현재 텍스트 색상 가져오기
+        val textSize = binding.etBookContent.textSize // ✅ 현재 텍스트 크기 가져오기
+
+        val createdAt = System.currentTimeMillis() // ✅ 현재 시간 (timestamp)
+
+        // ✅ 1. PhotoCardEntity 생성
+        val photoCardEntity = PhotoCardEntity(
+            imageFileName = imageFileName,
+            isbn = book.isbn,
+            createdAt = createdAt
+        )
+
+        // ✅ 2. CardTextEntity 리스트 생성
+        val textEntity = CardTextEntity(
+            photoCardId = 0, // 🚨 먼저 저장 후 ID 업데이트 필요
+            type = "text",
+            content = content,
+            textColor = textColor.toString(),
+            textSize = textSize,
+            textBackgroundColor = "#FFFFFF", // 기본 배경색 (예제)
+            startX = binding.etBookContent.x, // X 좌표
+            startY = binding.etBookContent.y, // Y 좌표
+            font = "default"
+        )
+
+        // ✅ 3. 데이터베이스에 저장
+//        lifecycleScope.launch(Dispatchers.IO) {
+//            photoCardRepository.insertPhotoCardWithTexts(photoCardEntity, listOf(textEntity))
+//            withContext(Dispatchers.Main) {
+//                Toast.makeText(this@CardActivity, "포토카드가 저장되었습니다.", Toast.LENGTH_SHORT).show()
+//            }
+//        }
     }
 
     /**
