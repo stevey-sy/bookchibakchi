@@ -468,6 +468,7 @@ class CardActivity : BaseActivity() {
         if (savedFilePath != null) {
             Toast.makeText(this, "이미지가 내부 저장소에 저장되었습니다.", Toast.LENGTH_SHORT).show()
             // DB에 데이터 저장
+            savePhotoCardDataToDatabase(savedFilePath)
         } else {
             Toast.makeText(this, "이미지 저장에 실패했습니다.", Toast.LENGTH_SHORT).show()
         }
@@ -478,6 +479,7 @@ class CardActivity : BaseActivity() {
         val book = bookViewModel.currentBook.value ?: return // ✅ 현재 선택된 책 정보 가져오기
         val content = binding.etBookContent.text.toString() // ✅ 사용자가 입력한 텍스트 내용 가져오기
         val textColor = binding.etBookContent.currentTextColor // ✅ 현재 텍스트 색상 가져오기
+        val backgroundColor = binding.etBookContent.savedBackgroundColor
         val textSize = binding.etBookContent.textSize // ✅ 현재 텍스트 크기 가져오기
 
         val createdAt = System.currentTimeMillis() // ✅ 현재 시간 (timestamp)
@@ -490,7 +492,19 @@ class CardActivity : BaseActivity() {
         )
 
         // ✅ 2. CardTextEntity 리스트 생성
-        val textEntity = CardTextEntity(
+        val contentTextEntity = CardTextEntity(
+            photoCardId = 0, // 🚨 먼저 저장 후 ID 업데이트 필요
+            type = "text",
+            content = content,
+            textColor = textColor.toString(),
+            textSize = textSize,
+            textBackgroundColor = "#FFFFFF", // 기본 배경색 (예제)
+            startX = binding.etBookContent.x, // X 좌표
+            startY = binding.etBookContent.y, // Y 좌표
+            font = "default"
+        )
+
+        val titleTextEntity = CardTextEntity(
             photoCardId = 0, // 🚨 먼저 저장 후 ID 업데이트 필요
             type = "text",
             content = content,
