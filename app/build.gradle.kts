@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     id("kotlin-kapt")
     id("kotlin-parcelize")
+    id ("dagger.hilt.android.plugin") // ✅ Hilt 플러그인 추가
 }
 
 android {
@@ -78,7 +79,9 @@ dependencies {
     implementation (libs.text.recognition.korean)
     implementation(libs.android.image.cropper)
 
-
+    // Hilt Core
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.android.compiler)
     // 네트워크 통신용 Retrofit
     implementation (libs.retrofit)
     implementation (libs.converter.gson)

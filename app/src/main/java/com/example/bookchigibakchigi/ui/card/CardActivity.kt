@@ -6,7 +6,9 @@ import android.content.Intent
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.Rect
+import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -475,15 +477,9 @@ class CardActivity : BaseActivity() {
     }
 
     private fun savePhotoCardDataToDatabase(filePath: String) {
-        val imageFileName = filePath // ✅ 내부 저장소에 이미지 저장
+        val imageFileName = File(filePath).name // ✅ 내부 저장소에 이미지 저장
         val book = bookViewModel.currentBook.value ?: return // ✅ 현재 선택된 책 정보 가져오기
-        val content = binding.etBookContent.text.toString() // ✅ 사용자가 입력한 텍스트 내용 가져오기
-        val textColor = binding.etBookContent.currentTextColor // ✅ 현재 텍스트 색상 가져오기
-        val backgroundColor = binding.etBookContent.savedBackgroundColor
-        val textSize = binding.etBookContent.textSize // ✅ 현재 텍스트 크기 가져오기
-
         val createdAt = System.currentTimeMillis() // ✅ 현재 시간 (timestamp)
-
         // ✅ 1. PhotoCardEntity 생성
         val photoCardEntity = PhotoCardEntity(
             imageFileName = imageFileName,
@@ -491,30 +487,9 @@ class CardActivity : BaseActivity() {
             createdAt = createdAt
         )
 
-        // ✅ 2. CardTextEntity 리스트 생성
-        val contentTextEntity = CardTextEntity(
-            photoCardId = 0, // 🚨 먼저 저장 후 ID 업데이트 필요
-            type = "text",
-            content = content,
-            textColor = textColor.toString(),
-            textSize = textSize,
-            textBackgroundColor = "#FFFFFF", // 기본 배경색 (예제)
-            startX = binding.etBookContent.x, // X 좌표
-            startY = binding.etBookContent.y, // Y 좌표
-            font = "default"
-        )
+        val contentTextEntity = createCardTextEntity(binding.etBookContent, binding.flBookContent) // 본문 내용
+        val titleTextEntity = createCardTextEntity(binding.etBookTitle, binding.flBookTitle) // 제목 (기본 흰색 배경)
 
-        val titleTextEntity = CardTextEntity(
-            photoCardId = 0, // 🚨 먼저 저장 후 ID 업데이트 필요
-            type = "text",
-            content = content,
-            textColor = textColor.toString(),
-            textSize = textSize,
-            textBackgroundColor = "#FFFFFF", // 기본 배경색 (예제)
-            startX = binding.etBookContent.x, // X 좌표
-            startY = binding.etBookContent.y, // Y 좌표
-            font = "default"
-        )
 
         // ✅ 3. 데이터베이스에 저장
 //        lifecycleScope.launch(Dispatchers.IO) {
@@ -523,6 +498,33 @@ class CardActivity : BaseActivity() {
 //                Toast.makeText(this@CardActivity, "포토카드가 저장되었습니다.", Toast.LENGTH_SHORT).show()
 //            }
 //        }
+    }
+
+    // ✅ EditText에서 정보를 추출하여 CardTextEntity를 생성하는 함수
+    fun createCardTextEntity(editText: EditText, frameLayout: FrameLayout): CardTextEntity {
+        val content = editText.text.toString()
+        val textSize = editText.textSize
+        val textColorHex = String.format("#%06X", 0xFFFFFF and editText.currentTextColor)
+
+        val backgroundDrawable = editText.background
+        val backgroundColorInt = if (backgroundDrawable is ColorDrawable) {
+            backgroundDrawable.color
+        } else {
+            Color.TRANSPARENT
+        }
+        val backgroundColorHex = String.format("#%06X", 0xFFFFFF and backgroundColorInt)
+
+        return CardTextEntity(
+            photoCardId = 0, // 🚨 먼저 저장 후 ID 업데이트 필요
+            type = "text",
+            content = content,
+            textColor = textColorHex,
+            textSize = textSize,
+            textBackgroundColor = backgroundColorHex, // 기본 배경색 설정
+            startX = frameLayout.x, // X 좌표
+            startY = frameLayout.y, // Y 좌표
+            font = "default"
+        )
     }
 
     /**

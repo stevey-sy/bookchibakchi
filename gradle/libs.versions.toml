@@ -3,6 +3,9 @@ agp = "8.5.0"
 androidImageCropper = "4.6.0"
 fab = "1.6.4"
 glideVersion = "4.16.0"
+hiltAndroid = "2.50"
+hiltAndroidCompiler = "2.48.1"
+hiltAndroidVersion = "2.48.1"
 kotlin = "1.9.0"
 coreKtx = "1.10.1"
 junit = "4.13.2"
@@ -37,6 +40,10 @@ androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofit" }
 fab = { module = "com.github.clans:fab", version.ref = "fab" }
 github-glide = { module = "com.github.bumptech.glide:glide", version.ref = "glideVersion" }
+hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
+hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroid" }
+hilt-android-compiler-v2481 = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroidCompiler" }
+hilt-android-v2481 = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroidVersion" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
