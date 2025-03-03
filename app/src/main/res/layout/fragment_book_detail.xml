@@ -8,8 +8,11 @@
     <data>
         <!-- ViewModel 선언 -->
         <variable
-            name="viewModel"
-            type="com.example.bookchigibakchigi.ui.MainActivityViewModel" />
+            name="bookShelfViewModel"
+            type="com.example.bookchigibakchigi.ui.shared.viewmodel.BookShelfViewModel" />
+        <variable
+            name="bookViewModel"
+            type="com.example.bookchigibakchigi.ui.shared.viewmodel.BookViewModel" />
     </data>
 
     <FrameLayout
@@ -24,7 +27,7 @@
             android:orientation="vertical"
             android:visibility="gone"
             android:background="@color/white"
-            app:isVisible="@{viewModel.bookShelfItems}">
+            app:isVisible="@{bookShelfViewModel.bookShelfItems}">
 
             <!-- 일러스트 이미지 -->
             <ImageView
@@ -86,7 +89,7 @@
                     android:clipToPadding="false"
                     android:clipChildren="false"
                     android:overScrollMode="never"
-                    app:submitBookList="@{viewModel.bookShelfItems}" />
+                    app:submitBookList="@{bookShelfViewModel.bookShelfItems}" />
 
             </FrameLayout>
 
@@ -115,7 +118,7 @@
                     android:singleLine="true"
                     android:focusable="true"
                     android:focusableInTouchMode="true"
-                    android:text="@{viewModel.currentBook.title}"
+                    android:text="@{bookViewModel.currentBook.title}"
                  />
 
                 <TextView
@@ -127,7 +130,7 @@
                     android:layout_marginTop="@dimen/_10sdp"
                     android:layout_marginHorizontal="@dimen/_20sdp"
                     android:gravity="center"
-                    android:text="@{viewModel.currentBook.getAuthorText()}" />
+                    android:text="@{bookViewModel.currentBook.getAuthorText()}" />
 
 <!--                <TextView-->
 <!--                    android:id="@+id/tvPublisher"-->
@@ -147,7 +150,7 @@
                     android:layout_marginHorizontal="@dimen/_10sdp"
                     android:clipToPadding="false"
                     android:clipChildren="false"
-                    app:isProgressBarVisible="@{viewModel.bookShelfItems}">
+                    app:isProgressBarVisible="@{bookShelfViewModel.bookShelfItems}">
 
                     <LinearLayout
                         android:id="@+id/llProgressPercentage"
@@ -155,7 +158,7 @@
                         android:layout_height="wrap_content"
                         android:clipToPadding="false"
                         android:clipChildren="false"
-                        app:progressTranslation="@{viewModel.currentBook.progressPercentage}"
+                        app:progressTranslation="@{bookViewModel.currentBook.progressPercentage}"
                         android:orientation="vertical">
 
                         <!-- 진행 퍼센트를 표시하는 텍스트 -->
@@ -168,7 +171,7 @@
                             android:background="@drawable/background_black_circle"
                             android:layout_alignParentStart="true"
                             android:padding="4dp"
-                            android:text='@{String.valueOf(viewModel.currentBook.progressPercentage) + "%"}' />
+                            android:text='@{String.valueOf(bookViewModel.currentBook.progressPercentage) + "%"}' />
 
                         <View
                             android:layout_width="@dimen/_8sdp"
@@ -200,7 +203,7 @@
                         android:background="@drawable/rounded_progress_bar_black"
                         android:layout_alignParentStart="true"
                         android:layout_marginBottom="8dp"
-                        app:progressPercentage="@{viewModel.currentBook.progressPercentage}"/>
+                        app:progressPercentage="@{bookViewModel.currentBook.progressPercentage}"/>
 
                 </RelativeLayout>
 

@@ -2,8 +2,10 @@ package com.example.bookchigibakchigi.di
 
 import android.content.Context
 import androidx.room.Room
+import com.example.bookchigibakchigi.data.dao.BookDao
 import com.example.bookchigibakchigi.data.database.AppDatabase
 import com.example.bookchigibakchigi.data.dao.PhotoCardDao
+import com.example.bookchigibakchigi.data.repository.BookShelfRepository
 import com.example.bookchigibakchigi.data.repository.PhotoCardRepository
 import dagger.Module
 import dagger.Provides
@@ -24,6 +26,16 @@ object AppModule {
             AppDatabase::class.java,
             "book_database"
         ).build()
+    }
+
+    @Provides
+    fun provideBookDao(database: AppDatabase): BookDao {
+        return database.bookDao()
+    }
+
+    @Provides
+    fun provideBookShelfRepository(bookDao: BookDao): BookShelfRepository {
+        return BookShelfRepository(bookDao)
     }
 
     @Provides

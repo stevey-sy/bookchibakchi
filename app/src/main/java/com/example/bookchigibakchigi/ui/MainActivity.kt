@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.activity.viewModels
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
@@ -19,21 +20,17 @@ import com.example.bookchigibakchigi.data.repository.BookShelfRepository
 import com.example.bookchigibakchigi.ui.bookdetail.BookDetailFragment
 import com.example.bookchigibakchigi.ui.mylibrary.MyLibraryFragment
 import com.example.bookchigibakchigi.ui.searchbook.SearchBookActivity
+import com.example.bookchigibakchigi.ui.shared.viewmodel.BookShelfViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
-class MainActivity : AppCompatActivity() {
+@AndroidEntryPoint
+class MainActivity : BaseActivity() {
 
     private lateinit var binding: ActivityMainBinding
-
-    private lateinit var viewModel: MainActivityViewModel
+    val bookShelfViewModel : BookShelfViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        val bookDao = AppDatabase.getDatabase(this).bookDao()
-        val repository = BookShelfRepository(bookDao)
-
-        viewModel = ViewModelProvider(this, MainActivityViewModelFactory(repository)).get(MainActivityViewModel::class.java)
-
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 

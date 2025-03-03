@@ -1,35 +1,28 @@
 package com.example.bookchigibakchigi.ui.mylibrary
 
-import android.app.SharedElementCallback
 import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
 import android.transition.TransitionInflater
-import android.transition.TransitionSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.bookchigibakchigi.R
-import com.example.bookchigibakchigi.data.database.AppDatabase
 import com.example.bookchigibakchigi.databinding.FragmentMyLibraryBinding
-import com.example.bookchigibakchigi.data.repository.BookShelfRepository
-import com.example.bookchigibakchigi.ui.MainActivity
-import com.example.bookchigibakchigi.ui.MainActivityViewModel
 import com.example.bookchigibakchigi.ui.mylibrary.adapter.BookShelfAdapter
+import com.example.bookchigibakchigi.ui.shared.viewmodel.BookShelfViewModel
 import com.example.bookchigibakchigi.ui.searchbook.SearchBookActivity
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class MyLibraryFragment : Fragment() {
 
     private var _binding: FragmentMyLibraryBinding? = null
@@ -37,7 +30,7 @@ class MyLibraryFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var adapter: BookShelfAdapter
 
-    private val viewModel: MainActivityViewModel by activityViewModels()
+    private val bookShelfViewModel: BookShelfViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -52,9 +45,14 @@ class MyLibraryFragment : Fragment() {
         return root
     }
 
+    override fun onResume() {
+        super.onResume()
+        bookShelfViewModel.refreshShelf() // ✅ 강제 새로고침
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.viewModel = viewModel
+        binding.viewModel = bookShelfViewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
         findNavController().currentBackStackEntry?.savedStateHandle?.let { savedStateHandle ->
@@ -98,7 +96,7 @@ class MyLibraryFragment : Fragment() {
         }
 
         // Observe LiveData
-        viewModel.bookShelfItems.observe(viewLifecycleOwner) { bookList ->
+        bookShelfViewModel.bookShelfItems.observe(viewLifecycleOwner) { bookList ->
             adapter.setDataList(bookList)
             // 데이터 로드 완료 후 Transition 시작
             binding.rvShelf.viewTreeObserver.addOnPreDrawListener(
