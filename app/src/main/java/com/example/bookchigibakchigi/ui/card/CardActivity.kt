@@ -42,20 +42,26 @@ import com.example.bookchigibakchigi.data.entity.CardTextEntity
 import com.example.bookchigibakchigi.data.entity.PhotoCardEntity
 import com.example.bookchigibakchigi.databinding.ActivityCardBinding
 import com.example.bookchigibakchigi.ui.BaseActivity
+import com.example.bookchigibakchigi.ui.MainActivity
 import com.example.bookchigibakchigi.ui.card.adapter.CardBackgroundAdapter
+import com.example.bookchigibakchigi.ui.card.viewmodel.CreateCardViewModel
 import com.example.bookchigibakchigi.ui.component.MovableEditText
 import com.example.bookchigibakchigi.ui.shared.viewmodel.BookViewModel
 import com.example.bookchigibakchigi.util.VibrationUtil
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
 
+@AndroidEntryPoint
 class CardActivity : BaseActivity() {
 
     private lateinit var binding: ActivityCardBinding
     private lateinit var adapter: CardBackgroundAdapter
+    private val createCardViewModel: CreateCardViewModel by viewModels()
+
     // 실제 데이터 리스트
     private val actualImages = listOf(
         R.drawable.img_light_blue_sky,
@@ -90,11 +96,9 @@ class CardActivity : BaseActivity() {
         initViewModel(intent)
         initBackgroundSelectView()
         initSnapHelper()
-//        setupMovableEditText()
-//        initFocusChangeListener()
         initClickListener()
         initCustomToolbar()
-//        initEditTextTouchListener()
+        observeSaveResult()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -147,9 +151,6 @@ class CardActivity : BaseActivity() {
 
     private fun initClickListener() {
         binding.main.setOnClickListener {
-//            binding.etBookContent.isMovable = false
-//            binding.etBookContent.setBackgroundResource(R.drawable.background_edit_text_no_focus)
-//            binding.etBookContent.clearFocus()
             binding.etBookContent.isMovable = false
             binding.flBookContent.isMovable = false
             binding.flBookContent.setBackgroundResource(R.drawable.background_edit_text_no_focus)
@@ -465,127 +466,31 @@ class CardActivity : BaseActivity() {
         val canvas = Canvas(bitmap)
         captureView.draw(canvas)
 
-        // 내부 저장소에 이미지 저장
-        val savedFilePath = saveImageToInternalStorage(bitmap)
-        if (savedFilePath != null) {
-            Toast.makeText(this, "이미지가 내부 저장소에 저장되었습니다.", Toast.LENGTH_SHORT).show()
-            // DB에 데이터 저장
-            savePhotoCardDataToDatabase(savedFilePath)
-        } else {
-            Toast.makeText(this, "이미지 저장에 실패했습니다.", Toast.LENGTH_SHORT).show()
-        }
-    }
+        val book = bookViewModel.currentBook.value ?: return
 
-    private fun savePhotoCardDataToDatabase(filePath: String) {
-        val imageFileName = File(filePath).name // ✅ 내부 저장소에 이미지 저장
-        val book = bookViewModel.currentBook.value ?: return // ✅ 현재 선택된 책 정보 가져오기
-        val createdAt = System.currentTimeMillis() // ✅ 현재 시간 (timestamp)
-        // ✅ 1. PhotoCardEntity 생성
-        val photoCardEntity = PhotoCardEntity(
-            imageFileName = imageFileName,
-            isbn = book.isbn,
-            createdAt = createdAt
-        )
-
-        val contentTextEntity = createCardTextEntity(binding.etBookContent, binding.flBookContent) // 본문 내용
-        val titleTextEntity = createCardTextEntity(binding.etBookTitle, binding.flBookTitle) // 제목 (기본 흰색 배경)
-
-
-        // ✅ 3. 데이터베이스에 저장
-//        lifecycleScope.launch(Dispatchers.IO) {
-//            photoCardRepository.insertPhotoCardWithTexts(photoCardEntity, listOf(textEntity))
-//            withContext(Dispatchers.Main) {
-//                Toast.makeText(this@CardActivity, "포토카드가 저장되었습니다.", Toast.LENGTH_SHORT).show()
-//            }
-//        }
-    }
-
-    // ✅ EditText에서 정보를 추출하여 CardTextEntity를 생성하는 함수
-    fun createCardTextEntity(editText: EditText, frameLayout: FrameLayout): CardTextEntity {
-        val content = editText.text.toString()
-        val textSize = editText.textSize
-        val textColorHex = String.format("#%06X", 0xFFFFFF and editText.currentTextColor)
-
-        val backgroundDrawable = editText.background
-        val backgroundColorInt = if (backgroundDrawable is ColorDrawable) {
-            backgroundDrawable.color
-        } else {
-            Color.TRANSPARENT
-        }
-        val backgroundColorHex = String.format("#%06X", 0xFFFFFF and backgroundColorInt)
-
-        return CardTextEntity(
-            photoCardId = 0, // 🚨 먼저 저장 후 ID 업데이트 필요
-            type = "text",
-            content = content,
-            textColor = textColorHex,
-            textSize = textSize,
-            textBackgroundColor = backgroundColorHex, // 기본 배경색 설정
-            startX = frameLayout.x, // X 좌표
-            startY = frameLayout.y, // Y 좌표
-            font = "default"
+        // ✅ ViewModel을 통해 저장 요청
+        createCardViewModel.saveCard(
+            bitmap,
+            book,
+            binding.etBookContent,
+            binding.etBookTitle,
+            binding.flBookContent,
+            binding.flBookTitle
         )
     }
 
-    /**
-     * 앱 내부 저장소에 Bitmap을 저장하는 함수
-     * @param bitmap 저장할 이미지
-     * @return 저장된 파일의 경로 (실패 시 null 반환)
-     */
-    private fun saveImageToInternalStorage(bitmap: Bitmap): String? {
-        return try {
-            val isbn = bookViewModel.currentBook.value?.isbn
-            val fileName = "${isbn}_${System.currentTimeMillis()}.png" // 파일 이름 (예: photo_1709000000000.png)
-            val file = File(filesDir, fileName) // 내부 저장소에 저장할 파일 경로 설정
-
-            val outputStream = FileOutputStream(file)
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream) // PNG 형식으로 저장
-            outputStream.flush()
-            outputStream.close()
-
-            file.absolutePath // 저장된 파일 경로 반환
-        } catch (e: Exception) {
-            e.printStackTrace()
-            null
-        }
-    }
-
-    private fun saveImageToGallery(bitmap: Bitmap): Uri? {
-        // filename -> 책 isbn_currentTime.jpg
-        val filename = "card_${System.currentTimeMillis()}.jpg"
-        val resolver = contentResolver
-        // Android Q 이상과 이하의 저장 위치를 구분
-        val imageCollection: Uri = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
-        } else {
-            MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-        }
-        val contentValues = ContentValues().apply {
-            put(MediaStore.Images.Media.DISPLAY_NAME, filename)
-            put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                put(MediaStore.Images.Media.IS_PENDING, 1)
+    private fun observeSaveResult() {
+        createCardViewModel.saveResult.observe(this) { result ->
+            result.onSuccess {
+                Toast.makeText(this, "포토카드 저장 성공!", Toast.LENGTH_SHORT).show()
+                // ✅ MainActivity로 이동하면서 기존 모든 액티비티 종료
+                val intent = Intent(this, MainActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP // 기존 MainActivity 위의 모든 액티비티 제거
+                startActivity(intent)
+                finish() // 현재 Activity 종료
+            }.onFailure {
+                Toast.makeText(this, "포토카드 저장 실패: ${it.message}", Toast.LENGTH_SHORT).show()
             }
-        }
-
-        return try {
-            // 이미지 정보 등록 및 OutputStream 열기
-            val imageUri = resolver.insert(imageCollection, contentValues)
-            imageUri?.let { uri ->
-                resolver.openOutputStream(uri)?.use { outputStream ->
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 90, outputStream)
-                }
-                // 저장 완료 후 IS_PENDING 플래그 해제
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    contentValues.clear()
-                    contentValues.put(MediaStore.Images.Media.IS_PENDING, 0)
-                    resolver.update(uri, contentValues, null, null)
-                }
-            }
-            imageUri
-        } catch (e: Exception) {
-            e.printStackTrace()
-            null
         }
     }
 }

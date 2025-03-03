@@ -4,11 +4,15 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.example.bookchigibakchigi.data.dao.BookDao
+import com.example.bookchigibakchigi.data.dao.PhotoCardDao
 import com.example.bookchigibakchigi.data.entity.BookEntity
+import com.example.bookchigibakchigi.data.entity.CardTextEntity
+import com.example.bookchigibakchigi.data.entity.PhotoCardEntity
 
-@Database(entities = [BookEntity::class], version = 3, exportSchema = false)
+@Database(entities = [BookEntity::class, PhotoCardEntity::class, CardTextEntity::class], version = 4, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun bookDao(): BookDao
+    abstract fun photoCardDao(): PhotoCardDao
 
     companion object {
         @Volatile
