@@ -13,6 +13,9 @@
         <variable
             name="bookViewModel"
             type="com.example.bookchigibakchigi.ui.shared.viewmodel.BookViewModel" />
+        <variable
+            name="photoCardViewModel"
+            type="com.example.bookchigibakchigi.ui.shared.viewmodel.PhotoCardViewModel" />
     </data>
 
     <FrameLayout

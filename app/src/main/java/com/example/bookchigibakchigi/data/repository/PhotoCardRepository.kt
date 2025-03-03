@@ -12,8 +12,8 @@ class PhotoCardRepository(private val photoCardDao: PhotoCardDao) {
     }
 
     /** 📌 특정 포토카드 ID로 포토카드 + 텍스트 리스트 가져오기 */
-    suspend fun getPhotoCardWithTexts(photoCardId: Long): PhotoCardWithTextContents {
-        return photoCardDao.getPhotoCardWithTexts(photoCardId)
+    suspend fun getPhotoCardListByIsbn(isbn: String): List<PhotoCardWithTextContents> {
+        return photoCardDao.getPhotoCardList(isbn)
     }
 
     /** 📌 포토카드 삭제 (연결된 Text도 함께 삭제됨) */

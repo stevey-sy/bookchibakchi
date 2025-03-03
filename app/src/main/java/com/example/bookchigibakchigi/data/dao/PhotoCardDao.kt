@@ -26,8 +26,8 @@ interface PhotoCardDao {
     }
 
     @Transaction
-    @Query("SELECT * FROM photo_card WHERE id = :photoCardId")
-    suspend fun getPhotoCardWithTexts(photoCardId: Long): PhotoCardWithTextContents
+    @Query("SELECT * FROM photo_card WHERE isbn = :isbn")
+    suspend fun getPhotoCardList(isbn: String): List<PhotoCardWithTextContents>
 
     @Delete
     suspend fun deletePhotoCard(photoCard: PhotoCardEntity)
