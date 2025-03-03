@@ -485,7 +485,7 @@ class CardActivity : BaseActivity() {
                 Toast.makeText(this, "포토카드 저장 성공!", Toast.LENGTH_SHORT).show()
                 // ✅ MainActivity로 이동하면서 기존 모든 액티비티 종료
                 val intent = Intent(this, MainActivity::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP // 기존 MainActivity 위의 모든 액티비티 제거
+                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
                 startActivity(intent)
                 finish() // 현재 Activity 종료
             }.onFailure {
