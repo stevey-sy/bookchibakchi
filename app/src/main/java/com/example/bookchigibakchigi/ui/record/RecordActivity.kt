@@ -35,8 +35,6 @@ import com.example.bookchigibakchigi.databinding.ActivityAddBookBinding
 import com.example.bookchigibakchigi.databinding.ActivityRecordBinding
 import com.example.bookchigibakchigi.data.repository.BookShelfRepository
 import com.example.bookchigibakchigi.ui.BaseActivity
-import com.example.bookchigibakchigi.ui.MainActivityViewModel
-import com.example.bookchigibakchigi.ui.MainActivityViewModelFactory
 import kotlinx.coroutines.launch
 import kotlin.math.min
 

@@ -32,8 +32,10 @@ import com.example.bookchigibakchigi.network.service.AladinBookApiService
 import com.example.bookchigibakchigi.data.repository.AladinBookRepository
 import com.example.bookchigibakchigi.ui.BaseActivity
 import com.example.bookchigibakchigi.ui.dialog.NotYetReadDialog
+import com.example.bookchigibakchigi.ui.shared.viewmodel.BookShelfViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.datepicker.MaterialDatePicker
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -41,10 +43,12 @@ import kotlinx.coroutines.withContext
 import java.util.Calendar
 import java.util.TimeZone
 
+@AndroidEntryPoint
 class AddBookActivity : BaseActivity() {
 
     private lateinit var binding: ActivityAddBookBinding
 
+    private val bookShelfViewModel: BookShelfViewModel by viewModels()
     private val viewModel: AddBookActivityViewModel by viewModels {
         // Intent에서 BookItem? 데이터를 추출
         val itemId = intent.getStringExtra("itemId") ?: throw IllegalArgumentException("itemId가 필요합니다.")
@@ -129,6 +133,7 @@ class AddBookActivity : BaseActivity() {
 
                 bookDao.insertBook(book)
                 Toast.makeText(this@AddBookActivity, "나의 서재에 책이 추가되었습니다.", Toast.LENGTH_SHORT).show()
+
                 finish()
             } catch (e: Exception) {
                 // 실패 시 예외 처리
