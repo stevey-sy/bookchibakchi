@@ -33,6 +33,7 @@ import com.example.bookchigibakchigi.ui.microphone.MicrophoneActivity
 import com.example.bookchigibakchigi.ui.record.RecordActivity
 import com.example.bookchigibakchigi.ui.shared.viewmodel.BookShelfViewModel
 import com.example.bookchigibakchigi.ui.shared.viewmodel.BookViewModel
+import com.example.bookchigibakchigi.ui.shared.viewmodel.PhotoCardViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
@@ -48,6 +49,8 @@ class BookDetailFragment : Fragment() {
     }
 
     private val bookShelfViewModel: BookShelfViewModel by activityViewModels()
+
+    private val photoCardViewModel: PhotoCardViewModel by activityViewModels()
 
     private lateinit var adapter: BookViewPagerAdapter
     private var sharedView: View? = null
@@ -123,6 +126,7 @@ class BookDetailFragment : Fragment() {
         // ViewModel 바인딩
         binding.bookViewModel = bookViewModel
         binding.bookShelfViewModel = bookShelfViewModel
+        binding.photoCardViewModel = photoCardViewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
         adapter = BookViewPagerAdapter(
@@ -153,6 +157,13 @@ class BookDetailFragment : Fragment() {
                 val position = bookList.indexOf(book)
 
                 bookViewModel.setCurrentBook(book.itemId) // 선택된 책을 ViewModel에 반영
+                photoCardViewModel.loadPhotoCards(book.isbn)
+                // LiveData 관찰하여 UI 업데이트
+                photoCardViewModel.photoCardList.observe(viewLifecycleOwner) { photoCards ->
+                    // photoCards 데이터를 UI에 반영하는 로직
+                    val photoCardLength = photoCards.size
+
+                }
 
 
                 val totalItems = bookList.size // 전체 아이템 개수

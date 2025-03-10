@@ -21,6 +21,7 @@ import com.example.bookchigibakchigi.ui.bookdetail.BookDetailFragment
 import com.example.bookchigibakchigi.ui.mylibrary.MyLibraryFragment
 import com.example.bookchigibakchigi.ui.searchbook.SearchBookActivity
 import com.example.bookchigibakchigi.ui.shared.viewmodel.BookShelfViewModel
+import com.example.bookchigibakchigi.ui.shared.viewmodel.PhotoCardViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -28,6 +29,7 @@ class MainActivity : BaseActivity() {
 
     private lateinit var binding: ActivityMainBinding
     val bookShelfViewModel : BookShelfViewModel by viewModels()
+    val photoCardViewModel : PhotoCardViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

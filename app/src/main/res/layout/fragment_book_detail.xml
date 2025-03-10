@@ -288,7 +288,7 @@
                         android:layout_marginHorizontal="@dimen/_20sdp"
                         android:gravity="center"
                         android:textSize="16sp"
-                        android:text="100 Comments" />
+                        android:text="@{String.valueOf(photoCardViewModel.photoCardList.size) + ` Comments`}" />
 
                     <ImageView
                         android:layout_width="@dimen/_20sdp"
