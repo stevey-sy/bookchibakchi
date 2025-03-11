@@ -1,7 +1,6 @@
 package com.example.bookchigibakchigi.ui.bookdetail
 
 import android.content.Intent
-import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
@@ -10,7 +9,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.activity.addCallback
@@ -23,12 +21,15 @@ import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.example.bookchigibakchigi.R
 import com.example.bookchigibakchigi.databinding.FragmentBookDetailBinding
 import com.example.bookchigibakchigi.ui.BaseActivity
 import com.example.bookchigibakchigi.ui.crop.CropActivity
 import com.example.bookchigibakchigi.ui.bookdetail.adapter.BookViewPagerAdapter
+import com.example.bookchigibakchigi.ui.bookdetail.adapter.PhotoCardAdapter
 import com.example.bookchigibakchigi.ui.microphone.MicrophoneActivity
 import com.example.bookchigibakchigi.ui.record.RecordActivity
 import com.example.bookchigibakchigi.ui.shared.viewmodel.BookShelfViewModel
@@ -208,7 +209,10 @@ class BookDetailFragment : Fragment() {
             selectedBook?.let { book ->
                 showBottomSheet()
             }
+        }
 
+        binding.llComments.setOnClickListener {
+            showPhotoCardListDialog()
         }
 
         prepareSharedElementTransition()
@@ -346,7 +350,6 @@ class BookDetailFragment : Fragment() {
                 PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
             )
         }
-
     }
     private fun showBottomSheet() {
         val bottomSheetDialog = BottomSheetDialog(requireContext(), R.style.CustomBottomSheetDialog)
@@ -366,6 +369,24 @@ class BookDetailFragment : Fragment() {
         view.findViewById<LinearLayout>(R.id.llKeyboard).setOnClickListener {
             // 버튼 클릭 동작
         }
+    }
+
+    private fun showPhotoCardListDialog() {
+        val bottomSheetDialog = BottomSheetDialog(requireContext(), R.style.CustomBottomSheetDialog)
+        val view = layoutInflater.inflate(R.layout.dialog_photo_card_list, null)
+        bottomSheetDialog.setContentView(view)
+
+        val recyclerView = view.findViewById<RecyclerView>(R.id.rvPhotoCards)
+        recyclerView.layoutManager = GridLayoutManager(requireContext(), 2) // 2열 Grid Layout
+        val adapter = PhotoCardAdapter(emptyList()) // 초기 리스트 비움
+        recyclerView.adapter = adapter
+
+        // ViewModel의 photoCardList 데이터를 가져와서 어댑터에 설정
+        photoCardViewModel.photoCardList.observe(viewLifecycleOwner) { photoCards ->
+            adapter.updateList(photoCards) // 리스트 업데이트
+        }
+
+        bottomSheetDialog.show()
     }
 
     private fun onCameraBtnClicked() {
