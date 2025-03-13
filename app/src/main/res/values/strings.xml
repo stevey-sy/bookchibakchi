@@ -13,6 +13,7 @@
     <string name="title_add_book">책 등록하기</string>
     <string name="title_add_card">카드 작성하기</string>
     <string name="title_get_text">텍스트 가져오기</string>
+    <string name="title_photo_crop">카드 영역 지정하기</string>
     <string name="title_add_memo">메모 작성하기</string>
 
     <string name="button_save">저장</string>

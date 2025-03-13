@@ -46,6 +46,7 @@ import com.example.bookchigibakchigi.ui.MainActivity
 import com.example.bookchigibakchigi.ui.card.adapter.CardBackgroundAdapter
 import com.example.bookchigibakchigi.ui.card.viewmodel.CreateCardViewModel
 import com.example.bookchigibakchigi.ui.component.MovableEditText
+import com.example.bookchigibakchigi.ui.photocrop.PhotoCropActivity
 import com.example.bookchigibakchigi.ui.shared.viewmodel.BookViewModel
 import com.example.bookchigibakchigi.util.VibrationUtil
 import dagger.hilt.android.AndroidEntryPoint
@@ -61,6 +62,8 @@ class CardActivity : BaseActivity() {
     private lateinit var binding: ActivityCardBinding
     private lateinit var adapter: CardBackgroundAdapter
     private val createCardViewModel: CreateCardViewModel by viewModels()
+    private var initialY = 0f
+    private var initialHeight = 0
 
     // 실제 데이터 리스트
     private val actualImages = listOf(
@@ -101,6 +104,7 @@ class CardActivity : BaseActivity() {
         observeSaveResult()
     }
 
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_add_card, menu) // 메뉴 파일 연결
         return true
@@ -114,7 +118,10 @@ class CardActivity : BaseActivity() {
                 true
             }
             R.id.action_save -> {
-                onSaveClicked()
+//                onSaveClicked()
+                // start photo crop activity
+                val intent = Intent(this, PhotoCropActivity::class.java)
+                startActivity(intent)
                 true
             }
             else -> super.onOptionsItemSelected(item)

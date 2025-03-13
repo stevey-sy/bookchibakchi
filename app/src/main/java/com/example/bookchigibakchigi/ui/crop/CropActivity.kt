@@ -59,7 +59,6 @@ class CropActivity : BaseActivity() {
             Log.d("CropActivity", "Current Book ID: ${book.itemId}")
             currentBook = book
         }
-
         binding.cropImageView.setImageUriAsync(imageUri)
 
         binding.tvConfirm.setOnClickListener {
