@@ -11,5 +11,7 @@ data class PhotoCardEntity(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val imageFileName: String,
     val isbn: String,
-    val createdAt: Long // timestamp
+    val width: Long = 0,
+    val height: Long = 0,
+    val createdAt: Long, // timestamp
 ) : Parcelable
