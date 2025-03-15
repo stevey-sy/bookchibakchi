@@ -45,9 +45,9 @@
                     android:id="@+id/flCapture"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginVertical="@dimen/_30sdp"
-                    android:layout_marginHorizontal="@dimen/_40sdp"
-                    android:layout_above="@id/flBackgroundSelector">
+                    android:layout_marginTop="@dimen/_30sdp"
+                    android:layout_marginBottom="@dimen/_100sdp"
+                    android:layout_marginHorizontal="@dimen/_40sdp">
 
                     <androidx.cardview.widget.CardView
                         android:id="@+id/cardView"
@@ -103,42 +103,47 @@
                             android:background="@null"
                             android:textSize="12sp"
                             android:fontFamily="@font/maruburi_bold"/>
-
-
                     </com.example.bookchigibakchigi.ui.component.MovableFrameLayout>
 
 
                 </FrameLayout>
 
-                <com.canhub.cropper.CropImageView
-                    android:id="@+id/cropImageView"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    app:cardElevation="12dp"
-                    />
-
-                <FrameLayout
-                    android:id="@+id/flBackgroundSelector"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true">
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/rvBackground"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@color/black" />
-
-                    <LinearLayout
-                        android:id="@+id/llAim"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:background="@drawable/background_item_selected"/>
-
-                </FrameLayout>
 
             </RelativeLayout>
+
+            <LinearLayout
+                android:id="@+id/llCropTop"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_100sdp"
+                android:orientation="vertical"
+                android:elevation="20dp"
+                android:background="@color/dim"
+                android:gravity="bottom">
+
+                <View
+                    android:id="@+id/vCropTop"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_4sdp"
+                    android:background="@color/white" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/llCropBottom"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_100sdp"
+                android:orientation="vertical"
+                android:elevation="20dp"
+                android:background="@color/dim"
+                android:layout_gravity="bottom">
+
+                <View
+                    android:id="@+id/vCropBottom"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_4sdp"
+                    android:background="@color/white" />
+
+            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/customToolbar"
@@ -316,6 +321,28 @@
                     android:clickable="true" />
 
             </LinearLayout>
+
+            <FrameLayout
+                android:id="@+id/flBackgroundSelector"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:elevation="30dp">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvBackground"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/black" />
+
+                <LinearLayout
+                    android:id="@+id/llAim"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@drawable/background_item_selected"/>
+
+            </FrameLayout>
 
 
 
