@@ -23,8 +23,12 @@ class PhotoCardAdapter(private var photoCardList: List<PhotoCardWithTextContents
             val file = File(context.filesDir, imageFileName) // 내부 저장소에서 파일 경로 생성
             val fileUri = Uri.fromFile(file) // Glide에 전달할 URI 생성
 
+            // PhotoCardEntity의 height 값을 사용하여 이미지 높이 설정
+            val height = photoCardWithTextContent.photoCard.height
+
             Glide.with(context)
                 .load(fileUri)
+                .override(ViewGroup.LayoutParams.MATCH_PARENT, height) // 높이 설정
                 .into(imageView)
         }
     }

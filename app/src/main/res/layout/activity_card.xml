@@ -112,40 +112,6 @@
             </RelativeLayout>
 
             <LinearLayout
-                android:id="@+id/llCropTop"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/_100sdp"
-                android:orientation="vertical"
-                android:elevation="20dp"
-                android:background="@color/dim"
-                android:gravity="bottom">
-
-                <View
-                    android:id="@+id/vCropTop"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/_4sdp"
-                    android:background="@color/white" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/llCropBottom"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/_100sdp"
-                android:orientation="vertical"
-                android:elevation="20dp"
-                android:background="@color/dim"
-                android:layout_gravity="bottom">
-
-                <View
-                    android:id="@+id/vCropBottom"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/_4sdp"
-                    android:background="@color/white" />
-
-            </LinearLayout>
-
-            <LinearLayout
                 android:id="@+id/customToolbar"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_40sdp"
@@ -344,8 +310,35 @@
 
             </FrameLayout>
 
+            <View
+                android:id="@+id/vCropTopDim"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_30sdp"
+                android:background="@color/dim"/>
 
+            <View
+                android:id="@+id/vCropTop"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_8sdp"
+                android:layerType="software"
+                android:background="@drawable/dash_line"
+                android:layout_marginTop="@dimen/_30sdp"/>
 
+            <View
+                android:id="@+id/vCropBottom"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_8sdp"
+                android:layerType="software"
+                android:background="@drawable/dash_line"
+                android:layout_marginBottom="@dimen/_108sdp"
+                android:layout_gravity="bottom"/>
+
+            <View
+                android:id="@+id/vCropBottomDim"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_100sdp"
+                android:background="@color/dim"
+                android:layout_gravity="bottom"/>
 
         </FrameLayout>
 

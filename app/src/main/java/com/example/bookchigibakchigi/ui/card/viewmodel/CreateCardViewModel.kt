@@ -31,14 +31,14 @@ class CreateCardViewModel @Inject constructor(
     private val _saveResult = MutableLiveData<Result<Boolean>>() // ✅ 결과 상태 관리
     val saveResult: LiveData<Result<Boolean>> get() = _saveResult
 
-    fun saveCard(bitmap: Bitmap, book: BookEntity, contentText: EditText, titleText: EditText, contentLayout: FrameLayout, titleLayout: FrameLayout) {
+    fun saveCard(bitmap: Bitmap, book: BookEntity, contentText: EditText, titleText: EditText, contentLayout: FrameLayout, titleLayout: FrameLayout, height: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 // ✅ 내부 저장소에 이미지 저장
                 val filePath = saveImageToInternalStorage(bitmap, book.isbn)
 
                 // ✅ 포토카드 데이터 저장
-                savePhotoCardDataToDatabase(filePath, book, contentText, titleText, contentLayout, titleLayout)
+                savePhotoCardDataToDatabase(filePath, book, contentText, titleText, contentLayout, titleLayout, height)
 
                 _saveResult.postValue(Result.success(true)) // ✅ 저장 성공
             } catch (e: Exception) {
@@ -59,7 +59,7 @@ class CreateCardViewModel @Inject constructor(
         return file.absolutePath // ✅ 저장된 파일 경로 반환
     }
 
-    private suspend fun savePhotoCardDataToDatabase(filePath: String, book: BookEntity, contentText: EditText, titleText: EditText, contentLayout: FrameLayout, titleLayout: FrameLayout) {
+    private suspend fun savePhotoCardDataToDatabase(filePath: String, book: BookEntity, contentText: EditText, titleText: EditText, contentLayout: FrameLayout, titleLayout: FrameLayout, height: Int) {
         val imageFileName = File(filePath).name
         val createdAt = System.currentTimeMillis()
 
@@ -69,7 +69,8 @@ class CreateCardViewModel @Inject constructor(
         val photoCardEntity = PhotoCardEntity(
             imageFileName = imageFileName,
             isbn = book.isbn,
-            createdAt = createdAt
+            createdAt = createdAt,
+            height = height,
         )
 
         photoCardRepository.insertPhotoCardWithTexts(photoCardEntity, listOf(contentTextEntity, titleTextEntity))

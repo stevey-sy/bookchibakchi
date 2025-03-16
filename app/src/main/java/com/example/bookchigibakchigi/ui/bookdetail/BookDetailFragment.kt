@@ -42,6 +42,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.io.File
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 
 @AndroidEntryPoint
 class BookDetailFragment : Fragment() {
@@ -398,7 +399,7 @@ class BookDetailFragment : Fragment() {
         bottomSheetDialog.setContentView(view)
 
         val recyclerView = view.findViewById<RecyclerView>(R.id.rvPhotoCards)
-        recyclerView.layoutManager = GridLayoutManager(requireContext(), 2) // 2열 Grid Layout
+        recyclerView.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL) // 2열 Staggered Grid Layout
         val adapter = PhotoCardAdapter(emptyList()) // 초기 리스트 비움
         recyclerView.adapter = adapter
 

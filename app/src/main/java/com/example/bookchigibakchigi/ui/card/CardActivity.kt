@@ -22,6 +22,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
@@ -64,6 +65,8 @@ class CardActivity : BaseActivity() {
     private val createCardViewModel: CreateCardViewModel by viewModels()
     private var initialY = 0f
     private var initialHeight = 0
+    private var initialTopMargin = 0
+    private var initialBottomMargin = 0
 
     // 실제 데이터 리스트
     private val actualImages = listOf(
@@ -102,6 +105,7 @@ class CardActivity : BaseActivity() {
         initClickListener()
         initCustomToolbar()
         observeSaveResult()
+        initCropTouchListeners()
     }
 
 
@@ -118,10 +122,7 @@ class CardActivity : BaseActivity() {
                 true
             }
             R.id.action_save -> {
-//                onSaveClicked()
-                // start photo crop activity
-                val intent = Intent(this, PhotoCropActivity::class.java)
-                startActivity(intent)
+                onSaveClicked()
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -467,22 +468,29 @@ class CardActivity : BaseActivity() {
     }
 
     private fun onSaveClicked() {
-        // binding.flCapture 영역을 Bitmap으로 캡처
+        // vCropTop과 vCropBottom 사이의 영역을 캡처
         val captureView = binding.flCapture
-        val bitmap = Bitmap.createBitmap(captureView.width, captureView.height, Bitmap.Config.ARGB_8888)
+        val cropTopY = binding.vCropTop.y.toInt()
+        val cropBottomY = binding.vCropBottom.y.toInt()
+        val cropHeight = cropBottomY - cropTopY
+
+        // 캡처할 영역의 Bitmap 생성
+        val bitmap = Bitmap.createBitmap(captureView.width, cropHeight, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
+        canvas.translate(0f, -cropTopY.toFloat())
         captureView.draw(canvas)
 
         val book = bookViewModel.currentBook.value ?: return
 
-        // ✅ ViewModel을 통해 저장 요청
+        // ViewModel을 통해 저장 요청
         createCardViewModel.saveCard(
             bitmap,
             book,
             binding.etBookContent,
             binding.etBookTitle,
             binding.flBookContent,
-            binding.flBookTitle
+            binding.flBookTitle,
+            cropHeight
         )
     }
 
@@ -497,6 +505,89 @@ class CardActivity : BaseActivity() {
                 finish() // 현재 Activity 종료
             }.onFailure {
                 Toast.makeText(this, "포토카드 저장 실패: ${it.message}", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun initCropTouchListeners() {
+        binding.vCropTop.setOnTouchListener { view, event ->
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    initialY = event.rawY
+                    true
+                }
+                MotionEvent.ACTION_MOVE -> {
+                    val deltaY = event.rawY - initialY
+                    
+                    // 상단 제한: flCapture의 top 위치
+                    val minY = binding.flCapture.top.toFloat()
+                    // 하단 제한: flCapture의 bottom 위치
+                    val maxY = binding.flCapture.bottom.toFloat()
+                    
+                    // 현재 vCropTop의 y값에 deltaY를 더한 새로운 위치
+                    val newY = view.y + deltaY
+                    
+                    // 제한 범위 내에서만 이동
+                    when {
+                        newY < minY -> view.y = minY
+                        newY > maxY -> view.y = maxY
+                        else -> view.y = newY
+                    }
+                    
+                    // vCropTopDim의 높이 조정
+                    val newHeight = view.y - binding.vCropTopDim.y
+                    binding.vCropTopDim.layoutParams.height = newHeight.toInt()
+                    binding.vCropTopDim.requestLayout()
+                    
+                    // 다음 이동을 위해 initialY 업데이트
+                    initialY = event.rawY
+                    true
+                }
+                else -> false
+            }
+        }
+
+        binding.vCropBottom.setOnTouchListener { view, event ->
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    initialY = event.rawY
+                    true
+                }
+                MotionEvent.ACTION_MOVE -> {
+                    val deltaY = event.rawY - initialY
+                    
+                    // 상단 제한: flCapture의 top 위치
+                    val minY = binding.flCapture.top.toFloat()
+                    // 하단 제한: flCapture의 bottom 위치
+                    val maxY = binding.flCapture.bottom.toFloat()
+                    
+                    // 현재 vCropBottom의 y값에 deltaY를 더한 새로운 위치
+                    val newY = view.y + deltaY
+                    
+                    // 최소 높이 제한 (예: 100dp)
+                    val minHeight = TypedValue.applyDimension(
+                        TypedValue.COMPLEX_UNIT_DIP,
+                        100f,
+                        resources.displayMetrics
+                    ).toInt()
+                    
+                    // 제한 범위 내에서만 이동
+                    when {
+                        newY < minY + minHeight -> view.y = minY + minHeight
+                        newY > maxY -> view.y = maxY
+                        else -> view.y = newY
+                    }
+                    
+                    // vCropBottomDim의 높이 조정
+                    val newHeight = binding.vCropBottomDim.bottom - view.y - binding.vCropBottom.height
+                    binding.vCropBottomDim.layoutParams.height = newHeight.toInt()
+                    binding.vCropBottomDim.requestLayout()
+                    
+                    // 다음 이동을 위해 initialY 업데이트
+                    initialY = event.rawY
+                    true
+                }
+                else -> false
             }
         }
     }
