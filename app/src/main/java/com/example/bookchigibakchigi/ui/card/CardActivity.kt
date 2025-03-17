@@ -470,8 +470,11 @@ class CardActivity : BaseActivity() {
     private fun onSaveClicked() {
         // vCropTop과 vCropBottom 사이의 영역을 캡처
         val captureView = binding.flCapture
-        val cropTopY = (binding.vCropTop.y + binding.vCropTop.height).toInt()
-        val cropBottomY = binding.vCropBottom.y.toInt()
+        val flCaptureY = binding.flCapture.y
+
+        // vCropTop과 vCropBottom의 상대적 Y 좌표 계산
+        val cropTopY = (binding.vCropTop.y - flCaptureY + binding.vCropTop.height).toInt()
+        val cropBottomY = (binding.vCropBottom.y - flCaptureY).toInt()
         val cropHeight = cropBottomY - cropTopY
 
         // 캡처할 영역의 Bitmap 생성
