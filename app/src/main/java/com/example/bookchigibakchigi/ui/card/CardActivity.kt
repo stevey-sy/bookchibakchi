@@ -473,7 +473,7 @@ class CardActivity : BaseActivity() {
         val flCaptureY = binding.flCapture.y
 
         // vCropTop과 vCropBottom의 상대적 Y 좌표 계산
-        val cropTopY = (binding.vCropTop.y - flCaptureY + binding.vCropTop.height).toInt()
+        val cropTopY = (binding.vCropTop.y - flCaptureY).toInt()
         val cropBottomY = (binding.vCropBottom.y - flCaptureY).toInt()
         val cropHeight = cropBottomY - cropTopY
 

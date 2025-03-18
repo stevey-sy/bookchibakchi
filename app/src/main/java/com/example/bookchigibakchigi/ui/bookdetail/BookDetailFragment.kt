@@ -399,7 +399,10 @@ class BookDetailFragment : Fragment() {
         bottomSheetDialog.setContentView(view)
 
         val recyclerView = view.findViewById<RecyclerView>(R.id.rvPhotoCards)
-        recyclerView.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL) // 2열 Staggered Grid Layout
+        val staggeredGridLayoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+        staggeredGridLayoutManager.gapStrategy = StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS
+        recyclerView.layoutManager = staggeredGridLayoutManager
+
         val adapter = PhotoCardAdapter(emptyList()) // 초기 리스트 비움
         recyclerView.adapter = adapter
 
