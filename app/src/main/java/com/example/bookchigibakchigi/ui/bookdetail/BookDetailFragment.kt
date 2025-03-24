@@ -35,14 +35,13 @@ import com.example.bookchigibakchigi.ui.bookdetail.adapter.BookViewPagerAdapter
 import com.example.bookchigibakchigi.ui.bookdetail.adapter.PhotoCardAdapter
 import com.example.bookchigibakchigi.ui.microphone.MicrophoneActivity
 import com.example.bookchigibakchigi.ui.record.RecordActivity
-import com.example.bookchigibakchigi.ui.shared.viewmodel.BookShelfViewModel
-import com.example.bookchigibakchigi.ui.shared.viewmodel.BookViewModel
-import com.example.bookchigibakchigi.ui.shared.viewmodel.PhotoCardViewModel
+import com.example.bookchigibakchigi.ui.main.MainViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.io.File
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.example.bookchigibakchigi.ui.shared.viewmodel.BookViewModel
 
 @AndroidEntryPoint
 class BookDetailFragment : Fragment() {
@@ -54,9 +53,7 @@ class BookDetailFragment : Fragment() {
         (requireActivity() as BaseActivity).bookViewModel
     }
 
-    private val bookShelfViewModel: BookShelfViewModel by activityViewModels()
-
-    private val photoCardViewModel: PhotoCardViewModel by activityViewModels()
+    private val mainViewModel: MainViewModel by activityViewModels()
 
     private lateinit var adapter: BookViewPagerAdapter
     private var sharedView: View? = null
@@ -130,9 +127,7 @@ class BookDetailFragment : Fragment() {
         val transitionName = arguments?.getString("transitionName") ?: ""
 
         // ViewModel 바인딩
-        binding.bookViewModel = bookViewModel
-        binding.bookShelfViewModel = bookShelfViewModel
-        binding.photoCardViewModel = photoCardViewModel
+        binding.mainViewModel = mainViewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
         adapter = BookViewPagerAdapter(
@@ -149,7 +144,7 @@ class BookDetailFragment : Fragment() {
 
 
         // ViewModel 데이터 관찰 및 초기 화면 설정
-        bookShelfViewModel.bookShelfItems.observe(viewLifecycleOwner) { bookList ->
+        mainViewModel.bookShelfItems.observe(viewLifecycleOwner) { bookList ->
             adapter.setDataList(bookList) // Adapter에 데이터 설정
 
             // ✅ bookList에서 itemId와 일치하는 책 찾기
@@ -163,9 +158,9 @@ class BookDetailFragment : Fragment() {
                 val position = bookList.indexOf(book)
 
                 bookViewModel.setCurrentBook(book.itemId) // 선택된 책을 ViewModel에 반영
-                photoCardViewModel.loadPhotoCards(book.isbn)
+                mainViewModel.loadPhotoCards(book.isbn)
                 // LiveData 관찰하여 UI 업데이트
-                photoCardViewModel.photoCardList.observe(viewLifecycleOwner) { photoCards ->
+                mainViewModel.photoCardList.observe(viewLifecycleOwner) { photoCards ->
                     // photoCards 데이터를 UI에 반영하는 로직
                     val photoCardLength = photoCards.size
 
@@ -264,7 +259,7 @@ class BookDetailFragment : Fragment() {
         binding.viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
-                currentItemId = bookShelfViewModel.bookShelfItems.value?.get(position)?.itemId ?: 0
+                currentItemId = mainViewModel.bookShelfItems.value?.get(position)?.itemId ?: 0
                 bookViewModel.setCurrentBook(currentItemId)
                 binding.tvBookTitle.isSelected = true
                 sharedView = binding.viewPager.findViewWithTag<View>("page_$position")?.findViewById(R.id.ivBook)
@@ -285,7 +280,7 @@ class BookDetailFragment : Fragment() {
                         // RESUMED 상태에서 실행되도록 repeatOnLifecycle 사용
                         lifecycleScope.launch {
                             lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
-                                photoCardViewModel.loadPhotoCards(book.isbn)
+                                mainViewModel.loadPhotoCards(book.isbn)
                             }
                         }
                     }
@@ -407,7 +402,7 @@ class BookDetailFragment : Fragment() {
         recyclerView.adapter = adapter
 
         // ViewModel의 photoCardList 데이터를 가져와서 어댑터에 설정
-        photoCardViewModel.photoCardList.observe(viewLifecycleOwner) { photoCards ->
+        mainViewModel.photoCardList.observe(viewLifecycleOwner) { photoCards ->
             adapter.updateList(photoCards) // 리스트 업데이트
         }
 
