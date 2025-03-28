@@ -5,9 +5,13 @@
 
     <data>
         <!-- ViewModel 선언 -->
+<!--        <variable-->
+<!--            name="viewModel"-->
+<!--            type="com.example.bookchigibakchigi.ui.shared.viewmodel.BookShelfViewModel" />-->
+
         <variable
             name="viewModel"
-            type="com.example.bookchigibakchigi.ui.shared.viewmodel.BookShelfViewModel" />
+            type="com.example.bookchigibakchigi.ui.main.MainViewModel" />
     </data>
 
     <FrameLayout

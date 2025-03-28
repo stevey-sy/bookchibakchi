@@ -43,6 +43,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.io.File
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.example.bookchigibakchigi.ui.main.MainViewModel
 
 @AndroidEntryPoint
 class BookDetailFragment : Fragment() {
@@ -50,13 +51,14 @@ class BookDetailFragment : Fragment() {
     private var _binding: FragmentBookDetailBinding? = null
     private val binding get() = _binding!!
 
-    private val bookViewModel: BookViewModel by lazy {
-        (requireActivity() as BaseActivity).bookViewModel
-    }
+//    private val bookViewModel: BookViewModel by lazy {
+//        (requireActivity() as BaseActivity).bookViewModel
+//    }
 
-    private val bookShelfViewModel: BookShelfViewModel by activityViewModels()
+    private val mainViewModel: MainViewModel by activityViewModels()
 
-    private val photoCardViewModel: PhotoCardViewModel by activityViewModels()
+//    private val bookShelfViewModel: BookShelfViewModel by activityViewModels()
+//    private val photoCardViewModel: PhotoCardViewModel by activityViewModels()
 
     private lateinit var adapter: BookViewPagerAdapter
     private var sharedView: View? = null
@@ -96,7 +98,7 @@ class BookDetailFragment : Fragment() {
             if (success) {
                 val intent = Intent(requireContext(), CropActivity::class.java).apply {
                     putExtra("IMAGE_URI", capturedImageUri.toString()) // Uri를 String으로 변환하여 전달
-                    putExtra("currentBook", bookViewModel.currentBook.value)
+                    putExtra("currentBook", mainViewModel.currentBook.value)
                 }
 
                 startActivity(intent)
@@ -109,7 +111,7 @@ class BookDetailFragment : Fragment() {
             if (uri != null) {
                 val intent = Intent(requireContext(), CropActivity::class.java).apply {
                     putExtra("IMAGE_URI", uri.toString())
-                    putExtra("currentBook", bookViewModel.currentBook.value)
+                    putExtra("currentBook", mainViewModel.currentBook.value)
                 }
                 startActivity(intent)
             } else {
@@ -130,9 +132,10 @@ class BookDetailFragment : Fragment() {
         val transitionName = arguments?.getString("transitionName") ?: ""
 
         // ViewModel 바인딩
-        binding.bookViewModel = bookViewModel
-        binding.bookShelfViewModel = bookShelfViewModel
-        binding.photoCardViewModel = photoCardViewModel
+        binding.mainViewModel = mainViewModel
+//        binding.bookViewModel = bookViewModel
+//        binding.bookShelfViewModel = bookShelfViewModel
+//        binding.photoCardViewModel = photoCardViewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
         adapter = BookViewPagerAdapter(
@@ -149,7 +152,7 @@ class BookDetailFragment : Fragment() {
 
 
         // ViewModel 데이터 관찰 및 초기 화면 설정
-        bookShelfViewModel.bookShelfItems.observe(viewLifecycleOwner) { bookList ->
+        mainViewModel.bookShelfItems.observe(viewLifecycleOwner) { bookList ->
             adapter.setDataList(bookList) // Adapter에 데이터 설정
 
             // ✅ bookList에서 itemId와 일치하는 책 찾기
@@ -162,10 +165,10 @@ class BookDetailFragment : Fragment() {
             targetBookItem?.let { book ->
                 val position = bookList.indexOf(book)
 
-                bookViewModel.setCurrentBook(book.itemId) // 선택된 책을 ViewModel에 반영
-                photoCardViewModel.loadPhotoCards(book.isbn)
+                mainViewModel.setCurrentBook(book.itemId) // 선택된 책을 ViewModel에 반영
+                mainViewModel.loadPhotoCards(book.isbn)
                 // LiveData 관찰하여 UI 업데이트
-                photoCardViewModel.photoCardList.observe(viewLifecycleOwner) { photoCards ->
+                mainViewModel.photoCardList.observe(viewLifecycleOwner) { photoCards ->
                     // photoCards 데이터를 UI에 반영하는 로직
                     val photoCardLength = photoCards.size
 
@@ -191,14 +194,14 @@ class BookDetailFragment : Fragment() {
         }
 
         binding.btnRecord.setOnClickListener {
-            val selectedBook = bookViewModel.currentBook.value
+            val selectedBook = mainViewModel.currentBook.value
             selectedBook?.let { book ->
                 val intent = Intent(requireContext(), RecordActivity::class.java).apply {
                     putExtra("currentBook", book)
                 }
 
                 sharedView = binding.viewPager.findViewWithTag<View>("page_${binding.viewPager.currentItem}")?.findViewById(R.id.ivBook)
-                sharedView!!.transitionName = "sharedView_${bookViewModel.currentBook.value?.itemId}"
+                sharedView!!.transitionName = "sharedView_${mainViewModel.currentBook.value?.itemId}"
 
                 val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
                     requireActivity(),
@@ -210,7 +213,7 @@ class BookDetailFragment : Fragment() {
         }
 
         binding.btnMemo.setOnClickListener {
-            val selectedBook = bookViewModel.currentBook.value
+            val selectedBook = mainViewModel.currentBook.value
             selectedBook?.let { book ->
                 showBottomSheet()
             }
@@ -264,13 +267,13 @@ class BookDetailFragment : Fragment() {
         binding.viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
-                currentItemId = bookShelfViewModel.bookShelfItems.value?.get(position)?.itemId ?: 0
-                bookViewModel.setCurrentBook(currentItemId)
+                currentItemId = mainViewModel.bookShelfItems.value?.get(position)?.itemId ?: 0
+                mainViewModel.setCurrentBook(currentItemId)
                 binding.tvBookTitle.isSelected = true
                 sharedView = binding.viewPager.findViewWithTag<View>("page_$position")?.findViewById(R.id.ivBook)
                 // 현재 ViewPager의 Transition Name과 position 저장
                 binding.viewPager.post {
-                    val currentItem = bookViewModel.currentBook.value
+                    val currentItem = mainViewModel.currentBook.value
                     val transitionName = "sharedView_${currentItem?.itemId}" // Transition Name 생성
                     findNavController().previousBackStackEntry?.savedStateHandle?.set("current_transition_name", transitionName)
                     findNavController().previousBackStackEntry?.savedStateHandle?.set("selected_position", position)
@@ -279,13 +282,13 @@ class BookDetailFragment : Fragment() {
             override fun onPageScrollStateChanged(state: Int) {
                 // 스크롤이 멈춘 상태에서만 실행 (즉, UI 업데이트 완료 후)
                 if (state == ViewPager2.SCROLL_STATE_IDLE) {
-                    val currentItem = bookViewModel.currentBook.value
+                    val currentItem = mainViewModel.currentBook.value
                     currentItem?.let { book ->
                         Log.d("BookDetailFragment", "책 변경됨 (스크롤 멈춤 후): ${book.title} / ISBN: ${book.isbn}")
                         // RESUMED 상태에서 실행되도록 repeatOnLifecycle 사용
                         lifecycleScope.launch {
                             lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
-                                photoCardViewModel.loadPhotoCards(book.isbn)
+                                mainViewModel.loadPhotoCards(book.isbn)
                             }
                         }
                     }
@@ -316,7 +319,7 @@ class BookDetailFragment : Fragment() {
                 ) {
                     // ViewPager에서 현재 선택된 페이지의 Transition Name 가져오기
                     val currentPosition = binding.viewPager.currentItem
-                    val currentItem = bookViewModel.currentBook.value
+                    val currentItem = mainViewModel.currentBook.value
 
                     if (currentItem == null) return
 
@@ -407,7 +410,7 @@ class BookDetailFragment : Fragment() {
         recyclerView.adapter = adapter
 
         // ViewModel의 photoCardList 데이터를 가져와서 어댑터에 설정
-        photoCardViewModel.photoCardList.observe(viewLifecycleOwner) { photoCards ->
+        mainViewModel.photoCardList.observe(viewLifecycleOwner) { photoCards ->
             adapter.updateList(photoCards) // 리스트 업데이트
         }
 
@@ -426,7 +429,7 @@ class BookDetailFragment : Fragment() {
 
     private fun moveToMicrophoneActivity() {
         val intent = Intent(requireContext(), MicrophoneActivity::class.java).apply {
-            putExtra("currentBook", bookViewModel.currentBook.value)
+            putExtra("currentBook", mainViewModel.currentBook.value)
         }
 
         startActivity(intent)

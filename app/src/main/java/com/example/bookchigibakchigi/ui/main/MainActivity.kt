@@ -1,4 +1,4 @@
-package com.example.bookchigibakchigi.ui
+package com.example.bookchigibakchigi.ui.main
 
 import android.content.Intent
 import android.os.Bundle
@@ -8,19 +8,14 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.bookchigibakchigi.R
-import com.example.bookchigibakchigi.data.database.AppDatabase
 import com.example.bookchigibakchigi.databinding.ActivityMainBinding
-import com.example.bookchigibakchigi.data.repository.BookShelfRepository
-import com.example.bookchigibakchigi.ui.bookdetail.BookDetailFragment
-import com.example.bookchigibakchigi.ui.mylibrary.MyLibraryFragment
+import com.example.bookchigibakchigi.ui.BaseActivity
 import com.example.bookchigibakchigi.ui.searchbook.SearchBookActivity
 import com.example.bookchigibakchigi.ui.shared.viewmodel.BookShelfViewModel
 import com.example.bookchigibakchigi.ui.shared.viewmodel.PhotoCardViewModel
@@ -30,8 +25,9 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : BaseActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    val bookShelfViewModel : BookShelfViewModel by viewModels()
-    val photoCardViewModel : PhotoCardViewModel by viewModels()
+//    val bookShelfViewModel : BookShelfViewModel by viewModels()
+//    val photoCardViewModel : PhotoCardViewModel by viewModels()
+    val mainViewModel : MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

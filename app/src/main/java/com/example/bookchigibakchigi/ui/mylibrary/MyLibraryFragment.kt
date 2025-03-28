@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.bookchigibakchigi.R
 import com.example.bookchigibakchigi.databinding.FragmentMyLibraryBinding
+import com.example.bookchigibakchigi.ui.main.MainViewModel
 import com.example.bookchigibakchigi.ui.mylibrary.adapter.BookShelfAdapter
 import com.example.bookchigibakchigi.ui.shared.viewmodel.BookShelfViewModel
 import com.example.bookchigibakchigi.ui.searchbook.SearchBookActivity
@@ -30,7 +31,8 @@ class MyLibraryFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var adapter: BookShelfAdapter
 
-    private val bookShelfViewModel: BookShelfViewModel by activityViewModels()
+    // private val bookShelfViewModel: BookShelfViewModel by activityViewModels()
+    private val mainViewModel: MainViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -47,12 +49,14 @@ class MyLibraryFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        bookShelfViewModel.refreshShelf() // ✅ 강제 새로고침
+        //bookShelfViewModel.refreshShelf() // ✅ 강제 새로고침
+        mainViewModel.refreshShelf()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.viewModel = bookShelfViewModel
+        // binding.viewModel = bookShelfViewModel
+        binding.viewModel = mainViewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
         findNavController().currentBackStackEntry?.savedStateHandle?.let { savedStateHandle ->
@@ -96,7 +100,21 @@ class MyLibraryFragment : Fragment() {
         }
 
         // Observe LiveData
-        bookShelfViewModel.bookShelfItems.observe(viewLifecycleOwner) { bookList ->
+//        bookShelfViewModel.bookShelfItems.observe(viewLifecycleOwner) { bookList ->
+//            adapter.setDataList(bookList)
+//            // 데이터 로드 완료 후 Transition 시작
+//            binding.rvShelf.viewTreeObserver.addOnPreDrawListener(
+//                object : ViewTreeObserver.OnPreDrawListener {
+//                    override fun onPreDraw(): Boolean {
+//                        binding.rvShelf.viewTreeObserver.removeOnPreDrawListener(this)
+//                        startPostponedEnterTransition() // Transition 시작
+//                        return true
+//                    }
+//                }
+//            )
+//        }
+
+        mainViewModel.bookShelfItems.observe(viewLifecycleOwner) { bookList ->
             adapter.setDataList(bookList)
             // 데이터 로드 완료 후 Transition 시작
             binding.rvShelf.viewTreeObserver.addOnPreDrawListener(

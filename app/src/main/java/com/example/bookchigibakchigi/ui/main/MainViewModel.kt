@@ -1,4 +1,4 @@
-package com.example.bookchigibakchigi.ui.shared.viewmodel
+package com.example.bookchigibakchigi.ui.main
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -13,12 +13,19 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class BookShelfViewModel @Inject constructor(
-    private val bookShelfRepository: BookShelfRepository
+class MainViewModel  @Inject constructor(
+    private val bookShelfRepository: BookShelfRepository,
+    private val photoCardRepository: PhotoCardRepository
 ) : ViewModel() {
-
     private val _bookShelfItems = MutableLiveData<List<BookEntity>>()
     val bookShelfItems: LiveData<List<BookEntity>> get() = _bookShelfItems
+
+    private val _currentBook = MutableLiveData<BookEntity>()
+    val currentBook: LiveData<BookEntity> = _currentBook
+
+    private val _photoCardList = MutableLiveData<List<PhotoCardWithTextContents>>()
+    val photoCardList: LiveData<List<PhotoCardWithTextContents>> get() = _photoCardList
+
 
     init {
         loadBooks() // 초기 데이터 로드
@@ -36,4 +43,21 @@ class BookShelfViewModel @Inject constructor(
         loadBooks() // 강제 새로고침
     }
 
+    fun setBook(book: BookEntity) {
+        _currentBook.value = book
+    }
+
+    fun setCurrentBook(itemId: Int) {
+        bookShelfRepository.getBookById(itemId).observeForever { book ->
+            _currentBook.value = book
+        }
+    }
+
+    /** 📌 특정 ISBN의 포토카드 리스트 가져오기 */
+    fun loadPhotoCards(isbn: String) {
+        viewModelScope.launch {
+            val photoCards = photoCardRepository.getPhotoCardListByIsbn(isbn)
+            _photoCardList.value = photoCards
+        }
+    }
 }
