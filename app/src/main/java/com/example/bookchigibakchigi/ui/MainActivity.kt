@@ -4,10 +4,12 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -88,18 +90,14 @@ class MainActivity : BaseActivity() {
 
         when (destinationId) {
             R.id.navigation_book_detail -> {
-                binding.toolbar.title = getString(R.string.b_archive)
+                binding.toolbar.title = getString(R.string.app_name)
                 binding.toolbar.inflateMenu(R.menu.menu_my_library)
-//                binding.toolbar.menu.findItem(R.id.action_grid).isVisible = true
-//                binding.toolbar.menu.findItem(R.id.action_horizontal).isVisible = false
                 supportActionBar?.setDisplayHomeAsUpEnabled(false)
                 supportActionBar?.setHomeButtonEnabled(false)
             }
             R.id.navigation_my_library -> {
-                 binding.toolbar.title = getString(R.string.b_archive)
+                 binding.toolbar.title = getString(R.string.app_name)
                 binding.toolbar.inflateMenu(R.menu.menu_my_library)
-//                binding.toolbar.menu.findItem(R.id.action_horizontal).isVisible = true
-//                binding.toolbar.menu.findItem(R.id.action_grid).isVisible = false
                 supportActionBar?.setDisplayHomeAsUpEnabled(false)
                 supportActionBar?.setHomeButtonEnabled(false)
             }
@@ -121,6 +119,13 @@ class MainActivity : BaseActivity() {
             else -> {
                 supportActionBar?.setDisplayHomeAsUpEnabled(true)
                 supportActionBar?.setHomeButtonEnabled(true)
+            }
+        }
+
+                binding.toolbar.getChildAt(0)?.let { view ->
+            if (view is TextView) {
+                view.typeface = ResourcesCompat.getFont(this, R.font.dashi)
+                view.textSize = 32f
             }
         }
     }
