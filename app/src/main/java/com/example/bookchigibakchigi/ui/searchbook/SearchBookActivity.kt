@@ -29,7 +29,6 @@ import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class SearchBookActivity : BaseActivity() {
-
     private val viewModel: SearchBookViewModel by viewModels()
     private lateinit var binding: ActivitySearchBookBinding
 
