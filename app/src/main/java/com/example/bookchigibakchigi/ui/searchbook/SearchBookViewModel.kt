@@ -19,13 +19,27 @@ class SearchBookViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<SearchBookUiState>(SearchBookUiState.Empty)
     val uiState: StateFlow<SearchBookUiState> = _uiState.asStateFlow()
 
-    fun searchBooks(query: String) {
+    fun onSearchClick(query: String) {
+        if (query.isNotEmpty()) {
+            searchBooks(query)
+        }
+    }
+
+    fun onSearchAction(query: String): Boolean {
+        if (query.isNotBlank()) {
+            searchBooks(query)
+            return true
+        }
+        return false
+    }
+
+    private fun searchBooks(query: String) {
         viewModelScope.launch {
             _uiState.value = SearchBookUiState.Loading
             try {
                 val books = repository.searchBooks(query)
                 if (books.isEmpty()) {
-                    _uiState.value = SearchBookUiState.Empty
+                    _uiState.value = SearchBookUiState.NoResult
                 } else {
                     _uiState.value = SearchBookUiState.Success(books)
                 }
@@ -41,4 +55,5 @@ sealed class SearchBookUiState {
     data class Success(val books: List<AladinBookItem>) : SearchBookUiState()
     data class Error(val message: String) : SearchBookUiState()
     data object Empty : SearchBookUiState()
+    data object NoResult : SearchBookUiState()
 }

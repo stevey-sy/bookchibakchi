@@ -8,7 +8,6 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
@@ -21,8 +20,8 @@ import com.example.bookchigibakchigi.databinding.ActivitySearchBookBinding
 import com.example.bookchigibakchigi.network.model.AladinBookItem
 import com.example.bookchigibakchigi.ui.BaseActivity
 import com.example.bookchigibakchigi.ui.addbook.AddBookActivity
-import com.example.bookchigibakchigi.ui.searchbook.SearchBookUiState.Loading
 import com.example.bookchigibakchigi.ui.searchbook.adapter.BookSearchAdapter
+import com.example.bookchigibakchigi.util.KeyboardUtil
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -31,67 +30,56 @@ import kotlinx.coroutines.launch
 class SearchBookActivity : BaseActivity() {
     private val viewModel: SearchBookViewModel by viewModels()
     private lateinit var binding: ActivitySearchBookBinding
+    private lateinit var adapter: BookSearchAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        initBinding()
+        initToolbar()
+        initView()
+        initClickListeners()
+        initTransitionAnimation()
+        observeUiState()
+    }
+
+    private fun initBinding() {
         binding = ActivitySearchBookBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        addProgressBarToLayout(binding.root)
+        binding.viewModel = viewModel
+        binding.lifecycleOwner = this
+    }
+
+    private fun initToolbar() {
         setupToolbar(binding.toolbar, binding.main)
+    }
 
-        val adapter = BookSearchAdapter { bookItem, sharedView ->
-            onBookItemClicked(bookItem, sharedView)
+    private fun initView() {
+        adapter = BookSearchAdapter(::onBookItemClicked)
+        binding.recyclerView.apply {
+            adapter = this@SearchBookActivity.adapter
+            layoutManager = LinearLayoutManager(this@SearchBookActivity)
         }
+    }
 
-        binding.recyclerView.adapter = adapter
-        binding.recyclerView.layoutManager = LinearLayoutManager(this)
-
-        // UiState 관찰
-        lifecycleScope.launch {
-            viewModel.uiState.collectLatest { state ->
-                when (state) {
-                    is SearchBookUiState.Loading -> {
-                        showProgressBar()
-                    }
-                    is SearchBookUiState.Success -> {
-                        hideProgressBar()
-                        showResults()
-                        adapter.submitList(state.books)
-                    }
-                    is SearchBookUiState.Error -> {
-                        hideProgressBar()
-                        Toast.makeText(this@SearchBookActivity, state.message, Toast.LENGTH_SHORT).show()
-                    }
-                    is SearchBookUiState.Empty -> {
-                        hideProgressBar()
-                        showNoResults()
-                    }
-                }
-            }
-        }
-
+    private fun initClickListeners() {
         binding.searchButton.setOnClickListener {
-            val query = binding.searchEditText.text.toString()
-            if (query.isNotEmpty()) {
-                handleSearch(query)
-            } else {
-                Toast.makeText(this, "검색어를 입력하세요.", Toast.LENGTH_SHORT).show()
-            }
+            viewModel.onSearchClick(binding.searchEditText.text.toString())
+            KeyboardUtil.hideKeyboard(this, binding.searchEditText)
         }
 
         binding.searchEditText.setOnEditorActionListener { textView, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH || event?.keyCode == KeyEvent.KEYCODE_ENTER) {
-                val query = textView.text.toString()
-                if (query.isNotBlank()) {
-                    handleSearch(query)
-                }
+                viewModel.onSearchAction(textView.text.toString())
+                KeyboardUtil.hideKeyboard(this, binding.searchEditText)
                 true
             } else {
                 false
             }
         }
+    }
 
+    private fun initTransitionAnimation() {
         window.sharedElementReturnTransition.addListener(object : Transition.TransitionListener {
             override fun onTransitionStart(transition: Transition) {
                 binding.recyclerView.itemAnimator = null
@@ -105,6 +93,31 @@ class SearchBookActivity : BaseActivity() {
             override fun onTransitionPause(transition: Transition) {}
             override fun onTransitionResume(transition: Transition) {}
         })
+    }
+
+    private fun observeUiState() {
+        lifecycleScope.launch {
+            viewModel.uiState.collectLatest { state ->
+                when (state) {
+                    is SearchBookUiState.Success -> {
+                        adapter.submitList(state.books)
+                    }
+                    is SearchBookUiState.Error -> {
+                        Toast.makeText(this@SearchBookActivity, state.message, Toast.LENGTH_SHORT).show()
+                    }
+                    is SearchBookUiState.Empty -> {
+                        // 초기 상태 처리
+                    }
+                    is SearchBookUiState.NoResult -> {
+                        // 검색 결과 없음 처리
+                    }
+                    is SearchBookUiState.Loading -> {
+                        // 로딩 상태 처리
+                    }
+                    else -> {} // 다른 상태는 XML에서 처리
+                }
+            }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -135,21 +148,5 @@ class SearchBookActivity : BaseActivity() {
             "shared_element_image"
         )
         startActivity(intent, options.toBundle())
-    }
-
-    private fun handleSearch(query: String) {
-        viewModel.searchBooks(query)
-        val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(binding.searchEditText.windowToken, 0)
-    }
-
-    private fun showNoResults() {
-        binding.recyclerView.visibility = View.GONE
-        binding.noResultsLayout.visibility = View.VISIBLE
-    }
-
-    private fun showResults() {
-        binding.recyclerView.visibility = View.VISIBLE
-        binding.noResultsLayout.visibility = View.GONE
     }
 }

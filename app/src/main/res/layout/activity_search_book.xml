@@ -1,121 +1,133 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.searchbook.SearchBookActivity">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <LinearLayout
+    <data>
+        <import type="android.view.View"/>
+        <import type="com.example.bookchigibakchigi.ui.searchbook.SearchBookUiState"/>
+        <variable
+            name="viewModel"
+            type="com.example.bookchigibakchigi.ui.searchbook.SearchBookViewModel" />
+    </data>
+
+    <FrameLayout
+        android:id="@+id/main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        tools:context=".ui.searchbook.SearchBookActivity">
 
-        <!-- AppBarLayout과 Toolbar -->
-        <com.google.android.material.appbar.AppBarLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:theme="@style/ThemeOverlay.AppCompat.Light">
-
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="@android:color/white"
-                app:title="@string/title_search_book"
-                app:titleTextColor="@android:color/black" />
-        </com.google.android.material.appbar.AppBarLayout>
-
-        <!-- 검색창을 포함하는 LinearLayout -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/activity_background">
-            <RelativeLayout
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <com.google.android.material.appbar.AppBarLayout
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:orientation="horizontal"
-                android:background="@drawable/search_text_input_box"
-                android:layout_marginTop="20dp"
-                android:layout_marginHorizontal="10dp"
-                android:layout_marginBottom="10dp"
-                >
+                android:layout_height="wrap_content"
+                android:theme="@style/ThemeOverlay.AppCompat.Light">
 
-                <!-- EditText를 사용한 검색 입력 필드 -->
-                <EditText
-                    android:id="@+id/searchEditText"
+                <androidx.appcompat.widget.Toolbar
+                    android:id="@+id/toolbar"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:hint="@string/hint_search_book"
-                    android:inputType="text"
-                    android:background="@null"
-                    android:paddingStart="10dp"
-                    android:layout_toStartOf="@id/flSearchBtn"
-                    android:imeOptions="actionSearch"/>
+                    android:layout_height="?attr/actionBarSize"
+                    android:background="@android:color/white"
+                    app:title="@string/title_search_book"
+                    app:titleTextColor="@android:color/black" />
 
-                <!-- 검색 버튼 -->
-                <FrameLayout
-                    android:id="@+id/flSearchBtn"
-                    android:layout_width="50dp"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/search_btn_box"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true">
+            </com.google.android.material.appbar.AppBarLayout>
 
-                    <ImageButton
-                        android:id="@+id/searchButton"
-                        android:layout_width="25dp"
-                        android:layout_height="25dp"
-                        android:background="@drawable/ic_search_white"
-                        android:padding="8dp"
-                        android:backgroundTint="@color/white"
-                        android:scaleType="center"
-                        android:layout_gravity="center"
-                        android:contentDescription="Search button" />
-                </FrameLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/activity_background">
 
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:orientation="horizontal"
+                    android:background="@drawable/search_text_input_box"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_marginBottom="10dp">
 
-            </RelativeLayout>
+                    <EditText
+                        android:id="@+id/searchEditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:hint="@string/hint_search_book"
+                        android:inputType="text"
+                        android:background="@null"
+                        android:paddingStart="10dp"
+                        android:layout_toStartOf="@id/flSearchBtn"
+                        android:imeOptions="actionSearch"/>
+
+                    <FrameLayout
+                        android:id="@+id/flSearchBtn"
+                        android:layout_width="50dp"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/search_btn_box"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true">
+
+                        <ImageButton
+                            android:id="@+id/searchButton"
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:background="@drawable/ic_search_white"
+                            android:padding="8dp"
+                            android:backgroundTint="@color/white"
+                            android:scaleType="center"
+                            android:layout_gravity="center"
+                            android:contentDescription="Search button" />
+                    </FrameLayout>
+
+                </RelativeLayout>
+            </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/activity_background"
+                android:paddingTop="10dp"
+                android:clipToPadding="false"
+                android:scrollbars="vertical"
+                android:visibility="@{viewModel.uiState instanceof SearchBookUiState.Success ? View.VISIBLE : View.GONE}"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/item_book_search"/>
+
+            <LinearLayout
+                android:id="@+id/noResultsLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:visibility="@{viewModel.uiState instanceof SearchBookUiState.NoResult ? View.VISIBLE : View.GONE}">
+
+                <ImageView
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:src="@drawable/ic_warning" />
+
+                <TextView
+                    android:id="@+id/noResultsText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="@string/no_results_message"
+                    android:textColor="@color/gray"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
         </LinearLayout>
 
-        <!-- RecyclerView for displaying the search results -->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/activity_background"
-            android:paddingTop="10dp"
-            android:clipToPadding="false"
-            android:scrollbars="vertical"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
-
-    </LinearLayout>
-
-    <!-- 검색 결과 없음 UI -->
-    <LinearLayout
-        android:id="@+id/noResultsLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:gravity="center"
-        android:visibility="gone">
-
-        <ImageView
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:src="@drawable/ic_warning" />
-
-        <TextView
+        <ProgressBar
+            android:id="@+id/progressBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="@string/no_results_message"
-            android:textColor="@color/gray"
-            android:textSize="16sp" />
-    </LinearLayout>
+            android:layout_gravity="center"
+            android:visibility="@{viewModel.uiState instanceof SearchBookUiState.Loading ? View.VISIBLE : View.GONE}" />
 
-
-
-
-</FrameLayout>
+    </FrameLayout>
+</layout>
