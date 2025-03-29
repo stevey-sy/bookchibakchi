@@ -13,63 +13,64 @@ import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.core.app.ActivityOptionsCompat
-import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bookchigibakchigi.R
 import com.example.bookchigibakchigi.databinding.ActivitySearchBookBinding
 import com.example.bookchigibakchigi.network.model.AladinBookItem
-import com.example.bookchigibakchigi.network.service.AladinBookApiService
-import com.example.bookchigibakchigi.data.repository.AladinBookRepository
 import com.example.bookchigibakchigi.ui.BaseActivity
 import com.example.bookchigibakchigi.ui.addbook.AddBookActivity
+import com.example.bookchigibakchigi.ui.searchbook.SearchBookUiState.Loading
 import com.example.bookchigibakchigi.ui.searchbook.adapter.BookSearchAdapter
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class SearchBookActivity : BaseActivity() {
 
-    private val viewModel: SearchBookActivityViewModel by viewModels {
-        SearchBookActivityViewModelFactory(AladinBookRepository(AladinBookApiService.create()))
-    }
-
+    private val viewModel: SearchBookViewModel by viewModels()
     private lateinit var binding: ActivitySearchBookBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        // 데이터 바인딩 객체 초기화
         binding = ActivitySearchBookBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        addProgressBarToLayout(binding.root);
+        addProgressBarToLayout(binding.root)
         setupToolbar(binding.toolbar, binding.main)
 
-        // RecyclerView 설정
-        val adapter = BookSearchAdapter{ bookItem, sharedView->
+        val adapter = BookSearchAdapter { bookItem, sharedView ->
             onBookItemClicked(bookItem, sharedView)
         }
 
         binding.recyclerView.adapter = adapter
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
 
-        // ViewModel의 LiveData 관찰
-        viewModel.bookSearchResults.observe(this, Observer { response ->
-            response?.let {
-                if (it.isEmpty()) {
-                    showNoResults()
-                } else {
-                    showResults()
-                    adapter.submitList(it)
+        // UiState 관찰
+        lifecycleScope.launch {
+            viewModel.uiState.collectLatest { state ->
+                when (state) {
+                    is SearchBookUiState.Loading -> {
+                        showProgressBar()
+                    }
+                    is SearchBookUiState.Success -> {
+                        hideProgressBar()
+                        showResults()
+                        adapter.submitList(state.books)
+                    }
+                    is SearchBookUiState.Error -> {
+                        hideProgressBar()
+                        Toast.makeText(this@SearchBookActivity, state.message, Toast.LENGTH_SHORT).show()
+                    }
+                    is SearchBookUiState.Empty -> {
+                        hideProgressBar()
+                        showNoResults()
+                    }
                 }
             }
-        })
-
-        // 로딩 상태 관찰
-        viewModel.isLoading.observe(this) { isLoading ->
-            if (isLoading) showProgressBar() else hideProgressBar()
         }
-
-        viewModel.errorMessage.observe(this, Observer { errorMessage ->
-            Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show()
-        })
 
         binding.searchButton.setOnClickListener {
             val query = binding.searchEditText.text.toString()
@@ -86,19 +87,19 @@ class SearchBookActivity : BaseActivity() {
                 if (query.isNotBlank()) {
                     handleSearch(query)
                 }
-                true // 이벤트 처리 완료
+                true
             } else {
-                false // 이벤트 처리되지 않음
+                false
             }
         }
 
         window.sharedElementReturnTransition.addListener(object : Transition.TransitionListener {
             override fun onTransitionStart(transition: Transition) {
-                binding.recyclerView.itemAnimator = null // RecyclerView 애니메이터 비활성화
+                binding.recyclerView.itemAnimator = null
             }
 
             override fun onTransitionEnd(transition: Transition) {
-                binding.recyclerView.itemAnimator = DefaultItemAnimator() // 애니메이터 복원
+                binding.recyclerView.itemAnimator = DefaultItemAnimator()
             }
 
             override fun onTransitionCancel(transition: Transition) {}
@@ -107,17 +108,15 @@ class SearchBookActivity : BaseActivity() {
         })
     }
 
-    // 메뉴 생성
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_search_book, menu) // 메뉴 파일 연결
+        menuInflater.inflate(R.menu.menu_search_book, menu)
         return true
     }
 
-    // 메뉴 아이템 클릭 이벤트 처리
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_close -> {
-                finish() // 닫기 버튼 클릭 시 Activity 종료
+                finish()
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -125,24 +124,21 @@ class SearchBookActivity : BaseActivity() {
     }
 
     private fun onBookItemClicked(bookItem: AladinBookItem, sharedView: View) {
-        // 책 추가 화면으로 이동
         val intent = Intent(this, AddBookActivity::class.java).apply {
             val itemId = bookItem.isbn13.takeIf { !it.isNullOrEmpty() } ?: bookItem.isbn
-            putExtra("itemId", itemId) // Book 객체 전달
+            putExtra("itemId", itemId)
             val coverUrl = bookItem.cover.takeIf { !it.isNullOrEmpty() } ?: bookItem.cover
             putExtra("coverUrl", coverUrl)
         }
-//        // 트랜지션 애니메이션 설정
         val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
             this,
-            sharedView, // 공유 요소 뷰 (예: 이미지)
-            "shared_element_image" // transitionName과 일치해야 함
+            sharedView,
+            "shared_element_image"
         )
         startActivity(intent, options.toBundle())
     }
 
     private fun handleSearch(query: String) {
-        showProgressBar() // ProgressBar 표시
         viewModel.searchBooks(query)
         val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(binding.searchEditText.windowToken, 0)
@@ -157,6 +153,4 @@ class SearchBookActivity : BaseActivity() {
         binding.recyclerView.visibility = View.VISIBLE
         binding.noResultsLayout.visibility = View.GONE
     }
-
-
 }
