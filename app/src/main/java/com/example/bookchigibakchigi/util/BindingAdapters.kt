@@ -23,9 +23,9 @@ object BindingAdapters {
     fun loadImage(view: ImageView, imageUrl: String?) {
         Glide.with(view.context)
             .load(imageUrl)
-            .apply(
-                RequestOptions() // 로딩 중 표시할 기본 이미지
-                .error(R.drawable.img_book_placeholder))            // 오류 시 표시할 이미지
+//            .apply(
+//                RequestOptions() // 로딩 중 표시할 기본 이미지
+//                .error(R.drawable.img_book_placeholder))            // 오류 시 표시할 이미지
             .into(view)
     }
 

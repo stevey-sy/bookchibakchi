@@ -71,50 +71,6 @@ class AddBookActivity : BaseActivity() {
                 viewModel.getBookItem(itemId, coverUrl)
             }
         }
-
-        // Scene Transition Animation 설정
-        postponeEnterTransition()
-        binding.llBookImage.viewTreeObserver.addOnPreDrawListener(object : ViewTreeObserver.OnPreDrawListener {
-            override fun onPreDraw(): Boolean {
-                binding.llBookImage.viewTreeObserver.removeOnPreDrawListener(this)
-                startPostponedEnterTransition()
-                return true
-            }
-        })
-        // Intent에서 데이터 받아오기
-//        intent.getStringExtra("itemId")?.let { itemId ->
-//            intent.getStringExtra("coverUrl")?.let { coverUrl ->
-//                // Glide를 사용하여 이미지 로드
-//                Glide.with(this)
-//                    .load(coverUrl)
-//                    .listener(object : RequestListener<Drawable> {
-//                        override fun onLoadFailed(
-//                            e: GlideException?,
-//                            model: Any?,
-//                            target: com.bumptech.glide.request.target.Target<Drawable?>,
-//                            isFirstResource: Boolean
-//                        ): Boolean {
-//                            startPostponedEnterTransition()
-//                            TODO("Not yet implemented")
-//                        }
-//
-//                        override fun onResourceReady(
-//                            resource: Drawable,
-//                            model: Any,
-//                            target: com.bumptech.glide.request.target.Target<Drawable?>?,
-//                            dataSource: DataSource,
-//                            isFirstResource: Boolean
-//                        ): Boolean {
-//                            startPostponedEnterTransition()
-//                            TODO("Not yet implemented")
-//                        }
-//                    })
-//                    .into(binding.ivBook)
-//
-//                viewModel.getBookItem(itemId, coverUrl)
-//            }
-//        }
-
         observeViewModel()
     }
 
@@ -124,7 +80,7 @@ class AddBookActivity : BaseActivity() {
                 viewModel.uiState.collectLatest { state ->
                     when (state) {
                         is AddBookUiState.Loading -> {
-                            showLoading()
+//                            showLoading()
                         }
                         is AddBookUiState.Success -> {
                             showBookDetails(state)
@@ -147,8 +103,8 @@ class AddBookActivity : BaseActivity() {
     }
 
     private fun showBookDetails(state: AddBookUiState.Success) {
-        binding.progressBar.visibility = View.GONE
-        binding.contentLayout.visibility = View.VISIBLE
+//        binding.progressBar.visibility = View.GONE
+//        binding.contentLayout.visibility = View.VISIBLE
         
         // RatingBar 애니메이션 적용
 //        state.book.customerReviewRank?.let { rating ->
