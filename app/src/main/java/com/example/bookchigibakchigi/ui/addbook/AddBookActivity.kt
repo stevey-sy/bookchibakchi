@@ -32,7 +32,6 @@ import com.example.bookchigibakchigi.network.service.AladinBookApiService
 import com.example.bookchigibakchigi.data.repository.AladinBookRepository
 import com.example.bookchigibakchigi.ui.BaseActivity
 import com.example.bookchigibakchigi.ui.dialog.NotYetReadDialog
-import com.example.bookchigibakchigi.ui.shared.viewmodel.BookShelfViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.datepicker.MaterialDatePicker
 import dagger.hilt.android.AndroidEntryPoint
@@ -48,7 +47,7 @@ class AddBookActivity : BaseActivity() {
 
     private lateinit var binding: ActivityAddBookBinding
 
-    private val bookShelfViewModel: BookShelfViewModel by viewModels()
+//    private val bookShelfViewModel: BookShelfViewModel by viewModels()
     private val viewModel: AddBookActivityViewModel by viewModels {
         // Intent에서 BookItem? 데이터를 추출
         val itemId = intent.getStringExtra("itemId") ?: throw IllegalArgumentException("itemId가 필요합니다.")

@@ -17,16 +17,12 @@ import com.example.bookchigibakchigi.R
 import com.example.bookchigibakchigi.databinding.ActivityMainBinding
 import com.example.bookchigibakchigi.ui.BaseActivity
 import com.example.bookchigibakchigi.ui.searchbook.SearchBookActivity
-import com.example.bookchigibakchigi.ui.shared.viewmodel.BookShelfViewModel
-import com.example.bookchigibakchigi.ui.shared.viewmodel.PhotoCardViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : BaseActivity() {
 
     private lateinit var binding: ActivityMainBinding
-//    val bookShelfViewModel : BookShelfViewModel by viewModels()
-//    val photoCardViewModel : PhotoCardViewModel by viewModels()
     val mainViewModel : MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -130,26 +126,6 @@ class MainActivity : BaseActivity() {
         return when (item.itemId) {
             R.id.action_search -> {
                 moveToBookSearchActivity()
-                true
-            }
-            R.id.action_grid -> {
-                val navController = findNavController(R.id.nav_host_fragment_activity_main)
-                val currentDestination = navController.currentDestination?.id
-                if (currentDestination == R.id.navigation_book_detail) {
-                    navController.navigate(R.id.navigation_my_library)
-                } else {
-                    Toast.makeText(this, "Grid", Toast.LENGTH_SHORT).show()
-                }
-                true
-            }
-            R.id.action_horizontal -> {
-                val navController = findNavController(R.id.nav_host_fragment_activity_main)
-                val currentDestination = navController.currentDestination?.id
-                if (currentDestination == R.id.navigation_my_library) {
-                    navController.navigate(R.id.navigation_book_detail)
-                } else {
-                    Toast.makeText(this, "Horizontal", Toast.LENGTH_SHORT).show()
-                }
                 true
             }
             else -> super.onOptionsItemSelected(item)

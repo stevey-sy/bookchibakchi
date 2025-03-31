@@ -25,11 +25,11 @@ class BookShelfViewModel @Inject constructor(
     }
 
     fun loadBooks() {
-        viewModelScope.launch {
-            bookShelfRepository.getShelfItems().observeForever { books ->
-                _bookShelfItems.value = books
-            }
-        }
+//        viewModelScope.launch {
+//            bookShelfRepository.getShelfItems().observeForever { books ->
+//                _bookShelfItems.value = books
+//            }
+//        }
     }
 
     fun refreshShelf() {

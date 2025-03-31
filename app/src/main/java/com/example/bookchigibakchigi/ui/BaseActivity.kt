@@ -13,15 +13,12 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.bookchigibakchigi.R
-import com.example.bookchigibakchigi.ui.shared.viewmodel.BookShelfViewModel
-import com.example.bookchigibakchigi.ui.shared.viewmodel.BookViewModel
 import com.google.android.material.progressindicator.CircularProgressIndicator
 import dagger.hilt.android.AndroidEntryPoint
 
 abstract class BaseActivity : AppCompatActivity() {
 
     private var progressBar: ProgressBar? = null
-    val bookViewModel : BookViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
         super.onCreate(savedInstanceState, persistentState)

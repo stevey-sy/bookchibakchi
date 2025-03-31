@@ -36,7 +36,6 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:orientation="vertical"
-            app:isVisible="@{viewModel.bookShelfItems}"
             android:background="@color/white">
 
             <!-- 일러스트 이미지 -->

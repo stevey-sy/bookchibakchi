@@ -33,8 +33,7 @@
             android:gravity="center"
             android:orientation="vertical"
             android:visibility="gone"
-            android:background="@color/white"
-            app:isVisible="@{mainViewModel.bookShelfItems}">
+            android:background="@color/white">
 
             <!-- 일러스트 이미지 -->
             <ImageView
@@ -95,8 +94,7 @@
                     android:layout_height="match_parent"
                     android:clipToPadding="false"
                     android:clipChildren="false"
-                    android:overScrollMode="never"
-                    app:submitBookList="@{mainViewModel.bookShelfItems}" />
+                    android:overScrollMode="never" />
 
             </FrameLayout>
 
@@ -125,7 +123,6 @@
                     android:singleLine="true"
                     android:focusable="true"
                     android:focusableInTouchMode="true"
-                    android:text="@{mainViewModel.currentBook.title}"
                  />
 
                 <TextView
@@ -136,8 +133,7 @@
                     android:textColor="@color/gray"
                     android:layout_marginTop="@dimen/_10sdp"
                     android:layout_marginHorizontal="@dimen/_20sdp"
-                    android:gravity="center"
-                    android:text="@{mainViewModel.currentBook.getAuthorText()}" />
+                    android:gravity="center"/>
 
 <!--                <TextView-->
 <!--                    android:id="@+id/tvPublisher"-->
@@ -156,19 +152,35 @@
                     android:paddingVertical="@dimen/_8sdp"
                     android:layout_marginHorizontal="@dimen/_10sdp"
                     android:clipToPadding="false"
-                    android:clipChildren="false"
-                    app:isProgressBarVisible="@{mainViewModel.bookShelfItems}">
+                    android:clipChildren="false">
 
+<!--                    <LinearLayout-->
+<!--                        android:id="@+id/llProgressPercentage"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:clipToPadding="false"-->
+<!--                        android:clipChildren="false"-->
+<!--                        app:progressTranslation="@{mainViewModel.currentBook.progressPercentage}"-->
+<!--                        android:orientation="vertical">-->
                     <LinearLayout
                         android:id="@+id/llProgressPercentage"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:clipToPadding="false"
                         android:clipChildren="false"
-                        app:progressTranslation="@{mainViewModel.currentBook.progressPercentage}"
                         android:orientation="vertical">
 
                         <!-- 진행 퍼센트를 표시하는 텍스트 -->
+<!--                        <TextView-->
+<!--                            android:id="@+id/tvProgressPercentage"-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:textSize="12sp"-->
+<!--                            android:textColor="@color/white"-->
+<!--                            android:background="@drawable/background_black_circle"-->
+<!--                            android:layout_alignParentStart="true"-->
+<!--                            android:padding="4dp"-->
+<!--                            android:text='@{String.valueOf(mainViewModel.currentBook.progressPercentage) + "%"}' />-->
                         <TextView
                             android:id="@+id/tvProgressPercentage"
                             android:layout_width="wrap_content"
@@ -176,9 +188,7 @@
                             android:textSize="12sp"
                             android:textColor="@color/white"
                             android:background="@drawable/background_black_circle"
-                            android:layout_alignParentStart="true"
-                            android:padding="4dp"
-                            android:text='@{String.valueOf(mainViewModel.currentBook.progressPercentage) + "%"}' />
+                            android:padding="4dp" />
 
                         <View
                             android:layout_width="@dimen/_8sdp"
@@ -202,6 +212,16 @@
                         android:layout_alignParentEnd="true" />
 
                     <!-- 프로그레스바 (진행도) -->
+<!--                    <View-->
+<!--                        android:id="@+id/progressBarForeground"-->
+<!--                        android:layout_width="0dp"-->
+<!--                        android:layout_height="8dp"-->
+<!--                        android:layout_below="@id/llProgressPercentage"-->
+<!--                        android:background="@drawable/rounded_progress_bar_black"-->
+<!--                        android:layout_alignParentStart="true"-->
+<!--                        android:layout_marginBottom="8dp"-->
+<!--                        app:progressPercentage="@{mainViewModel.currentBook.progressPercentage}"/>-->
+
                     <View
                         android:id="@+id/progressBarForeground"
                         android:layout_width="0dp"
@@ -209,8 +229,7 @@
                         android:layout_below="@id/llProgressPercentage"
                         android:background="@drawable/rounded_progress_bar_black"
                         android:layout_alignParentStart="true"
-                        android:layout_marginBottom="8dp"
-                        app:progressPercentage="@{mainViewModel.currentBook.progressPercentage}"/>
+                        android:layout_marginBottom="8dp"/>
 
                 </RelativeLayout>
 
@@ -292,8 +311,7 @@
                         android:textColor="@color/gray"
                         android:layout_marginHorizontal="@dimen/_20sdp"
                         android:gravity="center"
-                        android:textSize="16sp"
-                        android:text="@{String.valueOf(mainViewModel.photoCardList.size) + ` Comments`}" />
+                        android:textSize="16sp" />
 
                     <ImageView
                         android:layout_width="@dimen/_20sdp"

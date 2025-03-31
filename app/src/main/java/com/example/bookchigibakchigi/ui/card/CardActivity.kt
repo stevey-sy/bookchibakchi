@@ -127,14 +127,14 @@ class CardActivity : BaseActivity() {
 
         }
 
-        binding.viewModel = bookViewModel
-        binding.lifecycleOwner = this
-
-        // ✅ ViewModel에 데이터 저장
-        book?.let {
-            bookViewModel.setBook(it)  // LiveData 업데이트
-            binding.etBookTitle.setText(book.title)
-        }
+//        binding.viewModel = bookViewModel
+//        binding.lifecycleOwner = this
+//
+//        // ✅ ViewModel에 데이터 저장
+//        book?.let {
+//            bookViewModel.setBook(it)  // LiveData 업데이트
+//            binding.etBookTitle.setText(book.title)
+//        }
     }
 
     private fun initClickListener() {
@@ -463,18 +463,18 @@ class CardActivity : BaseActivity() {
         canvas.translate(0f, -cropTopY.toFloat())
         captureView.draw(canvas)
 
-        val book = bookViewModel.currentBook.value ?: return
-
-        // ViewModel을 통해 저장 요청
-        createCardViewModel.saveCard(
-            bitmap,
-            book,
-            binding.etBookContent,
-            binding.etBookTitle,
-            binding.flBookContent,
-            binding.flBookTitle,
-            cropHeight
-        )
+//        val book = bookViewModel.currentBook.value ?: return
+//
+//        // ViewModel을 통해 저장 요청
+//        createCardViewModel.saveCard(
+//            bitmap,
+//            book,
+//            binding.etBookContent,
+//            binding.etBookTitle,
+//            binding.flBookContent,
+//            binding.flBookTitle,
+//            cropHeight
+//        )
     }
 
     private fun observeSaveResult() {

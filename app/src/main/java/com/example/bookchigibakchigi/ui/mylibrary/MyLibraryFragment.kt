@@ -19,9 +19,10 @@ import com.example.bookchigibakchigi.R
 import com.example.bookchigibakchigi.databinding.FragmentMyLibraryBinding
 import com.example.bookchigibakchigi.ui.main.MainViewModel
 import com.example.bookchigibakchigi.ui.mylibrary.adapter.BookShelfAdapter
-import com.example.bookchigibakchigi.ui.shared.viewmodel.BookShelfViewModel
 import com.example.bookchigibakchigi.ui.searchbook.SearchBookActivity
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MyLibraryFragment : Fragment() {
@@ -114,19 +115,19 @@ class MyLibraryFragment : Fragment() {
 //            )
 //        }
 
-        mainViewModel.bookShelfItems.observe(viewLifecycleOwner) { bookList ->
-            adapter.setDataList(bookList)
-            // 데이터 로드 완료 후 Transition 시작
-            binding.rvShelf.viewTreeObserver.addOnPreDrawListener(
-                object : ViewTreeObserver.OnPreDrawListener {
-                    override fun onPreDraw(): Boolean {
-                        binding.rvShelf.viewTreeObserver.removeOnPreDrawListener(this)
-                        startPostponedEnterTransition() // Transition 시작
-                        return true
-                    }
-                }
-            )
-        }
+//        mainViewModel.bookShelfItems.observe(viewLifecycleOwner) { bookList ->
+//            adapter.setDataList(bookList)
+//            // 데이터 로드 완료 후 Transition 시작
+//            binding.rvShelf.viewTreeObserver.addOnPreDrawListener(
+//                object : ViewTreeObserver.OnPreDrawListener {
+//                    override fun onPreDraw(): Boolean {
+//                        binding.rvShelf.viewTreeObserver.removeOnPreDrawListener(this)
+//                        startPostponedEnterTransition() // Transition 시작
+//                        return true
+//                    }
+//                }
+//            )
+//        }
     }
 
     fun refreshContent() {
