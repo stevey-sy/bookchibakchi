@@ -90,6 +90,7 @@
                             android:progressTint="@color/black"
                             android:backgroundTint="@color/light_gray"
                             android:isIndicator="true"
+                            app:rating="@{viewModel.rating}"
                             android:layout_gravity="center" />
 
                         <View
