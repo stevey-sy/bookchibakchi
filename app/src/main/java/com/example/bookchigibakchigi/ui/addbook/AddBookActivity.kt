@@ -4,20 +4,27 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.AnimatorSet
 import android.animation.ValueAnimator
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewTreeObserver
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.RatingBar
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
-import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.core.app.ActivityCompat
+import androidx.core.app.ActivityOptionsCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
 import com.example.bookchigibakchigi.R
 import com.example.bookchigibakchigi.data.database.AppDatabase
 import com.example.bookchigibakchigi.data.entity.BookEntity
@@ -39,7 +46,6 @@ class AddBookActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         binding = ActivityAddBookBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setupToolbar(binding.toolbar, binding.main)
@@ -65,6 +71,49 @@ class AddBookActivity : BaseActivity() {
                 viewModel.getBookItem(itemId, coverUrl)
             }
         }
+
+        // Scene Transition Animation 설정
+        postponeEnterTransition()
+        binding.llBookImage.viewTreeObserver.addOnPreDrawListener(object : ViewTreeObserver.OnPreDrawListener {
+            override fun onPreDraw(): Boolean {
+                binding.llBookImage.viewTreeObserver.removeOnPreDrawListener(this)
+                startPostponedEnterTransition()
+                return true
+            }
+        })
+        // Intent에서 데이터 받아오기
+//        intent.getStringExtra("itemId")?.let { itemId ->
+//            intent.getStringExtra("coverUrl")?.let { coverUrl ->
+//                // Glide를 사용하여 이미지 로드
+//                Glide.with(this)
+//                    .load(coverUrl)
+//                    .listener(object : RequestListener<Drawable> {
+//                        override fun onLoadFailed(
+//                            e: GlideException?,
+//                            model: Any?,
+//                            target: com.bumptech.glide.request.target.Target<Drawable?>,
+//                            isFirstResource: Boolean
+//                        ): Boolean {
+//                            startPostponedEnterTransition()
+//                            TODO("Not yet implemented")
+//                        }
+//
+//                        override fun onResourceReady(
+//                            resource: Drawable,
+//                            model: Any,
+//                            target: com.bumptech.glide.request.target.Target<Drawable?>?,
+//                            dataSource: DataSource,
+//                            isFirstResource: Boolean
+//                        ): Boolean {
+//                            startPostponedEnterTransition()
+//                            TODO("Not yet implemented")
+//                        }
+//                    })
+//                    .into(binding.ivBook)
+//
+//                viewModel.getBookItem(itemId, coverUrl)
+//            }
+//        }
 
         observeViewModel()
     }
@@ -102,9 +151,9 @@ class AddBookActivity : BaseActivity() {
         binding.contentLayout.visibility = View.VISIBLE
         
         // RatingBar 애니메이션 적용
-        state.book.customerReviewRank?.let { rating ->
-            setRatingWithAnimation(binding.ratingBar, rating / 2.0f)
-        }
+//        state.book.customerReviewRank?.let { rating ->
+//            setRatingWithAnimation(binding.ratingBar, rating / 2.0f)
+//        }
     }
 
     private fun showError(message: String) {
