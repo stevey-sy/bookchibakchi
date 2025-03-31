@@ -35,7 +35,7 @@ class AddBookActivity : BaseActivity() {
         binding.lifecycleOwner = this
 
         initBackPressCallback()
-        initSaveButton()
+        initClickListener()
         initBookDataFromIntent()
         observeViewModel()
     }
@@ -48,7 +48,7 @@ class AddBookActivity : BaseActivity() {
         })
     }
 
-    private fun initSaveButton() {
+    private fun initClickListener() {
         binding.tvNext.setOnClickListener {
             addBook()
         }
