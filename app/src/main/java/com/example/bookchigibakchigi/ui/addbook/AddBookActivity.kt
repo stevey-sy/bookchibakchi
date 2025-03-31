@@ -5,10 +5,9 @@ import android.animation.AnimatorListenerAdapter
 import android.animation.AnimatorSet
 import android.animation.ValueAnimator
 import android.os.Bundle
-import android.transition.Transition
-import android.transition.TransitionInflater
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.RatingBar
@@ -16,47 +15,27 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContentProviderCompat.requireContext
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import com.bumptech.glide.Glide
+import androidx.lifecycle.repeatOnLifecycle
 import com.example.bookchigibakchigi.R
 import com.example.bookchigibakchigi.data.database.AppDatabase
 import com.example.bookchigibakchigi.data.entity.BookEntity
 import com.example.bookchigibakchigi.databinding.ActivityAddBookBinding
-import com.example.bookchigibakchigi.network.model.AladinBookItem
-import com.example.bookchigibakchigi.network.model.BookItem
 import com.example.bookchigibakchigi.network.service.AladinBookApiService
 import com.example.bookchigibakchigi.data.repository.AladinBookRepository
 import com.example.bookchigibakchigi.ui.BaseActivity
 import com.example.bookchigibakchigi.ui.dialog.NotYetReadDialog
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.datepicker.MaterialDatePicker
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.util.Calendar
-import java.util.TimeZone
 
 @AndroidEntryPoint
 class AddBookActivity : BaseActivity() {
 
     private lateinit var binding: ActivityAddBookBinding
-
-//    private val bookShelfViewModel: BookShelfViewModel by viewModels()
-    private val viewModel: AddBookActivityViewModel by viewModels {
-        // Intent에서 BookItem? 데이터를 추출
-        val itemId = intent.getStringExtra("itemId") ?: throw IllegalArgumentException("itemId가 필요합니다.")
-        val coverUrl = intent.getStringExtra("coverUrl") ?: ""
-
-        val apiService = AladinBookApiService.create()
-        val repository = AladinBookRepository(apiService)
-        AddBookActivityViewModelFactory(itemId, coverUrl, repository)
-    }
+    private val viewModel: AddBookViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,44 +51,84 @@ class AddBookActivity : BaseActivity() {
         // 뒤로 가기 콜백 등록
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                animateImageViewSizeAndFinish() // 커스텀 애니메이션 호출
+                animateImageViewSizeAndFinish()
             }
         })
 
         binding.tvNext.setOnClickListener {
             addBook()
         }
-    }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_add_book, menu) // 메뉴 파일 연결
-        return true
-    }
-
-    // 메뉴 아이템 클릭 이벤트 처리
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.action_close -> {
-                animateImageViewSizeAndFinish()
-//                supportFinishAfterTransition()
-                true
+        // Intent에서 데이터 받아오기
+        intent.getStringExtra("itemId")?.let { itemId ->
+            intent.getStringExtra("coverUrl")?.let { coverUrl ->
+                viewModel.getBookItem(itemId, coverUrl)
             }
-            else -> super.onOptionsItemSelected(item)
+        }
+
+        observeViewModel()
+    }
+
+    private fun observeViewModel() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.uiState.collectLatest { state ->
+                    when (state) {
+                        is AddBookUiState.Loading -> {
+                            showLoading()
+                        }
+                        is AddBookUiState.Success -> {
+                            showBookDetails(state)
+                        }
+                        is AddBookUiState.Error -> {
+                            showError(state.message)
+                        }
+                        is AddBookUiState.Initial -> {
+                            // 초기 상태 처리
+                        }
+                    }
+                }
+            }
         }
     }
 
+    private fun showLoading() {
+        binding.progressBar.visibility = View.VISIBLE
+        binding.contentLayout.visibility = View.GONE
+    }
+
+    private fun showBookDetails(state: AddBookUiState.Success) {
+        binding.progressBar.visibility = View.GONE
+        binding.contentLayout.visibility = View.VISIBLE
+        
+        // RatingBar 애니메이션 적용
+        state.book.customerReviewRank?.let { rating ->
+            setRatingWithAnimation(binding.ratingBar, rating / 2.0f)
+        }
+    }
+
+    private fun showError(message: String) {
+        binding.progressBar.visibility = View.GONE
+        binding.contentLayout.visibility = View.GONE
+        binding.errorLayout.visibility = View.VISIBLE
+        binding.tvErrorMessage.text = message
+    }
+
     private fun addBook() {
-        // 저장 버튼 클릭 시 동작 정의
-        val database = AppDatabase.getDatabase(this)
-        val bookDao = database.bookDao()
+        val currentState = viewModel.uiState.value
+        if (currentState !is AddBookUiState.Success) {
+            Toast.makeText(this, "책 정보를 불러오는 중입니다.", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         val book = BookEntity(
-            title = viewModel.bookItem.value?.title ?: "",
-            author = viewModel.bookItem.value?.author ?: "",
-            publisher = viewModel.bookItem.value?.publisher ?: "",
-            isbn = viewModel.bookItem.value?.isbn ?: "",
-            coverImageUrl = viewModel.bookItem.value?.cover ?: "",
-            bookType = "0", // 예시
-            totalPageCnt = viewModel.bookItem.value?.subInfo?.itemPage ?: 0,
+            title = currentState.book.title,
+            author = currentState.book.author,
+            publisher = currentState.book.publisher,
+            isbn = currentState.book.isbn,
+            coverImageUrl = currentState.coverUrl,
+            bookType = "0",
+            totalPageCnt = currentState.book.subInfo?.itemPage ?: 0,
             challengePageCnt = 0,
             startDate = "",
             endDate = "",
@@ -117,14 +136,16 @@ class AddBookActivity : BaseActivity() {
         )
 
         if(book.title.isEmpty() || book.author.isEmpty() || book.publisher.isEmpty() || book.isbn.isEmpty()) {
-            Toast.makeText(this@AddBookActivity, "책 저장에 실패했습니다. 잠시 후에 다시 시도해주세요. ", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "책 저장에 실패했습니다. 잠시 후에 다시 시도해주세요.", Toast.LENGTH_SHORT).show()
             return
         }
 
-        // 데이터를 저장합니다. CoroutineScope를 사용해 비동기 실행
         lifecycleScope.launch {
             try {
+                val database = AppDatabase.getDatabase(this@AddBookActivity)
+                val bookDao = database.bookDao()
                 val isExists = bookDao.isBookExists(book.isbn) > 0
+                
                 if (isExists) {
                     Toast.makeText(this@AddBookActivity, "이미 저장된 책입니다.", Toast.LENGTH_SHORT).show()
                     return@launch
@@ -132,65 +153,64 @@ class AddBookActivity : BaseActivity() {
 
                 bookDao.insertBook(book)
                 Toast.makeText(this@AddBookActivity, "나의 서재에 책이 추가되었습니다.", Toast.LENGTH_SHORT).show()
-
                 finish()
             } catch (e: Exception) {
-                // 실패 시 예외 처리
                 Toast.makeText(this@AddBookActivity, "책 저장에 실패했습니다: ${e.message}", Toast.LENGTH_SHORT).show()
             }
         }
     }
 
     private fun showBottomSheet() {
+        val currentState = viewModel.uiState.value
+        if (currentState !is AddBookUiState.Success) {
+            Toast.makeText(this, "책 정보를 불러오는 중입니다.", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         val bottomSheetDialog = BottomSheetDialog(this, R.style.CustomBottomSheetDialog)
         val view = layoutInflater.inflate(R.layout.dialog_add_book_option, null)
         bottomSheetDialog.setContentView(view)
         bottomSheetDialog.show()
-        // 추가 로직 (예: 버튼 클릭 이벤트)
+
         view.findViewById<Button>(R.id.btnYes).setOnClickListener {
-            // 버튼 클릭 동작
             bottomSheetDialog.dismiss()
 
             val dialog = NotYetReadDialog(
                 context = this,
                 fragmentManager = supportFragmentManager,
-                pageCnt = viewModel.bookItem.value?.subInfo?.itemPage ?: 0, // 예제: 책의 총 페이지 수
-                onSave = { pagesPerDay, startDate->
-                    // 저장 버튼 클릭 시 동작 정의
-                    val database = AppDatabase.getDatabase(this)
-                    val bookDao = database.bookDao()
+                pageCnt = currentState.book.subInfo?.itemPage ?: 0,
+                onSave = { pagesPerDay, startDate ->
                     val book = BookEntity(
-                        title = viewModel.bookItem.value?.title ?: "",
-                        author = viewModel.bookItem.value?.author ?: "",
-                        publisher = viewModel.bookItem.value?.publisher ?: "",
-                        isbn = viewModel.bookItem.value?.isbn ?: "",
-                        coverImageUrl = viewModel.bookItem.value?.cover ?: "",
-                        bookType = "0", // 예시
-                        totalPageCnt = viewModel.bookItem.value?.subInfo?.itemPage ?: 0,
+                        title = currentState.book.title,
+                        author = currentState.book.author,
+                        publisher = currentState.book.publisher,
+                        isbn = currentState.book.isbn,
+                        coverImageUrl = currentState.coverUrl,
+                        bookType = "0",
+                        totalPageCnt = currentState.book.subInfo?.itemPage ?: 0,
                         challengePageCnt = pagesPerDay,
                         startDate = startDate,
                         endDate = "",
                         currentPageCnt = pagesPerDay
                     )
-                    // 데이터를 저장합니다. CoroutineScope를 사용해 비동기 실행
+
                     lifecycleScope.launch {
                         try {
+                            val database = AppDatabase.getDatabase(this@AddBookActivity)
+                            val bookDao = database.bookDao()
                             bookDao.insertBook(book)
                             Toast.makeText(this@AddBookActivity, "나의 보관소에 책이 저장되었습니다.", Toast.LENGTH_SHORT).show()
+                            finish()
                         } catch (e: Exception) {
-                            // 실패 시 예외 처리
                             Toast.makeText(this@AddBookActivity, "책 저장에 실패했습니다: ${e.message}", Toast.LENGTH_SHORT).show()
                         }
                     }
-
                 }
             )
-            // 다이얼로그 표시
             dialog.show()
         }
 
         view.findViewById<Button>(R.id.btnNo).setOnClickListener {
-            // 버튼 클릭 동작
             bottomSheetDialog.dismiss()
         }
         view.findViewById<ImageView>(R.id.ivClose).setOnClickListener {
