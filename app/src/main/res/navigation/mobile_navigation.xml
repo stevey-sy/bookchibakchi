@@ -55,19 +55,19 @@
         android:id="@+id/navigation_book_detail"
         android:name="com.example.bookchigibakchigi.ui.bookdetail.BookDetailFragment"
         android:label="상세"
-        tools:layout="@layout/fragment_book_detail" />
+        tools:layout="@layout/fragment_book_detail">
+        <argument
+            android:name="itemId"
+            app:argType="integer" />
+        <argument
+            android:name="transitionName"
+            app:argType="string" />
+    </fragment>
 
-<!--    <fragment-->
-<!--        android:id="@+id/navigation_notifications"-->
-<!--        android:name="com.example.bookchigibakchigi.ui.notifications.NotificationsFragment"-->
-<!--        android:label="@string/title_notifications"-->
-<!--        tools:layout="@layout/fragment_notifications" />-->
-
-<!--    <fragment-->
-<!--        android:id="@+id/navigation_notifications"-->
-<!--        android:name="com.example.bookchigibakchigi.ui.notifications.NotificationsFragment"-->
-<!--        android:label="@string/title_notifications"-->
-<!--        tools:layout="@layout/fragment_notifications" />-->
-<!--    -->
+    <activity
+        android:id="@+id/navigation_search_book"
+        android:name="com.example.bookchigibakchigi.ui.searchbook.SearchBookActivity"
+        android:label="@string/title_search_book"
+        tools:layout="@layout/activity_search_book" />
 
 </navigation>

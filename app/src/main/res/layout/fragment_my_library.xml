@@ -4,11 +4,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-        <!-- ViewModel 선언 -->
-<!--        <variable-->
-<!--            name="viewModel"-->
-<!--            type="com.example.bookchigibakchigi.ui.shared.viewmodel.BookShelfViewModel" />-->
-
         <variable
             name="viewModel"
             type="com.example.bookchigibakchigi.ui.main.MainViewModel" />
@@ -44,14 +39,13 @@
                 android:layout_height="200dp"
                 android:src="@drawable/img_reading"
                 android:scaleType="centerCrop"
-                android:contentDescription="Empty bookshelf image"
                 android:layout_marginBottom="16dp" />
 
             <!-- 안내 텍스트 -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="당신의 첫 번째 책을 추가해보세요."
+                android:text="@string/empty_book_message"
                 android:textSize="18sp"
                 android:textColor="@color/black"
                 android:layout_marginBottom="8dp"
@@ -60,7 +54,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="독서 진행도와 기억하고 싶은 문구를 기록할 수 있어요."
+                android:text="@string/empty_book_description"
                 android:textSize="14sp"
                 android:textColor="@color/gray"
                 android:textStyle="bold" />
@@ -70,7 +64,7 @@
                 android:id="@+id/btnSearchBook"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="책 검색하기"
+                android:text="@string/search_book"
                 android:backgroundTint="@color/black"
                 android:textColor="@color/white"
                 android:layout_marginTop="16dp"

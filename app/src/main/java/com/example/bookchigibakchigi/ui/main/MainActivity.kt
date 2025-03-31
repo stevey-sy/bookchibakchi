@@ -1,11 +1,9 @@
 package com.example.bookchigibakchigi.ui.main
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.viewModels
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.core.content.res.ResourcesCompat
@@ -16,7 +14,6 @@ import androidx.navigation.ui.setupWithNavController
 import com.example.bookchigibakchigi.R
 import com.example.bookchigibakchigi.databinding.ActivityMainBinding
 import com.example.bookchigibakchigi.ui.BaseActivity
-import com.example.bookchigibakchigi.ui.searchbook.SearchBookActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -36,13 +33,12 @@ class MainActivity : BaseActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(false)
         supportActionBar?.setHomeButtonEnabled(false)
 
-
         val navView: BottomNavigationView = binding.navView
         val navController = findNavController(R.id.nav_host_fragment_activity_main)
 
         val appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.navigation_my_library, // Add this line
+                R.id.navigation_my_library,
                 R.id.navigation_book_detail,
                 R.id.navigation_pick_book,
                 R.id.navigation_community,
@@ -88,7 +84,7 @@ class MainActivity : BaseActivity() {
                 supportActionBar?.setHomeButtonEnabled(false)
             }
             R.id.navigation_my_library -> {
-                 binding.toolbar.title = getString(R.string.app_name)
+                binding.toolbar.title = getString(R.string.app_name)
                 binding.toolbar.inflateMenu(R.menu.menu_my_library)
                 supportActionBar?.setDisplayHomeAsUpEnabled(false)
                 supportActionBar?.setHomeButtonEnabled(false)
@@ -114,7 +110,7 @@ class MainActivity : BaseActivity() {
             }
         }
 
-                binding.toolbar.getChildAt(0)?.let { view ->
+        binding.toolbar.getChildAt(0)?.let { view ->
             if (view is TextView) {
                 view.typeface = ResourcesCompat.getFont(this, R.font.dashi)
                 view.textSize = 32f
@@ -125,15 +121,11 @@ class MainActivity : BaseActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_search -> {
-                moveToBookSearchActivity()
+                findNavController(R.id.nav_host_fragment_activity_main)
+                    .navigate(R.id.navigation_search_book)
                 true
             }
             else -> super.onOptionsItemSelected(item)
         }
-    }
-
-    private fun moveToBookSearchActivity() {
-        val intent = Intent(this, SearchBookActivity::class.java)
-        startActivity(intent)
     }
 }
