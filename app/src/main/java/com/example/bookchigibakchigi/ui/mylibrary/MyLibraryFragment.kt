@@ -144,21 +144,43 @@ class MyLibraryFragment : Fragment() {
         }
     }
 
+//    private fun prepareTransitions() {
+//        exitTransition = TransitionInflater.from(requireContext()).inflateTransition(R.transition.exit_transition)
+//
+//        setExitSharedElementCallback(object : SharedElementCallback() {
+//            override fun onMapSharedElements(names: List<String>, sharedElements: MutableMap<String, View>) {
+//                Log.d("MyLibraryFragment", "onMapSharedElements called with names: $names")
+//                val currentTransitionName = names.firstOrNull() ?: return
+//                Log.d("MyLibraryFragment", "currentTransitionName: $currentTransitionName")
+//                val selectedViewHolder = binding.rvShelf.findViewHolderForAdapterPosition(0)
+//                if (selectedViewHolder != null) {
+//                    sharedElements[currentTransitionName] = selectedViewHolder.itemView.findViewById(R.id.ivBook)
+//                    Log.d("MyLibraryFragment", "Shared element mapped successfully")
+//                } else {
+//                    Log.d("MyLibraryFragment", "SelectedViewHolder is null")
+//                }
+//            }
+//        })
+//    }
+
     private fun prepareTransitions() {
         exitTransition = TransitionInflater.from(requireContext()).inflateTransition(R.transition.exit_transition)
 
-        setExitSharedElementCallback(object : SharedElementCallback() {
+        setExitSharedElementCallback(object : androidx.core.app.SharedElementCallback() {
             override fun onMapSharedElements(names: List<String>, sharedElements: MutableMap<String, View>) {
-                Log.d("MyLibraryFragment", "onMapSharedElements called with names: $names")
-                val currentTransitionName = names.firstOrNull() ?: return
-                Log.d("MyLibraryFragment", "currentTransitionName: $currentTransitionName")
-                val selectedViewHolder = binding.rvShelf.findViewHolderForAdapterPosition(0)
-                if (selectedViewHolder != null) {
-                    sharedElements[currentTransitionName] = selectedViewHolder.itemView.findViewById(R.id.ivBook)
-                    Log.d("MyLibraryFragment", "Shared element mapped successfully")
-                } else {
-                    Log.d("MyLibraryFragment", "SelectedViewHolder is null")
-                }
+                // 최신 Transition Name과 position 가져오기
+                val currentTransitionName = findNavController()
+                    .currentBackStackEntry?.savedStateHandle?.get<String>("current_transition_name")
+                val currentPosition = findNavController()
+                    .currentBackStackEntry?.savedStateHandle?.get<Int>("selected_position") ?: -1
+
+                if (currentTransitionName.isNullOrEmpty() || currentPosition == -1) return
+
+                // RecyclerView의 ViewHolder 찾기
+                val selectedViewHolder = binding.rvShelf.findViewHolderForAdapterPosition(currentPosition)
+                scrollToPosition(currentPosition)
+                sharedElements[names[0]] =
+                    selectedViewHolder!!.itemView.findViewById(R.id.ivBook)
             }
         })
     }
