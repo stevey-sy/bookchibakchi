@@ -164,7 +164,7 @@ class MyLibraryFragment : Fragment() {
 //    }
 
     private fun prepareTransitions() {
-        exitTransition = TransitionInflater.from(requireContext()).inflateTransition(R.transition.exit_transition)
+        //exitTransition = TransitionInflater.from(requireContext()).inflateTransition(R.transition.exit_transition)
 
         setExitSharedElementCallback(object : androidx.core.app.SharedElementCallback() {
             override fun onMapSharedElements(names: List<String>, sharedElements: MutableMap<String, View>) {
