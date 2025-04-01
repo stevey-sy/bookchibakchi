@@ -93,63 +93,15 @@ class BookDetailFragment : Fragment() {
         )
         binding.viewPager.adapter = adapter
 
-        binding.btnRecord.setOnClickListener {
-            mainViewModel.uiState.value.let { state ->
-                if (state is MainViewUiState.BookDetail) {
-                    val selectedBook = state.currentBook
-                    selectedBook?.let { book ->
-                        val intent = Intent(requireContext(), RecordActivity::class.java).apply {
-                            putExtra("currentBook", book)
-                        }
-
-                        sharedView = binding.viewPager.findViewWithTag<View>("page_${binding.viewPager.currentItem}")?.findViewById(R.id.ivBook)
-                        sharedView!!.transitionName = "sharedView_${state.currentBook.itemId}"
-
-                        val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
-                            requireActivity(),
-                            sharedView!!,  // 시작점 (ViewPager의 ImageView)
-                            sharedView!!.transitionName  // 동일한 transitionName 사용
-                        )
-                        startActivity(intent, options.toBundle())
-                    }
-                }
-            }
-        }
-
-//        binding.btnMemo.setOnClickListener {
-//            val selectedBook = mainViewModel.currentBook.value
-//            selectedBook?.let { book ->
-//                showBottomSheet()
-//            }
-//        }
-
-        binding.llComments.setOnClickListener {
-            showPhotoCardListDialog()
-        }
-
+        initClickListeners()
         prepareSharedElementTransition()
 
         return binding.root
     }
 
-    private fun checkPermissions(): Boolean {
-        val cameraPermission = android.Manifest.permission.CAMERA
-        val readMediaPermission = android.Manifest.permission.READ_MEDIA_IMAGES
-
-        return (requireContext().checkSelfPermission(cameraPermission) == android.content.pm.PackageManager.PERMISSION_GRANTED)
-    }
-
-    private fun requestPermissions() {
-        val permissions = arrayOf(
-            android.Manifest.permission.CAMERA,
-            android.Manifest.permission.READ_MEDIA_IMAGES
-        )
-        permissionLauncher.launch(permissions)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-//        postponeEnterTransition()
+        postponeEnterTransition()
 
         // 시스템 Back 버튼 동작 커스터마이징
         initBackPressedCallback()
@@ -400,6 +352,57 @@ class BookDetailFragment : Fragment() {
                 Toast.makeText(requireContext(), "사진 선택이 취소되었습니다.", Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+    private fun initClickListeners() {
+        binding.btnRecord.setOnClickListener {
+            mainViewModel.uiState.value.let { state ->
+                if (state is MainViewUiState.BookDetail) {
+                    val selectedBook = state.currentBook
+                    selectedBook?.let { book ->
+                        val intent = Intent(requireContext(), RecordActivity::class.java).apply {
+                            putExtra("currentBook", book)
+                        }
+
+                        sharedView = binding.viewPager.findViewWithTag<View>("page_${binding.viewPager.currentItem}")?.findViewById(R.id.ivBook)
+                        sharedView!!.transitionName = "sharedView_${state.currentBook.itemId}"
+
+                        val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                            requireActivity(),
+                            sharedView!!,  // 시작점 (ViewPager의 ImageView)
+                            sharedView!!.transitionName  // 동일한 transitionName 사용
+                        )
+                        startActivity(intent, options.toBundle())
+                    }
+                }
+            }
+        }
+
+//        binding.btnMemo.setOnClickListener {
+//            val selectedBook = mainViewModel.currentBook.value
+//            selectedBook?.let { book ->
+//                showBottomSheet()
+//            }
+//        }
+
+        binding.llComments.setOnClickListener {
+            showPhotoCardListDialog()
+        }
+    }
+
+    private fun checkPermissions(): Boolean {
+        val cameraPermission = android.Manifest.permission.CAMERA
+        val readMediaPermission = android.Manifest.permission.READ_MEDIA_IMAGES
+
+        return (requireContext().checkSelfPermission(cameraPermission) == android.content.pm.PackageManager.PERMISSION_GRANTED)
+    }
+
+    private fun requestPermissions() {
+        val permissions = arrayOf(
+            android.Manifest.permission.CAMERA,
+            android.Manifest.permission.READ_MEDIA_IMAGES
+        )
+        permissionLauncher.launch(permissions)
     }
 
     override fun onDestroyView() {

@@ -30,7 +30,7 @@ class BookViewPagerAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BookViewPagerViewHolder {
         val binding = ItemViewPagerBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return BookViewPagerViewHolder(binding, transitionName, this::checkImageLoaded)
+        return BookViewPagerViewHolder(binding, transitionName, onImageLoaded)
     }
 
     override fun getItemCount(): Int {
@@ -63,7 +63,7 @@ class BookViewPagerAdapter(
     class BookViewPagerViewHolder(
         val binding: ItemViewPagerBinding,
         private val transitionName: String,
-        private val onImageLoaded: (String) -> Unit) : RecyclerView.ViewHolder(binding.root) {
+        private val onImageLoaded: () -> Unit) : RecyclerView.ViewHolder(binding.root) {
         fun bind(bookEntity: BookEntity) {
             val currentTransitionName = "sharedView_${bookEntity.itemId}"
             Log.d("viewPager TEST ", currentTransitionName)
@@ -80,7 +80,9 @@ class BookViewPagerAdapter(
                             target: Target<Drawable>,
                             isFirstResource: Boolean
                         ): Boolean {
-                            onImageLoaded(bookEntity.coverImageUrl)
+                            if (transitionName == currentTransitionName) {
+                                onImageLoaded() // 인터페이스 호출
+                            }
                             return false
                         }
 
@@ -91,7 +93,9 @@ class BookViewPagerAdapter(
                             dataSource: DataSource,
                             isFirstResource: Boolean
                         ): Boolean {
-                            onImageLoaded(bookEntity.coverImageUrl)
+                            if (transitionName == currentTransitionName) {
+                                onImageLoaded() // 인터페이스 호출
+                            }
                             return false
                         }
                     })
