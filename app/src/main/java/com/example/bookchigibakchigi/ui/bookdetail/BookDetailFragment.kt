@@ -82,7 +82,7 @@ class BookDetailFragment : Fragment() {
             transitionName,
             onItemClick = { bookEntity, position, sharedView ->
                 // 아이템 클릭 이벤트 처리
-                Log.d("TEST TEST","클릭된 아이템: ${bookEntity.itemId}, Position: $position")
+//                Log.d("TEST TEST","클릭된 아이템: ${bookEntity.itemId}, Position: $position")
             },
             onImageLoaded = {
                 startPostponedEnterTransition()
