@@ -50,14 +50,7 @@ class BookDetailFragment : Fragment() {
     private var _binding: FragmentBookDetailBinding? = null
     private val binding get() = _binding!!
 
-//    private val bookViewModel: BookViewModel by lazy {
-//        (requireActivity() as BaseActivity).bookViewModel
-//    }
-
     private val mainViewModel: MainViewModel by activityViewModels()
-
-//    private val bookShelfViewModel: BookShelfViewModel by activityViewModels()
-//    private val photoCardViewModel: PhotoCardViewModel by activityViewModels()
 
     private lateinit var adapter: BookViewPagerAdapter
     private var sharedView: View? = null
@@ -74,65 +67,6 @@ class BookDetailFragment : Fragment() {
         setupLaunchers()
     }
 
-    private fun setupTransitions() {
-        val transition = TransitionInflater.from(context)
-            .inflateTransition(R.transition.shared_element_transition)
-        sharedElementEnterTransition = transition
-        sharedElementReturnTransition = transition
-    }
-
-    private fun setupLaunchers() {
-        permissionLauncher = registerForActivityResult(
-            ActivityResultContracts.RequestMultiplePermissions()
-        ) { permissions ->
-            val cameraPermissionGranted = permissions[android.Manifest.permission.CAMERA] ?: false
-//            val storagePermissionGranted =
-//                permissions[android.Manifest.permission.READ_MEDIA_IMAGES] ?: false
-
-            if (cameraPermissionGranted) {
-                // 권한이 모두 허용된 경우 카메라 호출
-                launchCamera()
-            } else {
-                // 권한이 거부된 경우
-                Toast.makeText(requireContext(), "카메라 및 저장소 권한이 필요합니다.", Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        // ActivityResultLauncher 초기화
-        takePictureLauncher = registerForActivityResult(ActivityResultContracts.TakePicture()) { success ->
-            if (success) {
-                val intent = Intent(requireContext(), CropActivity::class.java).apply {
-                    putExtra("IMAGE_URI", capturedImageUri.toString()) // Uri를 String으로 변환하여 전달
-                    mainViewModel.uiState.value.let { state ->
-                        if (state is MainViewUiState.BookDetail) {
-                            putExtra("currentBook", state.currentBook)
-                        }
-                    }
-                }
-
-                startActivity(intent)
-            } else {
-                Toast.makeText(requireContext(), "사진 촬영이 취소되었습니다.", Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        pickImageLauncher = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
-            if (uri != null) {
-                val intent = Intent(requireContext(), CropActivity::class.java).apply {
-                    putExtra("IMAGE_URI", uri.toString())
-                    mainViewModel.uiState.value.let { state ->
-                        if (state is MainViewUiState.BookDetail) {
-                            putExtra("currentBook", state.currentBook)
-                        }
-                    }
-                }
-                startActivity(intent)
-            } else {
-                Toast.makeText(requireContext(), "사진 선택이 취소되었습니다.", Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -145,9 +79,6 @@ class BookDetailFragment : Fragment() {
 
         // ViewModel 바인딩
         binding.mainViewModel = mainViewModel
-//        binding.bookViewModel = bookViewModel
-//        binding.bookShelfViewModel = bookShelfViewModel
-//        binding.photoCardViewModel = photoCardViewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
         adapter = BookViewPagerAdapter(
@@ -158,7 +89,7 @@ class BookDetailFragment : Fragment() {
             },
             onImageLoaded = {
                 startPostponedEnterTransition()
-            }
+            },
         )
         binding.viewPager.adapter = adapter
 
@@ -218,56 +149,42 @@ class BookDetailFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        postponeEnterTransition()
+//        postponeEnterTransition()
 
         // 시스템 Back 버튼 동작 커스터마이징
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
-            val currentPosition = binding.viewPager.currentItem
-            findNavController().previousBackStackEntry?.savedStateHandle?.set("selected_position", currentPosition)
-            findNavController().popBackStack()
-        }
+        initBackPressedCallback()
 
-        binding.viewPager.clipToPadding = false
-        val pageMarginPx = resources.getDimensionPixelOffset(R.dimen.pageMargin)
-        binding.viewPager.setPadding(pageMarginPx, 0, pageMarginPx, 0)
+        // ViewModel의 상태 관찰하여 ViewPager 데이터 설정
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                mainViewModel.uiState.collectLatest { state ->
+                    when (state) {
+                        is MainViewUiState.BookDetail -> {
+                            adapter.setDataList(state.books)
+                            // 현재 선택된 책의 위치로 ViewPager 이동
+                            val currentBookPosition = state.books.indexOfFirst { it.itemId == currentItemId }
+                            if (currentBookPosition != -1) {
+                                binding.viewPager.currentItem = currentBookPosition
+                            }
+                        }
+                        else -> {
+                            // 다른 상태는 무시
+                        }
+                    }
+                }
+            }
+        }
 
         binding.viewPager.apply {
-            clipToPadding = false  // ✅ 양옆 페이지 보이게 설정
-            clipChildren = false   // ✅ 양옆 페이지 보이게 설정
+            clipToPadding = false
+            clipChildren = false
+            offscreenPageLimit = 1 // 모든 페이지를 미리 렌더링
             setPageTransformer(PreviewPageTransformer())
+            
+            // 페이지 간격 설정
+            val pageMarginPx = resources.getDimensionPixelOffset(R.dimen.pageMargin)
+            setPadding(pageMarginPx, 0, pageMarginPx, 0)
         }
-
-//        binding.viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-//            override fun onPageSelected(position: Int) {
-//                super.onPageSelected(position)
-//                currentItemId = mainViewModel.bookShelfItems.value?.get(position)?.itemId ?: 0
-//                mainViewModel.setCurrentBook(currentItemId)
-//                binding.tvBookTitle.isSelected = true
-//                sharedView = binding.viewPager.findViewWithTag<View>("page_$position")?.findViewById(R.id.ivBook)
-//                // 현재 ViewPager의 Transition Name과 position 저장
-//                binding.viewPager.post {
-//                    val currentItem = mainViewModel.currentBook.value
-//                    val transitionName = "sharedView_${currentItem?.itemId}" // Transition Name 생성
-//                    findNavController().previousBackStackEntry?.savedStateHandle?.set("current_transition_name", transitionName)
-//                    findNavController().previousBackStackEntry?.savedStateHandle?.set("selected_position", position)
-//                }
-//            }
-//            override fun onPageScrollStateChanged(state: Int) {
-//                // 스크롤이 멈춘 상태에서만 실행 (즉, UI 업데이트 완료 후)
-//                if (state == ViewPager2.SCROLL_STATE_IDLE) {
-//                    val currentItem = mainViewModel.currentBook.value
-//                    currentItem?.let { book ->
-//                        Log.d("BookDetailFragment", "책 변경됨 (스크롤 멈춤 후): ${book.title} / ISBN: ${book.isbn}")
-//                        // RESUMED 상태에서 실행되도록 repeatOnLifecycle 사용
-//                        lifecycleScope.launch {
-//                            lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
-//                                mainViewModel.loadPhotoCards(book.isbn)
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//        })
     }
 
     override fun onResume() {
@@ -312,6 +229,14 @@ class BookDetailFragment : Fragment() {
                 }
             }
         )
+    }
+
+    private fun initBackPressedCallback() {
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            val currentPosition = binding.viewPager.currentItem
+            findNavController().previousBackStackEntry?.savedStateHandle?.set("selected_position", currentPosition)
+            findNavController().popBackStack()
+        }
     }
 
     private fun launchCamera() {
@@ -396,10 +321,6 @@ class BookDetailFragment : Fragment() {
             }
         }
 
-//        mainViewModel.photoCardList.observe(viewLifecycleOwner) { photoCards ->
-//            adapter.updateList(photoCards) // 리스트 업데이트
-//        }
-
         bottomSheetDialog.show()
     }
 
@@ -423,6 +344,62 @@ class BookDetailFragment : Fragment() {
         }
 
         startActivity(intent)
+    }
+
+    private fun setupTransitions() {
+        val transition = TransitionInflater.from(context)
+            .inflateTransition(R.transition.shared_element_transition)
+        sharedElementEnterTransition = transition
+        sharedElementReturnTransition = transition
+    }
+
+    private fun setupLaunchers() {
+        permissionLauncher = registerForActivityResult(
+            ActivityResultContracts.RequestMultiplePermissions()
+        ) { permissions ->
+            val cameraPermissionGranted = permissions[android.Manifest.permission.CAMERA] ?: false
+            if (cameraPermissionGranted) {
+                // 권한이 모두 허용된 경우 카메라 호출
+                launchCamera()
+            } else {
+                // 권한이 거부된 경우
+                Toast.makeText(requireContext(), "카메라 및 저장소 권한이 필요합니다.", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        // ActivityResultLauncher 초기화
+        takePictureLauncher = registerForActivityResult(ActivityResultContracts.TakePicture()) { success ->
+            if (success) {
+                val intent = Intent(requireContext(), CropActivity::class.java).apply {
+                    putExtra("IMAGE_URI", capturedImageUri.toString()) // Uri를 String으로 변환하여 전달
+                    mainViewModel.uiState.value.let { state ->
+                        if (state is MainViewUiState.BookDetail) {
+                            putExtra("currentBook", state.currentBook)
+                        }
+                    }
+                }
+
+                startActivity(intent)
+            } else {
+                Toast.makeText(requireContext(), "사진 촬영이 취소되었습니다.", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        pickImageLauncher = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+            if (uri != null) {
+                val intent = Intent(requireContext(), CropActivity::class.java).apply {
+                    putExtra("IMAGE_URI", uri.toString())
+                    mainViewModel.uiState.value.let { state ->
+                        if (state is MainViewUiState.BookDetail) {
+                            putExtra("currentBook", state.currentBook)
+                        }
+                    }
+                }
+                startActivity(intent)
+            } else {
+                Toast.makeText(requireContext(), "사진 선택이 취소되었습니다.", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     override fun onDestroyView() {

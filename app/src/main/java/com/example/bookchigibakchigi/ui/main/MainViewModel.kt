@@ -22,6 +22,12 @@ class MainViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<MainViewUiState>(MainViewUiState.Loading)
     val uiState: StateFlow<MainViewUiState> = _uiState.asStateFlow()
 
+    private val _books = MutableStateFlow<List<BookEntity>>(emptyList())
+    val books: StateFlow<List<BookEntity>> = _books.asStateFlow()
+
+    private val _currentBook = MutableStateFlow<BookEntity?>(null)
+    val currentBook: StateFlow<BookEntity?> = _currentBook.asStateFlow()
+
     init {
         loadBooks()
     }
@@ -31,6 +37,7 @@ class MainViewModel @Inject constructor(
             _uiState.value = MainViewUiState.Loading
             try {
                 bookShelfRepository.getShelfItems().collect { books ->
+                    _books.value = books
                     _uiState.value = if (books.isEmpty()) {
                         MainViewUiState.Empty
                     } else {
@@ -48,15 +55,18 @@ class MainViewModel @Inject constructor(
 
     fun setCurrentBook(book: BookEntity) {
         viewModelScope.launch {
-            _uiState.value = MainViewUiState.Loading
+//            _uiState.value = MainViewUiState.Loading
             try {
+                _currentBook.value = book
                 val photoCards = photoCardRepository.getPhotoCardListByIsbn(book.isbn)
                 _uiState.value = MainViewUiState.BookDetail(
+                    books = _books.value,
                     currentBook = book,
                     photoCards = photoCards
                 )
             } catch (e: Exception) {
                 _uiState.value = MainViewUiState.BookDetail(
+                    books = _books.value,
                     currentBook = book,
                     photoCards = emptyList(),
                     error = e.message
@@ -78,6 +88,7 @@ sealed class MainViewUiState {
     ) : MainViewUiState()
 
     data class BookDetail(
+        val books: List<BookEntity>,
         val currentBook: BookEntity,
         val photoCards: List<PhotoCardWithTextContents>,
         val isLoading: Boolean = false,

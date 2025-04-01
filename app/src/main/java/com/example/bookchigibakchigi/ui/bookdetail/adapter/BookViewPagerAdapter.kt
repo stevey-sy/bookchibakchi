@@ -2,6 +2,7 @@ package com.example.bookchigibakchigi.ui.bookdetail.adapter
 
 import android.R
 import android.graphics.drawable.Drawable
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,14 +23,14 @@ class BookViewPagerAdapter(
     private val transitionName: String,
     private val onItemClick: (BookEntity, Int, View) -> Unit,
     private val onImageLoaded: () -> Unit
-) : RecyclerView.Adapter<BookViewPagerAdapter.BookViewPagerViewHolder>(
-){
+) : RecyclerView.Adapter<BookViewPagerAdapter.BookViewPagerViewHolder>() {
 
     private val dataList = mutableListOf<BookEntity>()
+    private val loadedImages = mutableSetOf<String>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BookViewPagerViewHolder {
         val binding = ItemViewPagerBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return BookViewPagerViewHolder(binding, transitionName, onImageLoaded)
+        return BookViewPagerViewHolder(binding, transitionName, this::checkImageLoaded)
     }
 
     override fun getItemCount(): Int {
@@ -39,7 +40,6 @@ class BookViewPagerAdapter(
     override fun onBindViewHolder(holder: BookViewPagerViewHolder, position: Int) {
         holder.itemView.tag = "page_$position"
         holder.bind(dataList[position])
-        // 아이템 클릭 리스너 설정
         holder.itemView.setOnClickListener {
             onItemClick(dataList[position], position, holder.itemView)
         }
@@ -48,15 +48,25 @@ class BookViewPagerAdapter(
     fun setDataList(newList: List<BookEntity>) {
         dataList.clear()
         dataList.addAll(newList)
+        loadedImages.clear()
         notifyDataSetChanged()
+    }
+
+    private fun checkImageLoaded(imageUrl: String) {
+        loadedImages.add(imageUrl)
+        val totalImages = dataList.count { it.coverImageUrl.isNotEmpty() }
+        if (loadedImages.size == totalImages && totalImages > 0) {
+            onImageLoaded()
+        }
     }
 
     class BookViewPagerViewHolder(
         val binding: ItemViewPagerBinding,
         private val transitionName: String,
-        private val onImageLoaded: () -> Unit) : RecyclerView.ViewHolder(binding.root) {
+        private val onImageLoaded: (String) -> Unit) : RecyclerView.ViewHolder(binding.root) {
         fun bind(bookEntity: BookEntity) {
             val currentTransitionName = "sharedView_${bookEntity.itemId}"
+            Log.d("viewPager TEST ", currentTransitionName)
             binding.ivBook.transitionName = currentTransitionName
             if (bookEntity.coverImageUrl.isNotEmpty()) {
                 binding.ivBook.visibility = View.VISIBLE
@@ -70,9 +80,7 @@ class BookViewPagerAdapter(
                             target: Target<Drawable>,
                             isFirstResource: Boolean
                         ): Boolean {
-                            if (transitionName == currentTransitionName) {
-                                onImageLoaded() // 인터페이스 호출
-                            }
+                            onImageLoaded(bookEntity.coverImageUrl)
                             return false
                         }
 
@@ -83,9 +91,7 @@ class BookViewPagerAdapter(
                             dataSource: DataSource,
                             isFirstResource: Boolean
                         ): Boolean {
-                            if (transitionName == currentTransitionName) {
-                                onImageLoaded() // 인터페이스 호출
-                            }
+                            onImageLoaded(bookEntity.coverImageUrl)
                             return false
                         }
                     })

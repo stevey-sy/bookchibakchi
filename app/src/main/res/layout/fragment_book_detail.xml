@@ -11,70 +11,12 @@
         <variable
             name="mainViewModel"
             type="com.example.bookchigibakchigi.ui.main.MainViewModel" />
-<!--        <variable-->
-<!--            name="bookShelfViewModel"-->
-<!--            type="com.example.bookchigibakchigi.ui.shared.viewmodel.BookShelfViewModel" />-->
-<!--        <variable-->
-<!--            name="bookViewModel"-->
-<!--            type="com.example.bookchigibakchigi.ui.shared.viewmodel.BookViewModel" />-->
-<!--        <variable-->
-<!--            name="photoCardViewModel"-->
-<!--            type="com.example.bookchigibakchigi.ui.shared.viewmodel.PhotoCardViewModel" />-->
     </data>
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <LinearLayout
-            android:id="@+id/emptyView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:visibility="gone"
-            android:background="@color/white">
-
-            <!-- 일러스트 이미지 -->
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:src="@drawable/img_reading"
-                android:scaleType="centerCrop"
-                android:contentDescription="Empty bookshelf image"
-                android:layout_marginBottom="16dp" />
-
-            <!-- 안내 텍스트 -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="당신의 첫 번째 책을 추가해보세요."
-                android:textSize="18sp"
-                android:textColor="@color/black"
-                android:layout_marginBottom="8dp"
-                android:textStyle="bold"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="독서 진행도와 기억하고 싶은 문구를 기록할 수 있어요."
-                android:textSize="14sp"
-                android:textColor="@color/gray"
-                android:textStyle="bold" />
-
-            <!-- 액션 버튼 -->
-            <Button
-                android:id="@+id/btnSearchBook"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="책 검색하기"
-                android:backgroundTint="@color/black"
-                android:textColor="@color/white"
-                android:layout_marginTop="16dp"
-                android:paddingHorizontal="24dp"
-                android:paddingVertical="12dp" />
-
-        </LinearLayout>
+        android:layout_height="match_parent"
+        android:background="@color/activity_background">
 
         <LinearLayout
             android:layout_width="match_parent"

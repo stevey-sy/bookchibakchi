@@ -74,6 +74,8 @@ class MyLibraryFragment : Fragment() {
                 putString("transitionName", "sharedView_${bookEntity.itemId}")
             }
 
+            mainViewModel.setCurrentBook(bookEntity)
+
             val extras = FragmentNavigatorExtras(
                 sharedView to "sharedView_${bookEntity.itemId}"
             )
