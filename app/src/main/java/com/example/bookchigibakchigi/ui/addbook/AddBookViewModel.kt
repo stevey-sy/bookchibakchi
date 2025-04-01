@@ -53,9 +53,10 @@ class AddBookViewModel @Inject constructor(
         }
     }
 
-    fun addBook(onSuccess: () -> Unit, onError: (String) -> Unit) {
+    fun addBook() {
         viewModelScope.launch {
             val currentBookItem = _bookItem.value ?: return@launch
+            
             val book = BookEntity(
                 title = currentBookItem.title,
                 author = currentBookItem.author,
@@ -71,7 +72,10 @@ class AddBookViewModel @Inject constructor(
             )
 
             if(book.title.isEmpty() || book.author.isEmpty() || book.publisher.isEmpty() || book.isbn.isEmpty()) {
-                onError("책 저장에 실패했습니다. 잠시 후에 다시 시도해주세요.")
+                _uiState.value = AddBookUiState.Error(
+                    message = "책 저장에 실패했습니다. 잠시 후에 다시 시도해주세요.",
+                    retryAction = { addBook() }
+                )
                 return@launch
             }
 
@@ -80,14 +84,25 @@ class AddBookViewModel @Inject constructor(
                 val isExists = bookDao.isBookExists(book.isbn) > 0
                 
                 if (isExists) {
-                    onError("이미 저장된 책입니다.")
+                    _uiState.value = AddBookUiState.Error(
+                        message = "이미 저장된 책입니다.",
+                        retryAction = { addBook() }
+                    )
                     return@launch
                 }
 
-                bookDao.insertBook(book)
-                onSuccess()
+                val savedBook = bookDao.insertAndGetBook(book)
+                _uiState.value = AddBookUiState.Success(
+                    book = currentBookItem,
+                    coverUrl = _coverUrl.value ?: "",
+                    isSaved = true,
+                    savedItemId = savedBook.itemId
+                )
             } catch (e: Exception) {
-                onError("책 저장에 실패했습니다: ${e.message}")
+                _uiState.value = AddBookUiState.Error(
+                    message = "책 저장에 실패했습니다: ${e.message}",
+                    retryAction = { addBook() }
+                )
             }
         }
     }
@@ -100,7 +115,8 @@ sealed class AddBookUiState {
     data class Success(
         val book: AladinBookItem,  // 선택된 책 정보
         val coverUrl: String,      // 책 커버 URL
-        val isSaved: Boolean = false  // 저장 완료 여부
+        val isSaved: Boolean = false,  // 저장 완료 여부
+        val savedItemId: Int? = null  // 저장된 책의 itemId
     ) : AddBookUiState()
 
     // 에러 상태

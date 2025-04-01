@@ -13,7 +13,13 @@ interface BookDao {
     fun getBookById(itemId: Int): Flow<BookEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertBook(book: BookEntity)
+    suspend fun insertBook(book: BookEntity): Long
+
+    @Transaction
+    suspend fun insertAndGetBook(book: BookEntity): BookEntity {
+        val id = insertBook(book)
+        return book.copy(itemId = id.toInt())
+    }
 
     @Delete
     suspend fun deleteBook(book: BookEntity)

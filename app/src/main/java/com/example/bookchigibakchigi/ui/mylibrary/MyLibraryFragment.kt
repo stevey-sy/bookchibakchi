@@ -3,10 +3,12 @@ package com.example.bookchigibakchigi.ui.mylibrary
 import android.graphics.Rect
 import android.os.Bundle
 import android.transition.TransitionInflater
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
+import androidx.core.app.SharedElementCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
@@ -127,7 +129,6 @@ class MyLibraryFragment : Fragment() {
             rvShelf.visibility = View.VISIBLE
             emptyView.visibility = View.GONE
             adapter.setDataList(books)
-            
             // 데이터 로드 완료 후 Transition 시작
             rvShelf.viewTreeObserver.addOnPreDrawListener(
                 object : ViewTreeObserver.OnPreDrawListener {
@@ -144,19 +145,18 @@ class MyLibraryFragment : Fragment() {
     private fun prepareTransitions() {
         exitTransition = TransitionInflater.from(requireContext()).inflateTransition(R.transition.exit_transition)
 
-        setExitSharedElementCallback(object : androidx.core.app.SharedElementCallback() {
+        setExitSharedElementCallback(object : SharedElementCallback() {
             override fun onMapSharedElements(names: List<String>, sharedElements: MutableMap<String, View>) {
-                val currentTransitionName = findNavController()
-                    .currentBackStackEntry?.savedStateHandle?.get<String>("current_transition_name")
-                val currentPosition = findNavController()
-                    .currentBackStackEntry?.savedStateHandle?.get<Int>("selected_position") ?: -1
-
-                if (currentTransitionName.isNullOrEmpty() || currentPosition == -1) return
-
-                val selectedViewHolder = binding.rvShelf.findViewHolderForAdapterPosition(currentPosition)
-                scrollToPosition(currentPosition)
-                sharedElements[names[0]] =
-                    selectedViewHolder!!.itemView.findViewById(R.id.ivBook)
+                Log.d("MyLibraryFragment", "onMapSharedElements called with names: $names")
+                val currentTransitionName = names.firstOrNull() ?: return
+                Log.d("MyLibraryFragment", "currentTransitionName: $currentTransitionName")
+                val selectedViewHolder = binding.rvShelf.findViewHolderForAdapterPosition(0)
+                if (selectedViewHolder != null) {
+                    sharedElements[currentTransitionName] = selectedViewHolder.itemView.findViewById(R.id.ivBook)
+                    Log.d("MyLibraryFragment", "Shared element mapped successfully")
+                } else {
+                    Log.d("MyLibraryFragment", "SelectedViewHolder is null")
+                }
             }
         })
     }

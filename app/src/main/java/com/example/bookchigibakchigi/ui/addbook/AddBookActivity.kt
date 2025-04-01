@@ -4,17 +4,22 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.AnimatorSet
 import android.animation.ValueAnimator
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
+import androidx.core.app.ActivityOptionsCompat
+import androidx.core.app.SharedElementCallback
+import androidx.core.util.Pair
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.bookchigibakchigi.R
 import com.example.bookchigibakchigi.databinding.ActivityAddBookBinding
 import com.example.bookchigibakchigi.ui.BaseActivity
+import com.example.bookchigibakchigi.ui.main.MainActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -35,9 +40,9 @@ class AddBookActivity : BaseActivity() {
         binding.lifecycleOwner = this
 
         initBackPressCallback()
-        initClickListener()
         initBookDataFromIntent()
         observeViewModel()
+        prepareTransitions()
     }
 
     private fun initBackPressCallback() {
@@ -46,12 +51,6 @@ class AddBookActivity : BaseActivity() {
                 animateImageViewSizeAndFinish()
             }
         })
-    }
-
-    private fun initClickListener() {
-        binding.tvNext.setOnClickListener {
-            addBook()
-        }
     }
 
     private fun initBookDataFromIntent() {
@@ -69,7 +68,15 @@ class AddBookActivity : BaseActivity() {
                     when (state) {
                         is AddBookUiState.Initial -> { /* 초기 상태 처리 */ }
                         is AddBookUiState.Loading -> { /* 로딩 상태 처리 */ }
-                        is AddBookUiState.Success -> { /* 성공 상태 처리 */ }
+                        is AddBookUiState.Success -> {
+                            if (state.isSaved) {
+                                state.savedItemId?.let { itemId ->
+                                    binding.ivBook.transitionName = "sharedView_$itemId"
+                                }
+                                Toast.makeText(this@AddBookActivity, "나의 서재에 책이 추가되었습니다.", Toast.LENGTH_SHORT).show()
+                                navigateToMainActivity()
+                            }
+                        }
                         is AddBookUiState.Error -> {
                             showError(state.message)
                         }
@@ -79,23 +86,34 @@ class AddBookActivity : BaseActivity() {
         }
     }
 
+    private fun prepareTransitions() {
+        setExitSharedElementCallback(object : SharedElementCallback() {
+            override fun onMapSharedElements(names: List<String>, sharedElements: MutableMap<String, View>) {
+                val currentTransitionName = binding.ivBook.transitionName
+                if (currentTransitionName.isNullOrEmpty()) return
+                sharedElements[currentTransitionName] = binding.ivBook
+            }
+        })
+    }
+
+    private fun navigateToMainActivity() {
+        val intent = Intent(this, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        }
+        
+        val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+            this,
+            Pair(binding.ivBook, binding.ivBook.transitionName)
+        )
+        
+        startActivity(intent, options.toBundle())
+    }
+
     private fun showError(message: String) {
         binding.progressBar.visibility = View.GONE
         binding.contentLayout.visibility = View.GONE
         binding.errorLayout.visibility = View.VISIBLE
         binding.tvErrorMessage.text = message
-    }
-
-    private fun addBook() {
-        viewModel.addBook(
-            onSuccess = {
-                Toast.makeText(this@AddBookActivity, "나의 서재에 책이 추가되었습니다.", Toast.LENGTH_SHORT).show()
-                finish()
-            },
-            onError = { message ->
-                Toast.makeText(this@AddBookActivity, message, Toast.LENGTH_SHORT).show()
-            }
-        )
     }
 
     private fun animateImageViewSizeAndFinish() {
