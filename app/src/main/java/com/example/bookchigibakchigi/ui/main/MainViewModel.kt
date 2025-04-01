@@ -53,6 +53,28 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    fun setBookDetailState(book: BookEntity) {
+        viewModelScope.launch {
+//            _uiState.value = MainViewUiState.Loading
+            try {
+                _currentBook.value = book
+                val photoCards = photoCardRepository.getPhotoCardListByIsbn(book.isbn)
+                _uiState.value = MainViewUiState.BookDetail(
+                    books = _books.value,
+                    currentBook = book,
+                    photoCards = photoCards
+                )
+            } catch (e: Exception) {
+                _uiState.value = MainViewUiState.BookDetail(
+                    books = _books.value,
+                    currentBook = book,
+                    photoCards = emptyList(),
+                    error = e.message
+                )
+            }
+        }
+    }
+
     fun setCurrentBook(book: BookEntity) {
         viewModelScope.launch {
 //            _uiState.value = MainViewUiState.Loading

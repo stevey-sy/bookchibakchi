@@ -114,9 +114,25 @@ class BookDetailFragment : Fragment() {
                         is MainViewUiState.BookDetail -> {
                             adapter.setDataList(state.books)
                             // 현재 선택된 책의 위치로 ViewPager 이동
-                            val currentBookPosition = state.books.indexOfFirst { it.itemId == currentItemId }
-                            if (currentBookPosition != -1) {
-                                binding.viewPager.currentItem = currentBookPosition
+                            val targetBookItem =  state.books.find { it.itemId == currentItemId }
+                            targetBookItem?.let{ book ->
+                                val position = state.books.indexOf(book)
+
+                                val totalItems = state.books.size
+                                val hasEnoughItemsForPreview = position in 1 until totalItems - 1
+                                val isNearEnd = position >= totalItems - 3 // ✅ 마지막 3개 이내인지 확인
+
+                                binding.viewPager.offscreenPageLimit = when {
+                                    isNearEnd -> 2
+                                    hasEnoughItemsForPreview -> 3
+                                    else -> 1
+                                }
+
+                                binding.viewPager.setCurrentItem(position, false)
+                                val currentPage = binding.viewPager.findViewWithTag<View>("page_$position")
+                                currentPage?.findViewById<View>(R.id.ivBook)?.transitionName =
+                                    "sharedView_${book.itemId}"
+
                             }
                         }
                         else -> {
@@ -130,7 +146,6 @@ class BookDetailFragment : Fragment() {
         binding.viewPager.apply {
             clipToPadding = false
             clipChildren = false
-            offscreenPageLimit = 1 // 모든 페이지를 미리 렌더링
             setPageTransformer(PreviewPageTransformer())
             
             // 페이지 간격 설정
@@ -167,8 +182,6 @@ class BookDetailFragment : Fragment() {
                             if (currentItem == null) return
                         }
                     }
-
-
 
                     // ViewPager의 현재 페이지 View를 찾음
                     val currentPage = binding.viewPager.findViewWithTag<View>("page_$currentPosition")
