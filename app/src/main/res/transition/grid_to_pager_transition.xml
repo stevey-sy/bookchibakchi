@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <transitionSet
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:duration="400"
-    android:transitionOrdering="together">
+    android:duration="400">
 <!--    <changeBounds />-->
-    <changeTransform />
-    <fade android:fadingMode="fade_in" />
+    <fade />
+    <changeBounds />
 </transitionSet>

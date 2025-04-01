@@ -24,12 +24,9 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.viewpager2.widget.ViewPager2
 import com.example.bookchigibakchigi.R
 import com.example.bookchigibakchigi.databinding.FragmentBookDetailBinding
-import com.example.bookchigibakchigi.ui.BaseActivity
 import com.example.bookchigibakchigi.ui.crop.CropActivity
 import com.example.bookchigibakchigi.ui.bookdetail.adapter.BookViewPagerAdapter
 import com.example.bookchigibakchigi.ui.bookdetail.adapter.PhotoCardAdapter
@@ -164,7 +161,7 @@ class BookDetailFragment : Fragment() {
     private fun prepareSharedElementTransition() {
         val transition =
             TransitionInflater.from(context)
-                .inflateTransition(R.transition.image_shared_element_transition)
+                .inflateTransition(R.transition.grid_to_pager_transition)
         sharedElementEnterTransition = transition
 
         setEnterSharedElementCallback(
@@ -199,6 +196,18 @@ class BookDetailFragment : Fragment() {
     private fun initBackPressedCallback() {
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
             val currentPosition = binding.viewPager.currentItem
+            
+            // 현재 상태를 MainViewUiState.BookList로 변경
+            mainViewModel.uiState.value.let { state ->
+                if (state is MainViewUiState.BookDetail) {
+                    mainViewModel.updateUiState(MainViewUiState.MyLibrary(
+                        books = state.books,
+                        transitionName = arguments?.getString("transitionName").toString()
+                    ))
+                }
+            }
+            
+            // 선택된 위치를 저장하고 뒤로 가기
             findNavController().previousBackStackEntry?.savedStateHandle?.set("selected_position", currentPosition)
             findNavController().popBackStack()
         }

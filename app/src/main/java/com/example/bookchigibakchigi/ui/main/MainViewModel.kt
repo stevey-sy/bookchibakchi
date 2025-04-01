@@ -100,13 +100,20 @@ class MainViewModel @Inject constructor(
     fun refreshShelf() {
         loadBooks()
     }
+
+    fun updateUiState(newState: MainViewUiState) {
+        viewModelScope.launch {
+            _uiState.value = newState
+        }
+    }
 }
 
 sealed class MainViewUiState {
     data class MyLibrary(
         val books: List<BookEntity>,
         val isLoading: Boolean = false,
-        val error: String? = null
+        val error: String? = null,
+        val transitionName: String = ""
     ) : MainViewUiState()
 
     data class BookDetail(

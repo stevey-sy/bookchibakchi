@@ -9,16 +9,13 @@ import android.view.MenuItem
 import android.view.ViewTreeObserver
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.webkit.JavascriptInterface
-import android.webkit.WebViewClient
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.bookchigibakchigi.R
 import com.example.bookchigibakchigi.data.entity.BookEntity
-import com.example.bookchigibakchigi.databinding.ActivityAddBookBinding
 import com.example.bookchigibakchigi.databinding.ActivityMemoBinding
 import com.example.bookchigibakchigi.ui.BaseActivity
 
@@ -120,7 +117,7 @@ class MemoActivity : BaseActivity() {
 
     private fun createSharedElementTransition(): Transition {
         return TransitionInflater.from(this)
-            .inflateTransition(R.transition.image_shared_element_transition).apply {
+            .inflateTransition(R.transition.grid_to_pager_transition).apply {
                 duration = 500  // 애니메이션 지속 시간 (ms)
                 interpolator = AccelerateDecelerateInterpolator()  // 부드러운 가속/감속 효과
             }
