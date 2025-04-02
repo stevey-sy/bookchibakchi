@@ -56,6 +56,8 @@ class BookShelfAdapter(
 
             binding.root.setOnClickListener{
                 //onItemClick(bookEntity, position, binding.ivBook)
+                binding.vBookShadow.visibility = View.INVISIBLE
+                binding.vBookShadowUp.visibility = View.INVISIBLE
                 onItemClick(bookEntity, position, binding.cardView)
             }
             // 타입에 따른 뷰 가시성 처리
@@ -74,8 +76,8 @@ class BookShelfAdapter(
             // binding.ivBook.visibility = if (bookEntity.bookType == "0") View.GONE else View.VISIBLE
             binding.cardView.visibility = View.VISIBLE
             binding.ivBook.visibility = View.VISIBLE
-            binding.vBookShadow.visibility = View.VISIBLE
-            binding.vBookShadowUp.visibility = View.VISIBLE
+            binding.vBookShadow.visibility = View.INVISIBLE
+            binding.vBookShadowUp.visibility = View.INVISIBLE
             binding.ivPlant.visibility = View.INVISIBLE
             binding.ivClock.visibility = View.INVISIBLE
             binding.ivClock.visibility = View.INVISIBLE
@@ -94,18 +96,13 @@ class BookShelfAdapter(
 
         fun bindEmpty(position: Int, itemCount: Int) {
 
-            // binding.ivBook.transitionName = "sharedView_"
-//            binding.cardView.transitionName = "sharedView_"
+            binding.cardView.transitionName = "sharedView_"
 
             binding.ivBook.visibility = View.INVISIBLE
             binding.cardView.visibility = View.INVISIBLE
             binding.vBookShadow.visibility = View.INVISIBLE
             binding.vBookShadowUp.visibility = View.INVISIBLE
             binding.ivPlant.visibility = if (position == itemCount - 1) View.VISIBLE else View.INVISIBLE
-//            binding.ivClock.visibility = if (position == itemCount - 3) View.VISIBLE else View.INVISIBLE
-//            binding.ivFlower.visibility = if (position == itemCount - 5) View.VISIBLE else View.INVISIBLE
-            binding.ivClock.visibility = View.INVISIBLE
-            binding.ivFlower.visibility = View.INVISIBLE
 
             val context = binding.root.context
             val drawableRes = when (position % 3) {

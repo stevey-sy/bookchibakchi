@@ -260,37 +260,37 @@
 //            setPageTransformer(PreviewPageTransformer())
 //        }
 //
-//        binding.viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-//            override fun onPageSelected(position: Int) {
-//                super.onPageSelected(position)
-//                currentItemId = bookShelfViewModel.bookShelfItems.value?.get(position)?.itemId ?: 0
-//                bookViewModel.setCurrentBook(currentItemId)
-//                binding.tvBookTitle.isSelected = true
-//                sharedView = binding.viewPager.findViewWithTag<View>("page_$position")?.findViewById(R.id.ivBook)
-//                // 현재 ViewPager의 Transition Name과 position 저장
-//                binding.viewPager.post {
-//                    val currentItem = bookViewModel.currentBook.value
-//                    val transitionName = "sharedView_${currentItem?.itemId}" // Transition Name 생성
-//                    findNavController().previousBackStackEntry?.savedStateHandle?.set("current_transition_name", transitionName)
-//                    findNavController().previousBackStackEntry?.savedStateHandle?.set("selected_position", position)
-//                }
-//            }
-//            override fun onPageScrollStateChanged(state: Int) {
-//                // 스크롤이 멈춘 상태에서만 실행 (즉, UI 업데이트 완료 후)
-//                if (state == ViewPager2.SCROLL_STATE_IDLE) {
-//                    val currentItem = bookViewModel.currentBook.value
-//                    currentItem?.let { book ->
-//                        Log.d("BookDetailFragment", "책 변경됨 (스크롤 멈춤 후): ${book.title} / ISBN: ${book.isbn}")
-//                        // RESUMED 상태에서 실행되도록 repeatOnLifecycle 사용
-//                        lifecycleScope.launch {
-//                            lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
-//                                photoCardViewModel.loadPhotoCards(book.isbn)
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//        })
+////        binding.viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+////            override fun onPageSelected(position: Int) {
+////                super.onPageSelected(position)
+////                currentItemId = bookShelfViewModel.bookShelfItems.value?.get(position)?.itemId ?: 0
+////                bookViewModel.setCurrentBook(currentItemId)
+////                binding.tvBookTitle.isSelected = true
+////                sharedView = binding.viewPager.findViewWithTag<View>("page_$position")?.findViewById(R.id.ivBook)
+////                // 현재 ViewPager의 Transition Name과 position 저장
+////                binding.viewPager.post {
+////                    val currentItem = bookViewModel.currentBook.value
+////                    val transitionName = "sharedView_${currentItem?.itemId}" // Transition Name 생성
+////                    findNavController().previousBackStackEntry?.savedStateHandle?.set("current_transition_name", transitionName)
+////                    findNavController().previousBackStackEntry?.savedStateHandle?.set("selected_position", position)
+////                }
+////            }
+////            override fun onPageScrollStateChanged(state: Int) {
+////                // 스크롤이 멈춘 상태에서만 실행 (즉, UI 업데이트 완료 후)
+////                if (state == ViewPager2.SCROLL_STATE_IDLE) {
+////                    val currentItem = bookViewModel.currentBook.value
+////                    currentItem?.let { book ->
+////                        Log.d("BookDetailFragment", "책 변경됨 (스크롤 멈춤 후): ${book.title} / ISBN: ${book.isbn}")
+////                        // RESUMED 상태에서 실행되도록 repeatOnLifecycle 사용
+////                        lifecycleScope.launch {
+////                            lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+////                                photoCardViewModel.loadPhotoCards(book.isbn)
+////                            }
+////                        }
+////                    }
+////                }
+////            }
+////        })
 //    }
 //
 //    override fun onResume() {

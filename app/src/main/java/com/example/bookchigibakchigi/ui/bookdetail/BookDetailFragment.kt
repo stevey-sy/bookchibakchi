@@ -37,9 +37,11 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.io.File
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import androidx.viewpager2.widget.ViewPager2
 import com.example.bookchigibakchigi.ui.main.MainViewModel
 import com.example.bookchigibakchigi.ui.main.MainViewUiState
 import kotlinx.coroutines.flow.collectLatest
+import kotlin.collections.set
 
 @AndroidEntryPoint
 class BookDetailFragment : Fragment() {
@@ -60,8 +62,8 @@ class BookDetailFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setupTransitions()
-        setupLaunchers()
+        initTransitions()
+        initLaunchers()
     }
 
     override fun onCreateView(
@@ -109,12 +111,9 @@ class BookDetailFragment : Fragment() {
                 mainViewModel.uiState.collectLatest { state ->
                     when (state) {
                         is MainViewUiState.BookDetail -> {
-                            adapter.setDataList(state.books)
-                            // 현재 선택된 책의 위치로 ViewPager 이동
-                            val targetBookItem =  state.books.find { it.itemId == currentItemId }
-                            targetBookItem?.let{ book ->
-                                val position = state.books.indexOf(book)
 
+                            state.initialPosition?.let { position ->
+                                adapter.setDataList(state.books)
                                 val totalItems = state.books.size
                                 val hasEnoughItemsForPreview = position in 1 until totalItems - 1
                                 val isNearEnd = position >= totalItems - 3 // ✅ 마지막 3개 이내인지 확인
@@ -127,12 +126,30 @@ class BookDetailFragment : Fragment() {
 
                                 binding.viewPager.setCurrentItem(position, false)
                                 val currentPage = binding.viewPager.findViewWithTag<View>("page_$position")
-//                                currentPage?.findViewById<View>(R.id.ivBook)?.transitionName =
-//                                    "sharedView_${book.itemId}"
                                 currentPage?.findViewById<View>(R.id.cardView)?.transitionName =
-                                    "sharedView_${book.itemId}"
-
+                                    "sharedView_${state.currentBook.itemId}"
                             }
+
+
+                            // 현재 선택된 책의 위치로 ViewPager 이동
+//                            val targetBookItem =  state.books.find { it.itemId == currentItemId }
+//                            targetBookItem?.let{ book ->
+//                                val position = state.books.indexOf(book)
+//                                val totalItems = state.books.size
+//                                val hasEnoughItemsForPreview = position in 1 until totalItems - 1
+//                                val isNearEnd = position >= totalItems - 3 // ✅ 마지막 3개 이내인지 확인
+//
+//                                binding.viewPager.offscreenPageLimit = when {
+//                                    isNearEnd -> 2
+//                                    hasEnoughItemsForPreview -> 3
+//                                    else -> 1
+//                                }
+//
+//                                binding.viewPager.setCurrentItem(position, false)
+//                                val currentPage = binding.viewPager.findViewWithTag<View>("page_$position")
+//                                currentPage?.findViewById<View>(R.id.cardView)?.transitionName =
+//                                    "sharedView_${book.itemId}"
+//                            }
                         }
                         else -> {
                             // 다른 상태는 무시
@@ -151,6 +168,65 @@ class BookDetailFragment : Fragment() {
             val pageMarginPx = resources.getDimensionPixelOffset(R.dimen.pageMargin)
             setPadding(pageMarginPx, 0, pageMarginPx, 0)
         }
+
+        binding.viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+//                mainViewModel.uiState.value.let { state ->
+//                    when (state) {
+//                        is MainViewUiState.BookDetail -> {
+//                            val selectedBook = state.books[position]
+//                            binding.tvBookTitle.isSelected = true
+//                            mainViewModel.updateCurrentBook(selectedBook)
+//                            sharedView = binding.viewPager.findViewWithTag<View>("page_$position")?.findViewById(R.id.cardView)
+//                            binding.viewPager.post {
+//                                val transitionName = "sharedView_${selectedBook.itemId}" // Transition Name 생성
+//                                findNavController().previousBackStackEntry?.savedStateHandle?.set("current_transition_name", transitionName)
+//                                findNavController().previousBackStackEntry?.savedStateHandle?.set("selected_position", position)
+//                            }
+//                        }
+//                        else -> {
+//                            // 다른 상태는 무시
+//                        }
+//                    }
+//                }
+            }
+            override fun onPageScrollStateChanged(state: Int) {
+                // 스크롤이 멈춘 상태에서만 실행 (즉, UI 업데이트 완료 후)
+                if (state == ViewPager2.SCROLL_STATE_IDLE) {
+                    val position = binding.viewPager.currentItem
+                    mainViewModel.uiState.value.let { state ->
+                        when (state) {
+                            is MainViewUiState.BookDetail -> {
+                                val selectedBook = state.books[position]
+                                binding.tvBookTitle.isSelected = true
+                                mainViewModel.updateCurrentBook(selectedBook)
+                                sharedView = binding.viewPager.findViewWithTag<View>("page_$position")?.findViewById(R.id.cardView)
+                                binding.viewPager.post {
+                                    val transitionName = "sharedView_${selectedBook.itemId}" // Transition Name 생성
+                                    findNavController().previousBackStackEntry?.savedStateHandle?.set("current_transition_name", transitionName)
+                                    findNavController().previousBackStackEntry?.savedStateHandle?.set("selected_position", position)
+                                }
+                            }
+                            else -> {
+                                // 다른 상태는 무시
+                            }
+                        }
+                    }
+
+//                    val currentItem = bookViewModel.currentBook.value
+//                    currentItem?.let { book ->
+//                        Log.d("BookDetailFragment", "책 변경됨 (스크롤 멈춤 후): ${book.title} / ISBN: ${book.isbn}")
+//                        // RESUMED 상태에서 실행되도록 repeatOnLifecycle 사용
+//                        lifecycleScope.launch {
+//                            lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+//                                photoCardViewModel.loadPhotoCards(book.isbn)
+//                            }
+//                        }
+//                    }
+                }
+            }
+        })
     }
 
     override fun onResume() {
@@ -323,14 +399,14 @@ class BookDetailFragment : Fragment() {
         startActivity(intent)
     }
 
-    private fun setupTransitions() {
+    private fun initTransitions() {
         val transition = TransitionInflater.from(context)
             .inflateTransition(R.transition.shared_element_transition)
         sharedElementEnterTransition = transition
         sharedElementReturnTransition = transition
     }
 
-    private fun setupLaunchers() {
+    private fun initLaunchers() {
         permissionLauncher = registerForActivityResult(
             ActivityResultContracts.RequestMultiplePermissions()
         ) { permissions ->

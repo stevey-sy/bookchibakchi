@@ -22,12 +22,6 @@ class MainViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<MainViewUiState>(MainViewUiState.Loading)
     val uiState: StateFlow<MainViewUiState> = _uiState.asStateFlow()
 
-    private val _books = MutableStateFlow<List<BookEntity>>(emptyList())
-    val books: StateFlow<List<BookEntity>> = _books.asStateFlow()
-
-    private val _currentBook = MutableStateFlow<BookEntity?>(null)
-    val currentBook: StateFlow<BookEntity?> = _currentBook.asStateFlow()
-
     init {
         loadBooks()
     }
@@ -37,7 +31,7 @@ class MainViewModel @Inject constructor(
             _uiState.value = MainViewUiState.Loading
             try {
                 bookShelfRepository.getShelfItems().collect { books ->
-                    _books.value = books
+//                    _books.value = books
                     _uiState.value = if (books.isEmpty()) {
                         MainViewUiState.Empty
                     } else {
@@ -53,43 +47,48 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun setBookDetailState(book: BookEntity) {
+    fun updateCurrentBook(newBook: BookEntity) {
         viewModelScope.launch {
-//            _uiState.value = MainViewUiState.Loading
-            try {
-                _currentBook.value = book
-                val photoCards = photoCardRepository.getPhotoCardListByIsbn(book.isbn)
-                _uiState.value = MainViewUiState.BookDetail(
-                    books = _books.value,
-                    currentBook = book,
-                    photoCards = photoCards
-                )
-            } catch (e: Exception) {
-                _uiState.value = MainViewUiState.BookDetail(
-                    books = _books.value,
-                    currentBook = book,
-                    photoCards = emptyList(),
-                    error = e.message
-                )
+            // asBookDetail() 확장 함수를 사용하여 더 간단하게 처리
+            _uiState.value.asBookDetail()?.let { currentState ->
+                try {
+                    // 먼저 book만 업데이트
+//                    _uiState.value = currentState.updateBookOnly(newBook)
+                    
+                    // 비동기로 photoCards 로드
+                    val photoCards = photoCardRepository.getPhotoCardListByIsbn(newBook.isbn)
+                    _uiState.value = currentState.copy(
+                        currentBook = newBook,
+                        photoCards = photoCards,
+                        initialPosition = null
+                    )
+                } catch (e: Exception) {
+                    _uiState.value = currentState.copy(
+                        currentBook = newBook,
+                        error = e.message
+                    )
+                }
             }
         }
     }
 
-    fun setCurrentBook(book: BookEntity) {
+    fun setBookDetailState(selectedBook: BookEntity) {
         viewModelScope.launch {
-//            _uiState.value = MainViewUiState.Loading
             try {
-                _currentBook.value = book
-                val photoCards = photoCardRepository.getPhotoCardListByIsbn(book.isbn)
-                _uiState.value = MainViewUiState.BookDetail(
-                    books = _books.value,
-                    currentBook = book,
-                    photoCards = photoCards
-                )
+                bookShelfRepository.getShelfItems().collect { books ->
+                    val position = books.indexOf(selectedBook)
+                    val photoCards = photoCardRepository.getPhotoCardListByIsbn(selectedBook.isbn)
+                    _uiState.value = MainViewUiState.BookDetail(
+                        books = books,
+                        currentBook = selectedBook,
+                        photoCards = photoCards,
+                        initialPosition = position
+                    )
+                }
             } catch (e: Exception) {
                 _uiState.value = MainViewUiState.BookDetail(
-                    books = _books.value,
-                    currentBook = book,
+                    books = emptyList(),
+                    currentBook = selectedBook,
                     photoCards = emptyList(),
                     error = e.message
                 )
@@ -119,6 +118,7 @@ sealed class MainViewUiState {
     data class BookDetail(
         val books: List<BookEntity>,
         val currentBook: BookEntity,
+        val initialPosition: Int? = null,
         val photoCards: List<PhotoCardWithTextContents>,
         val isLoading: Boolean = false,
         val error: String? = null
@@ -127,3 +127,11 @@ sealed class MainViewUiState {
     data object Loading : MainViewUiState()
     data object Empty : MainViewUiState()
 }
+
+// sealed class 밖에 확장 함수로 정의
+private fun MainViewUiState.BookDetail.updateBookOnly(newBook: BookEntity) = copy(
+    currentBook = newBook
+)
+
+private fun MainViewUiState.asBookDetail(): MainViewUiState.BookDetail? =
+    this as? MainViewUiState.BookDetail

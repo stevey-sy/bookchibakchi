@@ -74,7 +74,7 @@ class MyLibraryFragment : Fragment() {
                 putString("transitionName", "sharedView_${bookEntity.itemId}")
             }
 
-            mainViewModel.setCurrentBook(bookEntity)
+            mainViewModel.setBookDetailState(bookEntity)
 
             val extras = FragmentNavigatorExtras(
                 sharedView to "sharedView_${bookEntity.itemId}"
@@ -164,8 +164,6 @@ class MyLibraryFragment : Fragment() {
 //    }
 
     private fun prepareTransitions() {
-        //exitTransition = TransitionInflater.from(requireContext()).inflateTransition(R.transition.exit_transition)
-
         setExitSharedElementCallback(object : androidx.core.app.SharedElementCallback() {
             override fun onMapSharedElements(names: List<String>, sharedElements: MutableMap<String, View>) {
                 // 최신 Transition Name과 position 가져오기
@@ -175,12 +173,16 @@ class MyLibraryFragment : Fragment() {
                     .currentBackStackEntry?.savedStateHandle?.get<Int>("selected_position") ?: -1
 
                 if (currentTransitionName.isNullOrEmpty() || currentPosition == -1) return
+                scrollToPosition(currentPosition)
+                // timer
 
                 // RecyclerView의 ViewHolder 찾기
                 val selectedViewHolder = binding.rvShelf.findViewHolderForAdapterPosition(currentPosition)
-                scrollToPosition(currentPosition)
+                if(selectedViewHolder == null) {
+                    return
+                }
                 sharedElements[names[0]] =
-                    selectedViewHolder!!.itemView.findViewById(R.id.cardView)
+                    selectedViewHolder.itemView.findViewById(R.id.cardView)
             }
         })
     }
