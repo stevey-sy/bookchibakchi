@@ -144,25 +144,6 @@ class MyLibraryFragment : Fragment() {
         }
     }
 
-//    private fun prepareTransitions() {
-//        exitTransition = TransitionInflater.from(requireContext()).inflateTransition(R.transition.exit_transition)
-//
-//        setExitSharedElementCallback(object : SharedElementCallback() {
-//            override fun onMapSharedElements(names: List<String>, sharedElements: MutableMap<String, View>) {
-//                Log.d("MyLibraryFragment", "onMapSharedElements called with names: $names")
-//                val currentTransitionName = names.firstOrNull() ?: return
-//                Log.d("MyLibraryFragment", "currentTransitionName: $currentTransitionName")
-//                val selectedViewHolder = binding.rvShelf.findViewHolderForAdapterPosition(0)
-//                if (selectedViewHolder != null) {
-//                    sharedElements[currentTransitionName] = selectedViewHolder.itemView.findViewById(R.id.ivBook)
-//                    Log.d("MyLibraryFragment", "Shared element mapped successfully")
-//                } else {
-//                    Log.d("MyLibraryFragment", "SelectedViewHolder is null")
-//                }
-//            }
-//        })
-//    }
-
     private fun prepareTransitions() {
         setExitSharedElementCallback(object : androidx.core.app.SharedElementCallback() {
             override fun onMapSharedElements(names: List<String>, sharedElements: MutableMap<String, View>) {
@@ -174,7 +155,6 @@ class MyLibraryFragment : Fragment() {
 
                 if (currentTransitionName.isNullOrEmpty() || currentPosition == -1) return
                 scrollToPosition(currentPosition)
-                // timer
 
                 // RecyclerView의 ViewHolder 찾기
                 val selectedViewHolder = binding.rvShelf.findViewHolderForAdapterPosition(currentPosition)

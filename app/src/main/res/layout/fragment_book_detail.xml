@@ -7,7 +7,7 @@
 
     <data>
         <!-- ViewModel 선언 -->
-
+        <import type="com.example.bookchigibakchigi.ui.main.MainViewUiState"/>
         <variable
             name="mainViewModel"
             type="com.example.bookchigibakchigi.ui.main.MainViewModel" />
@@ -60,7 +60,7 @@
                     android:textColor="@color/black"
                     android:layout_marginHorizontal="@dimen/_20sdp"
                     android:gravity="center"
-                    android:layout_marginTop="@dimen/_6sdp"
+                    android:layout_marginTop="@dimen/_20sdp"
                     android:textSize="16sp"
                     android:maxLines="3"
                     android:ellipsize="marquee"
@@ -68,6 +68,7 @@
                     android:singleLine="true"
                     android:focusable="true"
                     android:focusableInTouchMode="true"
+                    app:bookTitle="@{mainViewModel.uiState}"
                  />
 
                 <TextView
@@ -75,21 +76,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textStyle="bold"
-                    android:textColor="@color/gray"
+                    android:textColor="@color/steal_gray"
                     android:layout_marginTop="@dimen/_10sdp"
                     android:layout_marginHorizontal="@dimen/_20sdp"
-                    android:gravity="center"/>
-
-<!--                <TextView-->
-<!--                    android:id="@+id/tvPublisher"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:textStyle="bold"-->
-<!--                    android:textColor="@color/gray"-->
-<!--                    android:layout_marginHorizontal="40dp"-->
-<!--                    android:layout_marginTop="10dp"-->
-<!--                    android:gravity="center"-->
-<!--                    android:text="@{viewModel.currentBook.publisher}" />-->
+                    android:gravity="center"
+                    app:bookAuthor="@{mainViewModel.uiState}"/>
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -113,7 +104,8 @@
                         android:layout_height="wrap_content"
                         android:clipToPadding="false"
                         android:clipChildren="false"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        app:progressTranslation="@{mainViewModel.uiState}">
 
                         <!-- 진행 퍼센트를 표시하는 텍스트 -->
 <!--                        <TextView-->
@@ -133,7 +125,8 @@
                             android:textSize="12sp"
                             android:textColor="@color/white"
                             android:background="@drawable/background_black_circle"
-                            android:padding="4dp" />
+                            android:padding="4dp"
+                            app:percentage='@{mainViewModel.uiState}'/>
 
                         <View
                             android:layout_width="@dimen/_8sdp"
@@ -174,7 +167,8 @@
                         android:layout_below="@id/llProgressPercentage"
                         android:background="@drawable/rounded_progress_bar_black"
                         android:layout_alignParentStart="true"
-                        android:layout_marginBottom="8dp"/>
+                        android:layout_marginBottom="8dp"
+                        app:progressPercentage="@{mainViewModel.uiState}"/>
 
                 </RelativeLayout>
 
@@ -256,13 +250,14 @@
                         android:textColor="@color/gray"
                         android:layout_marginHorizontal="@dimen/_20sdp"
                         android:gravity="center"
-                        android:textSize="16sp" />
+                        android:textSize="20sp"
+                        app:comment="@{mainViewModel.uiState}"/>
 
                     <ImageView
                         android:layout_width="@dimen/_20sdp"
                         android:layout_height="@dimen/_20sdp"
                         android:src="@drawable/ic_down_arrow_gray"
-                        android:layout_marginTop="@dimen/_5sdp"/>
+                        android:layout_marginTop="@dimen/_10sdp"/>
 
 
                 </LinearLayout>
