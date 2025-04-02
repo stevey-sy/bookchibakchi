@@ -41,6 +41,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.example.bookchigibakchigi.data.entity.BookEntity
 import com.example.bookchigibakchigi.ui.main.MainViewModel
 import com.example.bookchigibakchigi.ui.main.MainViewUiState
+import com.example.bookchigibakchigi.util.PermissionUtil
 import kotlinx.coroutines.flow.collectLatest
 import kotlin.collections.set
 
@@ -54,7 +55,6 @@ class BookDetailFragment : Fragment() {
 
     private lateinit var adapter: BookViewPagerAdapter
     private var sharedView: View? = null
-    private var currentItemId = 0
     private lateinit var permissionLauncher: ActivityResultLauncher<Array<String>>
     private lateinit var takePictureLauncher: ActivityResultLauncher<Uri>
     private lateinit var pickImageLauncher: ActivityResultLauncher<PickVisualMediaRequest>
@@ -71,27 +71,8 @@ class BookDetailFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentBookDetailBinding.inflate(inflater, container, false)
-
-        // 전달된 itemId를 Bundle에서 가져오기
-        currentItemId = arguments?.getInt("itemId") ?: 0
-        val transitionName = arguments?.getString("transitionName") ?: ""
-
-        // ViewModel 바인딩
-        binding.mainViewModel = mainViewModel
-        binding.lifecycleOwner = viewLifecycleOwner
-
-        adapter = BookViewPagerAdapter(
-            transitionName,
-            onItemClick = { bookEntity, position, sharedView ->
-                // 아이템 클릭 이벤트 처리
-//                Log.d("TEST TEST","클릭된 아이템: ${bookEntity.itemId}, Position: $position")
-            },
-            onImageLoaded = {
-                startPostponedEnterTransition()
-            },
-        )
-        binding.viewPager.adapter = adapter
-
+        initBinding()
+        initViewPager()
         initClickListeners()
         prepareSharedElementTransition()
 
@@ -100,46 +81,58 @@ class BookDetailFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        postponeEnterTransition()
+        postponeEnterTransition()  // 애니메이션 시작 전까지 정지.
+        initBackPressedCallback() // 시스템 Back 버튼 동작 커스터마이징
+        observeViewModel() // ViewModel의 상태 관찰하여 ViewPager 데이터 설정
+    }
 
-        // 시스템 Back 버튼 동작 커스터마이징
-        initBackPressedCallback()
+    override fun onResume() {
+        super.onResume()
+    }
 
-        // ViewModel의 상태 관찰하여 ViewPager 데이터 설정
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                mainViewModel.uiState.collectLatest { state ->
-                    when (state) {
-                        is MainViewUiState.BookDetail -> {
+    private fun initBinding() {
+        binding.mainViewModel = mainViewModel
+        binding.lifecycleOwner = viewLifecycleOwner
+    }
 
-                            state.initialPosition?.let { position ->
-                                adapter.setDataList(state.books)
-                                val totalItems = state.books.size
-                                val hasEnoughItemsForPreview = position in 1 until totalItems - 1
-                                val isNearEnd = position >= totalItems - 3 // 마지막 3개 이내인지 확인
+    /**
+     * Prepares the shared element transition from and back to the grid fragment.
+     */
+    private fun prepareSharedElementTransition() {
+        setEnterSharedElementCallback(
+            object : SharedElementCallback() {
+                override fun onMapSharedElements(
+                    names: List<String>,
+                    sharedElements: MutableMap<String, View>
+                ) {
+                    // ViewPager에서 현재 선택된 페이지의 Transition Name 가져오기
+                    val currentPosition = binding.viewPager.currentItem
+                    // ViewPager의 현재 페이지 View를 찾음
+                    val currentPage = binding.viewPager.findViewWithTag<View>("page_$currentPosition")
+                    //val imageView = currentPage?.findViewById<View>(R.id.ivBook)
+                    val imageView = currentPage?.findViewById<View>(R.id.cardView)
 
-                                binding.viewPager.offscreenPageLimit = when {
-                                    isNearEnd -> 2
-                                    hasEnoughItemsForPreview -> 3
-                                    else -> 1
-                                }
-
-                                binding.viewPager.setCurrentItem(position, false)
-                                val currentPage = binding.viewPager.findViewWithTag<View>("page_$position")
-                                currentPage?.findViewById<View>(R.id.cardView)?.transitionName =
-                                    "sharedView_${state.currentBook.itemId}"
-                            }
-
-                            // viewModel 업데이트 되었을 때, title, author, progress 업데이트.
-//                            onCurrentBookUpdate(state.currentBook)
-                        }
-                        else -> {
-                            // 다른 상태는 무시
-                        }
+                    if (imageView != null) {
+                        // names 리스트의 첫 번째 Transition Name에 매핑
+                        sharedElements[names[0]] = imageView
                     }
                 }
             }
-        }
+        )
+    }
+
+    private fun initViewPager() {
+        adapter = BookViewPagerAdapter(
+            arguments?.getString("transitionName") ?: "",
+            onItemClick = { bookEntity, position, sharedView ->
+                // 아이템 클릭 이벤트 처리
+                //                Log.d("TEST TEST","클릭된 아이템: ${bookEntity.itemId}, Position: $position")
+            },
+            onImageLoaded = {
+                startPostponedEnterTransition()
+            },
+        )
+        binding.viewPager.adapter = adapter
 
         binding.viewPager.apply {
             clipToPadding = false
@@ -176,41 +169,7 @@ class BookDetailFragment : Fragment() {
                 }
             }
         })
-    }
 
-    override fun onResume() {
-        super.onResume()
-    }
-
-    private fun onCurrentBookUpdate(book:BookEntity) {
-        binding.tvBookTitle.text = book.title
-        binding.tvAuthor.text = book.author
-    }
-
-    /**
-     * Prepares the shared element transition from and back to the grid fragment.
-     */
-    private fun prepareSharedElementTransition() {
-        setEnterSharedElementCallback(
-            object : SharedElementCallback() {
-                override fun onMapSharedElements(
-                    names: List<String>,
-                    sharedElements: MutableMap<String, View>
-                ) {
-                    // ViewPager에서 현재 선택된 페이지의 Transition Name 가져오기
-                    val currentPosition = binding.viewPager.currentItem
-                    // ViewPager의 현재 페이지 View를 찾음
-                    val currentPage = binding.viewPager.findViewWithTag<View>("page_$currentPosition")
-                    //val imageView = currentPage?.findViewById<View>(R.id.ivBook)
-                    val imageView = currentPage?.findViewById<View>(R.id.cardView)
-
-                    if (imageView != null) {
-                        // names 리스트의 첫 번째 Transition Name에 매핑
-                        sharedElements[names[0]] = imageView
-                    }
-                }
-            }
-        )
     }
 
     private fun initBackPressedCallback() {
@@ -230,6 +189,45 @@ class BookDetailFragment : Fragment() {
             // 선택된 위치를 저장하고 뒤로 가기
             findNavController().previousBackStackEntry?.savedStateHandle?.set("selected_position", currentPosition)
             findNavController().popBackStack()
+        }
+    }
+
+    private fun observeViewModel() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                mainViewModel.uiState.collectLatest { state ->
+                    when (state) {
+                        is MainViewUiState.BookDetail -> {
+
+                            state.initialPosition?.let { position ->
+                                adapter.setDataList(state.books)
+                                val totalItems = state.books.size
+                                val hasEnoughItemsForPreview = position in 1 until totalItems - 1
+                                val isNearEnd = position >= totalItems - 3 // 마지막 3개 이내인지 확인
+
+                                binding.viewPager.offscreenPageLimit = when {
+                                    isNearEnd -> 2
+                                    hasEnoughItemsForPreview -> 3
+                                    else -> 1
+                                }
+
+                                binding.viewPager.setCurrentItem(position, false)
+                                val currentPage =
+                                    binding.viewPager.findViewWithTag<View>("page_$position")
+                                currentPage?.findViewById<View>(R.id.cardView)?.transitionName =
+                                    "sharedView_${state.currentBook.itemId}"
+                            }
+
+                            // viewModel 업데이트 되었을 때, title, author, progress 업데이트.
+                            //                            onCurrentBookUpdate(state.currentBook)
+                        }
+
+                        else -> {
+                            // 다른 상태는 무시
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -440,11 +438,7 @@ class BookDetailFragment : Fragment() {
     }
 
     private fun requestPermissions() {
-        val permissions = arrayOf(
-            android.Manifest.permission.CAMERA,
-            android.Manifest.permission.READ_MEDIA_IMAGES
-        )
-        permissionLauncher.launch(permissions)
+        permissionLauncher.launch(PermissionUtil.getRequiredPermissions())
     }
 
     override fun onDestroyView() {
