@@ -67,7 +67,8 @@ class BookViewPagerAdapter(
         fun bind(bookEntity: BookEntity) {
             val currentTransitionName = "sharedView_${bookEntity.itemId}"
             Log.d("viewPager TEST ", currentTransitionName)
-            binding.ivBook.transitionName = currentTransitionName
+            // binding.ivBook.transitionName = currentTransitionName
+            binding.cardView.transitionName = currentTransitionName
             if (bookEntity.coverImageUrl.isNotEmpty()) {
                 binding.ivBook.visibility = View.VISIBLE
                 Glide.with(binding.ivBook.context)

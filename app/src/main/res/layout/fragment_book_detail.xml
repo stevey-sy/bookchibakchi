@@ -16,7 +16,8 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/activity_background">
+        android:clipChildren="false"
+        android:clipToPadding="false">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -28,7 +29,9 @@
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_230sdp"
-                android:layout_marginTop="@dimen/_20sdp">
+                android:layout_marginTop="@dimen/_20sdp"
+                android:clipChildren="false"
+                android:clipToPadding="false">
 
                 <androidx.viewpager2.widget.ViewPager2
                     android:id="@+id/viewPager"

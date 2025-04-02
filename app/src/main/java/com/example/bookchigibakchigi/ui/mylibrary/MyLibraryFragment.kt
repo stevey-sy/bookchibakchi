@@ -180,7 +180,7 @@ class MyLibraryFragment : Fragment() {
                 val selectedViewHolder = binding.rvShelf.findViewHolderForAdapterPosition(currentPosition)
                 scrollToPosition(currentPosition)
                 sharedElements[names[0]] =
-                    selectedViewHolder!!.itemView.findViewById(R.id.ivBook)
+                    selectedViewHolder!!.itemView.findViewById(R.id.cardView)
             }
         })
     }

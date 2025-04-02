@@ -127,7 +127,9 @@ class BookDetailFragment : Fragment() {
 
                                 binding.viewPager.setCurrentItem(position, false)
                                 val currentPage = binding.viewPager.findViewWithTag<View>("page_$position")
-                                currentPage?.findViewById<View>(R.id.ivBook)?.transitionName =
+//                                currentPage?.findViewById<View>(R.id.ivBook)?.transitionName =
+//                                    "sharedView_${book.itemId}"
+                                currentPage?.findViewById<View>(R.id.cardView)?.transitionName =
                                     "sharedView_${book.itemId}"
 
                             }
@@ -159,10 +161,10 @@ class BookDetailFragment : Fragment() {
      * Prepares the shared element transition from and back to the grid fragment.
      */
     private fun prepareSharedElementTransition() {
-        val transition =
-            TransitionInflater.from(context)
-                .inflateTransition(R.transition.grid_to_pager_transition)
-        sharedElementEnterTransition = transition
+//        val transition =
+//            TransitionInflater.from(context)
+//                .inflateTransition(R.transition.grid_to_pager_transition)
+//        sharedElementEnterTransition = transition
 
         setEnterSharedElementCallback(
             object : SharedElementCallback() {
@@ -182,7 +184,8 @@ class BookDetailFragment : Fragment() {
 
                     // ViewPager의 현재 페이지 View를 찾음
                     val currentPage = binding.viewPager.findViewWithTag<View>("page_$currentPosition")
-                    val imageView = currentPage?.findViewById<View>(R.id.ivBook)
+                    //val imageView = currentPage?.findViewById<View>(R.id.ivBook)
+                    val imageView = currentPage?.findViewById<View>(R.id.cardView)
 
                     if (imageView != null) {
                         // names 리스트의 첫 번째 Transition Name에 매핑
@@ -386,7 +389,7 @@ class BookDetailFragment : Fragment() {
                             putExtra("currentBook", book)
                         }
 
-                        sharedView = binding.viewPager.findViewWithTag<View>("page_${binding.viewPager.currentItem}")?.findViewById(R.id.ivBook)
+                        sharedView = binding.viewPager.findViewWithTag<View>("page_${binding.viewPager.currentItem}")?.findViewById(R.id.cardView)
                         sharedView!!.transitionName = "sharedView_${state.currentBook.itemId}"
 
                         val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
