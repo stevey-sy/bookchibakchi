@@ -44,6 +44,7 @@ import com.example.bookchigibakchigi.ui.main.MainViewUiState
 import com.example.bookchigibakchigi.util.PermissionUtil
 import kotlinx.coroutines.flow.collectLatest
 import kotlin.collections.set
+import com.example.bookchigibakchigi.util.FileUtil
 
 @AndroidEntryPoint
 class BookDetailFragment : Fragment() {
@@ -95,9 +96,6 @@ class BookDetailFragment : Fragment() {
         binding.lifecycleOwner = viewLifecycleOwner
     }
 
-    /**
-     * Prepares the shared element transition from and back to the grid fragment.
-     */
     private fun prepareSharedElementTransition() {
         setEnterSharedElementCallback(
             object : SharedElementCallback() {
@@ -232,27 +230,11 @@ class BookDetailFragment : Fragment() {
     }
 
     private fun launchCamera() {
-        val photoFile = createImageFile()
-        capturedImageUri = getFileUri(photoFile)
+        val photoFile = FileUtil.createImageFile(requireContext())
+        capturedImageUri = FileUtil.getFileUri(requireContext(), photoFile)
         takePictureLauncher.launch(capturedImageUri)
     }
 
-    private fun createImageFile(): File {
-        val storageDir = requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-        return File.createTempFile(
-            "JPEG_${System.currentTimeMillis()}_",
-            ".jpg",
-            storageDir
-        )
-    }
-
-    private fun getFileUri(file: File): Uri {
-        return FileProvider.getUriForFile(
-            requireContext(),
-            "${requireContext().packageName}.provider",
-            file
-        )
-    }
     private fun showCameraDialog() {
         val bottomSheetDialog = BottomSheetDialog(requireContext(), R.style.CustomBottomSheetDialog)
         val view = layoutInflater.inflate(R.layout.dialog_select_photo_type, null)
