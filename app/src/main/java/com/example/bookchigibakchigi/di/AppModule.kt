@@ -7,6 +7,8 @@ import com.example.bookchigibakchigi.data.database.AppDatabase
 import com.example.bookchigibakchigi.data.dao.PhotoCardDao
 import com.example.bookchigibakchigi.data.repository.BookShelfRepository
 import com.example.bookchigibakchigi.data.repository.PhotoCardRepository
+import com.example.bookchigibakchigi.data.repository.AladinBookRepository
+import com.example.bookchigibakchigi.network.service.AladinBookApiService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -46,5 +48,17 @@ object AppModule {
     @Provides
     fun providePhotoCardRepository(photoCardDao: PhotoCardDao): PhotoCardRepository {
         return PhotoCardRepository(photoCardDao)
+    }
+
+    @Provides
+    @Singleton
+    fun provideAladinBookApiService(): AladinBookApiService {
+        return AladinBookApiService.create()
+    }
+
+    @Provides
+    @Singleton
+    fun provideAladinBookRepository(apiService: AladinBookApiService): AladinBookRepository {
+        return AladinBookRepository(apiService)
     }
 }

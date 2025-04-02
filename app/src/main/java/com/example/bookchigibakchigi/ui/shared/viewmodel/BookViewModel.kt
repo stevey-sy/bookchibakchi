@@ -20,8 +20,8 @@ class BookViewModel @Inject constructor(
     }
 
     fun setCurrentBook(itemId: Int) {
-        bookShelfRepository.getBookById(itemId).observeForever { book ->
-            _currentBook.value = book
-        }
+//        bookShelfRepository.getBookById(itemId).observeForever { book ->
+//            _currentBook.value = book
+//        }
     }
 }

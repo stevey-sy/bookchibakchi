@@ -16,6 +16,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.example.bookchigibakchigi.R
 import com.example.bookchigibakchigi.data.entity.BookEntity
 import com.example.bookchigibakchigi.ui.bookdetail.adapter.BookViewPagerAdapter
+import com.example.bookchigibakchigi.ui.main.MainViewUiState
 
 object BindingAdapters {
     @JvmStatic
@@ -23,9 +24,9 @@ object BindingAdapters {
     fun loadImage(view: ImageView, imageUrl: String?) {
         Glide.with(view.context)
             .load(imageUrl)
-            .apply(
-                RequestOptions() // 로딩 중 표시할 기본 이미지
-                .error(R.drawable.img_book_placeholder))            // 오류 시 표시할 이미지
+//            .apply(
+//                RequestOptions() // 로딩 중 표시할 기본 이미지
+//                .error(R.drawable.img_book_placeholder))            // 오류 시 표시할 이미지
             .into(view)
     }
 
@@ -51,61 +52,27 @@ object BindingAdapters {
         view.visibility = if (items.isNullOrEmpty()) View.GONE else View.VISIBLE
     }
 
-    @JvmStatic
-    @BindingAdapter("progressPercentage")
-    fun setProgressBarWidth(view: View, progress: Int) {
-        view.post {
-            // 부모 뷰의 전체 너비를 가져오기
-            val parentWidth = (view.parent as ViewGroup).width
-            val targetWidth = (parentWidth * progress) / 100 // 목표 너비 계산
-            val currentWidth = view.layoutParams.width
-
-            // ValueAnimator를 사용하여 애니메이션 구현
-            val animator = ValueAnimator.ofInt(currentWidth, targetWidth)
-            animator.duration = 300 // 애니메이션 지속 시간 (1초)
-            animator.addUpdateListener { animation ->
-                val animatedValue = animation.animatedValue as Int
-                val layoutParams = view.layoutParams
-                layoutParams.width = animatedValue
-                view.layoutParams = layoutParams
-            }
-            animator.start()
-        }
-    }
-
-    @JvmStatic
-    @BindingAdapter("progressTranslation")
-    fun setProgressTranslation(view: View, percentage: Int) {
-        view.post {
-            val parentView = view.parent as? ViewGroup
-            val parentWidth = parentView?.width ?: 0  // 부모 width 가져오기
-            var viewWidth = view.width // 현재 뷰의 width
-
-            // ⚠️ viewWidth가 0이면, 뷰 측정이 끝나지 않았을 가능성이 있음 → postDelayed 사용
-            if (viewWidth == 0) {
-                view.postDelayed({ setProgressTranslation(view, percentage) }, 50)
-                return@post
-            }
-
-            // ✅ 부모 width에 대한 비율로 translationX 계산
-            val baseTranslationX = (parentWidth * (percentage / 100f)).coerceAtMost(parentWidth.toFloat())
-
-            // ✅ 텍스트뷰의 width를 고려하여 중앙 정렬 (뷰 width의 절반만큼 빼기)
-            val targetTranslationX = (baseTranslationX - viewWidth / 2)
-
-            // 현재 translationX 값 가져오기
-            val currentTranslationX = view.translationX
-
-            // ValueAnimator로 애니메이션 실행
-            val animator = ValueAnimator.ofFloat(currentTranslationX, targetTranslationX)
-            animator.duration = 300 // 애니메이션 지속 시간 (300ms)
-            animator.addUpdateListener { animation ->
-                val animatedValue = animation.animatedValue as Float
-                view.translationX = animatedValue // 애니메이션 값 적용
-            }
-            animator.start()
-        }
-    }
+//    @JvmStatic
+//    @BindingAdapter("progressPercentage")
+//    fun setProgressBarWidth(view: View, progress: Int) {
+//        view.post {
+//            // 부모 뷰의 전체 너비를 가져오기
+//            val parentWidth = (view.parent as ViewGroup).width
+//            val targetWidth = (parentWidth * progress) / 100 // 목표 너비 계산
+//            val currentWidth = view.layoutParams.width
+//
+//            // ValueAnimator를 사용하여 애니메이션 구현
+//            val animator = ValueAnimator.ofInt(currentWidth, targetWidth)
+//            animator.duration = 300 // 애니메이션 지속 시간 (1초)
+//            animator.addUpdateListener { animation ->
+//                val animatedValue = animation.animatedValue as Int
+//                val layoutParams = view.layoutParams
+//                layoutParams.width = animatedValue
+//                view.layoutParams = layoutParams
+//            }
+//            animator.start()
+//        }
+//    }
 
     @JvmStatic
     @BindingAdapter("bindBackgroundColor")
@@ -149,6 +116,140 @@ object BindingAdapters {
     fun bindPauseButtonIcon(view: ImageView, icon: Int?) {
         icon?.let {
             view.setImageResource(it) // ✅ 아이콘 변경
+        }
+    }
+
+    // BookDetailFragment.kt
+
+    @JvmStatic
+    @BindingAdapter("bookTitle")
+    fun TextView.setBookTitle(uiState: MainViewUiState?) {
+        text = when (uiState) {
+            is MainViewUiState.BookDetail -> {
+                uiState.currentBook.title
+            }
+
+            else -> {
+                ""
+            }
+        }
+    }
+
+    @JvmStatic
+    @BindingAdapter("bookAuthor")
+    fun TextView.setBookAuthor(uiState: MainViewUiState?) {
+        text = when (uiState) {
+            is MainViewUiState.BookDetail -> {
+                uiState.currentBook.getAuthorText()
+            }
+
+            else -> {
+                ""
+            }
+        }
+    }
+
+    @JvmStatic
+    @BindingAdapter("percentage")
+    fun TextView.setPercentage(uiState: MainViewUiState?) {
+        text = when (uiState) {
+            is MainViewUiState.BookDetail -> {
+                uiState.currentBook.getPercentageStr()
+            }
+            else -> {
+                ""
+            }
+        }
+    }
+
+    @JvmStatic
+    @BindingAdapter("comment")
+    fun TextView.setComment(uiState: MainViewUiState?) {
+        text = when (uiState) {
+            is MainViewUiState.BookDetail -> {
+//                uiState.photoCards.size.toString()
+//                if(uiState.photoCards.isEmpty()) {
+//                    "기록을 남겨보세요."
+//                } else {
+//                    "${uiState.photoCards.size} Comments"
+//                }
+                "${uiState.photoCards.size} Comments"
+            }
+            else -> {
+                ""
+            }
+        }
+    }
+
+    @JvmStatic
+    @BindingAdapter("progressPercentage")
+    fun View.setProgressBarWidth(uiState: MainViewUiState?) {
+        var percentage = 0
+        when (uiState) {
+            is MainViewUiState.BookDetail -> {
+                percentage = uiState.currentBook.progressPercentage
+                post {
+                    // 부모 뷰의 전체 너비를 가져오기
+                    val parentWidth = (parent as ViewGroup).width
+                    val targetWidth = (parentWidth * percentage) / 100 // 목표 너비 계산
+                    val currentWidth = layoutParams.width
+
+                    // ValueAnimator를 사용하여 애니메이션 구현
+                    val animator = ValueAnimator.ofInt(currentWidth, targetWidth)
+                    animator.duration = 300 // 애니메이션 지속 시간 (1초)
+                    animator.addUpdateListener { animation ->
+                        val animatedValue = animation.animatedValue as Int
+                        val newLayoutParams = layoutParams
+                        newLayoutParams.width = animatedValue
+                        layoutParams = newLayoutParams
+                    }
+                    animator.start()
+                }
+            }
+            else -> {}
+
+        }
+
+    }
+
+    @JvmStatic
+    @BindingAdapter("progressTranslation")
+    fun View.setProgressTranslation(uiState: MainViewUiState?) {
+        var percentage = 0
+        when (uiState) {
+            is MainViewUiState.BookDetail -> {
+                percentage = uiState.currentBook.progressPercentage
+                post {
+                    val parentView = parent as? ViewGroup
+                    val parentWidth = parentView?.width ?: 0  // 부모 width 가져오기
+                    var viewWidth = width // 현재 뷰의 width
+
+                    // ⚠️ viewWidth가 0이면, 뷰 측정이 끝나지 않았을 가능성이 있음 → postDelayed 사용
+                    if (viewWidth == 0) {
+                        postDelayed({ setProgressTranslation(uiState) }, 50)
+                        return@post
+                    }
+
+                    // ✅ 부모 width에 대한 비율로 translationX 계산
+                    val baseTranslationX = (parentWidth * (percentage / 100f)).coerceAtMost(parentWidth.toFloat())
+
+                    // ✅ 텍스트뷰의 width를 고려하여 중앙 정렬 (뷰 width의 절반만큼 빼기)
+                    val targetTranslationX = (baseTranslationX - viewWidth / 2)
+
+                    // 현재 translationX 값 가져오기
+                    val currentTranslationX = translationX
+
+                    // ValueAnimator로 애니메이션 실행
+                    val animator = ValueAnimator.ofFloat(currentTranslationX, targetTranslationX)
+                    animator.duration = 300 // 애니메이션 지속 시간 (300ms)
+                    animator.addUpdateListener { animation ->
+                        val animatedValue = animation.animatedValue as Float
+                        translationX = animatedValue // 애니메이션 값 적용
+                    }
+                    animator.start()
+                }
+            }
+            else -> {}
         }
     }
 }

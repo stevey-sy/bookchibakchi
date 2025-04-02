@@ -4,7 +4,7 @@
     <item
         android:id="@+id/navigation_book_detail"
         android:icon="@drawable/ic_home_black_24dp"
-        android:title="@string/b_archive" />
+        android:title="@string/app_name" />
 
     <item
         android:id="@+id/navigation_pick_book"

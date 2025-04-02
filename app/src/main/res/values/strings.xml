@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">BookChigi BakChigi</string>
+    <string name="app_name">오독오독</string>
     <string name="b_archive">B.archive</string>
     <string name="title_home">홈</string>
     <string name="title_dashboard">Dashboard</string>
@@ -24,4 +24,7 @@
     <string name="no_results_message">검색 결과가 없습니다.</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="empty_book_description">독서 진행도와 기억하고 싶은 문구를 기록할 수 있어요</string>
+    <string name="empty_book_message">당신의 첫 번째 책을 추가해보세요</string>
+    <string name="search_book">책 검색하기</string>
 </resources>

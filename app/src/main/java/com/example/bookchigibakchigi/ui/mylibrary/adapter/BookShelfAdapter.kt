@@ -2,6 +2,7 @@ package com.example.bookchigibakchigi.ui.mylibrary.adapter
 
 import android.graphics.Color
 import android.graphics.drawable.Drawable
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -30,6 +31,7 @@ class BookShelfAdapter(
     }
 
     override fun onBindViewHolder(holder: BookShelfItemViewHolder, position: Int) {
+        if(dataList.isEmpty()) return
         if (position < dataList.size) {
             // 실제 데이터가 있는 경우 표시
             holder.bind(dataList[position], position, onItemClick)
@@ -48,10 +50,15 @@ class BookShelfAdapter(
     class BookShelfItemViewHolder(private val binding: ItemBookShelfBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(bookEntity: BookEntity, position: Int, onItemClick: (BookEntity, Int, View) -> Unit) {
 
-            binding.ivBook.transitionName = "sharedView_${bookEntity.itemId}"
+//             binding.ivBook.transitionName = "sharedView_${bookEntity.itemId}"
+            binding.cardView.transitionName = "sharedView_${bookEntity.itemId}"
+            Log.d("transitionName test", binding.cardView.transitionName)
 
             binding.root.setOnClickListener{
-                onItemClick(bookEntity, position, binding.ivBook)
+                //onItemClick(bookEntity, position, binding.ivBook)
+                binding.vBookShadow.visibility = View.INVISIBLE
+                binding.vBookShadowUp.visibility = View.INVISIBLE
+                onItemClick(bookEntity, position, binding.cardView)
             }
             // 타입에 따른 뷰 가시성 처리
 //            binding.rlPlus.visibility = if (bookEntity.bookType == "0") View.VISIBLE else View.GONE
@@ -66,37 +73,36 @@ class BookShelfAdapter(
 
             // 배경 Drawable 적용
             binding.vBottom.background = AppCompatResources.getDrawable(context, drawableRes)
-            binding.ivBook.visibility = if (bookEntity.bookType == "0") View.GONE else View.VISIBLE
-            binding.vBookShadow.visibility = View.VISIBLE
-            binding.vBookShadowUp.visibility = View.VISIBLE
+            // binding.ivBook.visibility = if (bookEntity.bookType == "0") View.GONE else View.VISIBLE
+            binding.cardView.visibility = View.VISIBLE
+            binding.ivBook.visibility = View.VISIBLE
+            binding.vBookShadow.visibility = View.INVISIBLE
+            binding.vBookShadowUp.visibility = View.INVISIBLE
             binding.ivPlant.visibility = View.INVISIBLE
             binding.ivClock.visibility = View.INVISIBLE
             binding.ivClock.visibility = View.INVISIBLE
             if (bookEntity.coverImageUrl.isNotEmpty()) {
-                binding.ivBook.visibility = View.VISIBLE
+//                binding.ivBook.visibility = View.VISIBLE
                 Glide.with(context)
                     .load(bookEntity.coverImageUrl)
                     .into(binding.ivBook)
 //                binding.rlPlus.setBackgroundColor(Color.TRANSPARENT)
             } else {
                 // 이미지 URL이 비어 있는 경우 기본 이미지로 설정
-                binding.ivBook.visibility = View.GONE
+//                binding.ivBook.visibility = View.GONE
             }
 
         }
 
         fun bindEmpty(position: Int, itemCount: Int) {
 
-            binding.ivBook.transitionName = "sharedView_"
+            binding.cardView.transitionName = "sharedView_"
 
             binding.ivBook.visibility = View.INVISIBLE
+            binding.cardView.visibility = View.INVISIBLE
             binding.vBookShadow.visibility = View.INVISIBLE
             binding.vBookShadowUp.visibility = View.INVISIBLE
             binding.ivPlant.visibility = if (position == itemCount - 1) View.VISIBLE else View.INVISIBLE
-//            binding.ivClock.visibility = if (position == itemCount - 3) View.VISIBLE else View.INVISIBLE
-//            binding.ivFlower.visibility = if (position == itemCount - 5) View.VISIBLE else View.INVISIBLE
-            binding.ivClock.visibility = View.INVISIBLE
-            binding.ivFlower.visibility = View.INVISIBLE
 
             val context = binding.root.context
             val drawableRes = when (position % 3) {

@@ -27,6 +27,6 @@ class PreviewPageTransformer : ViewPager2.PageTransformer {
     }
 
     companion object {
-        private const val MIN_SCALE = 0.85f
+        private const val MIN_SCALE = 0.80f
     }
 }

@@ -1,28 +1,19 @@
 package com.example.bookchigibakchigi.ui.card
 
-import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.Canvas
-import android.graphics.Color
 import android.graphics.Rect
-import android.graphics.drawable.ColorDrawable
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.VibrationEffect
-import android.os.Vibrator
-import android.os.VibratorManager
-import android.provider.MediaStore
 import android.util.Log
 import android.util.TypedValue
 import android.view.Menu
 import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
-import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
@@ -32,30 +23,19 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.bookchigibakchigi.R
 import com.example.bookchigibakchigi.data.entity.BookEntity
-import com.example.bookchigibakchigi.data.entity.CardTextEntity
-import com.example.bookchigibakchigi.data.entity.PhotoCardEntity
 import com.example.bookchigibakchigi.databinding.ActivityCardBinding
 import com.example.bookchigibakchigi.ui.BaseActivity
-import com.example.bookchigibakchigi.ui.MainActivity
+import com.example.bookchigibakchigi.ui.main.MainActivity
 import com.example.bookchigibakchigi.ui.card.adapter.CardBackgroundAdapter
 import com.example.bookchigibakchigi.ui.card.viewmodel.CreateCardViewModel
-import com.example.bookchigibakchigi.ui.component.MovableEditText
-import com.example.bookchigibakchigi.ui.photocrop.PhotoCropActivity
-import com.example.bookchigibakchigi.ui.shared.viewmodel.BookViewModel
 import com.example.bookchigibakchigi.util.VibrationUtil
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.io.File
-import java.io.FileOutputStream
 
 @AndroidEntryPoint
 class CardActivity : BaseActivity() {
@@ -147,14 +127,14 @@ class CardActivity : BaseActivity() {
 
         }
 
-        binding.viewModel = bookViewModel
-        binding.lifecycleOwner = this
-
-        // ✅ ViewModel에 데이터 저장
-        book?.let {
-            bookViewModel.setBook(it)  // LiveData 업데이트
-            binding.etBookTitle.setText(book.title)
-        }
+//        binding.viewModel = bookViewModel
+//        binding.lifecycleOwner = this
+//
+//        // ✅ ViewModel에 데이터 저장
+//        book?.let {
+//            bookViewModel.setBook(it)  // LiveData 업데이트
+//            binding.etBookTitle.setText(book.title)
+//        }
     }
 
     private fun initClickListener() {
@@ -483,18 +463,18 @@ class CardActivity : BaseActivity() {
         canvas.translate(0f, -cropTopY.toFloat())
         captureView.draw(canvas)
 
-        val book = bookViewModel.currentBook.value ?: return
-
-        // ViewModel을 통해 저장 요청
-        createCardViewModel.saveCard(
-            bitmap,
-            book,
-            binding.etBookContent,
-            binding.etBookTitle,
-            binding.flBookContent,
-            binding.flBookTitle,
-            cropHeight
-        )
+//        val book = bookViewModel.currentBook.value ?: return
+//
+//        // ViewModel을 통해 저장 요청
+//        createCardViewModel.saveCard(
+//            bitmap,
+//            book,
+//            binding.etBookContent,
+//            binding.etBookTitle,
+//            binding.flBookContent,
+//            binding.flBookTitle,
+//            cropHeight
+//        )
     }
 
     private fun observeSaveResult() {

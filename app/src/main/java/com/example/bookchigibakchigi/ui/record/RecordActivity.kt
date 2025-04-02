@@ -11,29 +11,21 @@ import android.transition.Transition
 import android.transition.TransitionInflater
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.view.WindowManager
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.inputmethod.InputMethodManager
-import android.widget.Button
 import android.widget.EditText
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import com.example.bookchigibakchigi.R
 import com.example.bookchigibakchigi.data.database.AppDatabase
 import com.example.bookchigibakchigi.data.entity.BookEntity
-import com.example.bookchigibakchigi.databinding.ActivityAddBookBinding
 import com.example.bookchigibakchigi.databinding.ActivityRecordBinding
-import com.example.bookchigibakchigi.data.repository.BookShelfRepository
 import com.example.bookchigibakchigi.ui.BaseActivity
 import kotlinx.coroutines.launch
 import kotlin.math.min
@@ -203,7 +195,7 @@ class RecordActivity : BaseActivity() {
 
     private fun createSharedElementTransition(): Transition {
         return TransitionInflater.from(this)
-            .inflateTransition(R.transition.image_shared_element_transition).apply {
+            .inflateTransition(R.transition.grid_to_pager_transition).apply {
                 duration = 500  // 애니메이션 지속 시간 (ms)
                 interpolator = AccelerateDecelerateInterpolator()  // 부드러운 가속/감속 효과
             }

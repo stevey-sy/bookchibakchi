@@ -7,7 +7,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.example.bookchigibakchigi.ui.addbook.AddBookActivityViewModel" />
+            type="com.example.bookchigibakchigi.ui.addbook.AddBookViewModel" />
     </data>
 
     <LinearLayout
@@ -42,6 +42,7 @@
                 android:layout_above="@id/tvNext">
 
                 <LinearLayout
+                    android:id="@+id/contentLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
@@ -58,14 +59,13 @@
                         android:layout_marginStart="20dp"
                         android:layout_marginBottom="20dp"
                         android:transitionName="shared_element_image">
-                        <!-- 이미지 추가 (좌측에 위치) -->
                         <ImageView
                             android:id="@+id/ivBook"
                             android:layout_width="120dp"
                             android:layout_height="180dp"
                             android:scaleType="centerCrop"
-                            android:layout_margin="2dp"
-                            app:imageUrl="@{viewModel.coverUrl}" />
+                            app:imageUrl="@{viewModel.coverUrl}"
+                            android:layout_margin="2dp" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -87,10 +87,10 @@
                             android:stepSize="0.5"
                             android:scaleX="0.5"
                             android:scaleY="0.5"
-                            android:rating="@{viewModel.bookItem.customerReviewRank / 2.0f}"
                             android:progressTint="@color/black"
                             android:backgroundTint="@color/light_gray"
                             android:isIndicator="true"
+                            app:rating="@{viewModel.rating}"
                             android:layout_gravity="center" />
 
                         <View
@@ -100,8 +100,6 @@
                             android:background="@color/light_gray" />
 
                     </LinearLayout>
-
-
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -116,7 +114,7 @@
                             android:layout_marginBottom="10dp"/>
 
                         <TextView
-                            android:id="@+id/tvBookTitle"
+                            android:id="@+id/tvTitle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textStyle="bold"
@@ -238,7 +236,7 @@
                             android:textStyle="bold"
                             android:textColor="@color/black"
                             android:layout_marginStart="15dp"
-                            android:text= "@{String.valueOf(viewModel.bookItem.subInfo.itemPage)}"/>
+                            android:text="@{String.valueOf(viewModel.bookItem.subInfo.itemPage)}"/>
 
                         <View
                             android:layout_width="match_parent"
@@ -267,7 +265,7 @@
                             android:textStyle="bold"
                             android:textColor="@color/black"
                             android:layout_marginStart="15dp"
-                            android:text= "@{viewModel.bookItem.description}"/>
+                            android:text="@{viewModel.bookItem.description}"/>
 
                         <View
                             android:layout_width="match_parent"
@@ -276,8 +274,6 @@
                             android:background="@color/light_gray" />
 
                     </LinearLayout>
-
-
 
                 </LinearLayout>
 
@@ -291,7 +287,40 @@
                 android:text="@string/button_save"
                 android:textColor="@color/white"
                 android:background="@color/black"
-                android:layout_alignParentBottom="true"/>
+                android:layout_alignParentBottom="true"
+                android:onClick="@{() -> viewModel.addBook()}" />
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:visibility="gone"/>
+
+            <LinearLayout
+                android:id="@+id/errorLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/tvErrorMessage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/red"
+                    android:textAlignment="center"/>
+
+                <Button
+                    android:id="@+id/btnRetry"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="다시 시도"
+                    android:layout_marginTop="16dp"/>
+
+            </LinearLayout>
+
         </RelativeLayout>
 
     </LinearLayout>

@@ -2,6 +2,7 @@ package com.example.bookchigibakchigi.ui.bookdetail.adapter
 
 import android.R
 import android.graphics.drawable.Drawable
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,10 +23,10 @@ class BookViewPagerAdapter(
     private val transitionName: String,
     private val onItemClick: (BookEntity, Int, View) -> Unit,
     private val onImageLoaded: () -> Unit
-) : RecyclerView.Adapter<BookViewPagerAdapter.BookViewPagerViewHolder>(
-){
+) : RecyclerView.Adapter<BookViewPagerAdapter.BookViewPagerViewHolder>() {
 
     private val dataList = mutableListOf<BookEntity>()
+    private val loadedImages = mutableSetOf<String>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BookViewPagerViewHolder {
         val binding = ItemViewPagerBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -39,7 +40,6 @@ class BookViewPagerAdapter(
     override fun onBindViewHolder(holder: BookViewPagerViewHolder, position: Int) {
         holder.itemView.tag = "page_$position"
         holder.bind(dataList[position])
-        // 아이템 클릭 리스너 설정
         holder.itemView.setOnClickListener {
             onItemClick(dataList[position], position, holder.itemView)
         }
@@ -48,7 +48,16 @@ class BookViewPagerAdapter(
     fun setDataList(newList: List<BookEntity>) {
         dataList.clear()
         dataList.addAll(newList)
+        loadedImages.clear()
         notifyDataSetChanged()
+    }
+
+    private fun checkImageLoaded(imageUrl: String) {
+        loadedImages.add(imageUrl)
+        val totalImages = dataList.count { it.coverImageUrl.isNotEmpty() }
+        if (loadedImages.size == totalImages && totalImages > 0) {
+            onImageLoaded()
+        }
     }
 
     class BookViewPagerViewHolder(
@@ -57,7 +66,9 @@ class BookViewPagerAdapter(
         private val onImageLoaded: () -> Unit) : RecyclerView.ViewHolder(binding.root) {
         fun bind(bookEntity: BookEntity) {
             val currentTransitionName = "sharedView_${bookEntity.itemId}"
-            binding.ivBook.transitionName = currentTransitionName
+            Log.d("viewPager TEST ", currentTransitionName)
+            // binding.ivBook.transitionName = currentTransitionName
+            binding.cardView.transitionName = currentTransitionName
             if (bookEntity.coverImageUrl.isNotEmpty()) {
                 binding.ivBook.visibility = View.VISIBLE
                 Glide.with(binding.ivBook.context)

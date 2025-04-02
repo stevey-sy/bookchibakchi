@@ -62,8 +62,8 @@
             android:layout_marginTop="10dp"
             android:layout_marginEnd="16dp"
             android:layout_marginStart="20dp"
-            android:layout_marginBottom="20dp"
-            android:transitionName="shared_element_image">
+            android:transitionName="shared_element_image"
+            android:layout_marginBottom="20dp">
             <!-- 이미지 추가 (좌측에 위치) -->
             <ImageView
                 android:id="@+id/ivBook"

@@ -30,7 +30,11 @@
         tools:layout="@layout/fragment_my_library" >
         <action
             android:id="@+id/action_myLibrary_to_bookDetail"
-            app:destination="@id/navigation_book_detail" />
+            app:destination="@id/navigation_book_detail"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
     </fragment>
 
     <fragment
@@ -55,19 +59,24 @@
         android:id="@+id/navigation_book_detail"
         android:name="com.example.bookchigibakchigi.ui.bookdetail.BookDetailFragment"
         android:label="상세"
-        tools:layout="@layout/fragment_book_detail" />
+        tools:layout="@layout/fragment_book_detail">
+        <argument
+            android:name="itemId"
+            app:argType="integer" />
+        <argument
+            android:name="transitionName"
+            app:argType="string" />
+<!--        <action-->
+<!--            android:id="@+id/action_bookDetail_to_myLibrary"-->
+<!--            app:destination="@id/navigation_my_library"-->
+<!--            app:popUpTo="@id/navigation_my_library"-->
+<!--            app:popUpToInclusive="true" />-->
+    </fragment>
 
-<!--    <fragment-->
-<!--        android:id="@+id/navigation_notifications"-->
-<!--        android:name="com.example.bookchigibakchigi.ui.notifications.NotificationsFragment"-->
-<!--        android:label="@string/title_notifications"-->
-<!--        tools:layout="@layout/fragment_notifications" />-->
-
-<!--    <fragment-->
-<!--        android:id="@+id/navigation_notifications"-->
-<!--        android:name="com.example.bookchigibakchigi.ui.notifications.NotificationsFragment"-->
-<!--        android:label="@string/title_notifications"-->
-<!--        tools:layout="@layout/fragment_notifications" />-->
-<!--    -->
+    <activity
+        android:id="@+id/navigation_search_book"
+        android:name="com.example.bookchigibakchigi.ui.searchbook.SearchBookActivity"
+        android:label="@string/title_search_book"
+        tools:layout="@layout/activity_search_book" />
 
 </navigation>

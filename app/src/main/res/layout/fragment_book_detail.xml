@@ -7,71 +7,17 @@
 
     <data>
         <!-- ViewModel 선언 -->
+        <import type="com.example.bookchigibakchigi.ui.main.MainViewUiState"/>
         <variable
-            name="bookShelfViewModel"
-            type="com.example.bookchigibakchigi.ui.shared.viewmodel.BookShelfViewModel" />
-        <variable
-            name="bookViewModel"
-            type="com.example.bookchigibakchigi.ui.shared.viewmodel.BookViewModel" />
-        <variable
-            name="photoCardViewModel"
-            type="com.example.bookchigibakchigi.ui.shared.viewmodel.PhotoCardViewModel" />
+            name="mainViewModel"
+            type="com.example.bookchigibakchigi.ui.main.MainViewModel" />
     </data>
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <LinearLayout
-            android:id="@+id/emptyView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:visibility="gone"
-            android:background="@color/white"
-            app:isVisible="@{bookShelfViewModel.bookShelfItems}">
-
-            <!-- 일러스트 이미지 -->
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:src="@drawable/img_reading"
-                android:scaleType="centerCrop"
-                android:contentDescription="Empty bookshelf image"
-                android:layout_marginBottom="16dp" />
-
-            <!-- 안내 텍스트 -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="당신의 첫 번째 책을 추가해보세요."
-                android:textSize="18sp"
-                android:textColor="@color/black"
-                android:layout_marginBottom="8dp"
-                android:textStyle="bold"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="독서 진행도와 기억하고 싶은 문구를 기록할 수 있어요."
-                android:textSize="14sp"
-                android:textColor="@color/gray"
-                android:textStyle="bold" />
-
-            <!-- 액션 버튼 -->
-            <Button
-                android:id="@+id/btnSearchBook"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="책 검색하기"
-                android:backgroundTint="@color/black"
-                android:textColor="@color/white"
-                android:layout_marginTop="16dp"
-                android:paddingHorizontal="24dp"
-                android:paddingVertical="12dp" />
-
-        </LinearLayout>
+        android:layout_height="match_parent"
+        android:clipChildren="false"
+        android:clipToPadding="false">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -83,7 +29,9 @@
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_230sdp"
-                android:layout_marginTop="@dimen/_20sdp">
+                android:layout_marginTop="@dimen/_20sdp"
+                android:clipChildren="false"
+                android:clipToPadding="false">
 
                 <androidx.viewpager2.widget.ViewPager2
                     android:id="@+id/viewPager"
@@ -91,8 +39,7 @@
                     android:layout_height="match_parent"
                     android:clipToPadding="false"
                     android:clipChildren="false"
-                    android:overScrollMode="never"
-                    app:submitBookList="@{bookShelfViewModel.bookShelfItems}" />
+                    android:overScrollMode="never" />
 
             </FrameLayout>
 
@@ -113,7 +60,7 @@
                     android:textColor="@color/black"
                     android:layout_marginHorizontal="@dimen/_20sdp"
                     android:gravity="center"
-                    android:layout_marginTop="@dimen/_6sdp"
+                    android:layout_marginTop="@dimen/_20sdp"
                     android:textSize="16sp"
                     android:maxLines="3"
                     android:ellipsize="marquee"
@@ -121,7 +68,7 @@
                     android:singleLine="true"
                     android:focusable="true"
                     android:focusableInTouchMode="true"
-                    android:text="@{bookViewModel.currentBook.title}"
+                    app:bookTitle="@{mainViewModel.uiState}"
                  />
 
                 <TextView
@@ -129,22 +76,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textStyle="bold"
-                    android:textColor="@color/gray"
+                    android:textColor="@color/steal_gray"
                     android:layout_marginTop="@dimen/_10sdp"
                     android:layout_marginHorizontal="@dimen/_20sdp"
                     android:gravity="center"
-                    android:text="@{bookViewModel.currentBook.getAuthorText()}" />
-
-<!--                <TextView-->
-<!--                    android:id="@+id/tvPublisher"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:textStyle="bold"-->
-<!--                    android:textColor="@color/gray"-->
-<!--                    android:layout_marginHorizontal="40dp"-->
-<!--                    android:layout_marginTop="10dp"-->
-<!--                    android:gravity="center"-->
-<!--                    android:text="@{viewModel.currentBook.publisher}" />-->
+                    app:bookAuthor="@{mainViewModel.uiState}"/>
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -152,19 +88,36 @@
                     android:paddingVertical="@dimen/_8sdp"
                     android:layout_marginHorizontal="@dimen/_10sdp"
                     android:clipToPadding="false"
-                    android:clipChildren="false"
-                    app:isProgressBarVisible="@{bookShelfViewModel.bookShelfItems}">
+                    android:clipChildren="false">
 
+<!--                    <LinearLayout-->
+<!--                        android:id="@+id/llProgressPercentage"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:clipToPadding="false"-->
+<!--                        android:clipChildren="false"-->
+<!--                        app:progressTranslation="@{mainViewModel.currentBook.progressPercentage}"-->
+<!--                        android:orientation="vertical">-->
                     <LinearLayout
                         android:id="@+id/llProgressPercentage"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:clipToPadding="false"
                         android:clipChildren="false"
-                        app:progressTranslation="@{bookViewModel.currentBook.progressPercentage}"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        app:progressTranslation="@{mainViewModel.uiState}">
 
                         <!-- 진행 퍼센트를 표시하는 텍스트 -->
+<!--                        <TextView-->
+<!--                            android:id="@+id/tvProgressPercentage"-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:textSize="12sp"-->
+<!--                            android:textColor="@color/white"-->
+<!--                            android:background="@drawable/background_black_circle"-->
+<!--                            android:layout_alignParentStart="true"-->
+<!--                            android:padding="4dp"-->
+<!--                            android:text='@{String.valueOf(mainViewModel.currentBook.progressPercentage) + "%"}' />-->
                         <TextView
                             android:id="@+id/tvProgressPercentage"
                             android:layout_width="wrap_content"
@@ -172,9 +125,8 @@
                             android:textSize="12sp"
                             android:textColor="@color/white"
                             android:background="@drawable/background_black_circle"
-                            android:layout_alignParentStart="true"
                             android:padding="4dp"
-                            android:text='@{String.valueOf(bookViewModel.currentBook.progressPercentage) + "%"}' />
+                            app:percentage='@{mainViewModel.uiState}'/>
 
                         <View
                             android:layout_width="@dimen/_8sdp"
@@ -198,6 +150,16 @@
                         android:layout_alignParentEnd="true" />
 
                     <!-- 프로그레스바 (진행도) -->
+<!--                    <View-->
+<!--                        android:id="@+id/progressBarForeground"-->
+<!--                        android:layout_width="0dp"-->
+<!--                        android:layout_height="8dp"-->
+<!--                        android:layout_below="@id/llProgressPercentage"-->
+<!--                        android:background="@drawable/rounded_progress_bar_black"-->
+<!--                        android:layout_alignParentStart="true"-->
+<!--                        android:layout_marginBottom="8dp"-->
+<!--                        app:progressPercentage="@{mainViewModel.currentBook.progressPercentage}"/>-->
+
                     <View
                         android:id="@+id/progressBarForeground"
                         android:layout_width="0dp"
@@ -206,7 +168,7 @@
                         android:background="@drawable/rounded_progress_bar_black"
                         android:layout_alignParentStart="true"
                         android:layout_marginBottom="8dp"
-                        app:progressPercentage="@{bookViewModel.currentBook.progressPercentage}"/>
+                        app:progressPercentage="@{mainViewModel.uiState}"/>
 
                 </RelativeLayout>
 
@@ -288,14 +250,14 @@
                         android:textColor="@color/gray"
                         android:layout_marginHorizontal="@dimen/_20sdp"
                         android:gravity="center"
-                        android:textSize="16sp"
-                        android:text="@{String.valueOf(photoCardViewModel.photoCardList.size) + ` Comments`}" />
+                        android:textSize="20sp"
+                        app:comment="@{mainViewModel.uiState}"/>
 
                     <ImageView
                         android:layout_width="@dimen/_20sdp"
                         android:layout_height="@dimen/_20sdp"
                         android:src="@drawable/ic_down_arrow_gray"
-                        android:layout_marginTop="@dimen/_5sdp"/>
+                        android:layout_marginTop="@dimen/_10sdp"/>
 
 
                 </LinearLayout>

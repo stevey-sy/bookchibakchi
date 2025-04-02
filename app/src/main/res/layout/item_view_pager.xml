@@ -1,17 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center">
 
-    <ImageView
-        android:id="@+id/ivBook"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView"
         android:layout_width="@dimen/_140sdp"
         android:layout_height="@dimen/_210sdp"
-        android:adjustViewBounds="true"
-        android:scaleType="fitCenter"
-        android:layout_margin="16dp"
         android:layout_gravity="center|top"
-        />
+        android:layout_margin="16dp"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="8dp">
+
+        <ImageView
+            android:id="@+id/ivBook"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
+            android:padding="4dp"
+            />
+
+    </androidx.cardview.widget.CardView>
 
 </FrameLayout>

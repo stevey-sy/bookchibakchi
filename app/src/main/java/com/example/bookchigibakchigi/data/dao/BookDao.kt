@@ -1,29 +1,31 @@
 package com.example.bookchigibakchigi.data.dao
 
-import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import com.example.bookchigibakchigi.data.entity.BookEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface BookDao {
+    @Query("SELECT * FROM books ORDER BY itemId DESC")
+    fun getAllBooks(): Flow<List<BookEntity>>
+
+    @Query("SELECT * FROM books WHERE itemId = :itemId")
+    fun getBookById(itemId: Int): Flow<BookEntity>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertBook(book: BookEntity)
+    suspend fun insertBook(book: BookEntity): Long
 
-    @Query("SELECT * FROM books WHERE itemId = :itemId")
-    suspend fun getBookById(itemId: String): BookEntity?
-
-    @Query("SELECT * FROM books WHERE itemId = :itemId")
-    fun getBookById(itemId: Int): LiveData<BookEntity>
-
-    @Query("SELECT * FROM books")
-    fun getAllBooks(): LiveData<List<BookEntity>>
+    @Transaction
+    suspend fun insertAndGetBook(book: BookEntity): BookEntity {
+        val id = insertBook(book)
+        return book.copy(itemId = id.toInt())
+    }
 
     @Delete
     suspend fun deleteBook(book: BookEntity)
+
+    @Query("DELETE FROM books")
+    suspend fun deleteAllBooks()
 
     @Query("""
         UPDATE books 
@@ -35,5 +37,4 @@ interface BookDao {
 
     @Query("SELECT COUNT(*) FROM books WHERE isbn = :isbn")
     suspend fun isBookExists(isbn: String): Int
-
 }

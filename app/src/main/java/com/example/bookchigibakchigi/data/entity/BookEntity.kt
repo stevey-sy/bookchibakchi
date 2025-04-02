@@ -27,6 +27,11 @@ data class BookEntity(
     val progressPercentage: Int
         get() = if (totalPageCnt > 0) (currentPageCnt * 100) / totalPageCnt else 0
 
+    fun getPercentageStr(): String {
+        val percentage = if (totalPageCnt > 0) (currentPageCnt * 100) / totalPageCnt else 0
+        return "$percentage %"
+    }
+
     fun getProgressText(): String {
         return "p. $currentPageCnt / $totalPageCnt"
     }
