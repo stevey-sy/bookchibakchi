@@ -377,7 +377,7 @@ class BookDetailFragment : Fragment() {
     }
 
     private fun initClickListeners() {
-        binding.btnRecord.setOnClickListener {
+        binding.btnReading.setOnClickListener {
             mainViewModel.uiState.value.let { state ->
                 if (state is MainViewUiState.BookDetail) {
                     val selectedBook = state.currentBook
@@ -386,7 +386,7 @@ class BookDetailFragment : Fragment() {
                             putExtra("currentBook", book)
                         }
 
-                        sharedView = binding.viewPager.findViewWithTag<View>("page_${binding.viewPager.currentItem}")?.findViewById(R.id.cardView)
+                        sharedView = binding.viewPager.findViewWithTag<View>("page_${binding.viewPager.currentItem}")?.findViewById(R.id.ivBook)
                         sharedView!!.transitionName = "sharedView_${state.currentBook.itemId}"
 
                         val options = ActivityOptionsCompat.makeSceneTransitionAnimation(

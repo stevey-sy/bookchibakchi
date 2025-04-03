@@ -27,13 +27,16 @@ import com.example.bookchigibakchigi.data.database.AppDatabase
 import com.example.bookchigibakchigi.data.entity.BookEntity
 import com.example.bookchigibakchigi.databinding.ActivityRecordBinding
 import com.example.bookchigibakchigi.ui.BaseActivity
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlin.math.min
 
+@AndroidEntryPoint
 class RecordActivity : BaseActivity() {
 
     private lateinit var binding: ActivityRecordBinding
-    private val viewModel: RecordActivityViewModel by viewModels()
+    private val viewModel: RecordViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,15 +60,14 @@ class RecordActivity : BaseActivity() {
             intent.getParcelableExtra("currentBook")
         }
 
-        // ✅ ViewModel에 데이터 저장
         book?.let {
-            viewModel.setCurrentBook(it)  // LiveData 업데이트
+            viewModel.setCurrentBook(it)
             binding.ivBookCover.transitionName = "sharedView_${it.itemId}"
             binding.ivBookCover.viewTreeObserver.addOnPreDrawListener(object : ViewTreeObserver.OnPreDrawListener {
                 override fun onPreDraw(): Boolean {
                     binding.ivBookCover.viewTreeObserver.removeOnPreDrawListener(this)
-                    supportStartPostponedEnterTransition()  // ✅ 애니메이션 시작
-                    viewModel.toggleTimer()
+                    supportStartPostponedEnterTransition()
+//                    viewModel.toggleTimer()
                     return true
                 }
             })
@@ -77,12 +79,16 @@ class RecordActivity : BaseActivity() {
             insets
         }
 
+        binding.btnPause.setOnClickListener {
+            viewModel.toggleTimer()
+        }
+
         binding.btnClose.setOnClickListener {
             finish()
         }
 
         binding.btnComplete.setOnClickListener {
-            viewModel.pauseTimer()
+//            viewModel.pause()
             viewModel.currentBook.value?.let { it1 ->
                 showPageInputDialog(it1.currentPageCnt, it1.totalPageCnt)
             }
@@ -90,6 +96,25 @@ class RecordActivity : BaseActivity() {
 
         binding.btnOut.setOnClickListener {
             finish()
+        }
+
+        // StateFlow 관찰 설정
+        lifecycleScope.launch {
+            launch { viewModel.timerText.collectLatest { binding.tvTimer.text = it } }
+            launch { viewModel.uiState.collectLatest { state ->
+                when (state) {
+                    is RecordUiState.BeforeReading -> {}
+                    is RecordUiState.Reading -> {
+                        // 타이머 시작.
+                    }
+                    is RecordUiState.Paused -> {
+                        // 타이머 멈추기
+                    }
+                    is RecordUiState.Completed -> {
+                        // 폭죽 이벤트.
+                    }
+                }
+            }}
         }
     }
 
@@ -119,24 +144,12 @@ class RecordActivity : BaseActivity() {
         tvTotalPages.text = "/ $totalPageCount" // 총 페이지 수 표시
 
         btnAllComplete.setOnClickListener{
-            lifecycleScope.launch {  // ✅ CoroutineScope 내에서 suspend 함수 호출
+            lifecycleScope.launch {
                 val bookDao = AppDatabase.getDatabase(this@RecordActivity).bookDao()
                 val elapsedTime = viewModel.elapsedTime / 1000
                 bookDao.updateReadingProgress(viewModel.currentBook.value!!.itemId, totalPageCount, elapsedTime.toInt())
                 dialog.dismiss()
-
-                binding.btnComplete.visibility = View.GONE
-                binding.btnOut.visibility = View.VISIBLE
-
-                // llTimer fadeOut 처리
-                binding.llTimer.animate()
-                    .alpha(0f) // 투명도 0으로 설정
-                    .setDuration(500) // 0.5초 동안 애니메이션 실행
-                    .withEndAction {
-                        binding.llTimer.visibility = View.INVISIBLE // 애니메이션 후 GONE 처리
-                        binding.llCongrats.visibility = View.VISIBLE
-                    }
-                    .start()
+                viewModel.completeReading()
 
                 binding.animView.setAnimation(R.raw.anim_congrats)
                 binding.animView.playAnimation()
@@ -145,20 +158,12 @@ class RecordActivity : BaseActivity() {
                 binding.animViewComplete.playAnimation()
 
                 binding.animViewComplete.addAnimatorListener(object : Animator.AnimatorListener {
-                    override fun onAnimationStart(animation: Animator) {
-                    }
-
+                    override fun onAnimationStart(animation: Animator) {}
                     override fun onAnimationEnd(animation: Animator) {
                         binding.animViewComplete.progress = 0.8F
                     }
-
-                    override fun onAnimationCancel(animation: Animator) {
-
-                    }
-
-                    override fun onAnimationRepeat(animation: Animator) {
-
-                    }
+                    override fun onAnimationCancel(animation: Animator) {}
+                    override fun onAnimationRepeat(animation: Animator) {}
                 })
             }
         }

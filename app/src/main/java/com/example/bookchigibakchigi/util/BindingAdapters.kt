@@ -10,6 +10,7 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
@@ -17,6 +18,10 @@ import com.example.bookchigibakchigi.R
 import com.example.bookchigibakchigi.data.entity.BookEntity
 import com.example.bookchigibakchigi.ui.bookdetail.adapter.BookViewPagerAdapter
 import com.example.bookchigibakchigi.ui.main.MainViewUiState
+import com.example.bookchigibakchigi.ui.record.RecordUiState
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.collectLatest
 
 object BindingAdapters {
     @JvmStatic
@@ -74,42 +79,26 @@ object BindingAdapters {
 //        }
 //    }
 
-    @JvmStatic
-    @BindingAdapter("bindBackgroundColor")
-    fun bindBackgroundColor(view: View, color: LiveData<Int>?) {
-        color?.observeForever { resolvedColor ->
-            val context = view.context
-            val newColor = ContextCompat.getColor(context, resolvedColor)
-
-            // ✅ 현재 배경색 가져오기 (없으면 기본 투명색)
-            val oldColor = (view.background as? ColorDrawable)?.color ?: ContextCompat.getColor(context, android.R.color.transparent)
-
-            // ✅ ValueAnimator를 사용한 색상 변화 애니메이션 적용
-            ValueAnimator.ofArgb(oldColor, newColor).apply {
-                duration = 500 // 0.5초 동안 애니메이션 적용
-                addUpdateListener { animator ->
-                    view.setBackgroundColor(animator.animatedValue as Int)
-                }
-                start() // 애니메이션 시작
-            }
-        }
-    }
-
-    @JvmStatic
-    @BindingAdapter("bindTextColor")
-    fun bindTextColor(view: TextView, color: LiveData<Int>?) {
-        color?.observeForever { resolvedColor ->
-            view.setTextColor(view.context.getColor(resolvedColor))
-        }
-    }
-
-    @JvmStatic
-    @BindingAdapter("bindSrc")
-    fun bindSrc(view: ImageView, src: LiveData<Int>?) {
-        src?.observeForever { resolvedSrc ->
-            view.setImageResource(resolvedSrc)
-        }
-    }
+//    @JvmStatic
+//    @BindingAdapter("bindBackgroundColor")
+//    fun bindBackgroundColor(view: View, color: LiveData<Int>?) {
+//        color?.observeForever { resolvedColor ->
+//            val context = view.context
+//            val newColor = ContextCompat.getColor(context, resolvedColor)
+//
+//            // ✅ 현재 배경색 가져오기 (없으면 기본 투명색)
+//            val oldColor = (view.background as? ColorDrawable)?.color ?: ContextCompat.getColor(context, android.R.color.transparent)
+//
+//            // ✅ ValueAnimator를 사용한 색상 변화 애니메이션 적용
+//            ValueAnimator.ofArgb(oldColor, newColor).apply {
+//                duration = 500 // 0.5초 동안 애니메이션 적용
+//                addUpdateListener { animator ->
+//                    view.setBackgroundColor(animator.animatedValue as Int)
+//                }
+//                start() // 애니메이션 시작
+//            }
+//        }
+//    }
 
     @JvmStatic
     @BindingAdapter("bindPauseButtonIcon")
@@ -250,6 +239,130 @@ object BindingAdapters {
                 }
             }
             else -> {}
+        }
+    }
+
+    @JvmStatic
+    @BindingAdapter("bindBackgroundColor")
+    fun View.bindBackgroundColor(uiState: StateFlow<RecordUiState>?) {
+        uiState?.let { flow ->
+            post {
+                val context = context
+                val newColor = when (flow.value) {
+                    is RecordUiState.BeforeReading -> ContextCompat.getColor(context, R.color.white)
+                    is RecordUiState.Reading -> ContextCompat.getColor(context, R.color.black)
+                    is RecordUiState.Paused -> ContextCompat.getColor(context, R.color.white)
+                    is RecordUiState.Completed -> ContextCompat.getColor(context, R.color.white)
+                }
+
+                // ✅ 현재 배경색 가져오기 (없으면 기본 투명색)
+                val oldColor = (background as? ColorDrawable)?.color ?: ContextCompat.getColor(context, android.R.color.transparent)
+
+                // ✅ ValueAnimator를 사용한 색상 변화 애니메이션 적용
+                ValueAnimator.ofArgb(oldColor, newColor).apply {
+                    duration = 500 // 0.5초 동안 애니메이션 적용
+                    addUpdateListener { animator ->
+                        setBackgroundColor(animator.animatedValue as Int)
+                    }
+                    start() // 애니메이션 시작
+                }
+            }
+        }
+    }
+
+    @JvmStatic
+    @BindingAdapter("bindPlayBtn")
+    fun ImageView.bindPlayBtn(uiState: StateFlow<RecordUiState>?) {
+        uiState?.let { flow ->
+            post {
+                val newSrc = when (flow.value) {
+                    is RecordUiState.BeforeReading -> R.drawable.ic_play_button
+                    is RecordUiState.Reading -> R.drawable.ic_pause_white
+                    is RecordUiState.Paused -> R.drawable.ic_play_button
+                    is RecordUiState.Completed -> R.drawable.ic_play_button
+                }
+                setImageResource(newSrc)
+            }
+        }
+    }
+
+    @JvmStatic
+    @BindingAdapter("bindCloseBtn")
+    fun ImageView.bindCloseBtn(uiState: StateFlow<RecordUiState>?) {
+        uiState?.let { flow ->
+            post {
+                val newSrc = when (flow.value) {
+                    is RecordUiState.BeforeReading -> R.drawable.ic_close_black
+                    is RecordUiState.Reading -> R.drawable.ic_close_white
+                    is RecordUiState.Paused -> R.drawable.ic_close_black
+                    is RecordUiState.Completed -> R.drawable.ic_close_black
+                }
+                setImageResource(newSrc)
+            }
+        }
+    }
+
+    @JvmStatic
+    @BindingAdapter("bindTextColor")
+    fun TextView.bindTextColor(uiState: StateFlow<RecordUiState>?) {
+        uiState?.let { flow ->
+            post {
+                val newColor = when (flow.value) {
+                    is RecordUiState.BeforeReading -> ContextCompat.getColor(context, R.color.black)
+                    is RecordUiState.Reading -> ContextCompat.getColor(context, R.color.black)
+                    is RecordUiState.Paused -> ContextCompat.getColor(context, R.color.black)
+                    is RecordUiState.Completed -> ContextCompat.getColor(context, R.color.black)
+                }
+                setTextColor(newColor)
+            }
+        }
+    }
+
+    @JvmStatic
+    @BindingAdapter("bindReadingStatusText")
+    fun TextView.bindReadingStatusText(uiState: StateFlow<RecordUiState>?) {
+        uiState?.let { flow ->
+            post {
+                val text = when (flow.value) {
+                    is RecordUiState.BeforeReading -> "독서를 시작해보세요"
+                    is RecordUiState.Reading -> "읽고 있는 중..."
+                    is RecordUiState.Paused -> "일시정지됨"
+                    is RecordUiState.Completed -> "독서 완료!"
+                }
+                setText(text)
+            }
+        }
+    }
+
+    @JvmStatic
+    @BindingAdapter("bindCompleteBtnVisibility")
+    fun View.bindCompleteBtnVisibility(uiState: StateFlow<RecordUiState>?) {
+        uiState?.let { flow ->
+            post {
+                val visibility = when (flow.value) {
+                    is RecordUiState.BeforeReading -> View.VISIBLE
+                    is RecordUiState.Reading -> View.VISIBLE
+                    is RecordUiState.Paused -> View.VISIBLE
+                    is RecordUiState.Completed -> View.GONE
+                }
+                setVisibility(visibility)
+            }
+        }
+    }
+
+    @JvmStatic
+    @BindingAdapter("bindOutBtnVisibility")
+    fun View.bindOutBtnVisibility(uiState: StateFlow<RecordUiState>?) {
+        uiState?.let { flow ->
+            post {
+                val visibility = when (flow.value) {
+                    is RecordUiState.BeforeReading -> View.GONE
+                    is RecordUiState.Reading -> View.GONE
+                    is RecordUiState.Paused -> View.GONE
+                    is RecordUiState.Completed -> View.VISIBLE
+                }
+                setVisibility(visibility)
+            }
         }
     }
 }

@@ -6,7 +6,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.example.bookchigibakchigi.ui.record.RecordActivityViewModel" />
+            type="com.example.bookchigibakchigi.ui.record.RecordViewModel" />
     </data>
 
     <FrameLayout
@@ -18,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            app:bindBackgroundColor="@{viewModel.backgroundColor}">
+            app:bindBackgroundColor="@{viewModel.uiState}">
 
             <!-- 상단 닫기 버튼 -->
             <ImageView
@@ -29,7 +29,7 @@
                 android:layout_marginTop="20dp"
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
-                app:bindSrc="@{viewModel.closeButtonIcon}"
+                app:bindCloseBtn="@{viewModel.uiState}"
                 android:contentDescription="닫기 버튼" />
 
             <FrameLayout
@@ -42,7 +42,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:gravity="center">
+                    android:gravity="center"
+                    app:bindCompleteBtnVisibility="@{viewModel.uiState}">
 
                     <!-- 타이머 표시 -->
                     <TextView
@@ -52,7 +53,7 @@
                         android:text="@{viewModel.timerText}"
                         android:textSize="40sp"
                         android:textStyle="bold"
-                        app:bindTextColor="@{viewModel.textColor}"
+                        app:bindTextColor="@{viewModel.uiState}"
                         android:layout_marginTop="16dp" />
 
                     <!-- 상태 텍스트 -->
@@ -60,21 +61,19 @@
                         android:id="@+id/tvStatus"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@{viewModel.status}"
                         android:textSize="16sp"
-                        app:bindTextColor="@{viewModel.textColor}"
-                        android:layout_marginTop="8dp" />
+                        android:layout_marginTop="8dp"
+                        app:bindTextColor="@{viewModel.uiState}"
+                        app:bindReadingStatusText="@{viewModel.uiState}" />
 
-                    <!-- 일시정지 버튼 -->
+                    <!-- 일시정지/재생 버튼 -->
                     <ImageView
                         android:id="@+id/btnPause"
-                        android:layout_width="80dp"
-                        android:layout_height="80dp"
-                        android:scaleType="centerCrop"
-                        android:contentDescription="일시정지 버튼"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
                         android:layout_marginTop="16dp"
-                        app:bindPauseButtonIcon="@{viewModel.pauseButtonIcon}"
-                        android:onClick="@{() -> viewModel.toggleTimer()}"/>
+                        app:bindPlayBtn="@{viewModel.uiState}"
+                        android:contentDescription="일시정지/재생 버튼" />
 
                 </LinearLayout>
 
@@ -141,6 +140,7 @@
 
                 <!-- 책 표지를 감싸는 CardView -->
                 <androidx.cardview.widget.CardView
+                    android:id="@+id/cardView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:cardCornerRadius="8dp"
@@ -171,7 +171,7 @@
                         android:layout_height="wrap_content"
                         android:text="@{viewModel.currentBook.title}"
                         android:textSize="18sp"
-                        app:bindTextColor="@{viewModel.textColor}"
+                        app:bindTextColor="@{viewModel.uiState}"
                         android:textStyle="bold" />
 
                     <TextView
@@ -180,7 +180,7 @@
                         android:layout_height="wrap_content"
                         android:text="@{viewModel.currentBook.getAuthorText()}"
                         android:textSize="14sp"
-                        app:bindTextColor="@{viewModel.textColor}"
+                        app:bindTextColor="@{viewModel.uiState}"
                         android:layout_marginTop="4dp" />
 
                     <TextView
@@ -189,7 +189,7 @@
                         android:layout_height="wrap_content"
                         android:text="@{viewModel.getBookProgressText()}"
                         android:textSize="14sp"
-                        app:bindTextColor="@{viewModel.textColor}"
+                        app:bindTextColor="@{viewModel.uiState}"
                         android:layout_marginTop="4dp" />
 
                     <TextView
@@ -197,7 +197,7 @@
                         android:layout_height="wrap_content"
                         android:text="@{viewModel.currentBook.getElapsedTimeFormatted()}"
                         android:textSize="14sp"
-                        app:bindTextColor="@{viewModel.textColor}"
+                        app:bindTextColor="@{viewModel.uiState}"
                         android:layout_marginTop="4dp" />
 
                 </LinearLayout>
@@ -213,9 +213,11 @@
                 android:backgroundTint="@color/white"
                 android:textColor="@color/black"
                 android:layout_gravity="center"
-                android:layout_margin="16dp"/>
+                android:layout_margin="16dp"
+                app:bindCompleteBtnVisibility="@{viewModel.uiState}"
+                />
 
-            <!-- 완료 버튼 -->
+            <!-- 나가기 버튼 -->
             <Button
                 android:id="@+id/btnOut"
                 android:layout_width="wrap_content"
@@ -225,7 +227,7 @@
                 android:textColor="@color/black"
                 android:layout_gravity="center"
                 android:layout_margin="16dp"
-                android:visibility="gone"/>
+                app:bindOutBtnVisibility="@{viewModel.uiState}"/>
 
         </LinearLayout>
 

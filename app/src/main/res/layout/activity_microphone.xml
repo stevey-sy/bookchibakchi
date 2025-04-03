@@ -31,10 +31,15 @@
                 app:titleTextColor="@android:color/black" />
         </com.google.android.material.appbar.AppBarLayout>
 
+<!--        <RelativeLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
+<!--            app:bindBackgroundColor="@{viewModel.backgroundColor}">-->
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:bindBackgroundColor="@{viewModel.backgroundColor}">
+            >
 
             <LinearLayout
                 android:id="@+id/llContent"
