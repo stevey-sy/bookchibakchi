@@ -103,15 +103,17 @@ class RecordActivity : BaseActivity() {
             launch { viewModel.timerText.collectLatest { binding.tvTimer.text = it } }
             launch { viewModel.uiState.collectLatest { state ->
                 when (state) {
-                    is RecordUiState.BeforeReading -> {}
+                    is RecordUiState.BeforeReading -> {
+                        binding.btnOut.visibility = View.GONE
+                    }
                     is RecordUiState.Reading -> {
-                        // 타이머 시작.
+                        binding.btnOut.visibility = View.GONE
                     }
                     is RecordUiState.Paused -> {
-                        // 타이머 멈추기
+                        binding.btnOut.visibility = View.GONE
                     }
                     is RecordUiState.Completed -> {
-                        // 폭죽 이벤트.
+                        binding.btnOut.visibility = View.VISIBLE
                     }
                 }
             }}

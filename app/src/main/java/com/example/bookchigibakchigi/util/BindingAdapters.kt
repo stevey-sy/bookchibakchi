@@ -4,6 +4,7 @@ import android.animation.ValueAnimator
 import android.graphics.drawable.ColorDrawable
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
@@ -56,49 +57,6 @@ object BindingAdapters {
     fun setProgressBarVisibleVisibility(view: View, items: List<*>?) {
         view.visibility = if (items.isNullOrEmpty()) View.GONE else View.VISIBLE
     }
-
-//    @JvmStatic
-//    @BindingAdapter("progressPercentage")
-//    fun setProgressBarWidth(view: View, progress: Int) {
-//        view.post {
-//            // 부모 뷰의 전체 너비를 가져오기
-//            val parentWidth = (view.parent as ViewGroup).width
-//            val targetWidth = (parentWidth * progress) / 100 // 목표 너비 계산
-//            val currentWidth = view.layoutParams.width
-//
-//            // ValueAnimator를 사용하여 애니메이션 구현
-//            val animator = ValueAnimator.ofInt(currentWidth, targetWidth)
-//            animator.duration = 300 // 애니메이션 지속 시간 (1초)
-//            animator.addUpdateListener { animation ->
-//                val animatedValue = animation.animatedValue as Int
-//                val layoutParams = view.layoutParams
-//                layoutParams.width = animatedValue
-//                view.layoutParams = layoutParams
-//            }
-//            animator.start()
-//        }
-//    }
-
-//    @JvmStatic
-//    @BindingAdapter("bindBackgroundColor")
-//    fun bindBackgroundColor(view: View, color: LiveData<Int>?) {
-//        color?.observeForever { resolvedColor ->
-//            val context = view.context
-//            val newColor = ContextCompat.getColor(context, resolvedColor)
-//
-//            // ✅ 현재 배경색 가져오기 (없으면 기본 투명색)
-//            val oldColor = (view.background as? ColorDrawable)?.color ?: ContextCompat.getColor(context, android.R.color.transparent)
-//
-//            // ✅ ValueAnimator를 사용한 색상 변화 애니메이션 적용
-//            ValueAnimator.ofArgb(oldColor, newColor).apply {
-//                duration = 500 // 0.5초 동안 애니메이션 적용
-//                addUpdateListener { animator ->
-//                    view.setBackgroundColor(animator.animatedValue as Int)
-//                }
-//                start() // 애니메이션 시작
-//            }
-//        }
-//    }
 
     @JvmStatic
     @BindingAdapter("bindPauseButtonIcon")
@@ -185,7 +143,7 @@ object BindingAdapters {
 
                     // ValueAnimator를 사용하여 애니메이션 구현
                     val animator = ValueAnimator.ofInt(currentWidth, targetWidth)
-                    animator.duration = 300 // 애니메이션 지속 시간 (1초)
+                    animator.duration = 800 // 애니메이션 지속 시간 (1초)
                     animator.addUpdateListener { animation ->
                         val animatedValue = animation.animatedValue as Int
                         val newLayoutParams = layoutParams
@@ -230,7 +188,7 @@ object BindingAdapters {
 
                     // ValueAnimator로 애니메이션 실행
                     val animator = ValueAnimator.ofFloat(currentTranslationX, targetTranslationX)
-                    animator.duration = 300 // 애니메이션 지속 시간 (300ms)
+                    animator.duration = 800 // 애니메이션 지속 시간 (300ms)
                     animator.addUpdateListener { animation ->
                         val animatedValue = animation.animatedValue as Float
                         translationX = animatedValue // 애니메이션 값 적용
@@ -309,7 +267,7 @@ object BindingAdapters {
             post {
                 val newColor = when (flow.value) {
                     is RecordUiState.BeforeReading -> ContextCompat.getColor(context, R.color.black)
-                    is RecordUiState.Reading -> ContextCompat.getColor(context, R.color.black)
+                    is RecordUiState.Reading -> ContextCompat.getColor(context, R.color.white)
                     is RecordUiState.Paused -> ContextCompat.getColor(context, R.color.black)
                     is RecordUiState.Completed -> ContextCompat.getColor(context, R.color.black)
                 }
@@ -354,15 +312,17 @@ object BindingAdapters {
     @BindingAdapter("bindOutBtnVisibility")
     fun View.bindOutBtnVisibility(uiState: StateFlow<RecordUiState>?) {
         uiState?.let { flow ->
-            post {
+            android.util.Log.d("BindingAdapter", "bindOutBtnVisibility called with state: ${flow.value}")
+            postDelayed({
                 val visibility = when (flow.value) {
                     is RecordUiState.BeforeReading -> View.GONE
                     is RecordUiState.Reading -> View.GONE
                     is RecordUiState.Paused -> View.GONE
                     is RecordUiState.Completed -> View.VISIBLE
                 }
+                android.util.Log.d("BindingAdapter", "Setting visibility to: $visibility")
                 setVisibility(visibility)
-            }
+            }, 100)
         }
     }
 }

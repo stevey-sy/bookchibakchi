@@ -69,9 +69,10 @@
                     <!-- 일시정지/재생 버튼 -->
                     <ImageView
                         android:id="@+id/btnPause"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:layout_marginTop="16dp"
+                        android:layout_width="@dimen/_60sdp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_50sdp"
+                        android:adjustViewBounds="true"
                         app:bindPlayBtn="@{viewModel.uiState}"
                         android:contentDescription="일시정지/재생 버튼" />
 
