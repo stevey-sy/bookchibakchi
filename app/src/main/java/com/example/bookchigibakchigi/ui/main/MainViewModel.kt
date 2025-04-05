@@ -1,5 +1,6 @@
 package com.example.bookchigibakchigi.ui.main
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.bookchigibakchigi.data.PhotoCardWithTextContents
@@ -47,27 +48,26 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun updateCurrentBook(newBook: BookEntity) {
-        viewModelScope.launch {
-            // asBookDetail() 확장 함수를 사용하여 더 간단하게 처리
-            _uiState.value.asBookDetail()?.let { currentState ->
-                try {
-                    // 먼저 book만 업데이트
-//                    _uiState.value = currentState.updateBookOnly(newBook)
-                    
-                    // 비동기로 photoCards 로드
-                    val photoCards = photoCardRepository.getPhotoCardListByIsbn(newBook.isbn)
-                    _uiState.value = currentState.copy(
-                        currentBook = newBook,
-                        photoCards = photoCards,
-                        initialPosition = null
-                    )
-                } catch (e: Exception) {
-                    _uiState.value = currentState.copy(
-                        currentBook = newBook,
-                        error = e.message
-                    )
-                }
+    suspend fun updateCurrentBook(newBook: BookEntity) {
+        // asBookDetail() 확장 함수를 사용하여 더 간단하게 처리
+        _uiState.value.asBookDetail()?.let { currentState ->
+            try {
+                // 먼저 book만 업데이트
+//                _uiState.value = currentState.updateBookOnly(newBook)
+                
+                // 비동기로 photoCards 로드
+                val photoCards = photoCardRepository.getPhotoCardListByIsbn(newBook.isbn)
+                _uiState.value = currentState.copy(
+                    currentBook = newBook,
+                    photoCards = photoCards,
+                    initialPosition = null
+                )
+                Log.d("TEST TEST TEST ", "updateCurrentBook: ")
+            } catch (e: Exception) {
+                _uiState.value = currentState.copy(
+                    currentBook = newBook,
+                    error = e.message
+                )
             }
         }
     }

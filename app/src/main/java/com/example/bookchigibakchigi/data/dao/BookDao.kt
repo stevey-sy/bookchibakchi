@@ -33,7 +33,7 @@ interface BookDao {
             elapsedTimeInSeconds = elapsedTimeInSeconds + :elapsedTime 
         WHERE itemId = :itemId
     """)
-    suspend fun updateReadingProgress(itemId: Int, currentPage: Int, elapsedTime: Int)
+    suspend fun updateReadingProgress(itemId: Int, currentPage: Int, elapsedTime: Int): Int
 
     @Query("SELECT COUNT(*) FROM books WHERE isbn = :isbn")
     suspend fun isBookExists(isbn: String): Int
