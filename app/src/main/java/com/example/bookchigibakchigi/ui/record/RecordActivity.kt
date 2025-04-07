@@ -144,9 +144,9 @@ class RecordActivity : BaseActivity() {
                     lifecycleScope.launch {
                         val success = viewModel.updateReadingProgress(page)
                         if (success) {
-                            // 데이터베이스 업데이트가 성공한 경우에만 종료
-                            delay(500)
-                            finishWithTransition()
+                            // 상태를 유지하기 위해 finishWithTransition() 대신 finish() 사용
+                            finish()
+//                            finishWithTransition()
                         } else {
                             // 데이터베이스 업데이트가 실패한 경우 처리
                             // 예: 토스트 메시지 표시

@@ -12,6 +12,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.shareIn
+import kotlinx.coroutines.flow.SharingStarted
 import javax.inject.Inject
 
 @HiltViewModel
@@ -23,27 +25,38 @@ class MainViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<MainViewUiState>(MainViewUiState.Loading)
     val uiState: StateFlow<MainViewUiState> = _uiState.asStateFlow()
 
+    // 공유된 핫 흐름 생성
+    private val sharedBooksFlow = bookShelfRepository.getShelfItems()
+        .shareIn(
+            scope = viewModelScope,
+            replay = 1,
+            started = SharingStarted.WhileSubscribed()
+        )
+
     init {
         loadBooks()
     }
 
     fun loadBooks() {
         viewModelScope.launch {
-            _uiState.value = MainViewUiState.Loading
-            try {
-                bookShelfRepository.getShelfItems().collect { books ->
-//                    _books.value = books
+            sharedBooksFlow.collect { books ->
+                // _uiState.value 로그로 찍기
+                Log.d("loadBooks TEST ", "_uiState.value: ${_uiState.value}")
+
+                // 현재 상태가 BookDetail인 경우 상태를 유지
+                if (_uiState.value is MainViewUiState.BookDetail) {
+//                    Log.d("loadBooks TEST ", "_uiState.value.initialPosition: ${(_uiState.value as MainViewUiState.BookDetail).initialPosition}")
+//                    val currentState = _uiState.value as MainViewUiState.BookDetail
+//                    // books만 업데이트하고 나머지 상태는 유지
+//                    _uiState.value = currentState.copy(books = books)
+                } else {
+                    // BookDetail이 아닌 경우 기존 로직대로 처리
                     _uiState.value = if (books.isEmpty()) {
                         MainViewUiState.Empty
                     } else {
                         MainViewUiState.MyLibrary(books = books)
                     }
                 }
-            } catch (e: Exception) {
-                _uiState.value = MainViewUiState.MyLibrary(
-                    books = emptyList(),
-                    error = e.message
-                )
             }
         }
     }
@@ -74,23 +87,14 @@ class MainViewModel @Inject constructor(
 
     fun setBookDetailState(selectedBook: BookEntity) {
         viewModelScope.launch {
-            try {
-                bookShelfRepository.getShelfItems().collect { books ->
-                    val position = books.indexOf(selectedBook)
-                    val photoCards = photoCardRepository.getPhotoCardListByIsbn(selectedBook.isbn)
-                    _uiState.value = MainViewUiState.BookDetail(
-                        books = books,
-                        currentBook = selectedBook,
-                        photoCards = photoCards,
-                        initialPosition = position
-                    )
-                }
-            } catch (e: Exception) {
+            sharedBooksFlow.collect { books ->
+                val position = books.indexOf(selectedBook)
+                val photoCards = photoCardRepository.getPhotoCardListByIsbn(selectedBook.isbn)
                 _uiState.value = MainViewUiState.BookDetail(
-                    books = emptyList(),
+                    books = books,
                     currentBook = selectedBook,
-                    photoCards = emptyList(),
-                    error = e.message
+                    initialPosition = position,
+                    photoCards = photoCards
                 )
             }
         }
