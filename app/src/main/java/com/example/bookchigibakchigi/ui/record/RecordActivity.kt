@@ -70,7 +70,7 @@ class RecordActivity : BaseActivity() {
     }
 
     private fun setupBookCoverTransition(book: BookEntity) {
-        binding.ivBookCover.transitionName = "sharedView_${book.itemId}"
+        binding.ivBookCover.transitionName = "record_act_shared_view_${book.itemId}"
         binding.ivBookCover.viewTreeObserver.addOnPreDrawListener(object : ViewTreeObserver.OnPreDrawListener {
             override fun onPreDraw(): Boolean {
                 binding.ivBookCover.viewTreeObserver.removeOnPreDrawListener(this)

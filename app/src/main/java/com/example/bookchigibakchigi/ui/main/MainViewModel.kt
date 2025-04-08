@@ -14,6 +14,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.receiveAsFlow
 import javax.inject.Inject
 
 @HiltViewModel
@@ -24,6 +26,10 @@ class MainViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow<MainViewUiState>(MainViewUiState.Loading)
     val uiState: StateFlow<MainViewUiState> = _uiState.asStateFlow()
+
+    // Channel 추가
+    private val _bookDetailChannel = Channel<BookEntity>()
+    val bookDetailChannel = _bookDetailChannel.receiveAsFlow()
 
     // 공유된 핫 흐름 생성
     private val sharedBooksFlow = bookShelfRepository.getShelfItems()
@@ -43,19 +49,14 @@ class MainViewModel @Inject constructor(
                 // _uiState.value 로그로 찍기
                 Log.d("loadBooks TEST ", "_uiState.value: ${_uiState.value}")
 
-                // 현재 상태가 BookDetail인 경우 상태를 유지
                 if (_uiState.value is MainViewUiState.BookDetail) {
-//                    Log.d("loadBooks TEST ", "_uiState.value.initialPosition: ${(_uiState.value as MainViewUiState.BookDetail).initialPosition}")
-//                    val currentState = _uiState.value as MainViewUiState.BookDetail
-//                    // books만 업데이트하고 나머지 상태는 유지
-//                    _uiState.value = currentState.copy(books = books)
+                    return@collect
+                }
+
+                if (books.isEmpty()) {
+                    _uiState.value = MainViewUiState.Empty
                 } else {
-                    // BookDetail이 아닌 경우 기존 로직대로 처리
-                    _uiState.value = if (books.isEmpty()) {
-                        MainViewUiState.Empty
-                    } else {
-                        MainViewUiState.MyLibrary(books = books)
-                    }
+                    _uiState.value = MainViewUiState.MyLibrary(books = books)
                 }
             }
         }
@@ -96,6 +97,8 @@ class MainViewModel @Inject constructor(
                     initialPosition = position,
                     photoCards = photoCards
                 )
+                // Channel에 이벤트 전송
+                _bookDetailChannel.send(selectedBook)
             }
         }
     }

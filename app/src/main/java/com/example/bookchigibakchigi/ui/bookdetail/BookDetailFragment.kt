@@ -138,34 +138,61 @@ class BookDetailFragment : Fragment() {
         }
 
         binding.viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                mainViewModel.uiState.value.let { state ->
+                    when (state) {
+                        is MainViewUiState.BookDetail -> {
+                            val selectedBook = state.books[position]
+                            binding.tvBookTitle.isSelected = true
+
+                            // 코루틴을 사용하여 updateCurrentBook 함수의 완료를 기다림
+                            viewLifecycleOwner.lifecycleScope.launch {
+                                mainViewModel.updateCurrentBook(selectedBook)
+
+                                // updateCurrentBook 함수가 완료된 후에 다음 작업을 수행
+                                sharedView = binding.viewPager.findViewWithTag<View>("page_$position")?.findViewById(R.id.cardView)
+                                binding.viewPager.post {
+                                    val transitionName = "sharedView_${selectedBook.itemId}" // Transition Name 생성
+                                    findNavController().previousBackStackEntry?.savedStateHandle?.set("current_transition_name", transitionName)
+                                    findNavController().previousBackStackEntry?.savedStateHandle?.set("selected_position", position)
+                                }
+                            }
+                        }
+                        else -> {
+                            // 다른 상태는 무시
+                        }
+                    }
+                }
+            }
             override fun onPageScrollStateChanged(state: Int) {
                 // 스크롤이 멈춘 상태에서만 실행 (즉, UI 업데이트 완료 후)
                 if (state == ViewPager2.SCROLL_STATE_IDLE) {
                     val position = binding.viewPager.currentItem
-                    mainViewModel.uiState.value.let { state ->
-                        when (state) {
-                            is MainViewUiState.BookDetail -> {
-                                val selectedBook = state.books[position]
-                                binding.tvBookTitle.isSelected = true
-                                
-                                // 코루틴을 사용하여 updateCurrentBook 함수의 완료를 기다림
-                                viewLifecycleOwner.lifecycleScope.launch {
-                                    mainViewModel.updateCurrentBook(selectedBook)
-                                    
-                                    // updateCurrentBook 함수가 완료된 후에 다음 작업을 수행
-                                    sharedView = binding.viewPager.findViewWithTag<View>("page_$position")?.findViewById(R.id.cardView)
-                                    binding.viewPager.post {
-                                        val transitionName = "sharedView_${selectedBook.itemId}" // Transition Name 생성
-                                        findNavController().previousBackStackEntry?.savedStateHandle?.set("current_transition_name", transitionName)
-                                        findNavController().previousBackStackEntry?.savedStateHandle?.set("selected_position", position)
-                                    }
-                                }
-                            }
-                            else -> {
-                                // 다른 상태는 무시
-                            }
-                        }
-                    }
+//                    mainViewModel.uiState.value.let { state ->
+//                        when (state) {
+//                            is MainViewUiState.BookDetail -> {
+//                                val selectedBook = state.books[position]
+//                                binding.tvBookTitle.isSelected = true
+//
+//                                // 코루틴을 사용하여 updateCurrentBook 함수의 완료를 기다림
+//                                viewLifecycleOwner.lifecycleScope.launch {
+//                                    mainViewModel.updateCurrentBook(selectedBook)
+//
+//                                    // updateCurrentBook 함수가 완료된 후에 다음 작업을 수행
+//                                    sharedView = binding.viewPager.findViewWithTag<View>("page_$position")?.findViewById(R.id.cardView)
+//                                    binding.viewPager.post {
+//                                        val transitionName = "sharedView_${selectedBook.itemId}" // Transition Name 생성
+//                                        findNavController().previousBackStackEntry?.savedStateHandle?.set("current_transition_name", transitionName)
+//                                        findNavController().previousBackStackEntry?.savedStateHandle?.set("selected_position", position)
+//                                    }
+//                                }
+//                            }
+//                            else -> {
+//                                // 다른 상태는 무시
+//                            }
+//                        }
+//                    }
                 }
             }
         })
@@ -219,46 +246,43 @@ class BookDetailFragment : Fragment() {
     }
 
     private fun observeViewModel() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                mainViewModel.uiState.collectLatest { state ->
-                    when (state) {
-                        is MainViewUiState.BookDetail -> {
-                            Log.d("TEST POSITION ", "observeViewModel: ")
-                            state.initialPosition?.let { position ->
-                                Log.d("TEST POSITION ", "state.initialPosition: ${state.initialPosition}")
+        // 현재 상태를 한 번만 확인하고 처리
+        val currentState = mainViewModel.uiState.value
+        Log.d("TEST POSITION ", "observeViewModel: $currentState")
+        if (currentState is MainViewUiState.BookDetail) {
+            Log.d("TEST POSITION ", "observeViewModel: ")
+            currentState.initialPosition?.let { position ->
+                Log.d("TEST POSITION ", "state.initialPosition: ${currentState.initialPosition}")
 
+                val targetPosition = position
 
-                                var targetPosition = findNavController().currentBackStackEntry?.savedStateHandle?.get<Int>("selected_position")
-                                // set 0 if targetPosition is null
-                                if (targetPosition != null && position == 0) {
-                                    targetPosition = position
-                                }
+//                var targetPosition = findNavController().currentBackStackEntry?.savedStateHandle?.get<Int>("selected_position")
+//                // set 0 if targetPosition is null
+//                if (targetPosition != null && position == 0) {
+//                    targetPosition = position
+//                }
 
-                                adapter.setDataList(state.books)
-                                val totalItems = state.books.size
-                                val hasEnoughItemsForPreview = targetPosition in 1 until totalItems - 1
-                                val isNearEnd = targetPosition!! >= totalItems - 3 // 마지막 3개 이내인지 확인
+                currentState.books.let {
+                    adapter.setDataList(currentState.books)
+                    val totalItems = currentState.books.size
+                    val hasEnoughItemsForPreview = targetPosition in 1 until totalItems - 1
+                    val isNearEnd = targetPosition!! >= totalItems - 3 // 마지막 3개 이내인지 확인
 
-                                binding.viewPager.offscreenPageLimit = when {
-                                    isNearEnd -> 2
-                                    hasEnoughItemsForPreview -> 3
-                                    else -> 1
-                                }
-
-                                binding.viewPager.setCurrentItem(targetPosition, false)
-                                val currentPage =
-                                    binding.viewPager.findViewWithTag<View>("page_$targetPosition")
-                                currentPage?.findViewById<View>(R.id.cardView)?.transitionName =
-                                    "sharedView_${state.currentBook.itemId}"
-                            }
-                        }
-
-                        else -> {
-                            // 다른 상태는 무시
-                        }
+                    binding.viewPager.offscreenPageLimit = when {
+                        isNearEnd -> 2
+                        hasEnoughItemsForPreview -> 3
+                        else -> 1
                     }
+
+                    binding.viewPager.setCurrentItem(targetPosition, false)
+                    val currentPage =
+                        binding.viewPager.findViewWithTag<View>("page_$targetPosition")
+                    currentPage?.findViewById<View>(R.id.cardView)?.transitionName =
+                        "sharedView_${currentState.currentBook.itemId}"
+
                 }
+
+
             }
         }
     }
@@ -415,13 +439,13 @@ class BookDetailFragment : Fragment() {
             mainViewModel.uiState.value.let { state ->
                 if (state is MainViewUiState.BookDetail) {
                     val selectedBook = state.currentBook
-                    selectedBook?.let { book ->
+                    selectedBook.let { book ->
                         val intent = Intent(requireContext(), RecordActivity::class.java).apply {
                             putExtra("currentBook", book)
                         }
 
                         sharedView = binding.viewPager.findViewWithTag<View>("page_${binding.viewPager.currentItem}")?.findViewById(R.id.ivBook)
-                        sharedView!!.transitionName = "sharedView_${state.currentBook.itemId}"
+                        sharedView!!.transitionName = "record_act_shared_view_${state.currentBook.itemId}"
 
                         // 현재 ViewPager의 위치를 저장
                         val currentPosition = binding.viewPager.currentItem

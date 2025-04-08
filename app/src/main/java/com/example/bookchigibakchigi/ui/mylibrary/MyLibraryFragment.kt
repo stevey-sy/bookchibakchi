@@ -74,13 +74,23 @@ class MyLibraryFragment : Fragment() {
                 putString("transitionName", "sharedView_${bookEntity.itemId}")
             }
 
-            mainViewModel.setBookDetailState(bookEntity)
-
-            val extras = FragmentNavigatorExtras(
-                sharedView to "sharedView_${bookEntity.itemId}"
-            )
-
-            findNavController().navigate(R.id.action_myLibrary_to_bookDetail, bundle, null, extras)
+            // Channel을 통해 네비게이션 처리
+            viewLifecycleOwner.lifecycleScope.launch {
+                mainViewModel.setBookDetailState(bookEntity)
+                
+                mainViewModel.bookDetailChannel.collect { book ->
+                    val extras = FragmentNavigatorExtras(
+                        sharedView to "sharedView_${book.itemId}"
+                    )
+                    
+                    findNavController().navigate(
+                        R.id.action_myLibrary_to_bookDetail,
+                        bundle,
+                        null,
+                        extras
+                    )
+                }
+            }
         }
         binding.rvShelf.layoutManager = GridLayoutManager(context, 3)
         binding.rvShelf.adapter = adapter
