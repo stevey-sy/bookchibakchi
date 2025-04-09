@@ -1,6 +1,7 @@
 package com.example.bookchigibakchigi.ui.main
 
 import android.util.Log
+import android.view.View
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.bookchigibakchigi.data.PhotoCardWithTextContents
@@ -30,6 +31,10 @@ class MainViewModel @Inject constructor(
     // Channel 추가
     private val _bookDetailChannel = Channel<BookEntity>()
     val bookDetailChannel = _bookDetailChannel.receiveAsFlow()
+
+    // 네비게이션 이벤트를 위한 Channel 추가
+    private val _navigationEventChannel = Channel<NavigationEvent>()
+    val navigationEventChannel = _navigationEventChannel.receiveAsFlow()
 
     // 공유된 핫 흐름 생성
     private val sharedBooksFlow = bookShelfRepository.getShelfItems()
@@ -112,6 +117,46 @@ class MainViewModel @Inject constructor(
             _uiState.value = newState
         }
     }
+
+    fun navigateToBookDetail(selectedBook: BookEntity, position: Int, sharedView: View?) {
+        viewModelScope.launch {
+            // 현재 상태가 이미 BookDetail이고 같은 책을 선택한 경우 중복 호출 방지
+            if (_uiState.value is MainViewUiState.BookDetail) {
+                val currentState = _uiState.value as MainViewUiState.BookDetail
+                if (currentState.currentBook.itemId == selectedBook.itemId) {
+                    return@launch
+                }
+            }
+            
+            sharedBooksFlow.collect { books ->
+                val photoCards = photoCardRepository.getPhotoCardListByIsbn(selectedBook.isbn)
+                _uiState.value = MainViewUiState.BookDetail(
+                    books = books,
+                    currentBook = selectedBook,
+                    initialPosition = position,
+                    photoCards = photoCards
+                )
+                
+                // 네비게이션 이벤트 전송
+                _navigationEventChannel.send(
+                    NavigationEvent.NavigateToBookDetail(
+                        book = selectedBook,
+                        position = position,
+                        transitionName = "sharedView_${selectedBook.itemId}"
+                    )
+                )
+            }
+        }
+    }
+}
+
+// 네비게이션 이벤트를 위한 sealed class 추가
+sealed class NavigationEvent {
+    data class NavigateToBookDetail(
+        val book: BookEntity,
+        val position: Int,
+        val transitionName: String
+    ) : NavigationEvent()
 }
 
 sealed class MainViewUiState {

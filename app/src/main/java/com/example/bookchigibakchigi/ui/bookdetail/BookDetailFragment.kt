@@ -206,12 +206,12 @@ class BookDetailFragment : Fragment() {
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
             val currentPosition = binding.viewPager.currentItem
             
-            // 현재 상태를 MainViewUiState.BookList로 변경
+            // 현재 상태를 MainViewUiState.MyLibrary로 변경
             mainViewModel.uiState.value.let { state ->
                 if (state is MainViewUiState.BookDetail) {
                     mainViewModel.updateUiState(MainViewUiState.MyLibrary(
                         books = state.books,
-                        transitionName = arguments?.getString("transitionName").toString()
+                        transitionName = arguments?.getString("transitionName") ?: ""
                     ))
                 }
             }
@@ -256,12 +256,6 @@ class BookDetailFragment : Fragment() {
 
                 val targetPosition = position
 
-//                var targetPosition = findNavController().currentBackStackEntry?.savedStateHandle?.get<Int>("selected_position")
-//                // set 0 if targetPosition is null
-//                if (targetPosition != null && position == 0) {
-//                    targetPosition = position
-//                }
-
                 currentState.books.let {
                     adapter.setDataList(currentState.books)
                     val totalItems = currentState.books.size
@@ -281,10 +275,28 @@ class BookDetailFragment : Fragment() {
                         "sharedView_${currentState.currentBook.itemId}"
 
                 }
-
-
             }
         }
+        
+        // 상태 변경 관찰
+//        viewLifecycleOwner.lifecycleScope.launch {
+//            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+//                mainViewModel.uiState.collectLatest { state ->
+//                    when (state) {
+//                        is MainViewUiState.BookDetail -> {
+//                            // 상태가 변경될 때마다 UI 업데이트
+//                            adapter.setDataList(state.books)
+//                            state.initialPosition?.let { position ->
+//                                binding.viewPager.setCurrentItem(position, false)
+//                            }
+//                        }
+//                        else -> {
+//                            // 다른 상태는 무시
+//                        }
+//                    }
+//                }
+//            }
+//        }
     }
 
     private fun launchCamera() {

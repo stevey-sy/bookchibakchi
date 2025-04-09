@@ -23,6 +23,7 @@ import com.example.bookchigibakchigi.data.entity.BookEntity
 import com.example.bookchigibakchigi.databinding.FragmentMyLibraryBinding
 import com.example.bookchigibakchigi.ui.main.MainViewModel
 import com.example.bookchigibakchigi.ui.main.MainViewUiState
+import com.example.bookchigibakchigi.ui.main.NavigationEvent
 import com.example.bookchigibakchigi.ui.mylibrary.adapter.BookShelfAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -74,23 +75,8 @@ class MyLibraryFragment : Fragment() {
                 putString("transitionName", "sharedView_${bookEntity.itemId}")
             }
 
-            // Channel을 통해 네비게이션 처리
-            viewLifecycleOwner.lifecycleScope.launch {
-                mainViewModel.setBookDetailState(bookEntity)
-                
-                mainViewModel.bookDetailChannel.collect { book ->
-                    val extras = FragmentNavigatorExtras(
-                        sharedView to "sharedView_${book.itemId}"
-                    )
-                    
-                    findNavController().navigate(
-                        R.id.action_myLibrary_to_bookDetail,
-                        bundle,
-                        null,
-                        extras
-                    )
-                }
-            }
+            // MainViewModel의 navigateToBookDetail 함수 호출
+            mainViewModel.navigateToBookDetail(bookEntity, position, sharedView)
         }
         binding.rvShelf.layoutManager = GridLayoutManager(context, 3)
         binding.rvShelf.adapter = adapter
