@@ -3,7 +3,6 @@ package com.example.bookchigibakchigi.ui.mylibrary
 import android.graphics.Rect
 import android.os.Bundle
 import android.transition.TransitionInflater
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -33,10 +32,8 @@ import kotlinx.coroutines.launch
 class MyLibraryFragment : Fragment() {
 
     private var _binding: FragmentMyLibraryBinding? = null
-
     private val binding get() = _binding!!
     private lateinit var adapter: BookShelfAdapter
-
     private val mainViewModel: MainViewModel by activityViewModels()
 
     override fun onCreateView(
@@ -61,6 +58,7 @@ class MyLibraryFragment : Fragment() {
         initRecyclerView()
         initClickListeners()
         observeViewModel()
+        observeNavigationEvents()
     }
 
     private fun initBinding() {
@@ -75,7 +73,6 @@ class MyLibraryFragment : Fragment() {
                 putString("transitionName", "sharedView_${bookEntity.itemId}")
             }
 
-            // MainViewModel의 navigateToBookDetail 함수 호출
             mainViewModel.navigateToBookDetail(bookEntity, position, sharedView)
         }
         binding.rvShelf.layoutManager = GridLayoutManager(context, 3)
@@ -115,6 +112,39 @@ class MyLibraryFragment : Fragment() {
         }
     }
 
+    private fun observeNavigationEvents() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                mainViewModel.navigationEventChannel.collect { event ->
+                    when (event) {
+                        is NavigationEvent.NavigateToBookDetail -> {
+                            val bundle = Bundle().apply {
+                                putInt("itemId", event.book.itemId)
+                                putString("transitionName", event.transitionName)
+                            }
+                            
+                            val sharedView = view?.findViewById<View>(R.id.cardView)
+                            
+                            if (sharedView != null) {
+                                findNavController().navigate(
+                                    R.id.action_myLibrary_to_bookDetail,
+                                    bundle,
+                                    null,
+                                    FragmentNavigatorExtras(sharedView to event.transitionName)
+                                )
+                            } else {
+                                findNavController().navigate(
+                                    R.id.action_myLibrary_to_bookDetail,
+                                    bundle
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     private fun showEmptyState() {
         binding.apply {
             rvShelf.visibility = View.GONE
@@ -127,7 +157,6 @@ class MyLibraryFragment : Fragment() {
             rvShelf.visibility = View.VISIBLE
             emptyView.visibility = View.GONE
             adapter.setDataList(books)
-            // 데이터 로드 완료 후 Transition 시작
             rvShelf.viewTreeObserver.addOnPreDrawListener(
                 object : ViewTreeObserver.OnPreDrawListener {
                     override fun onPreDraw(): Boolean {
@@ -141,9 +170,8 @@ class MyLibraryFragment : Fragment() {
     }
 
     private fun prepareTransitions() {
-        setExitSharedElementCallback(object : androidx.core.app.SharedElementCallback() {
+        setExitSharedElementCallback(object : SharedElementCallback() {
             override fun onMapSharedElements(names: List<String>, sharedElements: MutableMap<String, View>) {
-                // 최신 Transition Name과 position 가져오기
                 val currentTransitionName = findNavController()
                     .currentBackStackEntry?.savedStateHandle?.get<String>("current_transition_name")
                 val currentPosition = findNavController()
@@ -152,7 +180,6 @@ class MyLibraryFragment : Fragment() {
                 if (currentTransitionName.isNullOrEmpty() || currentPosition == -1) return
                 scrollToPosition(currentPosition)
 
-                // RecyclerView의 ViewHolder 찾기
                 val selectedViewHolder = binding.rvShelf.findViewHolderForAdapterPosition(currentPosition)
                 if(selectedViewHolder == null) {
                     return
@@ -186,5 +213,4 @@ class MyLibraryFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
-
 }
