@@ -3,6 +3,7 @@ package com.example.bookchigibakchigi.ui.mylibrary
 import android.graphics.Rect
 import android.os.Bundle
 import android.transition.TransitionInflater
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -27,6 +28,8 @@ import com.example.bookchigibakchigi.ui.mylibrary.adapter.BookShelfAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.Job
 
 @AndroidEntryPoint
 class MyLibraryFragment : Fragment() {
@@ -35,6 +38,8 @@ class MyLibraryFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var adapter: BookShelfAdapter
     private val mainViewModel: MainViewModel by activityViewModels()
+    private var lastClickedSharedView: View? = null
+    private var navigationJob: Job? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -68,11 +73,7 @@ class MyLibraryFragment : Fragment() {
 
     private fun initRecyclerView() {
         adapter = BookShelfAdapter { bookEntity, position, sharedView ->
-            val bundle = Bundle().apply {
-                putInt("itemId", bookEntity.itemId)
-                putString("transitionName", "sharedView_${bookEntity.itemId}")
-            }
-
+            lastClickedSharedView = sharedView
             mainViewModel.navigateToBookDetail(bookEntity, position, sharedView)
         }
         binding.rvShelf.layoutManager = GridLayoutManager(context, 3)
@@ -113,34 +114,32 @@ class MyLibraryFragment : Fragment() {
     }
 
     private fun observeNavigationEvents() {
-        viewLifecycleOwner.lifecycleScope.launch {
+        navigationJob?.cancel()
+        
+        navigationJob = viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                mainViewModel.navigationEventChannel.collect { event ->
-                    when (event) {
-                        is NavigationEvent.NavigateToBookDetail -> {
-                            val bundle = Bundle().apply {
-                                putInt("itemId", event.book.itemId)
-                                putString("transitionName", event.transitionName)
-                            }
-                            
-                            val sharedView = view?.findViewById<View>(R.id.cardView)
-                            
-                            if (sharedView != null) {
-                                findNavController().navigate(
-                                    R.id.action_myLibrary_to_bookDetail,
-                                    bundle,
-                                    null,
-                                    FragmentNavigatorExtras(sharedView to event.transitionName)
-                                )
-                            } else {
-                                findNavController().navigate(
-                                    R.id.action_myLibrary_to_bookDetail,
-                                    bundle
-                                )
+                mainViewModel.navigationEventFlow
+                    .distinctUntilChanged()
+                    .collect { event ->
+                        when (event) {
+                            is NavigationEvent.NavigateToBookDetail -> {
+                                Log.d("observeNavigationEvents", event.toString())
+                                val bundle = Bundle().apply {
+                                    putInt("itemId", event.book.itemId)
+                                    putString("transitionName", event.transitionName)
+                                }
+
+                                if(lastClickedSharedView != null) {
+                                    findNavController().navigate(
+                                        R.id.action_myLibrary_to_bookDetail,
+                                        bundle,
+                                        null,
+                                        FragmentNavigatorExtras((lastClickedSharedView to event.transitionName) as Pair<View, String>)
+                                    )
+                                }
                             }
                         }
                     }
-                }
             }
         }
     }
@@ -210,7 +209,8 @@ class MyLibraryFragment : Fragment() {
     }
 
     override fun onDestroyView() {
-        super.onDestroyView()
+        navigationJob?.cancel()
         _binding = null
+        super.onDestroyView()
     }
 }

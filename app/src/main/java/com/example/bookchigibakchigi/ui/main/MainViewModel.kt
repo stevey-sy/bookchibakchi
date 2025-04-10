@@ -15,8 +15,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import javax.inject.Inject
 
 @HiltViewModel
@@ -28,13 +29,19 @@ class MainViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<MainViewUiState>(MainViewUiState.Loading)
     val uiState: StateFlow<MainViewUiState> = _uiState.asStateFlow()
 
-    // Channel 추가
-    private val _bookDetailChannel = Channel<BookEntity>()
-    val bookDetailChannel = _bookDetailChannel.receiveAsFlow()
+    // Channel을 SharedFlow로 변경
+    private val _bookDetailFlow = MutableSharedFlow<BookEntity>(
+        replay = 0,
+        extraBufferCapacity = 1
+    )
+    val bookDetailFlow = _bookDetailFlow.asSharedFlow()
 
-    // 네비게이션 이벤트를 위한 Channel 추가
-    private val _navigationEventChannel = Channel<NavigationEvent>()
-    val navigationEventChannel = _navigationEventChannel.receiveAsFlow()
+    // 네비게이션 이벤트를 위한 SharedFlow 추가
+    private val _navigationEventFlow = MutableSharedFlow<NavigationEvent>(
+        replay = 0,
+        extraBufferCapacity = 1
+    )
+    val navigationEventFlow = _navigationEventFlow.asSharedFlow()
 
     // 공유된 핫 흐름 생성
     private val sharedBooksFlow = bookShelfRepository.getShelfItems()
@@ -102,8 +109,8 @@ class MainViewModel @Inject constructor(
                     initialPosition = position,
                     photoCards = photoCards
                 )
-                // Channel에 이벤트 전송
-                _bookDetailChannel.send(selectedBook)
+                // SharedFlow에 이벤트 전송
+                _bookDetailFlow.emit(selectedBook)
             }
         }
     }
@@ -138,7 +145,7 @@ class MainViewModel @Inject constructor(
                 )
                 
                 // 네비게이션 이벤트 전송
-                _navigationEventChannel.send(
+                _navigationEventFlow.emit(
                     NavigationEvent.NavigateToBookDetail(
                         book = selectedBook,
                         position = position,
@@ -146,6 +153,13 @@ class MainViewModel @Inject constructor(
                     )
                 )
             }
+        }
+    }
+    
+    // 네비게이션 이벤트 초기화 함수 추가
+    fun clearNavigationEvent() {
+        viewModelScope.launch {
+            _navigationEventFlow.resetReplayCache()
         }
     }
 }
