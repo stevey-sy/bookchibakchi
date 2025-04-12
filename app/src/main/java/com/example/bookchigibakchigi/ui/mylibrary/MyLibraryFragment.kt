@@ -72,10 +72,17 @@ class MyLibraryFragment : Fragment() {
     }
 
     private fun initRecyclerView() {
-        adapter = BookShelfAdapter { bookEntity, position, sharedView ->
-            lastClickedSharedView = sharedView
-            mainViewModel.navigateToBookDetail(bookEntity, position, sharedView)
-        }
+        adapter = BookShelfAdapter(
+            onItemClick = { bookEntity, position, sharedView ->
+                lastClickedSharedView = sharedView
+                mainViewModel.navigateToBookDetail(bookEntity, position, sharedView)
+            },
+            onItemLongClick = { bookEntity ->
+                // TODO: 롱클릭 시 수행할 작업 구현
+                Log.d("BookShelfAdapter", "Long clicked book: ${bookEntity.title}")
+
+            }
+        )
         binding.rvShelf.layoutManager = GridLayoutManager(context, 3)
         binding.rvShelf.adapter = adapter
 

@@ -14,7 +14,8 @@ import com.example.bookchigibakchigi.data.entity.BookEntity
 import com.example.bookchigibakchigi.databinding.ItemBookShelfBinding
 
 class BookShelfAdapter(
-    private val onItemClick: (BookEntity, Int, View) -> Unit // 클릭 리스너 추가
+    private val onItemClick: (BookEntity, Int, View) -> Unit, // 클릭 리스너 추가
+    private val onItemLongClick: (BookEntity) -> Unit // 롱클릭 리스너 추가
 ) : RecyclerView.Adapter<BookShelfAdapter.BookShelfItemViewHolder>() {
 
     private val dataList = mutableListOf<BookEntity>()
@@ -34,7 +35,7 @@ class BookShelfAdapter(
         if(dataList.isEmpty()) return
         if (position < dataList.size) {
             // 실제 데이터가 있는 경우 표시
-            holder.bind(dataList[position], position, onItemClick)
+            holder.bind(dataList[position], position, onItemClick, onItemLongClick)
         } else {
             // 빈 아이템을 처리
             holder.bindEmpty(position, itemCount)
@@ -48,17 +49,18 @@ class BookShelfAdapter(
     }
 
     class BookShelfItemViewHolder(private val binding: ItemBookShelfBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(bookEntity: BookEntity, position: Int, onItemClick: (BookEntity, Int, View) -> Unit) {
+        fun bind(bookEntity: BookEntity, position: Int, onItemClick: (BookEntity, Int, View) -> Unit, onItemLongClick: (BookEntity) -> Unit) {
 
-//             binding.ivBook.transitionName = "sharedView_${bookEntity.itemId}"
             binding.cardView.transitionName = "sharedView_${bookEntity.itemId}"
             Log.d("transitionName test", binding.cardView.transitionName)
 
             binding.root.setOnClickListener{
-                //onItemClick(bookEntity, position, binding.ivBook)
-                binding.vBookShadow.visibility = View.INVISIBLE
-                binding.vBookShadowUp.visibility = View.INVISIBLE
                 onItemClick(bookEntity, position, binding.cardView)
+            }
+
+            binding.root.setOnLongClickListener{
+                onItemLongClick(bookEntity)
+                true
             }
             // 타입에 따른 뷰 가시성 처리
 //            binding.rlPlus.visibility = if (bookEntity.bookType == "0") View.VISIBLE else View.GONE
