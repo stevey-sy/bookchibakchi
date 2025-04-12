@@ -6,6 +6,7 @@ import android.view.MenuItem
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.core.content.res.ResourcesCompat
+import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -44,7 +45,6 @@ class MainActivity : BaseActivity() {
         val appBarConfiguration = AppBarConfiguration(
             setOf(
                 R.id.navigation_my_library,
-                R.id.navigation_book_detail,
                 R.id.navigation_pick_book,
                 R.id.navigation_community,
                 R.id.navigation_setting
@@ -53,6 +53,45 @@ class MainActivity : BaseActivity() {
 
         navView.setupWithNavController(navController)
         setupActionBarWithNavController(navController, appBarConfiguration)
+        
+        navView.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.navigation_my_library -> {
+                    navController.navigate(R.id.navigation_my_library, null, NavOptions.Builder()
+                        .setPopUpTo(R.id.navigation_my_library, true)
+                        .setLaunchSingleTop(true)
+                        .setRestoreState(true)
+                        .build())
+                    true
+                }
+                R.id.navigation_pick_book -> {
+                    navController.navigate(R.id.navigation_pick_book, null, NavOptions.Builder()
+                        .setPopUpTo(R.id.navigation_my_library, true)
+                        .setLaunchSingleTop(true)
+                        .setRestoreState(true)
+                        .build())
+                    true
+                }
+                R.id.navigation_community -> {
+                    navController.navigate(R.id.navigation_community, null, NavOptions.Builder()
+                        .setPopUpTo(R.id.navigation_my_library, true)
+                        .setLaunchSingleTop(true)
+                        .setRestoreState(true)
+                        .build())
+                    true
+                }
+                R.id.navigation_setting -> {
+                    navController.navigate(R.id.navigation_setting, null, NavOptions.Builder()
+                        .setPopUpTo(R.id.navigation_my_library, true)
+                        .setLaunchSingleTop(true)
+                        .setRestoreState(true)
+                        .build())
+                    true
+                }
+                else -> false
+            }
+        }
+
         navController.addOnDestinationChangedListener { _, destination, _ ->
             updateToolbarForDestination(destination.id)
         }
@@ -60,7 +99,6 @@ class MainActivity : BaseActivity() {
 
     private fun updateToolbarForDestination(destinationId: Int) {
         binding.toolbar.menu.clear()
-        
         val (title, showBackButton) = when (destinationId) {
             R.id.navigation_book_detail, R.id.navigation_my_library -> {
                 binding.toolbar.inflateMenu(R.menu.menu_my_library)
