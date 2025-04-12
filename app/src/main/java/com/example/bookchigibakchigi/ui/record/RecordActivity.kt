@@ -108,10 +108,10 @@ class RecordActivity : BaseActivity() {
     }
 
     private fun updateUiState(state: RecordUiState) {
-//        binding.btnOut.visibility = when (state) {
-//            is RecordUiState.Completed -> View.VISIBLE
-//            else -> View.GONE
-//        }
+        binding.btnOut.visibility = when (state) {
+            is RecordUiState.Completed -> View.VISIBLE
+            else -> View.GONE
+        }
 
         if (state is RecordUiState.Completed) {
             playCompletionAnimation()
