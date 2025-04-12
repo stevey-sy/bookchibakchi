@@ -45,9 +45,7 @@ class MainActivity : BaseActivity() {
         val appBarConfiguration = AppBarConfiguration(
             setOf(
                 R.id.navigation_my_library,
-                R.id.navigation_pick_book,
-                R.id.navigation_community,
-                R.id.navigation_setting
+                R.id.navigation_pick_book
             )
         )
 
@@ -55,37 +53,19 @@ class MainActivity : BaseActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         
         navView.setOnItemSelectedListener { item ->
+            val navOptions = NavOptions.Builder()
+                .setPopUpTo(R.id.navigation_my_library, true)
+                .setLaunchSingleTop(true)
+                .setRestoreState(true)
+                .build()
+
             when (item.itemId) {
                 R.id.navigation_my_library -> {
-                    navController.navigate(R.id.navigation_my_library, null, NavOptions.Builder()
-                        .setPopUpTo(R.id.navigation_my_library, true)
-                        .setLaunchSingleTop(true)
-                        .setRestoreState(true)
-                        .build())
-                    true
-                }
-                R.id.navigation_pick_book -> {
-                    navController.navigate(R.id.navigation_pick_book, null, NavOptions.Builder()
-                        .setPopUpTo(R.id.navigation_my_library, true)
-                        .setLaunchSingleTop(true)
-                        .setRestoreState(true)
-                        .build())
+                    navController.navigate(R.id.navigation_my_library, null, navOptions)
                     true
                 }
                 R.id.navigation_community -> {
-                    navController.navigate(R.id.navigation_community, null, NavOptions.Builder()
-                        .setPopUpTo(R.id.navigation_my_library, true)
-                        .setLaunchSingleTop(true)
-                        .setRestoreState(true)
-                        .build())
-                    true
-                }
-                R.id.navigation_setting -> {
-                    navController.navigate(R.id.navigation_setting, null, NavOptions.Builder()
-                        .setPopUpTo(R.id.navigation_my_library, true)
-                        .setLaunchSingleTop(true)
-                        .setRestoreState(true)
-                        .build())
+                    navController.navigate(R.id.navigation_community, null, navOptions)
                     true
                 }
                 else -> false
@@ -100,14 +80,13 @@ class MainActivity : BaseActivity() {
     private fun updateToolbarForDestination(destinationId: Int) {
         binding.toolbar.menu.clear()
         val showBackButton = when (destinationId) {
-            R.id.navigation_book_detail, R.id.navigation_my_library -> {
-                binding.toolbar.inflateMenu(R.menu.menu_my_library)
+            R.id.navigation_book_detail -> true
+            else -> {
+                if (destinationId == R.id.navigation_my_library) {
+                    binding.toolbar.inflateMenu(R.menu.menu_my_library)
+                }
                 false
             }
-            R.id.navigation_pick_book -> false
-            R.id.navigation_community -> false
-            R.id.navigation_setting -> false
-            else -> true
         }
 
         binding.toolbar.title = getString(R.string.app_name)
