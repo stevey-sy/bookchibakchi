@@ -99,18 +99,18 @@ class MainActivity : BaseActivity() {
 
     private fun updateToolbarForDestination(destinationId: Int) {
         binding.toolbar.menu.clear()
-        val (title, showBackButton) = when (destinationId) {
+        val showBackButton = when (destinationId) {
             R.id.navigation_book_detail, R.id.navigation_my_library -> {
                 binding.toolbar.inflateMenu(R.menu.menu_my_library)
-                getString(R.string.app_name) to false
+                false
             }
-            R.id.navigation_pick_book -> getString(R.string.title_pick_book) to false
-            R.id.navigation_community -> getString(R.string.title_community) to false
-            R.id.navigation_setting -> getString(R.string.title_setting) to false
-            else -> null to true
+            R.id.navigation_pick_book -> false
+            R.id.navigation_community -> false
+            R.id.navigation_setting -> false
+            else -> true
         }
 
-        binding.toolbar.title = title
+        binding.toolbar.title = getString(R.string.app_name)
         supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(showBackButton)
             setHomeButtonEnabled(showBackButton)
