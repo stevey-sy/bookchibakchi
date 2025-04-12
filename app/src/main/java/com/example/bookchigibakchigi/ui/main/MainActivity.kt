@@ -64,7 +64,7 @@ class MainActivity : BaseActivity() {
                     navController.navigate(R.id.navigation_my_library, null, navOptions)
                     true
                 }
-                R.id.navigation_community -> {
+                R.id.navigation_pick_book -> {
                     navController.navigate(R.id.navigation_community, null, navOptions)
                     true
                 }
