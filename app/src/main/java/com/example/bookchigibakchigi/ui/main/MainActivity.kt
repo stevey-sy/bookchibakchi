@@ -28,11 +28,11 @@ class MainActivity : BaseActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        setupToolbar()
-        setupNavigation()
+        initToolbar()
+        initNavigation()
     }
 
-    private fun setupToolbar() {
+    private fun initToolbar() {
         setSupportActionBar(binding.toolbar)
         supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(false)
@@ -40,7 +40,7 @@ class MainActivity : BaseActivity() {
         }
     }
 
-    private fun setupNavigation() {
+    private fun initNavigation() {
         val navView = binding.navView
         val appBarConfiguration = AppBarConfiguration(
             setOf(
