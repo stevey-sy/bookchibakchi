@@ -140,59 +140,59 @@ class BookDetailFragment : Fragment() {
         binding.viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
-                mainViewModel.uiState.value.let { state ->
-                    when (state) {
-                        is MainViewUiState.BookDetail -> {
-                            val selectedBook = state.books[position]
-                            binding.tvBookTitle.isSelected = true
-
-                            // 코루틴을 사용하여 updateCurrentBook 함수의 완료를 기다림
-                            viewLifecycleOwner.lifecycleScope.launch {
-                                mainViewModel.updateCurrentBook(selectedBook)
-
-                                // updateCurrentBook 함수가 완료된 후에 다음 작업을 수행
-                                sharedView = binding.viewPager.findViewWithTag<View>("page_$position")?.findViewById(R.id.cardView)
-                                binding.viewPager.post {
-                                    val transitionName = "sharedView_${selectedBook.itemId}" // Transition Name 생성
-                                    findNavController().previousBackStackEntry?.savedStateHandle?.set("current_transition_name", transitionName)
-                                    findNavController().previousBackStackEntry?.savedStateHandle?.set("selected_position", position)
-                                }
-                            }
-                        }
-                        else -> {
-                            // 다른 상태는 무시
-                        }
-                    }
-                }
+//                mainViewModel.uiState.value.let { state ->
+//                    when (state) {
+//                        is MainViewUiState.BookDetail -> {
+//                            val selectedBook = state.books[position]
+//                            binding.tvBookTitle.isSelected = true
+//
+//                            // 코루틴을 사용하여 updateCurrentBook 함수의 완료를 기다림
+//                            viewLifecycleOwner.lifecycleScope.launch {
+//                                mainViewModel.updateCurrentBook(selectedBook)
+//
+//                                // updateCurrentBook 함수가 완료된 후에 다음 작업을 수행
+//                                sharedView = binding.viewPager.findViewWithTag<View>("page_$position")?.findViewById(R.id.cardView)
+//                                binding.viewPager.post {
+//                                    val transitionName = "sharedView_${selectedBook.itemId}" // Transition Name 생성
+//                                    findNavController().previousBackStackEntry?.savedStateHandle?.set("current_transition_name", transitionName)
+//                                    findNavController().previousBackStackEntry?.savedStateHandle?.set("selected_position", position)
+//                                }
+//                            }
+//                        }
+//                        else -> {
+//                            // 다른 상태는 무시
+//                        }
+//                    }
+//                }
             }
             override fun onPageScrollStateChanged(state: Int) {
                 // 스크롤이 멈춘 상태에서만 실행 (즉, UI 업데이트 완료 후)
                 if (state == ViewPager2.SCROLL_STATE_IDLE) {
                     val position = binding.viewPager.currentItem
-//                    mainViewModel.uiState.value.let { state ->
-//                        when (state) {
-//                            is MainViewUiState.BookDetail -> {
-//                                val selectedBook = state.books[position]
-//                                binding.tvBookTitle.isSelected = true
-//
-//                                // 코루틴을 사용하여 updateCurrentBook 함수의 완료를 기다림
-//                                viewLifecycleOwner.lifecycleScope.launch {
-//                                    mainViewModel.updateCurrentBook(selectedBook)
-//
-//                                    // updateCurrentBook 함수가 완료된 후에 다음 작업을 수행
-//                                    sharedView = binding.viewPager.findViewWithTag<View>("page_$position")?.findViewById(R.id.cardView)
-//                                    binding.viewPager.post {
-//                                        val transitionName = "sharedView_${selectedBook.itemId}" // Transition Name 생성
-//                                        findNavController().previousBackStackEntry?.savedStateHandle?.set("current_transition_name", transitionName)
-//                                        findNavController().previousBackStackEntry?.savedStateHandle?.set("selected_position", position)
-//                                    }
-//                                }
-//                            }
-//                            else -> {
-//                                // 다른 상태는 무시
-//                            }
-//                        }
-//                    }
+                    mainViewModel.uiState.value.let { state ->
+                        when (state) {
+                            is MainViewUiState.BookDetail -> {
+                                val selectedBook = state.books[position]
+                                binding.tvBookTitle.isSelected = true
+
+                                // 코루틴을 사용하여 updateCurrentBook 함수의 완료를 기다림
+                                viewLifecycleOwner.lifecycleScope.launch {
+                                    mainViewModel.updateCurrentBook(selectedBook)
+
+                                    // updateCurrentBook 함수가 완료된 후에 다음 작업을 수행
+                                    sharedView = binding.viewPager.findViewWithTag<View>("page_$position")?.findViewById(R.id.cardView)
+                                    binding.viewPager.post {
+                                        val transitionName = "sharedView_${selectedBook.itemId}" // Transition Name 생성
+                                        findNavController().previousBackStackEntry?.savedStateHandle?.set("current_transition_name", transitionName)
+                                        findNavController().previousBackStackEntry?.savedStateHandle?.set("selected_position", position)
+                                    }
+                                }
+                            }
+                            else -> {
+                                // 다른 상태는 무시
+                            }
+                        }
+                    }
                 }
             }
         })

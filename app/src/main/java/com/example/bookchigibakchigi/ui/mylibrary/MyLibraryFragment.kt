@@ -111,6 +111,9 @@ class MyLibraryFragment : Fragment() {
                                 showBookList(state.books)
                             }
                         }
+                        is MainViewUiState.Empty -> {
+                            showEmptyState()
+                        }
                         else -> {
                             // 다른 상태는 무시
                         }
