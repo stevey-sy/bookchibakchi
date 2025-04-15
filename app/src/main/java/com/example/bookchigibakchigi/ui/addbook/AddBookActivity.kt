@@ -70,9 +70,9 @@ class AddBookActivity : BaseActivity() {
                         is AddBookUiState.Loading -> { /* 로딩 상태 처리 */ }
                         is AddBookUiState.Success -> {
                             if (state.isSaved) {
-//                                state.savedItemId?.let { itemId ->
-//                                    binding.ivBook.transitionName = "sharedView_$itemId"
-//                                }
+                                state.savedItemId?.let { itemId ->
+                                    binding.ivBook.transitionName = "sharedView_$itemId"
+                                }
                                 Toast.makeText(this@AddBookActivity, "나의 서재에 책이 추가되었습니다.", Toast.LENGTH_SHORT).show()
                                 navigateToMainActivity()
                             }
