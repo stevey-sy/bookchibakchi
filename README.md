@@ -28,8 +28,10 @@
   - MVVM Architecture (View - DataBinding - ViewModel - Model)
   - Repository Pattern
 
+
+
 ## Architecture
-**OdokOdok** is based on the MVVM architecture and the Repository pattern, which follows the [Google's official architecture guidance](https://developer.android.com/topic/architecture).
+**OdokOdok** 은 [Google의 공식 아키텍처 가이드](https://developer.android.com/topic/architecture)를 기반으로 한 MVVM 아키텍처와 Repository 패턴을 사용하여 설계되었습니다.
 
 ![architecture](../bookchibakchi/figure/figure0.png)
 
@@ -40,25 +42,22 @@ The overall architecture of **OdokOdok** is composed of two layers; the UI layer
 
 ### Architecture Overview
 
-![architecture](../bookchibakchi/figure/figure1.png)
+![architecture](/figure/figure1.png)
 
-- Each layer follows [unidirectional event/data flow](https://developer.android.com/topic/architecture/ui-layer#udf); the UI layer emits user events to the data layer, and the data layer exposes data as a stream to other layers.
-- The data layer is designed to work independently from other layers and must be pure, which means it doesn't have any dependencies on the other layers.
+- 각 계층은 단방향 이벤트 및 데이터 흐름을 따릅니다. UI 레이어는 사용자 이벤트를 데이터 레이어로 전달하고, 데이터 레이어는 데이터를 스트림 형태로 UI에 제공합니다.
+- 데이터 레이어는 다른 계층에 의존하지 않고 독립적으로 작동하도록 설계되었으며, 순수한 계층(Pure Layer)으로 구현되어 다른 레이어에 의존성이 없습니다.
 
-With this loosely coupled architecture, you can increase the reusability of components and scalability of your app.
+이와 같이 느슨하게 결합된 아키텍처를 통해 컴포넌트의 재사용성과 앱의 확장성을 높일 수 있습니다.
 
 ### UI Layer
 
-![architecture](../bookchibakchi/figure/figure2.png)
+![architecture](/figure/figure2.png)
 
-The UI layer consists of UI elements to configure screens that could interact with users and [ViewModel](https://developer.android.com/topic/libraries/architecture/viewmodel) that holds app states and restores data when configuration changes.
-- UI elements observe the data flow via [DataBinding](https://developer.android.com/topic/libraries/data-binding), which is the most essential part of the MVVM architecture.
+UI 레이어는 사용자와 상호작용할 수 있는 화면을 구성하는 UI 요소들과, 앱 상태를 유지하고 구성 변경 시 데이터를 복원하는 [ViewModel](https://developer.android.com/topic/libraries/architecture/viewmodel) 로 구성됩니다.
+- UI 요소는 [DataBinding](https://developer.android.com/topic/libraries/data-binding)을 통해 데이터 흐름을 관찰하며, 이는 MVVM 아키텍처에서 핵심적인 역할을 합니다.
 
 ### Data Layer
 
-![architecture](../bookchibakchi/figure/figure3.png)
+![architecture](/figure/figure3.png)
 
-The data Layer consists of repositories, which include business logic, such as querying data from the local database and requesting remote data from the network. It is implemented as an offline-first source of business logic and follows the [single source of truth](https://en.wikipedia.org/wiki/Single_source_of_truth) principle.<br>
-
-**OdokOdok** is an offline-first app is an app that is able to perform all, or a critical subset of its core functionality without access to the internet.
-So users don't need to be up-to-date on the network resources every time and it will decrease users' data consumption. For further information, you can check out [Build an offline-first app](https://developer.android.com/topic/architecture/data-layer/offline-first).
+데이터 레이어는 로컬 데이터베이스에서 데이터를 조회하거나 네트워크로부터 원격 데이터를 요청하는 등 비즈니스 로직을 처리하는 리포지토리로 구성됩니다.
