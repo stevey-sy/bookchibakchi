@@ -90,14 +90,6 @@
                     android:clipToPadding="false"
                     android:clipChildren="false">
 
-<!--                    <LinearLayout-->
-<!--                        android:id="@+id/llProgressPercentage"-->
-<!--                        android:layout_width="wrap_content"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:clipToPadding="false"-->
-<!--                        android:clipChildren="false"-->
-<!--                        app:progressTranslation="@{mainViewModel.currentBook.progressPercentage}"-->
-<!--                        android:orientation="vertical">-->
                     <LinearLayout
                         android:id="@+id/llProgressPercentage"
                         android:layout_width="wrap_content"
@@ -107,17 +99,6 @@
                         android:orientation="vertical"
                         app:progressTranslation="@{mainViewModel.uiState}">
 
-                        <!-- 진행 퍼센트를 표시하는 텍스트 -->
-<!--                        <TextView-->
-<!--                            android:id="@+id/tvProgressPercentage"-->
-<!--                            android:layout_width="wrap_content"-->
-<!--                            android:layout_height="wrap_content"-->
-<!--                            android:textSize="12sp"-->
-<!--                            android:textColor="@color/white"-->
-<!--                            android:background="@drawable/background_black_circle"-->
-<!--                            android:layout_alignParentStart="true"-->
-<!--                            android:padding="4dp"-->
-<!--                            android:text='@{String.valueOf(mainViewModel.currentBook.progressPercentage) + "%"}' />-->
                         <TextView
                             android:id="@+id/tvProgressPercentage"
                             android:layout_width="wrap_content"
@@ -149,17 +130,6 @@
                         android:layout_alignParentStart="true"
                         android:layout_alignParentEnd="true" />
 
-                    <!-- 프로그레스바 (진행도) -->
-<!--                    <View-->
-<!--                        android:id="@+id/progressBarForeground"-->
-<!--                        android:layout_width="0dp"-->
-<!--                        android:layout_height="8dp"-->
-<!--                        android:layout_below="@id/llProgressPercentage"-->
-<!--                        android:background="@drawable/rounded_progress_bar_black"-->
-<!--                        android:layout_alignParentStart="true"-->
-<!--                        android:layout_marginBottom="8dp"-->
-<!--                        app:progressPercentage="@{mainViewModel.currentBook.progressPercentage}"/>-->
-
                     <View
                         android:id="@+id/progressBarForeground"
                         android:layout_width="0dp"
@@ -167,14 +137,23 @@
                         android:layout_below="@id/llProgressPercentage"
                         android:background="@drawable/rounded_progress_bar_black"
                         android:layout_alignParentStart="true"
-                        android:layout_marginBottom="8dp"
+                        android:layout_marginBottom="4dp"
                         app:progressPercentage="@{mainViewModel.uiState}"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/progressBarBackground"
+                        android:layout_centerInParent="true"
+                        android:textColor="@color/light_gray"
+                        app:page="@{mainViewModel.uiState}" />
 
                 </RelativeLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_40sdp"
+
                     android:orientation="horizontal"
                     android:background="@drawable/background_rounded_rectangle_black"
                     android:weightSum="2">
@@ -241,7 +220,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:layout_marginTop="@dimen/_20sdp"
+                    android:layout_marginTop="@dimen/_14sdp"
                     android:gravity="center">
 
                     <TextView
@@ -257,7 +236,7 @@
                         android:layout_width="@dimen/_20sdp"
                         android:layout_height="@dimen/_20sdp"
                         android:src="@drawable/ic_down_arrow_gray"
-                        android:layout_marginTop="@dimen/_10sdp"/>
+                        android:layout_marginTop="@dimen/_4sdp"/>
 
 
                 </LinearLayout>

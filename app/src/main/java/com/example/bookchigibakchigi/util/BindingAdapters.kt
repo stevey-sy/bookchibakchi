@@ -67,7 +67,6 @@ object BindingAdapters {
     }
 
     // BookDetailFragment.kt
-
     @JvmStatic
     @BindingAdapter("bookTitle")
     fun TextView.setBookTitle(uiState: MainViewUiState?) {
@@ -102,6 +101,19 @@ object BindingAdapters {
         text = when (uiState) {
             is MainViewUiState.BookDetail -> {
                 uiState.currentBook.getPercentageStr()
+            }
+            else -> {
+                ""
+            }
+        }
+    }
+
+    @JvmStatic
+    @BindingAdapter("page")
+    fun TextView.setPageProgress(uiState: MainViewUiState?) {
+        text = when (uiState) {
+            is MainViewUiState.BookDetail -> {
+                uiState.currentBook.getProgressText()
             }
             else -> {
                 ""
@@ -154,9 +166,7 @@ object BindingAdapters {
                 }
             }
             else -> {}
-
         }
-
     }
 
     @JvmStatic
