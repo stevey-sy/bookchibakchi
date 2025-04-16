@@ -28,17 +28,15 @@
   - MVVM Architecture (View - DataBinding - ViewModel - Model)
   - Repository Pattern
 
-
+## Open API
+**OdokOdok** 은 도서 정보 검색 기능을 위해 [알라딘 OpenAPI](https://blog.aladin.co.kr/openapi)를 사용하고 있습니다.
 
 ## Architecture
 **OdokOdok** 은 [Google의 공식 아키텍처 가이드](https://developer.android.com/topic/architecture)를 기반으로 한 MVVM 아키텍처와 Repository 패턴을 사용하여 설계되었습니다.
 
-![architecture](../bookchibakchi/figure/figure0.png)
+![architecture](/figure/figure0.png)
 
-The overall architecture of **OdokOdok** is composed of two layers; the UI layer and the data layer. Each layer has dedicated components and they have each different responsibilities, as defined below:
-
-**OdokOdok** was built with [Guide to app architecture](https://developer.android.com/topic/architecture), so it would be a great sample to show how the architecture works in real-world projects.
-
+OdokOdok의 전체 아키텍처는 UI 레이어와 데이터 레이어의 두 계층으로 구성되어 있으며, 각 계층은 고유한 컴포넌트와 역할을 가지고 있습니다.
 
 ### Architecture Overview
 
