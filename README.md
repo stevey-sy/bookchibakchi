@@ -6,8 +6,9 @@
 </p>
 
 <p align="center">
-    <img src="/previews/odok.gif" width="250"/>
+<img src="/previews/odok_intro.png"/>
 </p>
+
 
 
 ## Tech stack
