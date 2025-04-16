@@ -28,7 +28,8 @@
   - MVVM Architecture (View - DataBinding - ViewModel - Model)
   - Repository Pattern
 
-<h3> Open API </h3>
+<h3>Open API</h3>
+
 **OdokOdok** 은 도서 정보 검색 기능을 위해 [알라딘 OpenAPI](https://blog.aladin.co.kr/openapi)를 사용하고 있습니다.
 
 ## Architecture
