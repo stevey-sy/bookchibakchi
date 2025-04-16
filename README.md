@@ -10,7 +10,7 @@
 </p>
 
 
-<img src="/previews/preview.gif" align="right" width="320"/>
+<img src="/previews/preview.gif" align="right" width="240"/>
 
 
 <h2>Tech stack</h2>
