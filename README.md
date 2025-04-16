@@ -13,7 +13,7 @@
 <img src="/previews/preview.gif" align="right" width="320"/>
 
 
-## Tech stack
+<h2>Tech stack</h2>
 
 - [Kotlin](https://kotlinlang.org/) 
 - [Coroutines](https://github.com/Kotlin/kotlinx.coroutines)
