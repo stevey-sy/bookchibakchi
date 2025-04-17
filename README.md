@@ -30,14 +30,14 @@
 
 <h3>Open API</h3>
 
-**OdokOdok** 은 도서 정보 검색 기능을 위해 [알라딘 OpenAPI](https://blog.aladin.co.kr/openapi)를 사용하고 있습니다.
+**오독오독** 은 도서 정보 검색 기능을 위해 [알라딘 OpenAPI](https://blog.aladin.co.kr/openapi)를 사용하고 있습니다.
 
 ## Architecture
-**OdokOdok** 은 [Google의 공식 아키텍처 가이드](https://developer.android.com/topic/architecture) 를 기반으로 한 MVVM 아키텍처와 Repository 패턴을 사용하여 설계되었습니다.
+**오독오독** 은 [Google의 공식 아키텍처 가이드](https://developer.android.com/topic/architecture) 를 기반으로 한 MVVM 아키텍처와 Repository 패턴을 사용하여 설계되었습니다.
 
 ![architecture](/figure/figure0.png)
 
-OdokOdok의 전체 아키텍처는 UI 레이어와 데이터 레이어의 두 계층으로 구성되어 있으며, 각 계층은 고유한 컴포넌트와 역할을 가지고 있습니다.
+**오독오독** 의 전체 아키텍처는 UI 레이어와 데이터 레이어의 두 계층으로 구성되어 있으며, 각 계층은 고유한 컴포넌트와 역할을 가지고 있습니다.
 
 ### Architecture Overview
 
