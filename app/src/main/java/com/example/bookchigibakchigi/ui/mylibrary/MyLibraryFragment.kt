@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.transition.TransitionInflater
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
@@ -30,6 +32,8 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.Job
+import androidx.activity.OnBackPressedCallback
+import android.view.ActionMode
 
 @AndroidEntryPoint
 class MyLibraryFragment : Fragment() {
@@ -40,6 +44,32 @@ class MyLibraryFragment : Fragment() {
     private val mainViewModel: MainViewModel by activityViewModels()
     private var lastClickedSharedView: View? = null
     private var navigationJob: Job? = null
+    private var actionMode: ActionMode? = null
+    private val actionModeCallback = object : ActionMode.Callback {
+        override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
+            mode?.menuInflater?.inflate(R.menu.menu_book_selection, menu)
+            return true
+        }
+
+        override fun onPrepareActionMode(mode: ActionMode?, menu: Menu?): Boolean {
+            return false
+        }
+
+        override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
+            return when (item?.itemId) {
+                R.id.action_delete -> {
+                    // 선택된 아이템 삭제 로직
+                    true
+                }
+                else -> false
+            }
+        }
+
+        override fun onDestroyActionMode(mode: ActionMode?) {
+            adapter.setSelectionMode(false)
+            actionMode = null
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -74,13 +104,20 @@ class MyLibraryFragment : Fragment() {
     private fun initRecyclerView() {
         adapter = BookShelfAdapter(
             onItemClick = { bookEntity, position, sharedView ->
-                lastClickedSharedView = sharedView
-                mainViewModel.navigateToBookDetail(bookEntity, position, sharedView)
+                if (adapter.isSelectionMode()) {
+                    adapter.toggleItemSelection(position)
+                    updateActionModeTitle()
+                } else {
+                    lastClickedSharedView = sharedView
+                    mainViewModel.navigateToBookDetail(bookEntity, position, sharedView)
+                }
             },
             onItemLongClick = { bookEntity ->
-                // TODO: 롱클릭 시 수행할 작업 구현
-                Log.d("BookShelfAdapter", "Long clicked book: ${bookEntity.title}")
-
+                if (!adapter.isSelectionMode()) {
+                    adapter.setSelectionMode(true)
+                    actionMode = requireActivity().startActionMode(actionModeCallback)
+                    updateActionModeTitle()
+                }
             }
         )
         binding.rvShelf.layoutManager = GridLayoutManager(context, 3)
@@ -97,6 +134,20 @@ class MyLibraryFragment : Fragment() {
         binding.btnSearchBook.setOnClickListener {
             findNavController().navigate(R.id.navigation_search_book)
         }
+
+        // 뒤로가기 버튼 처리
+        val callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (adapter.isSelectionMode()) {
+                    adapter.setSelectionMode(false)
+                    actionMode?.finish()
+                } else {
+                    isEnabled = false
+                    requireActivity().onBackPressed()
+                }
+            }
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
     }
 
     private fun observeViewModel() {
@@ -216,6 +267,11 @@ class MyLibraryFragment : Fragment() {
                 }
             }
         })
+    }
+
+    private fun updateActionModeTitle() {
+        val selectedCount = adapter.getSelectedItems().size
+        actionMode?.title = "$selectedCount selected"
     }
 
     override fun onDestroyView() {

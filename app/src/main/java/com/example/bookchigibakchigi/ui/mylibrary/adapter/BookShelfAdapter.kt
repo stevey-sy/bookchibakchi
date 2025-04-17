@@ -19,10 +19,35 @@ class BookShelfAdapter(
 ) : RecyclerView.Adapter<BookShelfAdapter.BookShelfItemViewHolder>() {
 
     private val dataList = mutableListOf<BookEntity>()
+    private var isSelectionMode = false
+    private val selectedItems = mutableSetOf<Int>()
+
+    fun setSelectionMode(isSelectionMode: Boolean) {
+        this.isSelectionMode = isSelectionMode
+        if (!isSelectionMode) {
+            selectedItems.clear()
+        }
+        notifyDataSetChanged()
+    }
+
+    fun isSelectionMode(): Boolean = isSelectionMode
+
+    fun getSelectedItems(): Set<Int> = selectedItems
+
+    fun toggleItemSelection(position: Int) {
+        if (position < dataList.size) {
+            if (selectedItems.contains(position)) {
+                selectedItems.remove(position)
+            } else {
+                selectedItems.add(position)
+            }
+            notifyItemChanged(position)
+        }
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BookShelfItemViewHolder {
         val binding = ItemBookShelfBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return BookShelfItemViewHolder(binding)
+        return BookShelfItemViewHolder(binding, this)
     }
 
     override fun getItemCount(): Int {
@@ -48,20 +73,36 @@ class BookShelfAdapter(
         notifyDataSetChanged()
     }
 
-    class BookShelfItemViewHolder(private val binding: ItemBookShelfBinding) : RecyclerView.ViewHolder(binding.root) {
+    class BookShelfItemViewHolder(
+        private val binding: ItemBookShelfBinding,
+        private val adapter: BookShelfAdapter
+    ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(bookEntity: BookEntity, position: Int, onItemClick: (BookEntity, Int, View) -> Unit, onItemLongClick: (BookEntity) -> Unit) {
-
             binding.cardView.transitionName = "sharedView_${bookEntity.itemId}"
             Log.d("transitionName test", binding.cardView.transitionName)
 
-            binding.root.setOnClickListener{
-                onItemClick(bookEntity, position, binding.cardView)
+            binding.root.setOnClickListener {
+                if (adapter.isSelectionMode()) {
+                    adapter.toggleItemSelection(position)
+                } else {
+                    onItemClick(bookEntity, position, binding.cardView)
+                }
             }
 
-            binding.root.setOnLongClickListener{
-                onItemLongClick(bookEntity)
+            binding.root.setOnLongClickListener {
+                if (!adapter.isSelectionMode()) {
+                    adapter.setSelectionMode(true)
+                    adapter.toggleItemSelection(position)
+                    onItemLongClick(bookEntity)
+                }
                 true
             }
+
+            // 선택 모드에 따른 UI 업데이트
+            binding.flDim.visibility = if (adapter.isSelectionMode()) View.VISIBLE else View.GONE
+            binding.checkBox.visibility = if (adapter.isSelectionMode()) View.VISIBLE else View.GONE
+            binding.checkBox.isChecked = adapter.getSelectedItems().contains(position)
+
             // 타입에 따른 뷰 가시성 처리
 //            binding.rlPlus.visibility = if (bookEntity.bookType == "0") View.VISIBLE else View.GONE
             // 열 위치에 따라 배경 Drawable 설정
@@ -97,8 +138,9 @@ class BookShelfAdapter(
         }
 
         fun bindEmpty(position: Int, itemCount: Int) {
-
             binding.cardView.transitionName = "sharedView_"
+            binding.flDim.visibility = if (adapter.isSelectionMode()) View.VISIBLE else View.GONE
+            binding.checkBox.visibility = if (adapter.isSelectionMode()) View.VISIBLE else View.GONE
 
             binding.ivBook.visibility = View.INVISIBLE
             binding.cardView.visibility = View.INVISIBLE
