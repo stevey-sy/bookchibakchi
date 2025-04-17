@@ -42,7 +42,6 @@ class AddBookActivity : BaseActivity() {
         initBackPressCallback()
         initBookDataFromIntent()
         observeViewModel()
-        prepareTransitions()
     }
 
     private fun initBackPressCallback() {
@@ -78,7 +77,7 @@ class AddBookActivity : BaseActivity() {
                             }
                         }
                         is AddBookUiState.Error -> {
-                            showError(state.message)
+                            Toast.makeText(this@AddBookActivity, state.message, Toast.LENGTH_SHORT).show()
                         }
                     }
                 }
@@ -86,27 +85,12 @@ class AddBookActivity : BaseActivity() {
         }
     }
 
-    private fun prepareTransitions() {
-        setExitSharedElementCallback(object : SharedElementCallback() {
-            override fun onMapSharedElements(names: List<String>, sharedElements: MutableMap<String, View>) {
-                val currentTransitionName = binding.ivBook.transitionName
-                if (currentTransitionName.isNullOrEmpty()) return
-                sharedElements[currentTransitionName] = binding.ivBook
-            }
-        })
-    }
-
     private fun navigateToMainActivity() {
         val intent = Intent(this, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
-        
-        val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
-            this,
-            Pair(binding.ivBook, binding.ivBook.transitionName)
-        )
-//        startActivity(intent)
-        startActivity(intent, options.toBundle())
+
+        startActivity(intent)
     }
 
     private fun showError(message: String) {
