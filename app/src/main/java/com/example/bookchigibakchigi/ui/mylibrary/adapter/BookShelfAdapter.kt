@@ -12,6 +12,7 @@ import com.bumptech.glide.Glide
 import com.example.bookchigibakchigi.R
 import com.example.bookchigibakchigi.data.entity.BookEntity
 import com.example.bookchigibakchigi.databinding.ItemBookShelfBinding
+import com.example.bookchigibakchigi.util.VibrationUtil
 
 class BookShelfAdapter(
     private val onItemClick: (BookEntity, Int, View) -> Unit, // 클릭 리스너 추가
@@ -91,6 +92,7 @@ class BookShelfAdapter(
 
             binding.root.setOnLongClickListener {
                 if (!adapter.isSelectionMode()) {
+                    VibrationUtil.vibrate(binding.root.context)
                     adapter.setSelectionMode(true)
                     adapter.toggleItemSelection(position)
                     onItemLongClick(bookEntity)
