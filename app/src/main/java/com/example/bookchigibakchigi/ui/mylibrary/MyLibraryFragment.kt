@@ -38,6 +38,10 @@ import android.view.ActionMode
 @AndroidEntryPoint
 class MyLibraryFragment : Fragment() {
 
+    companion object {
+        private const val GRID_SPAN_COUNT = 3
+    }
+
     private var _binding: FragmentMyLibraryBinding? = null
     private val binding get() = _binding!!
     private lateinit var adapter: BookShelfAdapter
@@ -45,20 +49,19 @@ class MyLibraryFragment : Fragment() {
     private var lastClickedSharedView: View? = null
     private var navigationJob: Job? = null
     private var actionMode: ActionMode? = null
+
     private val actionModeCallback = object : ActionMode.Callback {
         override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
             mode?.menuInflater?.inflate(R.menu.menu_book_selection, menu)
             return true
         }
 
-        override fun onPrepareActionMode(mode: ActionMode?, menu: Menu?): Boolean {
-            return false
-        }
+        override fun onPrepareActionMode(mode: ActionMode?, menu: Menu?): Boolean = false
 
         override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
             return when (item?.itemId) {
                 R.id.action_delete -> {
-                    // 선택된 아이템 삭제 로직
+                    handleDeleteAction()
                     true
                 }
                 else -> false
@@ -72,14 +75,14 @@ class MyLibraryFragment : Fragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentMyLibraryBinding.inflate(inflater, container, false)
-        val root: View = binding.root
         prepareTransitions()
         postponeEnterTransition()
-        return root
+        return binding.root
     }
 
     override fun onResume() {
@@ -89,9 +92,17 @@ class MyLibraryFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initViews()
+        initObservers()
+    }
+
+    private fun initViews() {
         initBinding()
         initRecyclerView()
         initClickListeners()
+    }
+
+    private fun initObservers() {
         observeViewModel()
         observeNavigationEvents()
     }
@@ -102,40 +113,59 @@ class MyLibraryFragment : Fragment() {
     }
 
     private fun initRecyclerView() {
-        adapter = BookShelfAdapter(
-            onItemClick = { bookEntity, position, sharedView ->
-                if (adapter.isSelectionMode()) {
-                    adapter.toggleItemSelection(position)
-                    updateActionModeTitle()
-                } else {
-                    lastClickedSharedView = sharedView
-                    mainViewModel.navigateToBookDetail(bookEntity, position, sharedView)
-                }
-            },
-            onItemLongClick = { bookEntity ->
-                if (!adapter.isSelectionMode()) {
-                    adapter.setSelectionMode(true)
-                    actionMode = requireActivity().startActionMode(actionModeCallback)
-                    updateActionModeTitle()
-                }
-            }
-        )
-        binding.rvShelf.layoutManager = GridLayoutManager(context, 3)
-        binding.rvShelf.adapter = adapter
+        adapter = createBookShelfAdapter()
+        binding.rvShelf.apply {
+            layoutManager = GridLayoutManager(context, GRID_SPAN_COUNT)
+            adapter = this@MyLibraryFragment.adapter
+            addItemDecoration(createItemDecoration())
+        }
+    }
 
-        binding.rvShelf.addItemDecoration(object : RecyclerView.ItemDecoration() {
-            override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
-                outRect.set(0, 0, 0, 0)
-            }
-        })
+    private fun createBookShelfAdapter() = BookShelfAdapter(
+        onItemClick = { bookEntity, position, sharedView ->
+            handleItemClick(bookEntity, position, sharedView)
+        },
+        onItemLongClick = { bookEntity ->
+            handleItemLongClick()
+        }
+    )
+
+    private fun createItemDecoration() = object : RecyclerView.ItemDecoration() {
+        override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
+            outRect.set(0, 0, 0, 0)
+        }
+    }
+
+    private fun handleItemClick(bookEntity: BookEntity, position: Int, sharedView: View) {
+        if (adapter.isSelectionMode()) {
+            adapter.toggleItemSelection(position)
+            updateActionModeTitle()
+        } else {
+            lastClickedSharedView = sharedView
+            mainViewModel.navigateToBookDetail(bookEntity, position, sharedView)
+        }
+    }
+
+    private fun handleItemLongClick() {
+        if (!adapter.isSelectionMode()) {
+            adapter.setSelectionMode(true)
+            actionMode = requireActivity().startActionMode(actionModeCallback, ActionMode.TYPE_FLOATING)
+            updateActionModeTitle()
+        }
+    }
+
+    private fun handleDeleteAction() {
+        // TODO: 선택된 아이템 삭제 로직 구현
     }
 
     private fun initClickListeners() {
         binding.btnSearchBook.setOnClickListener {
             findNavController().navigate(R.id.navigation_search_book)
         }
+        setupBackPressedCallback()
+    }
 
-        // 뒤로가기 버튼 처리
+    private fun setupBackPressedCallback() {
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 if (adapter.isSelectionMode()) {
@@ -156,21 +186,23 @@ class MyLibraryFragment : Fragment() {
                 mainViewModel.uiState.collectLatest { state ->
                     when (state) {
                         is MainViewUiState.MyLibrary -> {
-                            if (state.books.isEmpty()) {
-                                showEmptyState()
-                            } else {
-                                showBookList(state.books)
-                            }
+                            handleLibraryState(state.books)
                         }
                         is MainViewUiState.Empty -> {
                             showEmptyState()
                         }
-                        else -> {
-                            // 다른 상태는 무시
-                        }
+                        else -> Unit
                     }
                 }
             }
+        }
+    }
+
+    private fun handleLibraryState(books: List<BookEntity>) {
+        if (books.isEmpty()) {
+            showEmptyState()
+        } else {
+            showBookList(books)
         }
     }
 
@@ -184,24 +216,28 @@ class MyLibraryFragment : Fragment() {
                     .collect { event ->
                         when (event) {
                             is NavigationEvent.NavigateToBookDetail -> {
-                                Log.d("observeNavigationEvents", event.toString())
-                                val bundle = Bundle().apply {
-                                    putInt("itemId", event.book.itemId)
-                                    putString("transitionName", event.transitionName)
-                                }
-
-                                if(lastClickedSharedView != null) {
-                                    findNavController().navigate(
-                                        R.id.action_myLibrary_to_bookDetail,
-                                        bundle,
-                                        null,
-                                        FragmentNavigatorExtras((lastClickedSharedView to event.transitionName) as Pair<View, String>)
-                                    )
-                                }
+                                handleNavigationToBookDetail(event)
                             }
                         }
                     }
             }
+        }
+    }
+
+    private fun handleNavigationToBookDetail(event: NavigationEvent.NavigateToBookDetail) {
+        Log.d("observeNavigationEvents", event.toString())
+        val bundle = Bundle().apply {
+            putInt("itemId", event.book.itemId)
+            putString("transitionName", event.transitionName)
+        }
+
+        lastClickedSharedView?.let { sharedView ->
+            findNavController().navigate(
+                R.id.action_myLibrary_to_bookDetail,
+                bundle,
+                null,
+                FragmentNavigatorExtras(sharedView to event.transitionName)
+            )
         }
     }
 
@@ -217,16 +253,20 @@ class MyLibraryFragment : Fragment() {
             rvShelf.visibility = View.VISIBLE
             emptyView.visibility = View.GONE
             adapter.setDataList(books)
-            rvShelf.viewTreeObserver.addOnPreDrawListener(
-                object : ViewTreeObserver.OnPreDrawListener {
-                    override fun onPreDraw(): Boolean {
-                        rvShelf.viewTreeObserver.removeOnPreDrawListener(this)
-                        startPostponedEnterTransition()
-                        return true
-                    }
-                }
-            )
+            initTransitionListener()
         }
+    }
+
+    private fun initTransitionListener() {
+        binding.rvShelf.viewTreeObserver.addOnPreDrawListener(
+            object : ViewTreeObserver.OnPreDrawListener {
+                override fun onPreDraw(): Boolean {
+                    binding.rvShelf.viewTreeObserver.removeOnPreDrawListener(this)
+                    startPostponedEnterTransition()
+                    return true
+                }
+            }
+        )
     }
 
     private fun prepareTransitions() {
@@ -241,11 +281,9 @@ class MyLibraryFragment : Fragment() {
                 scrollToPosition(currentPosition)
 
                 val selectedViewHolder = binding.rvShelf.findViewHolderForAdapterPosition(currentPosition)
-                if(selectedViewHolder == null) {
-                    return
+                selectedViewHolder?.let {
+                    sharedElements[names[0]] = it.itemView.findViewById(R.id.cardView)
                 }
-                sharedElements[names[0]] =
-                    selectedViewHolder.itemView.findViewById(R.id.cardView)
             }
         })
     }
@@ -260,7 +298,7 @@ class MyLibraryFragment : Fragment() {
                 val layoutManager = binding.rvShelf.layoutManager
                 val viewAtPosition = layoutManager?.findViewByPosition(position)
 
-                if (viewAtPosition == null || layoutManager.isViewPartiallyVisible(viewAtPosition, false, true)) {
+                if (viewAtPosition == null || layoutManager?.isViewPartiallyVisible(viewAtPosition, false, true) == true) {
                     binding.rvShelf.post {
                         layoutManager?.scrollToPosition(position)
                     }

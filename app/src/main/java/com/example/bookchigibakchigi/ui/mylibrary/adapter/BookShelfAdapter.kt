@@ -93,7 +93,6 @@ class BookShelfAdapter(
             binding.root.setOnLongClickListener {
                 if (!adapter.isSelectionMode()) {
                     VibrationUtil.vibrate(binding.root.context)
-                    adapter.setSelectionMode(true)
                     adapter.toggleItemSelection(position)
                     onItemLongClick(bookEntity)
                 }
