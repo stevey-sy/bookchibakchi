@@ -114,6 +114,10 @@ class MainActivity : BaseActivity() {
                 navController.navigate(R.id.navigation_search_book)
                 true
             }
+            R.id.action_filter -> {
+
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }

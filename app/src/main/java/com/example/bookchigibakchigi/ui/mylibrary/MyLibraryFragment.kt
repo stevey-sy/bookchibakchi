@@ -2,7 +2,6 @@ package com.example.bookchigibakchigi.ui.mylibrary
 
 import android.graphics.Rect
 import android.os.Bundle
-import android.transition.TransitionInflater
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
@@ -35,6 +34,8 @@ import kotlinx.coroutines.Job
 import androidx.activity.OnBackPressedCallback
 import android.view.ActionMode
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import com.example.bookchigibakchigi.ui.common.SelectionActionMode
 
 @AndroidEntryPoint
 class MyLibraryFragment : Fragment() {
@@ -49,31 +50,7 @@ class MyLibraryFragment : Fragment() {
     private val mainViewModel: MainViewModel by activityViewModels()
     private var lastClickedSharedView: View? = null
     private var navigationJob: Job? = null
-    private var actionMode: ActionMode? = null
-
-    private val actionModeCallback = object : ActionMode.Callback {
-        override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
-            mode?.menuInflater?.inflate(R.menu.menu_book_selection, menu)
-            return true
-        }
-
-        override fun onPrepareActionMode(mode: ActionMode?, menu: Menu?): Boolean = false
-
-        override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
-            return when (item?.itemId) {
-                R.id.action_delete -> {
-                    handleDeleteAction()
-                    true
-                }
-                else -> false
-            }
-        }
-
-        override fun onDestroyActionMode(mode: ActionMode?) {
-            adapter.setSelectionMode(false)
-            actionMode = null
-        }
-    }
+    private lateinit var selectionActionMode: SelectionActionMode
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -86,15 +63,21 @@ class MyLibraryFragment : Fragment() {
         return binding.root
     }
 
-    override fun onResume() {
-        super.onResume()
-        mainViewModel.refreshShelf()
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initSelectionActionMode()
         initViews()
         initObservers()
+    }
+
+    private fun initSelectionActionMode() {
+        selectionActionMode = SelectionActionMode(
+            activity = requireActivity() as AppCompatActivity,
+            onDelete = { handleDeleteAction() },
+            onSelectionModeChanged = { isSelectionMode ->
+                adapter.setSelectionMode(isSelectionMode)
+            }
+        )
     }
 
     private fun initViews() {
@@ -140,7 +123,7 @@ class MyLibraryFragment : Fragment() {
     private fun handleItemClick(bookEntity: BookEntity, position: Int, sharedView: View) {
         if (adapter.isSelectionMode()) {
             adapter.toggleItemSelection(position)
-            updateActionModeTitle()
+            selectionActionMode.updateSelectedCount(adapter.getSelectedItems().size)
         } else {
             lastClickedSharedView = sharedView
             mainViewModel.navigateToBookDetail(bookEntity, position, sharedView)
@@ -149,9 +132,8 @@ class MyLibraryFragment : Fragment() {
 
     private fun handleItemLongClick() {
         if (!adapter.isSelectionMode()) {
-            adapter.setSelectionMode(true)
-            actionMode = requireActivity().startActionMode(actionModeCallback, ActionMode.TYPE_FLOATING)
-            updateActionModeTitle()
+            selectionActionMode.start(binding.rvShelf)
+            selectionActionMode.updateSelectedCount(1)
         }
     }
 
@@ -159,8 +141,7 @@ class MyLibraryFragment : Fragment() {
         val selectedBooks = adapter.getSelectedItems()
         viewLifecycleOwner.lifecycleScope.launch {
             mainViewModel.deleteSelectedBooks(selectedBooks)
-            adapter.setSelectionMode(false)
-            actionMode?.finish()
+            selectionActionMode.finish()
             Toast.makeText(requireContext(), "${selectedBooks.size}개의 책이 삭제되었습니다.", Toast.LENGTH_SHORT).show()
         }
     }
@@ -176,8 +157,7 @@ class MyLibraryFragment : Fragment() {
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 if (adapter.isSelectionMode()) {
-                    adapter.setSelectionMode(false)
-                    actionMode?.finish()
+                    selectionActionMode.finish()
                 } else {
                     isEnabled = false
                     requireActivity().onBackPressed()
@@ -312,11 +292,6 @@ class MyLibraryFragment : Fragment() {
                 }
             }
         })
-    }
-
-    private fun updateActionModeTitle() {
-        val selectedCount = adapter.getSelectedItems().size
-        actionMode?.title = "$selectedCount selected"
     }
 
     override fun onDestroyView() {
