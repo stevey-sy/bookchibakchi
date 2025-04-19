@@ -9,6 +9,12 @@ interface BookDao {
     @Query("SELECT * FROM books ORDER BY itemId DESC")
     fun getAllBooks(): Flow<List<BookEntity>>
 
+    @Query("SELECT * FROM books WHERE currentPageCnt < totalPageCnt ORDER BY itemId DESC")
+    fun getReadingBooks(): Flow<List<BookEntity>>
+
+    @Query("SELECT * FROM books WHERE currentPageCnt = totalPageCnt ORDER BY itemId DESC")
+    fun getFinishedBooks(): Flow<List<BookEntity>>
+
     @Query("SELECT * FROM books WHERE itemId = :itemId")
     fun getBookById(itemId: Int): Flow<BookEntity>
 

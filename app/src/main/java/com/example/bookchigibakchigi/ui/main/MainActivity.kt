@@ -124,9 +124,18 @@ class MainActivity : BaseActivity() {
                 
                 popup.setOnMenuItemClickListener { menuItem ->
                     when (menuItem.itemId) {
-                        R.id.filter_reading -> true
-                        R.id.filter_finished -> true
-                        R.id.filter_all -> true
+                        R.id.filter_reading -> {
+                            mainViewModel.updateFilterType(BookFilterType.Reading)
+                            true
+                        }
+                        R.id.filter_finished -> {
+                            mainViewModel.updateFilterType(BookFilterType.Finished)
+                            true
+                        }
+                        R.id.filter_all -> {
+                            mainViewModel.updateFilterType(BookFilterType.All)
+                            true
+                        }
                         else -> false
                     }
                 }

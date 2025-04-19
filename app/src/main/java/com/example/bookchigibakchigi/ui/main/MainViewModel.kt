@@ -5,11 +5,11 @@ import android.view.View
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.bookchigibakchigi.data.PhotoCardWithTextContents
-import com.example.bookchigibakchigi.data.database.AppDatabase
 import com.example.bookchigibakchigi.data.entity.BookEntity
 import com.example.bookchigibakchigi.data.repository.BookShelfRepository
 import com.example.bookchigibakchigi.data.repository.PhotoCardRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.flatMapLatest
 import javax.inject.Inject
 
 @HiltViewModel
@@ -29,6 +30,9 @@ class MainViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow<MainViewUiState>(MainViewUiState.Loading)
     val uiState: StateFlow<MainViewUiState> = _uiState.asStateFlow()
+
+    private val _filterType = MutableStateFlow<BookFilterType>(BookFilterType.All)
+    val filterType: StateFlow<BookFilterType> = _filterType.asStateFlow()
 
     // Channel을 SharedFlow로 변경
     private val _bookDetailFlow = MutableSharedFlow<BookEntity>(
@@ -44,8 +48,12 @@ class MainViewModel @Inject constructor(
     )
     val navigationEventFlow = _navigationEventFlow.asSharedFlow()
 
-    // 공유된 핫 흐름 생성
-    private val sharedBooksFlow = bookShelfRepository.getShelfItems()
+    // filterType의 변경을 감지하는 Flow
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private val sharedBooksFlow = filterType
+        .flatMapLatest<BookFilterType, List<BookEntity>> { filterType ->
+            bookShelfRepository.getShelfItems(filterType)
+        }
         .shareIn(
             scope = viewModelScope,
             replay = 1,
@@ -76,12 +84,8 @@ class MainViewModel @Inject constructor(
     }
 
     suspend fun updateCurrentBook(newBook: BookEntity) {
-        // asBookDetail() 확장 함수를 사용하여 더 간단하게 처리
         _uiState.value.asBookDetail()?.let { currentState ->
             try {
-                // 먼저 book만 업데이트
-//                _uiState.value = currentState.updateBookOnly(newBook)
-                
                 // 비동기로 photoCards 로드
                 val photoCards = photoCardRepository.getPhotoCardListByIsbn(newBook.isbn)
                 _uiState.value = currentState.copy(
@@ -119,31 +123,29 @@ class MainViewModel @Inject constructor(
                 }
             }
             
-            sharedBooksFlow.collect { books ->
-                val photoCards = photoCardRepository.getPhotoCardListByIsbn(selectedBook.isbn)
-                _uiState.value = MainViewUiState.BookDetail(
-                    books = books,
-                    currentBook = selectedBook,
-                    initialPosition = position,
-                    photoCards = photoCards
-                )
-                
-                // 네비게이션 이벤트 전송
-                _navigationEventFlow.emit(
-                    NavigationEvent.NavigateToBookDetail(
-                        book = selectedBook,
-                        position = position,
-                        transitionName = "sharedView_${selectedBook.itemId}"
-                    )
-                )
+            // 현재 상태에서 books를 가져옴
+            val currentBooks = when (val currentState = _uiState.value) {
+                is MainViewUiState.MyLibrary -> currentState.books
+                is MainViewUiState.BookDetail -> currentState.books
+                else -> emptyList()
             }
-        }
-    }
-    
-    // 네비게이션 이벤트 초기화 함수 추가
-    fun clearNavigationEvent() {
-        viewModelScope.launch {
-            _navigationEventFlow.resetReplayCache()
+            
+            val photoCards = photoCardRepository.getPhotoCardListByIsbn(selectedBook.isbn)
+            _uiState.value = MainViewUiState.BookDetail(
+                books = currentBooks,
+                currentBook = selectedBook,
+                initialPosition = position,
+                photoCards = photoCards
+            )
+            
+            // 네비게이션 이벤트 전송
+            _navigationEventFlow.emit(
+                NavigationEvent.NavigateToBookDetail(
+                    book = selectedBook,
+                    position = position,
+                    transitionName = "sharedView_${selectedBook.itemId}"
+                )
+            )
         }
     }
 
@@ -152,6 +154,12 @@ class MainViewModel @Inject constructor(
             bookShelfRepository.deleteBook(book)
         }
         refreshShelf()
+    }
+
+    fun updateFilterType(newFilterType: BookFilterType) {
+        viewModelScope.launch {
+            _filterType.value = newFilterType
+        }
     }
 }
 
@@ -162,6 +170,12 @@ sealed class NavigationEvent {
         val position: Int,
         val transitionName: String
     ) : NavigationEvent()
+}
+
+sealed class BookFilterType {
+    object Reading : BookFilterType()
+    object Finished : BookFilterType()
+    object All : BookFilterType()
 }
 
 sealed class MainViewUiState {
@@ -184,11 +198,6 @@ sealed class MainViewUiState {
     data object Loading : MainViewUiState()
     data object Empty : MainViewUiState()
 }
-
-// sealed class 밖에 확장 함수로 정의
-private fun MainViewUiState.BookDetail.updateBookOnly(newBook: BookEntity) = copy(
-    currentBook = newBook
-)
 
 private fun MainViewUiState.asBookDetail(): MainViewUiState.BookDetail? =
     this as? MainViewUiState.BookDetail
