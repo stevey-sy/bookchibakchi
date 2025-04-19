@@ -5,6 +5,7 @@ import android.view.View
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.bookchigibakchigi.data.PhotoCardWithTextContents
+import com.example.bookchigibakchigi.data.database.AppDatabase
 import com.example.bookchigibakchigi.data.entity.BookEntity
 import com.example.bookchigibakchigi.data.repository.BookShelfRepository
 import com.example.bookchigibakchigi.data.repository.PhotoCardRepository
@@ -23,7 +24,8 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val bookShelfRepository: BookShelfRepository,
-    private val photoCardRepository: PhotoCardRepository
+    private val photoCardRepository: PhotoCardRepository,
+    private val database: AppDatabase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<MainViewUiState>(MainViewUiState.Loading)
@@ -98,23 +100,6 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun setBookDetailState(selectedBook: BookEntity) {
-        viewModelScope.launch {
-            sharedBooksFlow.collect { books ->
-                val position = books.indexOf(selectedBook)
-                val photoCards = photoCardRepository.getPhotoCardListByIsbn(selectedBook.isbn)
-                _uiState.value = MainViewUiState.BookDetail(
-                    books = books,
-                    currentBook = selectedBook,
-                    initialPosition = position,
-                    photoCards = photoCards
-                )
-                // SharedFlow에 이벤트 전송
-                _bookDetailFlow.emit(selectedBook)
-            }
-        }
-    }
-
     fun refreshShelf() {
         loadBooks()
     }
@@ -161,6 +146,13 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch {
             _navigationEventFlow.resetReplayCache()
         }
+    }
+
+    suspend fun deleteSelectedBooks(books: List<BookEntity>) {
+        books.forEach { book ->
+            bookShelfRepository.deleteBook(book)
+        }
+        refreshShelf()
     }
 }
 

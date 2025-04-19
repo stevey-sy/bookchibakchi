@@ -37,4 +37,12 @@ interface BookDao {
 
     @Query("SELECT COUNT(*) FROM books WHERE isbn = :isbn")
     suspend fun isBookExists(isbn: String): Int
+
+    @Query("SELECT COUNT(*) FROM books WHERE itemId = :itemId")
+    suspend fun isBookExistsById(itemId: Int): Int
+
+    suspend fun deleteBookAndVerify(book: BookEntity): Boolean {
+        deleteBook(book)
+        return isBookExistsById(book.itemId) == 0
+    }
 }

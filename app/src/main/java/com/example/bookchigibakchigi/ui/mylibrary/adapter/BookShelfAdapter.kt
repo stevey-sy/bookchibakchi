@@ -21,7 +21,7 @@ class BookShelfAdapter(
 
     private val dataList = mutableListOf<BookEntity>()
     private var isSelectionMode = false
-    private val selectedItems = mutableSetOf<Int>()
+    private val selectedItems = mutableSetOf<BookEntity>()
 
     fun setSelectionMode(isSelectionMode: Boolean) {
         this.isSelectionMode = isSelectionMode
@@ -33,14 +33,15 @@ class BookShelfAdapter(
 
     fun isSelectionMode(): Boolean = isSelectionMode
 
-    fun getSelectedItems(): Set<Int> = selectedItems
+    fun getSelectedItems(): List<BookEntity> = selectedItems.toList()
 
     fun toggleItemSelection(position: Int) {
         if (position < dataList.size) {
-            if (selectedItems.contains(position)) {
-                selectedItems.remove(position)
+            val book = dataList[position]
+            if (selectedItems.contains(book)) {
+                selectedItems.remove(book)
             } else {
-                selectedItems.add(position)
+                selectedItems.add(book)
             }
             notifyItemChanged(position)
         }
@@ -90,6 +91,12 @@ class BookShelfAdapter(
                 }
             }
 
+            binding.checkBox.setOnClickListener {
+                if (adapter.isSelectionMode()) {
+                    adapter.toggleItemSelection(position)
+                }
+            }
+
             binding.root.setOnLongClickListener {
                 if (!adapter.isSelectionMode()) {
                     VibrationUtil.vibrate(binding.root.context)
@@ -102,7 +109,7 @@ class BookShelfAdapter(
             // 선택 모드에 따른 UI 업데이트
             binding.flDim.visibility = if (adapter.isSelectionMode()) View.VISIBLE else View.GONE
             binding.checkBox.visibility = if (adapter.isSelectionMode()) View.VISIBLE else View.GONE
-            binding.checkBox.isChecked = adapter.getSelectedItems().contains(position)
+            binding.checkBox.isChecked = adapter.getSelectedItems().contains(bookEntity)
 
             // 타입에 따른 뷰 가시성 처리
 //            binding.rlPlus.visibility = if (bookEntity.bookType == "0") View.VISIBLE else View.GONE

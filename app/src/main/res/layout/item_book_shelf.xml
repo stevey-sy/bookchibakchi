@@ -101,7 +101,7 @@
                 android:layout_marginBottom="4dp"
                 android:src="@drawable/plant"
                 android:layout_gravity="bottom|center"
-                android:visibility="visible"/>
+                android:visibility="gone"/>
 
             <ImageView
                 android:id="@+id/ivClock"

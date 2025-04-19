@@ -34,6 +34,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.Job
 import androidx.activity.OnBackPressedCallback
 import android.view.ActionMode
+import android.widget.Toast
 
 @AndroidEntryPoint
 class MyLibraryFragment : Fragment() {
@@ -155,7 +156,13 @@ class MyLibraryFragment : Fragment() {
     }
 
     private fun handleDeleteAction() {
-        // TODO: 선택된 아이템 삭제 로직 구현
+        val selectedBooks = adapter.getSelectedItems()
+        viewLifecycleOwner.lifecycleScope.launch {
+            mainViewModel.deleteSelectedBooks(selectedBooks)
+            adapter.setSelectionMode(false)
+            actionMode?.finish()
+            Toast.makeText(requireContext(), "${selectedBooks.size}개의 책이 삭제되었습니다.", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun initClickListeners() {
