@@ -11,4 +11,9 @@
     <style name="CustomBottomSheet" parent="Widget.Design.BottomSheet.Modal">
         <item name="android:background">@drawable/background_bottom_sheet</item>
     </style>
+
+    <style name="menuItem">
+        <item name="android:dropDownWidth">50dp</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
 </resources>

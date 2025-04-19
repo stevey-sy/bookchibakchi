@@ -1,6 +1,7 @@
 package com.example.bookchigibakchigi.ui.main
 
 import android.os.Bundle
+import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.TextView
@@ -11,6 +12,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import androidx.appcompat.widget.PopupMenu
 import com.example.bookchigibakchigi.R
 import com.example.bookchigibakchigi.databinding.ActivityMainBinding
 import com.example.bookchigibakchigi.ui.BaseActivity
@@ -115,7 +117,21 @@ class MainActivity : BaseActivity() {
                 true
             }
             R.id.action_filter -> {
-
+                val wrapper = android.view.ContextThemeWrapper(this, R.style.menuItem)
+//                val popup = PopupMenu(wrapper, binding.toolbar)
+                val popup = PopupMenu(wrapper, binding.toolbar, Gravity.END,0, R.style.PopupStyle)
+                popup.menuInflater.inflate(R.menu.menu_filter, popup.menu)
+                
+                popup.setOnMenuItemClickListener { menuItem ->
+                    when (menuItem.itemId) {
+                        R.id.filter_reading -> true
+                        R.id.filter_finished -> true
+                        R.id.filter_all -> true
+                        else -> false
+                    }
+                }
+                
+                popup.show()
                 true
             }
             else -> super.onOptionsItemSelected(item)

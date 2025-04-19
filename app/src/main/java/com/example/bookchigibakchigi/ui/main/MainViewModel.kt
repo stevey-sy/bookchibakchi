@@ -24,8 +24,7 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val bookShelfRepository: BookShelfRepository,
-    private val photoCardRepository: PhotoCardRepository,
-    private val database: AppDatabase
+    private val photoCardRepository: PhotoCardRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<MainViewUiState>(MainViewUiState.Loading)

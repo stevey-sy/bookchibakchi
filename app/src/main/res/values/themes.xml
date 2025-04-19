@@ -16,4 +16,12 @@
         <item name="windowNoTitle">true</item>
         <item name="android:windowActivityTransitions">true</item>
     </style>
+
+    <style name="PopupStyle" parent="@style/Widget.AppCompat.PopupMenu">
+        <item name="android:popupBackground">@drawable/background_rounded</item>
+        <item name="android:dropDownWidth">50dp</item>
+        <item name="android:dropDownHorizontalOffset">-16dp</item>
+        <item name="android:dropDownVerticalOffset">8dp</item>
+        <item name="android:padding">8dp</item>
+    </style>
 </resources>
