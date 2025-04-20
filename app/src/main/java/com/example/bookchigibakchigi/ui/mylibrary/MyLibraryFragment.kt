@@ -36,6 +36,7 @@ import android.view.ActionMode
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.bookchigibakchigi.ui.common.SelectionActionMode
+import com.example.bookchigibakchigi.ui.mylibrary.adapter.BookListAdapter
 
 @AndroidEntryPoint
 class MyLibraryFragment : Fragment() {
@@ -47,6 +48,7 @@ class MyLibraryFragment : Fragment() {
     private var _binding: FragmentMyLibraryBinding? = null
     private val binding get() = _binding!!
     private lateinit var adapter: BookShelfAdapter
+    private lateinit var listAdapter: BookListAdapter
     private val mainViewModel: MainViewModel by activityViewModels()
     private var lastClickedSharedView: View? = null
     private var navigationJob: Job? = null
@@ -82,6 +84,7 @@ class MyLibraryFragment : Fragment() {
 
     private fun initViews() {
         initBinding()
+        initListView()
         initRecyclerView()
         initClickListeners()
     }
@@ -95,6 +98,25 @@ class MyLibraryFragment : Fragment() {
         binding.viewModel = mainViewModel
         binding.lifecycleOwner = viewLifecycleOwner
     }
+
+    private fun initListView() {
+        listAdapter = BookListAdapter(
+            onItemClick = { book, sharedView ->
+                // TODO: 클릭 시 동작 (예: 상세 화면으로 이동)
+                Toast.makeText(requireContext(), "${book.title} 클릭됨", Toast.LENGTH_SHORT).show()
+            },
+            onItemLongClick = { book ->
+                // TODO: 롱클릭 시 동작
+                Toast.makeText(requireContext(), "${book.title} 롱클릭됨", Toast.LENGTH_SHORT).show()
+            }
+        )
+        binding.rvList.apply {
+            adapter = listAdapter
+            layoutManager = GridLayoutManager(context, 3) // 예: 3열 그리드
+            setHasFixedSize(true)
+        }
+    }
+
 
     private fun initRecyclerView() {
         adapter = createBookShelfAdapter()
@@ -173,7 +195,9 @@ class MyLibraryFragment : Fragment() {
                 mainViewModel.uiState.collectLatest { state ->
                     when (state) {
                         is MainViewUiState.MyLibrary -> {
-                            handleLibraryState(state.books)
+                            // 여기서 전처리.
+                            val paddedList = padBookListToFullRow(state.books)
+                            handleLibraryState(paddedList)
                         }
                         is MainViewUiState.Empty -> {
                             showEmptyState()
@@ -182,6 +206,35 @@ class MyLibraryFragment : Fragment() {
                     }
                 }
             }
+        }
+    }
+
+    fun padBookListToFullRow(originalList: List<BookEntity>): List<BookEntity> {
+        val remainder = originalList.size % 3
+        return if (remainder == 0) {
+            originalList
+        } else {
+            val paddingCount = 3 - remainder
+            val padded = originalList.toMutableList()
+            repeat(paddingCount) {
+                padded.add(
+                    BookEntity(
+                        itemId = -1 * (it + 1),
+                        title = "",
+                        author = "",
+                        publisher = "",
+                        isbn = "",
+                        coverImageUrl = "",
+                        bookType = "0",
+                        totalPageCnt = 0,
+                        challengePageCnt = 0,
+                        startDate = "",
+                        endDate = "",
+                        currentPageCnt = 0
+                    )
+                )
+            }
+            padded
         }
     }
 
@@ -237,9 +290,10 @@ class MyLibraryFragment : Fragment() {
 
     private fun showBookList(books: List<BookEntity>) {
         binding.apply {
-            rvShelf.visibility = View.VISIBLE
+            rvShelf.visibility = View.GONE
             emptyView.visibility = View.GONE
             adapter.setDataList(books)
+            listAdapter.submitList(books)
             initTransitionListener()
         }
     }
