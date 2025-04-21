@@ -19,7 +19,7 @@ data class BookUiModel(
     val endDate: String = "",
     val elapsedTimeInSeconds: Int = 0,
     val completedReadingCnt: Int = 0,
-    val shelfPosition: Int = -1,
+    var shelfPosition: Int = -1,
     var progressText: String = "",
     var progressPercentage: Int = 0,
 ) : Parcelable {

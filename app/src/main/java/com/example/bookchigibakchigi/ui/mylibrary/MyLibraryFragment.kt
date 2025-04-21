@@ -4,8 +4,6 @@ import android.graphics.Rect
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
@@ -20,7 +18,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.bookchigibakchigi.R
-import com.example.bookchigibakchigi.data.entity.BookEntity
 import com.example.bookchigibakchigi.databinding.FragmentMyLibraryBinding
 import com.example.bookchigibakchigi.ui.main.MainViewModel
 import com.example.bookchigibakchigi.ui.main.MainViewUiState
@@ -32,7 +29,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.Job
 import androidx.activity.OnBackPressedCallback
-import android.view.ActionMode
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.bookchigibakchigi.model.BookUiModel
@@ -197,7 +193,8 @@ class MyLibraryFragment : Fragment() {
                     when (state) {
                         is MainViewUiState.MyLibrary -> {
                             // 여기서 전처리.
-                            val paddedList = padBookListToFullRow(state.books)
+                            val dummyList = addDummyItems(state.books)
+                            val paddedList = updateShelfPosition(dummyList)
                             handleLibraryState(paddedList)
                         }
                         is MainViewUiState.Empty -> {
@@ -210,7 +207,13 @@ class MyLibraryFragment : Fragment() {
         }
     }
 
-    fun padBookListToFullRow(originalList: List<BookUiModel>): List<BookUiModel> {
+    fun updateShelfPosition(originalList: List<BookUiModel>): List<BookUiModel> {
+        return originalList.mapIndexed { index, book ->
+            book.copy(shelfPosition = index % 3)
+        }
+    }
+
+    fun addDummyItems(originalList: List<BookUiModel>): List<BookUiModel> {
         val remainder = originalList.size % 3
         return if (remainder == 0) {
             originalList
