@@ -129,12 +129,13 @@ class RecordActivity : BaseActivity() {
         binding.animView.playAnimation()
 
         binding.animViewComplete.setAnimation(R.raw.anim_complete)
+        binding.animViewComplete.setMinAndMaxProgress(0.0f, 0.8f)
         binding.animViewComplete.playAnimation()
 
         binding.animViewComplete.addAnimatorListener(object : Animator.AnimatorListener {
             override fun onAnimationStart(animation: Animator) {}
             override fun onAnimationEnd(animation: Animator) {
-                binding.animViewComplete.progress = 0.8F
+//                binding.animViewComplete.progress = 0.8F
             }
             override fun onAnimationCancel(animation: Animator) {}
             override fun onAnimationRepeat(animation: Animator) {}
