@@ -15,17 +15,17 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
-import com.example.bookchigibakchigi.data.entity.BookEntity
+import com.example.bookchigibakchigi.model.BookUiModel
 import com.example.bookchigibakchigi.databinding.ItemViewPagerBinding
 
 
 class BookViewPagerAdapter(
     private val transitionName: String,
-    private val onItemClick: (BookEntity, Int, View) -> Unit,
+    private val onItemClick: (BookUiModel, Int, View) -> Unit,
     private val onImageLoaded: () -> Unit
 ) : RecyclerView.Adapter<BookViewPagerAdapter.BookViewPagerViewHolder>() {
 
-    private val dataList = mutableListOf<BookEntity>()
+    private val dataList = mutableListOf<BookUiModel>()
     private val loadedImages = mutableSetOf<String>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BookViewPagerViewHolder {
@@ -45,7 +45,7 @@ class BookViewPagerAdapter(
         }
     }
 
-    fun setDataList(newList: List<BookEntity>) {
+    fun setDataList(newList: List<BookUiModel>) {
         dataList.clear()
         dataList.addAll(newList)
         loadedImages.clear()
@@ -64,15 +64,14 @@ class BookViewPagerAdapter(
         val binding: ItemViewPagerBinding,
         private val transitionName: String,
         private val onImageLoaded: () -> Unit) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(bookEntity: BookEntity) {
-            val currentTransitionName = "sharedView_${bookEntity.itemId}"
+        fun bind(bookUiModel: BookUiModel) {
+            val currentTransitionName = "sharedView_${bookUiModel.itemId}"
             Log.d("viewPager TEST ", currentTransitionName)
-            // binding.ivBook.transitionName = currentTransitionName
             binding.cardView.transitionName = currentTransitionName
-            if (bookEntity.coverImageUrl.isNotEmpty()) {
+            if (bookUiModel.coverImageUrl.isNotEmpty()) {
                 binding.ivBook.visibility = View.VISIBLE
                 Glide.with(binding.ivBook.context)
-                    .load(bookEntity.coverImageUrl)
+                    .load(bookUiModel.coverImageUrl)
                     .transform(RoundedCorners(16))
                     .listener(object : com.bumptech.glide.request.RequestListener<Drawable> {
                         override fun onLoadFailed(
@@ -82,7 +81,7 @@ class BookViewPagerAdapter(
                             isFirstResource: Boolean
                         ): Boolean {
                             if (transitionName == currentTransitionName) {
-                                onImageLoaded() // 인터페이스 호출
+                                onImageLoaded()
                             }
                             return false
                         }
@@ -95,7 +94,7 @@ class BookViewPagerAdapter(
                             isFirstResource: Boolean
                         ): Boolean {
                             if (transitionName == currentTransitionName) {
-                                onImageLoaded() // 인터페이스 호출
+                                onImageLoaded()
                             }
                             return false
                         }
@@ -104,5 +103,4 @@ class BookViewPagerAdapter(
             }
         }
     }
-
 }

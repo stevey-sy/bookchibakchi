@@ -18,6 +18,7 @@ import androidx.lifecycle.lifecycleScope
 import com.example.bookchigibakchigi.R
 import com.example.bookchigibakchigi.data.entity.BookEntity
 import com.example.bookchigibakchigi.databinding.ActivityRecordBinding
+import com.example.bookchigibakchigi.model.BookUiModel
 import com.example.bookchigibakchigi.ui.BaseActivity
 import com.example.bookchigibakchigi.ui.dialog.PageInputDialog
 import dagger.hilt.android.AndroidEntryPoint
@@ -56,8 +57,8 @@ class RecordActivity : BaseActivity() {
     }
 
     private fun setupBookFromIntent() {
-        val book: BookEntity? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            intent.getParcelableExtra("currentBook", BookEntity::class.java)
+        val book: BookUiModel? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            intent.getParcelableExtra("currentBook", BookUiModel::class.java)
         } else {
             @Suppress("DEPRECATION")
             intent.getParcelableExtra("currentBook")
@@ -69,7 +70,7 @@ class RecordActivity : BaseActivity() {
         }
     }
 
-    private fun setupBookCoverTransition(book: BookEntity) {
+    private fun setupBookCoverTransition(book: BookUiModel) {
         binding.ivBookCover.transitionName = "record_act_shared_view_${book.itemId}"
         binding.ivBookCover.viewTreeObserver.addOnPreDrawListener(object : ViewTreeObserver.OnPreDrawListener {
             override fun onPreDraw(): Boolean {

@@ -149,7 +149,7 @@ class CropActivity : BaseActivity() {
             val intent = Intent(this, CardActivity::class.java).apply {
                 putExtra("copiedText", copiedText)
                 putExtra("copiedPage", copiedPage)
-                putExtra("currentBook", currentBook)
+//                putExtra("currentBook", currentBook)
             }
 
             startActivity(intent)

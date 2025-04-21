@@ -35,6 +35,7 @@ import androidx.activity.OnBackPressedCallback
 import android.view.ActionMode
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.bookchigibakchigi.model.BookUiModel
 import com.example.bookchigibakchigi.ui.common.SelectionActionMode
 import com.example.bookchigibakchigi.ui.mylibrary.adapter.BookListAdapter
 
@@ -128,10 +129,10 @@ class MyLibraryFragment : Fragment() {
     }
 
     private fun createBookShelfAdapter() = BookShelfAdapter(
-        onItemClick = { bookEntity, position, sharedView ->
-            handleItemClick(bookEntity, position, sharedView)
+        onItemClick = { bookUiModel, position, sharedView ->
+            handleItemClick(bookUiModel, position, sharedView)
         },
-        onItemLongClick = { bookEntity ->
+        onItemLongClick = { bookUiModel ->
             handleItemLongClick()
         }
     )
@@ -142,13 +143,13 @@ class MyLibraryFragment : Fragment() {
         }
     }
 
-    private fun handleItemClick(bookEntity: BookEntity, position: Int, sharedView: View) {
+    private fun handleItemClick(bookUiModel: BookUiModel, position: Int, sharedView: View) {
         if (adapter.isSelectionMode()) {
             adapter.toggleItemSelection(position)
             selectionActionMode.updateSelectedCount(adapter.getSelectedItems().size)
         } else {
             lastClickedSharedView = sharedView
-            mainViewModel.navigateToBookDetail(bookEntity, position, sharedView)
+            mainViewModel.navigateToBookDetail(bookUiModel, position, sharedView)
         }
     }
 
@@ -209,7 +210,7 @@ class MyLibraryFragment : Fragment() {
         }
     }
 
-    fun padBookListToFullRow(originalList: List<BookEntity>): List<BookEntity> {
+    fun padBookListToFullRow(originalList: List<BookUiModel>): List<BookUiModel> {
         val remainder = originalList.size % 3
         return if (remainder == 0) {
             originalList
@@ -218,19 +219,8 @@ class MyLibraryFragment : Fragment() {
             val padded = originalList.toMutableList()
             repeat(paddingCount) {
                 padded.add(
-                    BookEntity(
+                    BookUiModel(
                         itemId = -1 * (it + 1),
-                        title = "",
-                        author = "",
-                        publisher = "",
-                        isbn = "",
-                        coverImageUrl = "",
-                        bookType = "0",
-                        totalPageCnt = 0,
-                        challengePageCnt = 0,
-                        startDate = "",
-                        endDate = "",
-                        currentPageCnt = 0
                     )
                 )
             }
@@ -238,7 +228,7 @@ class MyLibraryFragment : Fragment() {
         }
     }
 
-    private fun handleLibraryState(books: List<BookEntity>) {
+    private fun handleLibraryState(books: List<BookUiModel>) {
         if (books.isEmpty()) {
             showEmptyState()
         } else {
@@ -288,7 +278,7 @@ class MyLibraryFragment : Fragment() {
         }
     }
 
-    private fun showBookList(books: List<BookEntity>) {
+    private fun showBookList(books: List<BookUiModel>) {
         binding.apply {
             rvShelf.visibility = View.GONE
             emptyView.visibility = View.GONE

@@ -2,17 +2,12 @@ package com.example.bookchigibakchigi.ui.record
 
 import android.os.CountDownTimer
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.example.bookchigibakchigi.R
 import com.example.bookchigibakchigi.data.database.AppDatabase
-import com.example.bookchigibakchigi.data.entity.BookEntity
+import com.example.bookchigibakchigi.model.BookUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -26,18 +21,18 @@ class RecordViewModel @Inject constructor(
     private val _timerText = MutableStateFlow("00:00:00")
     val timerText: StateFlow<String> = _timerText.asStateFlow()
 
-    private val _currentBook = MutableStateFlow<BookEntity?>(null)
-    val currentBook: StateFlow<BookEntity?> = _currentBook.asStateFlow()
+    private val _currentBook = MutableStateFlow<BookUiModel?>(null)
+    val currentBook: StateFlow<BookUiModel?> = _currentBook.asStateFlow()
 
     var elapsedTime: Long = 0L
     private var timer: CountDownTimer? = null
 
-    fun setCurrentBook(book: BookEntity) {
+    fun setCurrentBook(book: BookUiModel) {
         _currentBook.value = book
     }
 
     fun getBookProgressText(): String {
-        return _currentBook.value?.getProgressText() ?: "p. 0 / 0"
+        return _currentBook.value?.progressText ?: "p. 0 / 0"
     }
 
     fun toggleTimer() {

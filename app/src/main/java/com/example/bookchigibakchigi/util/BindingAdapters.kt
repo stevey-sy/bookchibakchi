@@ -4,25 +4,18 @@ import android.animation.ValueAnimator
 import android.graphics.drawable.ColorDrawable
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
 import com.example.bookchigibakchigi.R
-import com.example.bookchigibakchigi.data.entity.BookEntity
+import com.example.bookchigibakchigi.model.BookUiModel
 import com.example.bookchigibakchigi.ui.bookdetail.adapter.BookViewPagerAdapter
 import com.example.bookchigibakchigi.ui.main.MainViewUiState
 import com.example.bookchigibakchigi.ui.record.RecordUiState
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.flow.collectLatest
 
 object BindingAdapters {
     @JvmStatic
@@ -38,7 +31,7 @@ object BindingAdapters {
 
     @JvmStatic
     @BindingAdapter("submitBookList")
-    fun bindBookList(viewPager: ViewPager2, bookList: List<BookEntity>?) {
+    fun bindBookList(viewPager: ViewPager2, bookList: List<BookUiModel>?) {
         if (bookList == null) return
         val adapter = viewPager.adapter
         if (adapter is BookViewPagerAdapter) {
@@ -86,7 +79,7 @@ object BindingAdapters {
     fun TextView.setBookAuthor(uiState: MainViewUiState?) {
         text = when (uiState) {
             is MainViewUiState.BookDetail -> {
-                uiState.currentBook.getAuthorText()
+                uiState.currentBook.author
             }
 
             else -> {
@@ -113,7 +106,7 @@ object BindingAdapters {
     fun TextView.setPageProgress(uiState: MainViewUiState?) {
         text = when (uiState) {
             is MainViewUiState.BookDetail -> {
-                uiState.currentBook.getProgressText()
+                uiState.currentBook.progressText
             }
             else -> {
                 ""

@@ -14,12 +14,13 @@ import androidx.lifecycle.lifecycleScope
 import com.example.bookchigibakchigi.R
 import com.example.bookchigibakchigi.data.database.AppDatabase
 import com.example.bookchigibakchigi.data.entity.BookEntity
+import com.example.bookchigibakchigi.model.BookUiModel
 import kotlinx.coroutines.launch
 import kotlin.math.min
 
 class PageInputDialog(
     context: Context,
-    private val currentBook: BookEntity,
+    private val currentBook: BookUiModel,
     private val onComplete: (Int) -> Unit,
     private val onAllComplete: () -> Unit
 ) {

@@ -71,7 +71,7 @@ class MicrophoneActivity : BaseActivity() {
             val currentBook = viewModel.currentBook.value
             val intent = Intent(this, CardActivity::class.java).apply {
                 putExtra("copiedText", copiedText)
-                putExtra("currentBook", currentBook)
+//                putExtra("currentBook", currentBook)
             }
 
             startActivity(intent)

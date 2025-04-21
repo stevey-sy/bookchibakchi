@@ -179,7 +179,7 @@
                         android:id="@+id/tvBookAuthor"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@{viewModel.currentBook.getAuthorText()}"
+                        android:text="@{viewModel.currentBook.author}"
                         android:textSize="14sp"
                         app:bindTextColor="@{viewModel.uiState}"
                         android:layout_marginTop="4dp" />
