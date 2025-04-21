@@ -11,11 +11,39 @@ import com.bumptech.glide.Glide
 import com.example.bookchigibakchigi.R
 import com.example.bookchigibakchigi.model.BookUiModel
 import com.example.bookchigibakchigi.databinding.ItemBookShelfBinding
+import com.example.bookchigibakchigi.util.VibrationUtil
 
 class BookListAdapter(
-    private val onItemClick: (BookUiModel, View) -> Unit,
+    private val onItemClick: (BookUiModel, Int, View) -> Unit,
     private val onItemLongClick: (BookUiModel) -> Unit
 ) : ListAdapter<BookUiModel, BookListAdapter.BookListItemViewHolder>(BookDiffCallback()) {
+
+    private var isSelectionMode = false
+    private val selectedItems = mutableSetOf<BookUiModel>()
+
+    fun setSelectionMode(isSelectionMode: Boolean) {
+        this.isSelectionMode = isSelectionMode
+        if (!isSelectionMode) {
+            selectedItems.clear()
+        }
+        notifyDataSetChanged()
+    }
+
+    fun isSelectionMode(): Boolean = isSelectionMode
+
+    fun getSelectedItems(): List<BookUiModel> = selectedItems.toList()
+
+    fun toggleItemSelection(position: Int) {
+        if (position < currentList.size) {
+            val book = currentList[position]
+            if (selectedItems.contains(book)) {
+                selectedItems.remove(book)
+            } else {
+                selectedItems.add(book)
+            }
+            notifyItemChanged(position)
+        }
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BookListItemViewHolder {
         val binding = ItemBookShelfBinding.inflate(
@@ -49,8 +77,9 @@ class BookListAdapter(
             binding.apply {
                 cardView.transitionName = "sharedView_${bookUiModel.itemId}"
 
-                flDim.visibility = View.GONE
-                checkBox.visibility = View.GONE
+                flDim.visibility = if (isSelectionMode) View.VISIBLE else View.GONE
+                checkBox.visibility = if (isSelectionMode) View.VISIBLE else View.GONE
+                checkBox.isChecked = selectedItems.contains(bookUiModel)
                 cardView.visibility = View.GONE
                 
                 vBookShadow.visibility = View.INVISIBLE
@@ -70,7 +99,7 @@ class BookListAdapter(
                 }
 
                 val context = binding.root.context
-                val drawableRes = when (position % 3) {
+                val drawableRes = when (bookUiModel.shelfPosition) {
                     0 -> R.drawable.shelf_left
                     1 -> R.drawable.shelf_center
                     2 -> R.drawable.shelf_right
@@ -79,12 +108,26 @@ class BookListAdapter(
                 binding.vBottom.background = AppCompatResources.getDrawable(context, drawableRes)
 
                 root.setOnClickListener {
-                    onItemClick(bookUiModel, cardView)
+                    if (isSelectionMode) {
+                        toggleItemSelection(position)
+                    } else {
+                        onItemClick(bookUiModel, position, cardView)
+                    }
                 }
 
                 root.setOnLongClickListener {
-                    onItemLongClick(bookUiModel)
+                    if (!isSelectionMode) {
+                        VibrationUtil.vibrate(root.context)
+                        toggleItemSelection(position)
+                        onItemLongClick(bookUiModel)
+                    }
                     true
+                }
+
+                checkBox.setOnClickListener {
+                    if (isSelectionMode) {
+                        toggleItemSelection(position)
+                    }
                 }
             }
         }

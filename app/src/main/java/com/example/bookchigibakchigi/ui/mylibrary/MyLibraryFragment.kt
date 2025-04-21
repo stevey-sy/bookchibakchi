@@ -44,7 +44,6 @@ class MyLibraryFragment : Fragment() {
 
     private var _binding: FragmentMyLibraryBinding? = null
     private val binding get() = _binding!!
-    private lateinit var adapter: BookShelfAdapter
     private lateinit var listAdapter: BookListAdapter
     private val mainViewModel: MainViewModel by activityViewModels()
     private var lastClickedSharedView: View? = null
@@ -74,7 +73,7 @@ class MyLibraryFragment : Fragment() {
             activity = requireActivity() as AppCompatActivity,
             onDelete = { handleDeleteAction() },
             onSelectionModeChanged = { isSelectionMode ->
-                adapter.setSelectionMode(isSelectionMode)
+                listAdapter.setSelectionMode(isSelectionMode)
             }
         )
     }
@@ -82,7 +81,6 @@ class MyLibraryFragment : Fragment() {
     private fun initViews() {
         initBinding()
         initListView()
-        initRecyclerView()
         initClickListeners()
     }
 
@@ -98,51 +96,24 @@ class MyLibraryFragment : Fragment() {
 
     private fun initListView() {
         listAdapter = BookListAdapter(
-            onItemClick = { book, sharedView ->
-                // TODO: 클릭 시 동작 (예: 상세 화면으로 이동)
-                Toast.makeText(requireContext(), "${book.title} 클릭됨", Toast.LENGTH_SHORT).show()
+            onItemClick = { bookUiModel, position, sharedView ->
+                handleItemClick(bookUiModel, position, sharedView)
             },
-            onItemLongClick = { book ->
-                // TODO: 롱클릭 시 동작
-                Toast.makeText(requireContext(), "${book.title} 롱클릭됨", Toast.LENGTH_SHORT).show()
+            onItemLongClick = { bookUiModel ->
+                handleItemLongClick()
             }
         )
         binding.rvList.apply {
             adapter = listAdapter
-            layoutManager = GridLayoutManager(context, 3) // 예: 3열 그리드
+            layoutManager = GridLayoutManager(context, 3)
             setHasFixedSize(true)
         }
     }
 
-
-    private fun initRecyclerView() {
-        adapter = createBookShelfAdapter()
-        binding.rvShelf.apply {
-            layoutManager = GridLayoutManager(context, GRID_SPAN_COUNT)
-            adapter = this@MyLibraryFragment.adapter
-            addItemDecoration(createItemDecoration())
-        }
-    }
-
-    private fun createBookShelfAdapter() = BookShelfAdapter(
-        onItemClick = { bookUiModel, position, sharedView ->
-            handleItemClick(bookUiModel, position, sharedView)
-        },
-        onItemLongClick = { bookUiModel ->
-            handleItemLongClick()
-        }
-    )
-
-    private fun createItemDecoration() = object : RecyclerView.ItemDecoration() {
-        override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
-            outRect.set(0, 0, 0, 0)
-        }
-    }
-
     private fun handleItemClick(bookUiModel: BookUiModel, position: Int, sharedView: View) {
-        if (adapter.isSelectionMode()) {
-            adapter.toggleItemSelection(position)
-            selectionActionMode.updateSelectedCount(adapter.getSelectedItems().size)
+        if (listAdapter.isSelectionMode()) {
+            listAdapter.toggleItemSelection(position)
+            selectionActionMode.updateSelectedCount(listAdapter.getSelectedItems().size)
         } else {
             lastClickedSharedView = sharedView
             mainViewModel.navigateToBookDetail(bookUiModel, position, sharedView)
@@ -150,14 +121,14 @@ class MyLibraryFragment : Fragment() {
     }
 
     private fun handleItemLongClick() {
-        if (!adapter.isSelectionMode()) {
-            selectionActionMode.start(binding.rvShelf)
+        if (!listAdapter.isSelectionMode()) {
+            selectionActionMode.start(binding.rvList)
             selectionActionMode.updateSelectedCount(1)
         }
     }
 
     private fun handleDeleteAction() {
-        val selectedBooks = adapter.getSelectedItems()
+        val selectedBooks = listAdapter.getSelectedItems()
         viewLifecycleOwner.lifecycleScope.launch {
             mainViewModel.deleteSelectedBooks(selectedBooks)
             selectionActionMode.finish()
@@ -175,7 +146,7 @@ class MyLibraryFragment : Fragment() {
     private fun setupBackPressedCallback() {
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                if (adapter.isSelectionMode()) {
+                if (listAdapter.isSelectionMode()) {
                     selectionActionMode.finish()
                 } else {
                     isEnabled = false
@@ -276,26 +247,25 @@ class MyLibraryFragment : Fragment() {
 
     private fun showEmptyState() {
         binding.apply {
-            rvShelf.visibility = View.GONE
+            rvList.visibility = View.GONE
             emptyView.visibility = View.VISIBLE
         }
     }
 
     private fun showBookList(books: List<BookUiModel>) {
         binding.apply {
-            rvShelf.visibility = View.GONE
+            rvList.visibility = View.VISIBLE
             emptyView.visibility = View.GONE
-            adapter.setDataList(books)
             listAdapter.submitList(books)
             initTransitionListener()
         }
     }
 
     private fun initTransitionListener() {
-        binding.rvShelf.viewTreeObserver.addOnPreDrawListener(
+        binding.rvList.viewTreeObserver.addOnPreDrawListener(
             object : ViewTreeObserver.OnPreDrawListener {
                 override fun onPreDraw(): Boolean {
-                    binding.rvShelf.viewTreeObserver.removeOnPreDrawListener(this)
+                    binding.rvList.viewTreeObserver.removeOnPreDrawListener(this)
                     startPostponedEnterTransition()
                     return true
                 }
@@ -314,7 +284,7 @@ class MyLibraryFragment : Fragment() {
                 if (currentTransitionName.isNullOrEmpty() || currentPosition == -1) return
                 scrollToPosition(currentPosition)
 
-                val selectedViewHolder = binding.rvShelf.findViewHolderForAdapterPosition(currentPosition)
+                val selectedViewHolder = binding.rvList.findViewHolderForAdapterPosition(currentPosition)
                 selectedViewHolder?.let {
                     sharedElements[names[0]] = it.itemView.findViewById(R.id.cardView)
                 }
@@ -323,17 +293,17 @@ class MyLibraryFragment : Fragment() {
     }
 
     private fun scrollToPosition(position: Int) {
-        binding.rvShelf.addOnLayoutChangeListener(object : View.OnLayoutChangeListener {
+        binding.rvList.addOnLayoutChangeListener(object : View.OnLayoutChangeListener {
             override fun onLayoutChange(
                 v: View?, left: Int, top: Int, right: Int, bottom: Int,
                 oldLeft: Int, oldTop: Int, oldRight: Int, oldBottom: Int
             ) {
-                binding.rvShelf.removeOnLayoutChangeListener(this)
-                val layoutManager = binding.rvShelf.layoutManager
+                binding.rvList.removeOnLayoutChangeListener(this)
+                val layoutManager = binding.rvList.layoutManager
                 val viewAtPosition = layoutManager?.findViewByPosition(position)
 
                 if (viewAtPosition == null || layoutManager?.isViewPartiallyVisible(viewAtPosition, false, true) == true) {
-                    binding.rvShelf.post {
+                    binding.rvList.post {
                         layoutManager?.scrollToPosition(position)
                     }
                 }
