@@ -312,6 +312,22 @@ object BindingAdapters {
     }
 
     @JvmStatic
+    @BindingAdapter("bindCongratsVisibility")
+    fun View.bindCongratsVisibility(uiState: StateFlow<RecordUiState>?) {
+        uiState?.let { flow ->
+            post {
+                val visibility = when (flow.value) {
+                    is RecordUiState.BeforeReading -> View.GONE
+                    is RecordUiState.Reading -> View.GONE
+                    is RecordUiState.Paused -> View.GONE
+                    is RecordUiState.Completed -> View.VISIBLE
+                }
+                setVisibility(visibility)
+            }
+        }
+    }
+
+    @JvmStatic
     @BindingAdapter("bindOutBtnVisibility")
     fun View.bindOutBtnVisibility(uiState: StateFlow<RecordUiState>?) {
         uiState?.let { flow ->

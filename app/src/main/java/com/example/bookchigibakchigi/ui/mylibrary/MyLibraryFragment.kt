@@ -16,13 +16,11 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.bookchigibakchigi.R
 import com.example.bookchigibakchigi.databinding.FragmentMyLibraryBinding
 import com.example.bookchigibakchigi.ui.main.MainViewModel
 import com.example.bookchigibakchigi.ui.main.MainViewUiState
 import com.example.bookchigibakchigi.ui.main.NavigationEvent
-import com.example.bookchigibakchigi.ui.mylibrary.adapter.BookShelfAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -37,11 +35,6 @@ import com.example.bookchigibakchigi.ui.mylibrary.adapter.BookListAdapter
 
 @AndroidEntryPoint
 class MyLibraryFragment : Fragment() {
-
-    companion object {
-        private const val GRID_SPAN_COUNT = 3
-    }
-
     private var _binding: FragmentMyLibraryBinding? = null
     private val binding get() = _binding!!
     private lateinit var listAdapter: BookListAdapter

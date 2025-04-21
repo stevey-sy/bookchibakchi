@@ -59,17 +59,20 @@ class RecordViewModel @Inject constructor(
         startTimer()
     }
 
-    fun completeReading() {
-        _uiState.value = RecordUiState.Completed
-        pauseTimer()
+    suspend fun completeReading() {
+        _currentBook.value?.let { book ->
+            val elapsedTimeInSeconds = elapsedTime / 1000
+            database.bookDao()
+                .updateReadingProgress(book.itemId, book.totalPageCnt, elapsedTimeInSeconds.toInt())
+            _uiState.value = RecordUiState.Completed
+        }
     }
 
     suspend fun updateReadingProgress(page: Int): Boolean {
         return _currentBook.value?.let { book ->
             val elapsedTimeInSeconds = elapsedTime / 1000
-            // database.bookDao().updateReadingProgress 메서드가 완료될 때까지 기다림
             val result = database.bookDao().updateReadingProgress(book.itemId, page, elapsedTimeInSeconds.toInt())
-            
+
             // 결과가 0보다 크면 성공, 아니면 실패
             result > 0
         } ?: false

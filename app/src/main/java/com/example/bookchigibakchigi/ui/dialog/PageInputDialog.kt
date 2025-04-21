@@ -61,6 +61,7 @@ class PageInputDialog(
         val btnAllComplete = dialogView.findViewById<TextView>(R.id.btnAllComplete)
 
         btnAllComplete.setOnClickListener {
+            dialog.dismiss()
             onAllComplete()
         }
 
