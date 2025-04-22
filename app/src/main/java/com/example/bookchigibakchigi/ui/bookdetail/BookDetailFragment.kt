@@ -142,30 +142,6 @@ class BookDetailFragment : Fragment() {
         binding.viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
-//                mainViewModel.uiState.value.let { state ->
-//                    when (state) {
-//                        is MainViewUiState.BookDetail -> {
-//                            val selectedBook = state.books[position]
-//                            binding.tvBookTitle.isSelected = true
-//
-//                            // 코루틴을 사용하여 updateCurrentBook 함수의 완료를 기다림
-//                            viewLifecycleOwner.lifecycleScope.launch {
-//                                mainViewModel.updateCurrentBook(selectedBook)
-//
-//                                // updateCurrentBook 함수가 완료된 후에 다음 작업을 수행
-//                                sharedView = binding.viewPager.findViewWithTag<View>("page_$position")?.findViewById(R.id.cardView)
-//                                binding.viewPager.post {
-//                                    val transitionName = "sharedView_${selectedBook.itemId}" // Transition Name 생성
-//                                    findNavController().previousBackStackEntry?.savedStateHandle?.set("current_transition_name", transitionName)
-//                                    findNavController().previousBackStackEntry?.savedStateHandle?.set("selected_position", position)
-//                                }
-//                            }
-//                        }
-//                        else -> {
-//                            // 다른 상태는 무시
-//                        }
-//                    }
-//                }
             }
             override fun onPageScrollStateChanged(state: Int) {
                 // 스크롤이 멈춘 상태에서만 실행 (즉, UI 업데이트 완료 후)
@@ -229,23 +205,23 @@ class BookDetailFragment : Fragment() {
         super.onResume()
         
         // RecordActivity에서 돌아왔을 때 저장된 위치를 복원
-        val savedPosition = findNavController().currentBackStackEntry?.savedStateHandle?.get<Int>("selected_position")
-        if (savedPosition != null && savedPosition >= 0) {
-            // 현재 ViewPager의 위치와 저장된 위치가 다를 경우에만 위치를 변경
-            if (binding.viewPager.currentItem != savedPosition) {
-                binding.viewPager.setCurrentItem(savedPosition, false)
-            }
-
-            // RecordActivity에서 돌아왔을 때 currentBook 업데이트
-            mainViewModel.uiState.value.let { state ->
-                if (state is MainViewUiState.BookDetail && savedPosition < state.books.size) {
-                    val selectedBook = state.books[savedPosition]
-                    viewLifecycleOwner.lifecycleScope.launch {
-                        mainViewModel.updateCurrentBook(selectedBook)
-                    }
-                }
-            }
-        }
+//        val savedPosition = findNavController().currentBackStackEntry?.savedStateHandle?.get<Int>("selected_position")
+//        if (savedPosition != null && savedPosition >= 0) {
+//            // 현재 ViewPager의 위치와 저장된 위치가 다를 경우에만 위치를 변경
+//            if (binding.viewPager.currentItem != savedPosition) {
+//                binding.viewPager.setCurrentItem(savedPosition, false)
+//            }
+//
+//            // RecordActivity에서 돌아왔을 때 currentBook 업데이트
+//            mainViewModel.uiState.value.let { state ->
+//                if (state is MainViewUiState.BookDetail && savedPosition < state.books.size) {
+//                    val selectedBook = state.books[savedPosition]
+//                    viewLifecycleOwner.lifecycleScope.launch {
+//                        mainViewModel.updateCurrentBook(selectedBook)
+//                    }
+//                }
+//            }
+//        }
     }
 
     private fun observeViewModel() {
@@ -443,30 +419,38 @@ class BookDetailFragment : Fragment() {
 
     private fun initClickListeners() {
         binding.btnReading.setOnClickListener {
-            mainViewModel.uiState.value.let { state ->
-                if (state is MainViewUiState.BookDetail) {
-                    val selectedBook = state.currentBook
-                    selectedBook.let { book ->
+                mainViewModel.selectedBook.value.let { book ->
+                    book?.let {
                         val intent = Intent(requireContext(), RecordActivity::class.java).apply {
                             putExtra("currentBook", book)
                         }
-
-                        sharedView = binding.viewPager.findViewWithTag<View>("page_${binding.viewPager.currentItem}")?.findViewById(R.id.ivBook)
-                        sharedView!!.transitionName = "record_act_shared_view_${state.currentBook.itemId}"
-
-                        // 현재 ViewPager의 위치를 저장
-                        val currentPosition = binding.viewPager.currentItem
-                        findNavController().currentBackStackEntry?.savedStateHandle?.set("selected_position", currentPosition)
-
-                        val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
-                            requireActivity(),
-                            sharedView!!,  // 시작점 (ViewPager의 ImageView)
-                            sharedView!!.transitionName  // 동일한 transitionName 사용
-                        )
-                        startActivity(intent, options.toBundle())
+                        startActivity(intent)
                     }
                 }
-            }
+//            mainViewModel.uiState.value.let { state ->
+//                if (state is MainViewUiState.BookDetail) {
+//                    val selectedBook = state.currentBook
+//                    selectedBook.let { book ->
+//                        val intent = Intent(requireContext(), RecordActivity::class.java).apply {
+//                            putExtra("currentBook", book)
+//                        }
+//
+//                        sharedView = binding.viewPager.findViewWithTag<View>("page_${binding.viewPager.currentItem}")?.findViewById(R.id.ivBook)
+//                        sharedView!!.transitionName = "record_act_shared_view_${state.currentBook.itemId}"
+//
+//                        // 현재 ViewPager의 위치를 저장
+//                        val currentPosition = binding.viewPager.currentItem
+//                        findNavController().currentBackStackEntry?.savedStateHandle?.set("selected_position", currentPosition)
+//
+//                        val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+//                            requireActivity(),
+//                            sharedView!!,  // 시작점 (ViewPager의 ImageView)
+//                            sharedView!!.transitionName  // 동일한 transitionName 사용
+//                        )
+//                        startActivity(intent, options.toBundle())
+//                    }
+//                }
+//            }
         }
 
 //        binding.btnMemo.setOnClickListener {
@@ -486,7 +470,8 @@ class BookDetailFragment : Fragment() {
         progressView.post {
             val parentWidth = (progressView.parent as ViewGroup).width
             val targetWidth = (parentWidth * percentage) / 100
-            val currentWidth = progressView.layoutParams.width
+             val currentWidth = progressView.layoutParams.width
+//            val currentWidth = 0
 
             val animator = ValueAnimator.ofInt(currentWidth, targetWidth).apply {
                 duration = 800
@@ -510,12 +495,6 @@ class BookDetailFragment : Fragment() {
             Log.d("animPercentage", "parentWidth: ${parentWidth}")
             Log.d("animPercentage", "viewWidth: ${viewWidth}")
 
-            // ⚠️ viewWidth가 0이면, 뷰 측정이 끝나지 않았을 가능성이 있음 → postDelayed 사용
-//            if (viewWidth == 0) {
-//                postDelayed({ setProgressTranslation(uiState) }, 50)
-//                return@post
-//            }
-
             // ✅ 부모 width에 대한 비율로 translationX 계산
             val baseTranslationX = (parentWidth * (percentage / 100f)).coerceAtMost(parentWidth.toFloat())
 
@@ -523,7 +502,9 @@ class BookDetailFragment : Fragment() {
             val targetTranslationX = (baseTranslationX - viewWidth / 2)
 
             // 현재 translationX 값 가져오기
-            val currentTranslationX = percentView.translationX
+             val currentTranslationX = percentView.translationX
+//            val currentTranslationX = 0f
+
 
             // ValueAnimator로 애니메이션 실행
             val animator = ValueAnimator.ofFloat(currentTranslationX, targetTranslationX)
