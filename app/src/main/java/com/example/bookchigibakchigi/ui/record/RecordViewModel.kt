@@ -2,12 +2,18 @@ package com.example.bookchigibakchigi.ui.record
 
 import android.os.CountDownTimer
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.bookchigibakchigi.data.repository.BookShelfRepository
 import com.example.bookchigibakchigi.model.BookUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 @HiltViewModel
@@ -21,19 +27,25 @@ class RecordViewModel @Inject constructor(
     private val _timerText = MutableStateFlow("00:00:00")
     val timerText: StateFlow<String> = _timerText.asStateFlow()
 
-    private val _currentBook = MutableStateFlow<BookUiModel?>(null)
-    val currentBook: StateFlow<BookUiModel?> = _currentBook.asStateFlow()
+    private val _selectedBookId = MutableStateFlow<Int?>(null)
+    val selectedBookId: StateFlow<Int?> = _selectedBookId.asStateFlow()
+
+    // 선택된 Todo에 대한 Flow (자동 갱신)
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val selectedBook: StateFlow<BookUiModel?> = selectedBookId
+        .filterNotNull()
+        .flatMapLatest { id ->
+            bookShelfRepository.getBookById(id)
+        }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), null)
+
+    fun setSelectedBook(id: Int) {
+        _selectedBookId.value = id
+    }
 
     var elapsedTime: Long = 0L
     private var timer: CountDownTimer? = null
 
-    fun setCurrentBook(book: BookUiModel) {
-        _currentBook.value = book
-    }
-
-    fun getBookProgressText(): String {
-        return _currentBook.value?.progressText ?: "p. 0 / 0"
-    }
 
     fun toggleTimer() {
         when (_uiState.value) {
@@ -60,7 +72,7 @@ class RecordViewModel @Inject constructor(
     }
 
     suspend fun completeReading() {
-        _currentBook.value?.let { book ->
+        selectedBook.value?.let { book ->
             val elapsedTimeInSeconds = elapsedTime / 1000
             bookShelfRepository.updateReadingProgress(book.itemId, book.totalPageCnt, elapsedTimeInSeconds.toInt())
             _uiState.value = RecordUiState.Completed
@@ -68,7 +80,7 @@ class RecordViewModel @Inject constructor(
     }
 
     suspend fun updateReadingProgress(page: Int): Boolean {
-        return _currentBook.value?.let { book ->
+        return selectedBook.value?.let { book ->
             val elapsedTimeInSeconds = elapsedTime / 1000
             bookShelfRepository.updateReadingProgress(book.itemId, page, elapsedTimeInSeconds.toInt())
         } ?: false

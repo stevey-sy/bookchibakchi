@@ -201,29 +201,6 @@ class BookDetailFragment : Fragment() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        
-        // RecordActivity에서 돌아왔을 때 저장된 위치를 복원
-//        val savedPosition = findNavController().currentBackStackEntry?.savedStateHandle?.get<Int>("selected_position")
-//        if (savedPosition != null && savedPosition >= 0) {
-//            // 현재 ViewPager의 위치와 저장된 위치가 다를 경우에만 위치를 변경
-//            if (binding.viewPager.currentItem != savedPosition) {
-//                binding.viewPager.setCurrentItem(savedPosition, false)
-//            }
-//
-//            // RecordActivity에서 돌아왔을 때 currentBook 업데이트
-//            mainViewModel.uiState.value.let { state ->
-//                if (state is MainViewUiState.BookDetail && savedPosition < state.books.size) {
-//                    val selectedBook = state.books[savedPosition]
-//                    viewLifecycleOwner.lifecycleScope.launch {
-//                        mainViewModel.updateCurrentBook(selectedBook)
-//                    }
-//                }
-//            }
-//        }
-    }
-
     private fun observeViewModel() {
         // 현재 상태를 한 번만 확인하고 처리
         val currentState = mainViewModel.uiState.value
@@ -422,23 +399,9 @@ class BookDetailFragment : Fragment() {
                 mainViewModel.selectedBook.value.let { book ->
                     book?.let {
                         val intent = Intent(requireContext(), RecordActivity::class.java).apply {
-                            putExtra("currentBook", book)
+                            putExtra("bookId", book.itemId)
                         }
                         startActivity(intent)
-
-//                        sharedView = binding.viewPager.findViewWithTag<View>("page_${binding.viewPager.currentItem}")?.findViewById(R.id.ivBook)
-//                        sharedView!!.transitionName = "record_act_shared_view_${book.itemId}"
-//
-//                        // 현재 ViewPager의 위치를 저장
-//                        val currentPosition = binding.viewPager.currentItem
-//                        findNavController().currentBackStackEntry?.savedStateHandle?.set("selected_position", currentPosition)
-//
-//                        val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
-//                            requireActivity(),
-//                            sharedView!!,  // 시작점 (ViewPager의 ImageView)
-//                            sharedView!!.transitionName  // 동일한 transitionName 사용
-//                        )
-//                        startActivity(intent, options.toBundle())
                     }
                 }
         }

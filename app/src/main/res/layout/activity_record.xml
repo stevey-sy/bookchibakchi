@@ -118,7 +118,7 @@
                         android:id="@+id/tvTotalReadingTime"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@{viewModel.currentBook.getElapsedTimeFormatted()}"
+                        android:text="@{viewModel.selectedBook.getElapsedTimeFormatted()}"
                         android:textSize="26sp"
                         android:textColor="@color/black"
                         android:textStyle="bold"
@@ -155,7 +155,7 @@
                         android:layout_height="90dp"
                         android:contentDescription="책 표지"
                         android:scaleType="fitXY"
-                        app:imageUrl="@{viewModel.currentBook.coverImageUrl}" />
+                        app:imageUrl="@{viewModel.selectedBook.coverImageUrl}" />
                 </androidx.cardview.widget.CardView>
 
                 <!-- 책 정보 -->
@@ -170,7 +170,7 @@
                         android:id="@+id/tvBookTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@{viewModel.currentBook.title}"
+                        android:text="@{viewModel.selectedBook.title}"
                         android:textSize="18sp"
                         app:bindTextColor="@{viewModel.uiState}"
                         android:textStyle="bold" />
@@ -179,7 +179,7 @@
                         android:id="@+id/tvBookAuthor"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@{viewModel.currentBook.author}"
+                        android:text="@{viewModel.selectedBook.author}"
                         android:textSize="14sp"
                         app:bindTextColor="@{viewModel.uiState}"
                         android:layout_marginTop="4dp" />
@@ -188,7 +188,7 @@
                         android:id="@+id/tvBookProgress"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@{viewModel.getBookProgressText()}"
+                        android:text="@{viewModel.selectedBook.progressTextStr}"
                         android:textSize="14sp"
                         app:bindTextColor="@{viewModel.uiState}"
                         android:layout_marginTop="4dp" />
@@ -196,7 +196,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@{viewModel.currentBook.getElapsedTimeFormatted()}"
+                        android:text="@{viewModel.selectedBook.getElapsedTimeFormatted()}"
                         android:textSize="14sp"
                         app:bindTextColor="@{viewModel.uiState}"
                         android:layout_marginTop="4dp" />
