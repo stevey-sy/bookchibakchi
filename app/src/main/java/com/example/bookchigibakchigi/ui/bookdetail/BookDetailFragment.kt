@@ -1,5 +1,6 @@
 package com.example.bookchigibakchigi.ui.bookdetail
 
+import android.animation.ValueAnimator
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -41,6 +42,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.example.bookchigibakchigi.data.entity.BookEntity
 import com.example.bookchigibakchigi.ui.main.MainViewModel
 import com.example.bookchigibakchigi.ui.main.MainViewUiState
+import com.example.bookchigibakchigi.util.BindingAdapters.setProgressTranslation
 import com.example.bookchigibakchigi.util.PermissionUtil
 import kotlinx.coroutines.flow.collectLatest
 import kotlin.collections.set
@@ -177,8 +179,9 @@ class BookDetailFragment : Fragment() {
 
                                 // 코루틴을 사용하여 updateCurrentBook 함수의 완료를 기다림
                                 viewLifecycleOwner.lifecycleScope.launch {
-                                    mainViewModel.updateCurrentBook(selectedBook)
+//                                    mainViewModel.updateCurrentBook(selectedBook)
 
+                                    mainViewModel.setSelectedBook(selectedBook.itemId)
                                     // updateCurrentBook 함수가 완료된 후에 다음 작업을 수행
                                     sharedView = binding.viewPager.findViewWithTag<View>("page_$position")?.findViewById(R.id.cardView)
                                     binding.viewPager.post {
@@ -277,26 +280,18 @@ class BookDetailFragment : Fragment() {
                 }
             }
         }
-        
-        // 상태 변경 관찰
-//        viewLifecycleOwner.lifecycleScope.launch {
-//            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-//                mainViewModel.uiState.collectLatest { state ->
-//                    when (state) {
-//                        is MainViewUiState.BookDetail -> {
-//                            // 상태가 변경될 때마다 UI 업데이트
-//                            adapter.setDataList(state.books)
-//                            state.initialPosition?.let { position ->
-//                                binding.viewPager.setCurrentItem(position, false)
-//                            }
-//                        }
-//                        else -> {
-//                            // 다른 상태는 무시
-//                        }
-//                    }
-//                }
-//            }
-//        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                mainViewModel.selectedBook.collectLatest { selectedBook ->
+                    selectedBook?.let {
+                        binding.tvProgressPercentage.text = selectedBook.getPercentageStr()
+                        animProgressBar(selectedBook.progressPercentage, binding.progressBarForeground)
+                        animPercentage(selectedBook.progressPercentage, binding.llProgressPercentage)
+                    }
+                }
+            }
+        }
     }
 
     private fun launchCamera() {
@@ -483,6 +478,61 @@ class BookDetailFragment : Fragment() {
 
         binding.llComments.setOnClickListener {
             showPhotoCardListDialog()
+        }
+    }
+
+    private fun animProgressBar(percentage: Int, progressView: View) {
+        // post로 부모의 layout width가 측정된 뒤 실행
+        progressView.post {
+            val parentWidth = (progressView.parent as ViewGroup).width
+            val targetWidth = (parentWidth * percentage) / 100
+            val currentWidth = progressView.layoutParams.width
+
+            val animator = ValueAnimator.ofInt(currentWidth, targetWidth).apply {
+                duration = 800
+                addUpdateListener { animation ->
+                    val animatedValue = animation.animatedValue as Int
+                    val params = progressView.layoutParams
+                    params.width = animatedValue
+                    progressView.layoutParams = params
+                }
+            }
+            animator.start()
+        }
+    }
+
+    private fun animPercentage(percentage: Int, percentView: View) {
+        percentView.post {
+            val parentView = percentView.parent as? ViewGroup
+            val parentWidth = parentView?.width ?: 0  // 부모 width 가져오기
+            var viewWidth = percentView.width // 현재 뷰의 width
+
+            Log.d("animPercentage", "parentWidth: ${parentWidth}")
+            Log.d("animPercentage", "viewWidth: ${viewWidth}")
+
+            // ⚠️ viewWidth가 0이면, 뷰 측정이 끝나지 않았을 가능성이 있음 → postDelayed 사용
+//            if (viewWidth == 0) {
+//                postDelayed({ setProgressTranslation(uiState) }, 50)
+//                return@post
+//            }
+
+            // ✅ 부모 width에 대한 비율로 translationX 계산
+            val baseTranslationX = (parentWidth * (percentage / 100f)).coerceAtMost(parentWidth.toFloat())
+
+            // ✅ 텍스트뷰의 width를 고려하여 중앙 정렬 (뷰 width의 절반만큼 빼기)
+            val targetTranslationX = (baseTranslationX - viewWidth / 2)
+
+            // 현재 translationX 값 가져오기
+            val currentTranslationX = percentView.translationX
+
+            // ValueAnimator로 애니메이션 실행
+            val animator = ValueAnimator.ofFloat(currentTranslationX, targetTranslationX)
+            animator.duration = 800 // 애니메이션 지속 시간 (300ms)
+            animator.addUpdateListener { animation ->
+                val animatedValue = animation.animatedValue as Float
+                percentView.translationX = animatedValue // 애니메이션 값 적용
+            }
+            animator.start()
         }
     }
 

@@ -5,10 +5,8 @@ import android.view.View
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.bookchigibakchigi.data.PhotoCardWithTextContents
-import com.example.bookchigibakchigi.data.entity.BookEntity
 import com.example.bookchigibakchigi.data.repository.BookShelfRepository
 import com.example.bookchigibakchigi.data.repository.PhotoCardRepository
-import com.example.bookchigibakchigi.mapper.BookMapper
 import com.example.bookchigibakchigi.model.BookUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -19,9 +17,10 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 @HiltViewModel
@@ -35,12 +34,6 @@ class MainViewModel @Inject constructor(
 
     private val _filterType = MutableStateFlow<BookFilterType>(BookFilterType.All)
     val filterType: StateFlow<BookFilterType> = _filterType.asStateFlow()
-
-    private val _bookDetailFlow = MutableSharedFlow<BookUiModel>(
-        replay = 0,
-        extraBufferCapacity = 1
-    )
-    val bookDetailFlow = _bookDetailFlow.asSharedFlow()
 
     private val _navigationEventFlow = MutableSharedFlow<NavigationEvent>(
         replay = 0,
@@ -58,6 +51,23 @@ class MainViewModel @Inject constructor(
             replay = 1,
             started = SharingStarted.WhileSubscribed()
         )
+
+    private val _selectedBookId = MutableStateFlow<Int?>(null)
+    val selectedBookId: StateFlow<Int?> = _selectedBookId.asStateFlow()
+
+    // 선택된 Todo에 대한 Flow (자동 갱신)
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val selectedBook: StateFlow<BookUiModel?> = selectedBookId
+        .filterNotNull()
+        .flatMapLatest { id ->
+            bookShelfRepository.getBookById(id)
+        }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), null)
+
+    fun setSelectedBook(id: Int) {
+        _selectedBookId.value = id
+    }
+
 
     init {
         loadBooks()
@@ -112,6 +122,7 @@ class MainViewModel @Inject constructor(
 
     fun navigateToBookDetail(selectedBook: BookUiModel, position: Int, sharedView: View?) {
         viewModelScope.launch {
+            setSelectedBook(selectedBook.itemId)
             if (_uiState.value is MainViewUiState.BookDetail) {
                 val currentState = _uiState.value as MainViewUiState.BookDetail
                 if (currentState.currentBook.itemId == selectedBook.itemId) {

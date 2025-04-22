@@ -68,7 +68,7 @@
                     android:singleLine="true"
                     android:focusable="true"
                     android:focusableInTouchMode="true"
-                    app:bookTitle="@{mainViewModel.uiState}"
+                    android:text="@{mainViewModel.selectedBook.title}"
                  />
 
                 <TextView
@@ -80,7 +80,7 @@
                     android:layout_marginTop="@dimen/_10sdp"
                     android:layout_marginHorizontal="@dimen/_20sdp"
                     android:gravity="center"
-                    app:bookAuthor="@{mainViewModel.uiState}"/>
+                    android:text="@{mainViewModel.selectedBook.author}"/>
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -96,8 +96,17 @@
                         android:layout_height="wrap_content"
                         android:clipToPadding="false"
                         android:clipChildren="false"
-                        android:orientation="vertical"
-                        app:progressTranslation="@{mainViewModel.uiState}">
+                        android:orientation="vertical">
+
+<!--                        <TextView-->
+<!--                            android:id="@+id/tvProgressPercentage"-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:textSize="12sp"-->
+<!--                            android:textColor="@color/white"-->
+<!--                            android:background="@drawable/background_black_circle"-->
+<!--                            android:padding="4dp"-->
+<!--                            app:percentage='@{mainViewModel.uiState}'/>-->
 
                         <TextView
                             android:id="@+id/tvProgressPercentage"
@@ -106,8 +115,7 @@
                             android:textSize="12sp"
                             android:textColor="@color/white"
                             android:background="@drawable/background_black_circle"
-                            android:padding="4dp"
-                            app:percentage='@{mainViewModel.uiState}'/>
+                            android:padding="4dp" />
 
                         <View
                             android:layout_width="@dimen/_8sdp"
@@ -137,8 +145,7 @@
                         android:layout_below="@id/llProgressPercentage"
                         android:background="@drawable/rounded_progress_bar_black"
                         android:layout_alignParentStart="true"
-                        android:layout_marginBottom="4dp"
-                        app:progressPercentage="@{mainViewModel.uiState}"/>
+                        android:layout_marginBottom="4dp" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -146,7 +153,7 @@
                         android:layout_below="@id/progressBarBackground"
                         android:layout_centerInParent="true"
                         android:textColor="@color/light_gray"
-                        app:page="@{mainViewModel.uiState}" />
+                        android:text="@{mainViewModel.selectedBook.progressTextStr}" />
 
                 </RelativeLayout>
 

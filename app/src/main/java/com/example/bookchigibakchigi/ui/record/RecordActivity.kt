@@ -16,7 +16,6 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import com.example.bookchigibakchigi.R
-import com.example.bookchigibakchigi.data.entity.BookEntity
 import com.example.bookchigibakchigi.databinding.ActivityRecordBinding
 import com.example.bookchigibakchigi.model.BookUiModel
 import com.example.bookchigibakchigi.ui.BaseActivity
@@ -150,9 +149,7 @@ class RecordActivity : BaseActivity() {
                 onComplete = { page ->
                     lifecycleScope.launch {
                         val success = viewModel.updateReadingProgress(page)
-                        if (success) {
-                            finish()
-                        } else {
+                        if (!success) {
                             // 데이터베이스 업데이트가 실패한 경우 처리
                             // 예: 토스트 메시지 표시
                         }

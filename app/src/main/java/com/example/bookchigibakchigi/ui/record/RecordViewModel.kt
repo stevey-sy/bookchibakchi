@@ -2,7 +2,7 @@ package com.example.bookchigibakchigi.ui.record
 
 import android.os.CountDownTimer
 import androidx.lifecycle.ViewModel
-import com.example.bookchigibakchigi.data.database.AppDatabase
+import com.example.bookchigibakchigi.data.repository.BookShelfRepository
 import com.example.bookchigibakchigi.model.BookUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -12,7 +12,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RecordViewModel @Inject constructor(
-    private val database: AppDatabase
+    private val bookShelfRepository: BookShelfRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<RecordUiState>(RecordUiState.BeforeReading)
@@ -62,8 +62,7 @@ class RecordViewModel @Inject constructor(
     suspend fun completeReading() {
         _currentBook.value?.let { book ->
             val elapsedTimeInSeconds = elapsedTime / 1000
-            database.bookDao()
-                .updateReadingProgress(book.itemId, book.totalPageCnt, elapsedTimeInSeconds.toInt())
+            bookShelfRepository.updateReadingProgress(book.itemId, book.totalPageCnt, elapsedTimeInSeconds.toInt())
             _uiState.value = RecordUiState.Completed
         }
     }
@@ -71,10 +70,7 @@ class RecordViewModel @Inject constructor(
     suspend fun updateReadingProgress(page: Int): Boolean {
         return _currentBook.value?.let { book ->
             val elapsedTimeInSeconds = elapsedTime / 1000
-            val result = database.bookDao().updateReadingProgress(book.itemId, page, elapsedTimeInSeconds.toInt())
-
-            // 결과가 0보다 크면 성공, 아니면 실패
-            result > 0
+            bookShelfRepository.updateReadingProgress(book.itemId, page, elapsedTimeInSeconds.toInt())
         } ?: false
     }
 

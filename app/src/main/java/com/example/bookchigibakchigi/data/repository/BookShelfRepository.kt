@@ -26,6 +26,11 @@ class BookShelfRepository @Inject constructor(
         return bookDao.getBookById(itemId).map { book -> BookMapper.toUiModel(book) }
     }
 
+    fun observeBookById(itemId: Int): Flow<BookUiModel> {
+        return bookDao.getBookById(itemId)
+            .map { book -> BookMapper.toUiModel(book) }
+    }
+
     suspend fun insertBook(book: BookEntity) {
         bookDao.insertBook(book)
     }
@@ -44,5 +49,9 @@ class BookShelfRepository @Inject constructor(
 
     suspend fun isBookExists(isbn: String): Boolean {
         return bookDao.isBookExists(isbn) > 0
+    }
+
+    suspend fun updateReadingProgress(itemId: Int, page: Int, elapsedTime: Int): Boolean {
+        return bookDao.updateReadingProgress(itemId, page, elapsedTime) > 0
     }
 }
