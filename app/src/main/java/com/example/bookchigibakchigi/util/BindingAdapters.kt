@@ -14,6 +14,7 @@ import com.example.bookchigibakchigi.R
 import com.example.bookchigibakchigi.model.BookUiModel
 import com.example.bookchigibakchigi.ui.bookdetail.adapter.BookViewPagerAdapter
 import com.example.bookchigibakchigi.ui.main.MainViewUiState
+import com.example.bookchigibakchigi.ui.microphone.MicrophoneUiState
 import com.example.bookchigibakchigi.ui.record.RecordUiState
 import kotlinx.coroutines.flow.StateFlow
 
@@ -344,4 +345,49 @@ object BindingAdapters {
             }, 100)
         }
     }
+
+    // MicroActivity
+    @JvmStatic
+    @BindingAdapter("bindMicActBackgroundColor")
+    fun View.bindMicActBackgroundColor(uiState: StateFlow<MicrophoneUiState>?) {
+        uiState?.let { flow ->
+            post {
+                val context = context
+                val newColor = when (flow.value) {
+                    is MicrophoneUiState.NotRecording -> ContextCompat.getColor(context, R.color.white)
+                    is MicrophoneUiState.Recording -> ContextCompat.getColor(context, R.color.black)
+                    is MicrophoneUiState.Error -> ContextCompat.getColor(context, R.color.white)
+                }
+
+                // ✅ 현재 배경색 가져오기 (없으면 기본 투명색)
+                val oldColor = (background as? ColorDrawable)?.color ?: ContextCompat.getColor(context, android.R.color.transparent)
+
+                // ✅ ValueAnimator를 사용한 색상 변화 애니메이션 적용
+                ValueAnimator.ofArgb(oldColor, newColor).apply {
+                    duration = 500 // 0.5초 동안 애니메이션 적용
+                    addUpdateListener { animator ->
+                        setBackgroundColor(animator.animatedValue as Int)
+                    }
+                    start() // 애니메이션 시작
+                }
+            }
+        }
+    }
+
+    // MicroActivity
+    @JvmStatic
+    @BindingAdapter("bindMicActCloseBtn")
+    fun ImageView.bindMicActCloseBtn(uiState: StateFlow<MicrophoneUiState>?) {
+        uiState?.let { flow ->
+            post {
+                val newSrc = when (flow.value) {
+                    is MicrophoneUiState.NotRecording -> R.drawable.ic_close_black
+                    is MicrophoneUiState.Recording -> R.drawable.ic_close_white
+                    is MicrophoneUiState.Error -> R.drawable.ic_close_black
+                }
+                setImageResource(newSrc)
+            }
+        }
+    }
 }
+

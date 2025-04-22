@@ -328,11 +328,11 @@ class BookDetailFragment : Fragment() {
 
     private fun moveToMicrophoneActivity() {
         val intent = Intent(requireContext(), MicrophoneActivity::class.java).apply {
-            mainViewModel.uiState.value.let { state ->
-                if (state is MainViewUiState.BookDetail) {
-                    putExtra("currentBook", state.currentBook)
-                }
-            }
+//            mainViewModel.uiState.value.let { state ->
+//                if (state is MainViewUiState.BookDetail) {
+//                    putExtra("currentBook", state.currentBook)
+//                }
+//            }
         }
 
         startActivity(intent)
@@ -406,12 +406,12 @@ class BookDetailFragment : Fragment() {
                 }
         }
 
-//        binding.btnMemo.setOnClickListener {
-//            val selectedBook = mainViewModel.currentBook.value
-//            selectedBook?.let { book ->
-//                showBottomSheet()
-//            }
-//        }
+        binding.btnMemo.setOnClickListener {
+            val selectedBook = mainViewModel.selectedBook.value
+            selectedBook?.let { book ->
+                showBottomSheet()
+            }
+        }
 
         binding.llComments.setOnClickListener {
             showPhotoCardListDialog()

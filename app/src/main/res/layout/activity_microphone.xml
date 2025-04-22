@@ -7,34 +7,28 @@
     <data>
         <variable
             name="viewModel"
-            type="com.example.bookchigibakchigi.ui.microphone.MicrophoneActivityViewModel" />
+            type="com.example.bookchigibakchigi.ui.microphone.MicrophoneViewModel" />
     </data>
 
     <LinearLayout
         android:id="@+id/main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        app:bindMicActBackgroundColor="@{viewModel.uiState}">
 
-        <!-- AppBarLayout과 Toolbar -->
-        <com.google.android.material.appbar.AppBarLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:theme="@style/ThemeOverlay.AppCompat.Light">
+        <!-- 상단 닫기 버튼 -->
+        <ImageView
+            android:id="@+id/btnClose"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_gravity="end"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            app:bindMicActCloseBtn="@{viewModel.uiState}"
+            android:contentDescription="닫기 버튼" />
 
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="@android:color/white"
-                app:title="@string/title_add_memo"
-                app:titleTextColor="@android:color/black" />
-        </com.google.android.material.appbar.AppBarLayout>
-
-<!--        <RelativeLayout-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="match_parent"-->
-<!--            app:bindBackgroundColor="@{viewModel.backgroundColor}">-->
 
         <RelativeLayout
             android:layout_width="match_parent"

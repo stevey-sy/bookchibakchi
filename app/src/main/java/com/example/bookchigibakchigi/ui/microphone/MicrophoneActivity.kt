@@ -3,79 +3,145 @@ package com.example.bookchigibakchigi.ui.microphone
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.os.Build
 import android.os.Bundle
+import android.speech.RecognitionListener
+import android.speech.RecognizerIntent
+import android.speech.SpeechRecognizer
 import android.view.Menu
 import android.view.MenuItem
 import android.view.MotionEvent
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.lifecycleScope
 import com.example.bookchigibakchigi.R
-import com.example.bookchigibakchigi.data.entity.BookEntity
 import com.example.bookchigibakchigi.databinding.ActivityMicrophoneBinding
 import com.example.bookchigibakchigi.ui.BaseActivity
 import com.example.bookchigibakchigi.ui.card.CardActivity
+import com.example.bookchigibakchigi.util.VibrationUtil
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class MicrophoneActivity : BaseActivity() {
 
     private lateinit var binding: ActivityMicrophoneBinding
-    private val viewModel: MicrophoneActivityViewModel by viewModels()
+    private val viewModel: MicrophoneViewModel by viewModels()
+    private lateinit var speechRecognizer: SpeechRecognizer
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        binding = ActivityMicrophoneBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        setupToolbar(binding.toolbar, binding.main)
-        window.statusBarColor = ContextCompat.getColor(this, R.color.white)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
+        initBinding()
+//        setupToolbar(binding.toolbar, binding.main)
+//        window.statusBarColor = ContextCompat.getColor(this, R.color.white)
 
         checkMicrophonePermission()
+        initializeSpeechRecognizer()
 
-        binding.viewModel = viewModel
-        binding.lifecycleOwner = this
+        observeViewModel()
 
-        val book: BookEntity? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            intent.getParcelableExtra("currentBook", BookEntity::class.java)
-        } else {
-            @Suppress("DEPRECATION")
-            intent.getParcelableExtra("currentBook")
-        }
-
-        book?.let {
-            viewModel.setCurrentBook(it)  // LiveData 업데이트
-        }
-
-        // 마이크 버튼 이벤트 설정
         binding.ivMicrophone.setOnTouchListener { _, event ->
             when (event.action) {
-                MotionEvent.ACTION_DOWN -> viewModel.startListening()
-                MotionEvent.ACTION_UP -> viewModel.stopListening()
+                MotionEvent.ACTION_DOWN -> {
+
+                    startListening()
+                    VibrationUtil.vibrate(this, 200)
+                }
+                MotionEvent.ACTION_UP -> stopListening()
             }
             false
         }
 
         binding.tvNext.setOnClickListener {
             val copiedText = viewModel.recognizedText.value
-            val currentBook = viewModel.currentBook.value
+            val bookId = intent.getIntExtra("bookId", -1)
             val intent = Intent(this, CardActivity::class.java).apply {
+                putExtra("bookId", bookId)
                 putExtra("copiedText", copiedText)
-//                putExtra("currentBook", currentBook)
             }
-
             startActivity(intent)
         }
+    }
+
+    private fun observeViewModel() {
+        lifecycleScope.launch {
+            viewModel.isRecording.collectLatest { isRecording ->
+                if (isRecording) {
+                    Toast.makeText(this@MicrophoneActivity, "음성 인식 중...", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
+        lifecycleScope.launch {
+            viewModel.uiState.collectLatest { state ->
+                when (state) {
+                    MicrophoneUiState.Recording -> {
+//                        binding.ivMicrophone.setImageResource(R.drawable.ic_microphone_recording)
+                    }
+                    MicrophoneUiState.NotRecording -> {
+//                        binding.ivMicrophone.setImageResource(R.drawable.ic_microphone)
+                    }
+                    MicrophoneUiState.Error -> {
+                        Toast.makeText(this@MicrophoneActivity, "음성 인식 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun initBinding() {
+        binding = ActivityMicrophoneBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        binding.viewModel = viewModel
+        binding.lifecycleOwner = this
+    }
+
+    private fun initializeSpeechRecognizer() {
+        speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this)
+        speechRecognizer.setRecognitionListener(object : RecognitionListener {
+            override fun onReadyForSpeech(params: Bundle?) {}
+            override fun onBeginningOfSpeech() {}
+            override fun onRmsChanged(rmsdB: Float) {}
+            override fun onBufferReceived(buffer: ByteArray?) {}
+            override fun onEndOfSpeech() {}
+
+            override fun onError(error: Int) {
+                viewModel.stopRecording()
+                Toast.makeText(this@MicrophoneActivity, "음성 인식 실패. 다시 시도해 주세요.", Toast.LENGTH_SHORT).show()
+            }
+
+            override fun onResults(results: Bundle?) {
+                viewModel.stopRecording()
+                val matches = results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
+                val newText = matches?.firstOrNull() ?: ""
+                if (!matches.isNullOrEmpty()) {
+                    viewModel.appendRecognizedText(newText)
+                } else {
+                    Toast.makeText(this@MicrophoneActivity, "음성 인식 실패. 다시 시도해 주세요.", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onPartialResults(partialResults: Bundle?) {}
+            override fun onEvent(eventType: Int, params: Bundle?) {}
+        })
+    }
+
+    private fun startListening() {
+        viewModel.startRecording()
+        val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
+            putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
+            putExtra(RecognizerIntent.EXTRA_LANGUAGE, "ko-KR")
+            putExtra(RecognizerIntent.EXTRA_PROMPT, "책 속 문장을 말씀하세요")
+        }
+        speechRecognizer.startListening(intent)
+    }
+
+    private fun stopListening() {
+        speechRecognizer.stopListening()
+        viewModel.stopRecording()
     }
 
     private fun checkMicrophonePermission() {
@@ -105,5 +171,10 @@ class MicrophoneActivity : BaseActivity() {
             }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        speechRecognizer.destroy()
     }
 }
