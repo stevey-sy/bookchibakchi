@@ -425,18 +425,9 @@ class BookDetailFragment : Fragment() {
                             putExtra("currentBook", book)
                         }
                         startActivity(intent)
-                    }
-                }
-//            mainViewModel.uiState.value.let { state ->
-//                if (state is MainViewUiState.BookDetail) {
-//                    val selectedBook = state.currentBook
-//                    selectedBook.let { book ->
-//                        val intent = Intent(requireContext(), RecordActivity::class.java).apply {
-//                            putExtra("currentBook", book)
-//                        }
-//
+
 //                        sharedView = binding.viewPager.findViewWithTag<View>("page_${binding.viewPager.currentItem}")?.findViewById(R.id.ivBook)
-//                        sharedView!!.transitionName = "record_act_shared_view_${state.currentBook.itemId}"
+//                        sharedView!!.transitionName = "record_act_shared_view_${book.itemId}"
 //
 //                        // 현재 ViewPager의 위치를 저장
 //                        val currentPosition = binding.viewPager.currentItem
@@ -448,9 +439,8 @@ class BookDetailFragment : Fragment() {
 //                            sharedView!!.transitionName  // 동일한 transitionName 사용
 //                        )
 //                        startActivity(intent, options.toBundle())
-//                    }
-//                }
-//            }
+                    }
+                }
         }
 
 //        binding.btnMemo.setOnClickListener {

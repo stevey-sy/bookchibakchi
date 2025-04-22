@@ -44,7 +44,7 @@ class RecordActivity : BaseActivity() {
 
     private fun setupWindowTransitions() {
         window.sharedElementEnterTransition = createSharedElementTransition()
-        window.sharedElementReturnTransition = createSharedElementTransition()
+//        window.sharedElementReturnTransition = createSharedElementTransition()
     }
 
     private fun setupBinding() {
