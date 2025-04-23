@@ -29,8 +29,8 @@
                 android:layout_marginTop="20dp"
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
-                app:bindCloseBtn="@{viewModel.uiState}"
-                android:contentDescription="닫기 버튼" />
+                android:contentDescription="닫기 버튼"
+                app:bindCloseBtn="@{viewModel.uiState}"/>
 
             <FrameLayout
                 android:layout_width="match_parent"
@@ -50,10 +50,10 @@
                         android:id="@+id/tvTimer"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@{viewModel.timerText}"
                         android:textSize="40sp"
                         android:textStyle="bold"
                         app:bindTextColor="@{viewModel.uiState}"
+                        android:text="@{viewModel.timerText}"
                         android:layout_marginTop="16dp" />
 
                     <!-- 상태 텍스트 -->

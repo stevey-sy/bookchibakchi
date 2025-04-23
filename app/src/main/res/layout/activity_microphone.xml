@@ -48,12 +48,12 @@
                     android:id="@+id/tvHeader"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@{viewModel.textColor}"
                     android:textSize="20sp"
                     android:textStyle="bold"
-                    android:text="@{viewModel.headerText}"
                     android:gravity="center"
-                    android:layout_marginBottom="@dimen/_80sdp"/>
+                    android:layout_marginBottom="@dimen/_80sdp"
+                    app:bindMicActTextColor="@{viewModel.uiState}"
+                    app:bindMicHeaderText="@{viewModel.uiState}"/>
 
 
                 <RelativeLayout
@@ -67,7 +67,7 @@
                         android:layout_height="wrap_content"
                         android:src="@drawable/ic_microphone_black"
                         android:adjustViewBounds="true"
-                        android:layout_centerInParent="true"/>
+                        android:layout_centerInParent="true" />
 
                 </RelativeLayout>
 
@@ -76,8 +76,8 @@
                     android:id="@+id/etResult"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@{viewModel.recognizedText}"
-                    android:layout_marginTop="@dimen/_20sdp"/>
+                    android:layout_marginTop="@dimen/_20sdp"
+                    android:text="@{viewModel.recognizedText}"/>
 
             </LinearLayout>
 

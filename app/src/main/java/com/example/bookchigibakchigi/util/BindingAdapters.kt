@@ -389,5 +389,53 @@ object BindingAdapters {
             }
         }
     }
+
+    // MicroActivity
+    @JvmStatic
+    @BindingAdapter("bindMicActTextColor")
+    fun TextView.bindMicActTextColor(uiState: StateFlow<MicrophoneUiState>?) {
+        uiState?.let { flow ->
+            post {
+                val newColor = when (flow.value) {
+                    is MicrophoneUiState.NotRecording -> ContextCompat.getColor(context, R.color.black)
+                    is MicrophoneUiState.Recording -> ContextCompat.getColor(context, R.color.white)
+                    is MicrophoneUiState.Error -> ContextCompat.getColor(context, R.color.black)
+                }
+                setTextColor(newColor)
+            }
+        }
+    }
+
+    // MicroActivity
+    @JvmStatic
+    @BindingAdapter("bindMicHeaderText")
+    fun TextView.bindMicHeaderText(uiState: StateFlow<MicrophoneUiState>?) {
+        uiState?.let { flow ->
+            post {
+                val text = when (flow.value) {
+                    is MicrophoneUiState.NotRecording -> "버튼을 꾹 누른 상태에서\n기록하고 싶은 문구를 읽어주세요"
+                    is MicrophoneUiState.Recording -> "목소리를 듣고 있습니다..."
+                    is MicrophoneUiState.Error -> "버튼을 꾹 누른 상태에서\n기록하고 싶은 문구를 읽어주세요"
+                }
+                setText(text)
+            }
+        }
+    }
+
+    // MicroActivity
+    @JvmStatic
+    @BindingAdapter("bindMicImage")
+    fun ImageView.bindMicImage(uiState: StateFlow<MicrophoneUiState>?) {
+        uiState?.let { flow ->
+            post {
+                val newSrc = when (flow.value) {
+                    is MicrophoneUiState.NotRecording -> R.drawable.ic_microphone_black
+                    is MicrophoneUiState.Recording -> R.drawable.ic_microphone
+                    is MicrophoneUiState.Error -> R.drawable.ic_microphone_black
+                }
+                setImageResource(newSrc)
+            }
+        }
+    }
 }
 
