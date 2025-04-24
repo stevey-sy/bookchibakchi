@@ -1,0 +1,27 @@
+package com.example.bookchigibakchigi.data.entity
+
+import androidx.room.Entity
+import androidx.room.ForeignKey
+
+@Entity(
+    tableName = "memo_tag_cross_ref",
+    primaryKeys = ["memoId", "tagId"],
+    foreignKeys = [
+        ForeignKey(
+            entity = MemoEntity::class,
+            parentColumns = ["memoId"],
+            childColumns = ["memoId"],
+            onDelete = ForeignKey.CASCADE
+        ),
+        ForeignKey(
+            entity = TagEntity::class,
+            parentColumns = ["tagId"],
+            childColumns = ["tagId"],
+            onDelete = ForeignKey.CASCADE
+        )
+    ]
+)
+data class MemoTagCrossRef(
+    val memoId: Long,
+    val tagId: Long
+) 
