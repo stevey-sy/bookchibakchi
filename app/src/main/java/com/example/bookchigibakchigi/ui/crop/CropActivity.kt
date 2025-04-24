@@ -126,16 +126,15 @@ class CropActivity : BaseActivity() {
             val copiedText = etRecognizedText.text.toString()
             val copiedPage = etPageInput.text.toString()
 
-//            val intent = Intent(this, CardActivity::class.java).apply {
-//                putExtra("copiedText", copiedText)
-//                putExtra("copiedPage", copiedPage)
-//                putExtra("bookId", intent.getIntExtra("bookId", -1))
-//            }
-            val intent = Intent(this, AddMemoActivity::class.java).apply {
+            val intent = Intent(this, CardActivity::class.java).apply {
                 putExtra("copiedText", copiedText)
                 putExtra("copiedPage", copiedPage)
                 putExtra("bookId", intent.getIntExtra("bookId", -1))
             }
+//            val intent = Intent(this, AddMemoActivity::class.java).apply {
+//                putExtra("copiedText", copiedText)
+//                putExtra("bookId", intent.getIntExtra("bookId", -1))
+//            }
             startActivity(intent)
         }
 
