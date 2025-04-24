@@ -19,6 +19,7 @@ import com.example.bookchigibakchigi.R
 import com.example.bookchigibakchigi.data.entity.BookEntity
 import com.example.bookchigibakchigi.databinding.ActivityCropBinding
 import com.example.bookchigibakchigi.ui.BaseActivity
+import com.example.bookchigibakchigi.ui.addmemo.AddMemoActivity
 import com.example.bookchigibakchigi.ui.card.CardActivity
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.TextRecognition
@@ -125,12 +126,16 @@ class CropActivity : BaseActivity() {
             val copiedText = etRecognizedText.text.toString()
             val copiedPage = etPageInput.text.toString()
 
-            val intent = Intent(this, CardActivity::class.java).apply {
+//            val intent = Intent(this, CardActivity::class.java).apply {
+//                putExtra("copiedText", copiedText)
+//                putExtra("copiedPage", copiedPage)
+//                putExtra("bookId", intent.getIntExtra("bookId", -1))
+//            }
+            val intent = Intent(this, AddMemoActivity::class.java).apply {
                 putExtra("copiedText", copiedText)
                 putExtra("copiedPage", copiedPage)
                 putExtra("bookId", intent.getIntExtra("bookId", -1))
             }
-
             startActivity(intent)
         }
 

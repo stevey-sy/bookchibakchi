@@ -7,6 +7,7 @@ import androidx.room.PrimaryKey
 data class TagEntity(
     @PrimaryKey(autoGenerate = true) val tagId: Long = 0,
     val name: String,
-    val color: String? = null,
+    val backgroundColor: String,
+    val textColor: String,
     val createdAt: Long = System.currentTimeMillis()
 ) 

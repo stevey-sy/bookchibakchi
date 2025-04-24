@@ -24,6 +24,9 @@
         android:theme="@style/Theme.BookChigiBakChigi"
         tools:targetApi="31">
         <activity
+            android:name=".ui.addmemo.AddMemoActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.photocrop.PhotoCropActivity"
             android:exported="false" />
         <activity
