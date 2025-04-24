@@ -27,17 +27,10 @@ import com.google.mlkit.vision.text.korean.KoreanTextRecognizerOptions
 class CropActivity : BaseActivity() {
     private lateinit var binding: ActivityCropBinding
     private lateinit var imageUri: Uri
-    private var currentBook: BookEntity? = null // BookEntity 타입이라고 가정
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         binding = ActivityCropBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
         setupToolbar(binding.toolbar, binding.main)
         // Intent로 전달받은 Uri 가져오기
         val uriString = intent.getStringExtra("IMAGE_URI")
@@ -45,20 +38,6 @@ class CropActivity : BaseActivity() {
             imageUri = Uri.parse(uriString)
         }
 
-        // currentBook 가져오기
-        val intentBook: BookEntity? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            intent.getParcelableExtra("currentBook", BookEntity::class.java)
-        } else {
-            @Suppress("DEPRECATION")
-            intent.getParcelableExtra("currentBook")
-        }
-
-        // currentBook 데이터 확인
-        intentBook?.let { book ->
-            Log.d("CropActivity", "Current Book Title: ${book.title}")
-            Log.d("CropActivity", "Current Book ID: ${book.itemId}")
-            currentBook = book
-        }
         binding.cropImageView.setImageUriAsync(imageUri)
 
         binding.tvConfirm.setOnClickListener {
@@ -149,7 +128,7 @@ class CropActivity : BaseActivity() {
             val intent = Intent(this, CardActivity::class.java).apply {
                 putExtra("copiedText", copiedText)
                 putExtra("copiedPage", copiedPage)
-//                putExtra("currentBook", currentBook)
+                putExtra("bookId", intent.getIntExtra("bookId", -1))
             }
 
             startActivity(intent)

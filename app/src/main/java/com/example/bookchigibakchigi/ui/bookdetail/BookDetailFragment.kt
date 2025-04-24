@@ -381,9 +381,9 @@ class BookDetailFragment : Fragment() {
             if (uri != null) {
                 val intent = Intent(requireContext(), CropActivity::class.java).apply {
                     putExtra("IMAGE_URI", uri.toString())
-                    mainViewModel.uiState.value.let { state ->
-                        if (state is MainViewUiState.BookDetail) {
-                            putExtra("currentBook", state.currentBook)
+                    mainViewModel.selectedBook.value.let { book ->
+                        book?.let {
+                            putExtra("bookId", book.itemId)
                         }
                     }
                 }
