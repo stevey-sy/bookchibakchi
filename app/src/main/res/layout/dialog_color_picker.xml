@@ -14,56 +14,56 @@
 
         <View
             android:id="@+id/colorGray"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:background="@drawable/circle_background"
             android:backgroundTint="@color/gray"
-            android:layout_marginEnd="8dp"/>
+            android:layout_marginEnd="12dp"/>
 
         <View
             android:id="@+id/colorRed"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:background="@drawable/circle_background"
             android:backgroundTint="#FF0000"
-            android:layout_marginEnd="8dp"/>
+            android:layout_marginEnd="12dp"/>
 
         <View
             android:id="@+id/colorOrange"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:background="@drawable/circle_background"
             android:backgroundTint="#FFA500"
-            android:layout_marginEnd="8dp"/>
+            android:layout_marginEnd="12dp"/>
 
         <View
             android:id="@+id/colorGreen"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:background="@drawable/circle_background"
             android:backgroundTint="#00FF00"
-            android:layout_marginEnd="8dp"/>
+            android:layout_marginEnd="12dp"/>
 
         <View
             android:id="@+id/colorBlue"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:background="@drawable/circle_background"
             android:backgroundTint="#0000FF"
-            android:layout_marginEnd="8dp"/>
+            android:layout_marginEnd="12dp"/>
 
         <View
             android:id="@+id/colorPurple"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:background="@drawable/circle_background"
             android:backgroundTint="#800080"
-            android:layout_marginEnd="8dp"/>
+            android:layout_marginEnd="12dp"/>
 
         <View
             android:id="@+id/colorPink"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:background="@drawable/circle_background"
             android:backgroundTint="#FFC0CB"/>
 

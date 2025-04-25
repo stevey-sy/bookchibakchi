@@ -98,6 +98,12 @@ class AddMemoActivity : BaseActivity() {
             setContentView(dialogBinding.root)
             window?.setBackgroundDrawableResource(android.R.color.transparent)
             setCancelable(true)
+            
+            // 다이얼로그 크기 설정
+            window?.setLayout(
+                (resources.displayMetrics.widthPixels * 0.8).toInt(),
+                android.view.WindowManager.LayoutParams.WRAP_CONTENT
+            )
         }
 
         with(dialogBinding) {
@@ -137,6 +143,14 @@ class AddMemoActivity : BaseActivity() {
         }
 
         tagListAdapter.submitList(state.tagList)
+        // 태그 리스트가 업데이트된 후 최하단으로 스크롤
+        binding.rvTagList.post {
+            lifecycleScope.launch {
+                delay(300) // 필요에 따라 조절
+                val scrollAmount = binding.scrollView.getChildAt(0).height
+                binding.scrollView.smoothScrollTo(0, scrollAmount)
+            }
+        }
 
         state.error?.let { error ->
             showError(error)
