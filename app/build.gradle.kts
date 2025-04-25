@@ -100,4 +100,7 @@ dependencies {
 
     // fab
     implementation(libs.fab)
+
+    // flexBox
+    implementation("com.google.android.flexbox:flexbox:3.0.0")
 }

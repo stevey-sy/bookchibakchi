@@ -7,11 +7,13 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.core.widget.doAfterTextChanged
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bookchigibakchigi.databinding.ActivityAddMemoBinding
 import com.example.bookchigibakchigi.databinding.DialogColorPickerBinding
 import com.example.bookchigibakchigi.ui.BaseActivity
 import com.example.bookchigibakchigi.ui.addmemo.adapter.TagListAdapter
+import com.google.android.flexbox.FlexDirection
+import com.google.android.flexbox.FlexWrap
+import com.google.android.flexbox.FlexboxLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -32,7 +34,7 @@ class AddMemoActivity : BaseActivity() {
         binding = ActivityAddMemoBinding.inflate(layoutInflater)
         setContentView(binding.root)
         
-        setupRecyclerView()
+        initRecyclerView()
         
         // copiedText 처리
         val copiedText = intent.getStringExtra("copiedText")
@@ -45,10 +47,16 @@ class AddMemoActivity : BaseActivity() {
         observeViewModel()
     }
 
-    private fun setupRecyclerView() {
+    private fun initRecyclerView() {
         tagListAdapter = TagListAdapter()
+
+        val flexboxLayoutManager = FlexboxLayoutManager(this).apply {
+            flexDirection = FlexDirection.ROW
+            flexWrap = FlexWrap.WRAP
+        }
+
         binding.rvTagList.apply {
-            layoutManager = LinearLayoutManager(this@AddMemoActivity, LinearLayoutManager.HORIZONTAL, false)
+            layoutManager = flexboxLayoutManager
             adapter = tagListAdapter
         }
     }
