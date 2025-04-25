@@ -2,6 +2,7 @@ package com.example.bookchigibakchigi.ui.addmemo
 
 import android.app.Dialog
 import android.os.Bundle
+import android.view.View
 import androidx.activity.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -20,6 +21,9 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import androidx.core.view.isVisible
+import androidx.core.graphics.toColorInt
+import android.graphics.Rect
 
 @AndroidEntryPoint
 class AddMemoActivity : BaseActivity() {
@@ -51,8 +55,19 @@ class AddMemoActivity : BaseActivity() {
         binding.vColorSelector.tag = ColorConstants.COLOR_CODES[0]
     }
 
+    override fun onBackPressed() {
+        if (binding.colorPickerLayout.isVisible) {
+            binding.flColorPallet.visibility = View.GONE
+            binding.colorPickerLayout.visibility = View.INVISIBLE
+        } else {
+            super.onBackPressed()
+        }
+    }
+
     private fun initRecyclerView() {
-        tagListAdapter = TagListAdapter()
+        tagListAdapter = TagListAdapter { tag ->
+            viewModel.onEvent(AddMemoEvent.RemoveTag(tag.name))
+        }
 
         val flexboxLayoutManager = FlexboxLayoutManager(this).apply {
             flexDirection = FlexDirection.ROW
@@ -63,6 +78,35 @@ class AddMemoActivity : BaseActivity() {
         binding.rvTagList.apply {
             layoutManager = flexboxLayoutManager
             adapter = tagListAdapter
+        }
+    }
+
+    private fun selectColor(colorIndex: Int) {
+        binding.vColorSelector.backgroundTintList = android.content.res.ColorStateList.valueOf(
+            ColorConstants.COLOR_CODES[colorIndex].toColorInt()
+        )
+        binding.vColorSelector.tag = ColorConstants.COLOR_CODES[colorIndex]
+        binding.colorPickerLayout.visibility = View.INVISIBLE
+        binding.flColorPallet.visibility = View.GONE
+    }
+
+    private fun isKeyboardVisible(): Boolean {
+        val r = Rect()
+        binding.root.getWindowVisibleDisplayFrame(r)
+        val screenHeight = binding.root.rootView.height
+        val keypadHeight = screenHeight - r.bottom
+        return keypadHeight > screenHeight * 0.15
+    }
+
+    private fun adjustColorPickerPosition() {
+        val keyboardVisible = isKeyboardVisible()
+        binding.colorPickerLayout.x = binding.tagLabel.right.toFloat() + 80
+        binding.colorPickerLayout.y = if (keyboardVisible) {
+//            binding.rlAddTag.top.toFloat() - 20 - (binding.root.rootView.height * 0.3).toFloat()
+            binding.etContent.bottom.toFloat() - 200
+//            binding.saveButton.top.toFloat()
+        } else {
+            binding.rlAddTag.top.toFloat() - 20
         }
     }
 
@@ -88,7 +132,9 @@ class AddMemoActivity : BaseActivity() {
         }
 
         binding.vColorSelector.setOnClickListener {
-            showColorPickerDialog()
+            binding.flColorPallet.visibility = View.VISIBLE
+            binding.colorPickerLayout.visibility = View.VISIBLE
+            adjustColorPickerPosition()
         }
 
         binding.btnAddTag.setOnClickListener {
@@ -96,6 +142,12 @@ class AddMemoActivity : BaseActivity() {
             val colorCode = binding.vColorSelector.tag
             val textColorCode = "#FFFFFF"
             if (tagName.isNotEmpty()) {
+                // 같은 이름의 태그가 있는지 확인하고 있다면 제거
+                val existingTag = tagListAdapter.currentList.find { it.name == tagName }
+                if (existingTag != null) {
+                    viewModel.onEvent(AddMemoEvent.RemoveTag(existingTag.name))
+                }
+                // 새로운 태그 추가
                 viewModel.onEvent(AddMemoEvent.AddTag(tagName, colorCode.toString(), textColorCode))
                 binding.etTag.text.clear()
             }
@@ -104,40 +156,19 @@ class AddMemoActivity : BaseActivity() {
         binding.saveButton.setOnClickListener {
             viewModel.onEvent(AddMemoEvent.SaveMemo)
         }
-    }
 
-    private fun showColorPickerDialog() {
-        colorPickerDialog?.dismiss()
-        val dialogBinding = DialogColorPickerBinding.inflate(layoutInflater)
-        colorPickerDialog = Dialog(this).apply {
-            setContentView(dialogBinding.root)
-            window?.setBackgroundDrawableResource(android.R.color.transparent)
-            setCancelable(true)
-            
-            window?.setLayout(
-                (resources.displayMetrics.widthPixels * 0.8).toInt(),
-                android.view.WindowManager.LayoutParams.WRAP_CONTENT
-            )
+        binding.flColorPallet.setOnClickListener {
+            binding.colorPickerLayout.visibility = View.INVISIBLE
+            binding.flColorPallet.visibility = View.GONE
         }
 
-        with(dialogBinding) {
-            colorGray.setOnClickListener { selectColor(ColorConstants.COLOR_CODES[0]) }
-            colorRed.setOnClickListener { selectColor(ColorConstants.COLOR_CODES[1]) }
-            colorOrange.setOnClickListener { selectColor(ColorConstants.COLOR_CODES[2]) }
-            colorGreen.setOnClickListener { selectColor(ColorConstants.COLOR_CODES[3]) }
-            colorBlue.setOnClickListener { selectColor(ColorConstants.COLOR_CODES[4]) }
-            colorPurple.setOnClickListener { selectColor(ColorConstants.COLOR_CODES[5]) }
-            colorPink.setOnClickListener { selectColor(ColorConstants.COLOR_CODES[6]) }
-        }
-
-        colorPickerDialog?.show()
-    }
-
-    private fun selectColor(color: String) {
-        binding.vColorSelector.backgroundTintList = android.content.res.ColorStateList.valueOf(
-            android.graphics.Color.parseColor(color)
-        )
-        colorPickerDialog?.dismiss()
+        // 색상 버튼 클릭 리스너 추가
+        binding.colorGray.setOnClickListener { selectColor(0) }
+        binding.colorRed.setOnClickListener { selectColor(1) }
+        binding.colorOrange.setOnClickListener { selectColor(2) }
+        binding.colorGreen.setOnClickListener { selectColor(3) }
+        binding.colorBlue.setOnClickListener { selectColor(4) }
+        binding.colorPink.setOnClickListener { selectColor(5) }
     }
 
     private fun observeViewModel() {

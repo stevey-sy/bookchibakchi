@@ -26,4 +26,11 @@
     <color name="activity_background">#F5F5F5</color>
     <color name="nav_item_selected_color">#FF000000</color> <!-- 선택된 항목의 색상 -->
     <color name="nav_item_unselected_color">#808080</color> <!-- 선택되지 않은 항목의 색상 -->
+
+    <color name="red_pallet">#F1948A</color>
+    <color name="orange_pallet">#ffb833</color>
+    <color name="green_pallet">#33ff8d</color>
+    <color name="blue_pallet">#3380ff</color>
+    <color name="purple_pallet">#c133ff</color>
+    <color name="pink_pallet">#ff33a8</color>
 </resources>

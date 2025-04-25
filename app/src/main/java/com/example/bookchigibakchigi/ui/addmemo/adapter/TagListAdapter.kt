@@ -9,7 +9,9 @@ import com.example.bookchigibakchigi.databinding.ItemTagBinding
 import com.example.bookchigibakchigi.model.TagUiModel
 import androidx.core.graphics.toColorInt
 
-class TagListAdapter : ListAdapter<TagUiModel, TagListAdapter.TagViewHolder>(TagDiffCallback()) {
+class TagListAdapter(
+    private val onTagDelete: (TagUiModel) -> Unit
+) : ListAdapter<TagUiModel, TagListAdapter.TagViewHolder>(TagDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TagViewHolder {
         val binding = ItemTagBinding.inflate(
@@ -17,7 +19,7 @@ class TagListAdapter : ListAdapter<TagUiModel, TagListAdapter.TagViewHolder>(Tag
             parent,
             false
         )
-        return TagViewHolder(binding)
+        return TagViewHolder(binding, onTagDelete)
     }
 
     override fun onBindViewHolder(holder: TagViewHolder, position: Int) {
@@ -25,7 +27,8 @@ class TagListAdapter : ListAdapter<TagUiModel, TagListAdapter.TagViewHolder>(Tag
     }
 
     class TagViewHolder(
-        private val binding: ItemTagBinding
+        private val binding: ItemTagBinding,
+        private val onTagDelete: (TagUiModel) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(tag: TagUiModel) {
             binding.tvTag.apply {
@@ -34,6 +37,9 @@ class TagListAdapter : ListAdapter<TagUiModel, TagListAdapter.TagViewHolder>(Tag
                 chipBackgroundColor = android.content.res.ColorStateList.valueOf(
                     tag.backgroundColor.toColorInt()
                 )
+                setOnCloseIconClickListener {
+                    onTagDelete(tag)
+                }
             }
         }
     }

@@ -27,7 +27,7 @@ sealed interface AddMemoEvent {
     data class UpdatePage(val page: String) : AddMemoEvent
     data class UpdateContent(val content: String) : AddMemoEvent
     data class AddTag(val name: String, val backgroundColor: String, val textColor: String) : AddMemoEvent
-    data class RemoveTag(val tagId: Long) : AddMemoEvent
+    data class RemoveTag(val tagName: String) : AddMemoEvent
     object SaveMemo : AddMemoEvent
 }
 
@@ -51,8 +51,8 @@ class AddMemoViewModel @Inject constructor(
                 val currentTags = _uiState.value.tagList.toMutableList()
                 val newTag = TagEntity(
                     name = event.name,
-                    backgroundColor = event.backgroundColor, // 기본 배경색
-                    textColor = event.textColor // 기본 텍스트 색상
+                    backgroundColor = event.backgroundColor,
+                    textColor = event.textColor
                 )
                 val newTagUiModel = TagMapper.toUiModel(newTag)
                 if (!currentTags.any { it.name == newTagUiModel.name }) {
@@ -62,7 +62,7 @@ class AddMemoViewModel @Inject constructor(
             }
             is AddMemoEvent.RemoveTag -> {
                 val currentTags = _uiState.value.tagList.toMutableList()
-                currentTags.removeIf { it.tagId == event.tagId }
+                currentTags.removeIf { it.name == event.tagName }
                 _uiState.update { it.copy(tagList = currentTags) }
             }
             AddMemoEvent.SaveMemo -> {

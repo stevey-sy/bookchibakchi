@@ -2,196 +2,283 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <LinearLayout
+    <FrameLayout
         android:id="@+id/main"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        tools:context=".ui.addmemo.AddMemoActivity">
+        android:layout_height="match_parent">
 
-        <!-- 상단 닫기 버튼 -->
-        <ImageView
-            android:id="@+id/btnClose"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
-            android:layout_gravity="end"
-            android:layout_marginTop="20dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
-            android:contentDescription="닫기 버튼"
-            android:src="@drawable/ic_close_black"/>
-
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            tools:context=".ui.addmemo.AddMemoActivity">
 
-            <ScrollView
-                android:id="@+id/scrollView"
+            <!-- 상단 닫기 버튼 -->
+            <ImageView
+                android:id="@+id/btnClose"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_gravity="end"
+                android:layout_marginTop="20dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:contentDescription="닫기 버튼"
+                android:src="@drawable/ic_close_black"/>
+
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:fillViewport="true"
-                android:layout_marginBottom="@dimen/_60sdp">
+                android:layout_height="match_parent">
 
-                <LinearLayout
+                <ScrollView
+                    android:id="@+id/scrollView"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_marginTop="@dimen/_10sdp"
-                    android:paddingHorizontal="@dimen/_12sdp">
+                    android:layout_height="match_parent"
+                    android:fillViewport="true"
+                    android:layout_marginBottom="@dimen/_60sdp">
 
-                    <TextView
-                        android:id="@+id/tvHeader"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="메모를 추가합니다."
-                        android:textColor="@color/black"
-                        android:textSize="24sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/tvSubtitle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:text="책에서 읽은 문구를 저장하세요"
-                        android:textColor="#666666" />
-
-
-                    <TextView
-                        android:id="@+id/pageLabel"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="32dp"
-                        android:textSize="18sp"
-                        android:textColor="@color/black"
-                        android:textStyle="bold"
-                        android:text="Page" />
-
-                    <EditText
-                        android:id="@+id/etPage"
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:background="@android:color/white"
-                        android:elevation="2dp"
-                        android:hint="ex) 120"
-                        android:inputType="number"
-                        android:textColorHint="@color/light_gray"
-                        android:padding="12dp" />
+                        android:orientation="vertical"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        android:paddingHorizontal="@dimen/_12sdp">
+
+                        <TextView
+                            android:id="@+id/tvHeader"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="메모를 추가합니다."
+                            android:textColor="@color/black"
+                            android:textSize="24sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tvSubtitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:text="책에서 읽은 문구를 저장하세요"
+                            android:textColor="#666666" />
 
 
-
-                    <TextView
-                        android:id="@+id/quoteLabel"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="24dp"
-                        android:text="내용"
-                        android:textSize="18sp"
-                        android:textColor="@color/black"
-                        android:textStyle="bold"/>
-
-                    <EditText
-                        android:id="@+id/etContent"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:background="@android:color/white"
-                        android:elevation="2dp"
-                        android:gravity="top"
-                        android:hint="책에서 읽은 문구를 입력하세요"
-                        android:textColorHint="@color/light_gray"
-                        android:inputType="textMultiLine"
-                        android:padding="12dp" />
-
-                    <TextView
-                        android:id="@+id/tagLabel"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="24dp"
-                        android:text="# 태그"
-                        android:textSize="18sp"
-                        android:textColor="@color/black"
-                        android:textStyle="bold" />
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:paddingVertical="@dimen/_4sdp"
-                        android:orientation="horizontal"
-                        android:clipChildren="false"
-                        android:clipToPadding="false">
+                        <TextView
+                            android:id="@+id/pageLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="32dp"
+                            android:textSize="18sp"
+                            android:textColor="@color/black"
+                            android:textStyle="bold"
+                            android:text="Page" />
 
                         <EditText
-                            android:id="@+id/etTag"
+                            android:id="@+id/etPage"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginEnd="8dp"
+                            android:layout_marginTop="8dp"
                             android:background="@android:color/white"
                             android:elevation="2dp"
-                            android:hint="태그 입력 후 + 버튼을 눌러주세요."
-                            android:textSize="14sp"
+                            android:hint="ex) 120"
+                            android:inputType="number"
                             android:textColorHint="@color/light_gray"
-                            android:padding="12dp"
-                            android:layout_toStartOf="@id/vColorSelector"/>
+                            android:padding="12dp" />
 
-                        <View
-                            android:id="@+id/vColorSelector"
-                            android:layout_width="@dimen/_24sdp"
-                            android:layout_height="@dimen/_24sdp"
-                            android:layout_centerVertical="true"
-                            android:background="@drawable/circle_background"
-                            android:backgroundTint="@color/gray"
-                            android:layout_toStartOf="@id/vDivider"
-                            />
 
-                        <View
-                            android:id="@+id/vDivider"
-                            android:layout_width="@dimen/_1sdp"
-                            android:layout_height="@dimen/_40sdp"
-                            android:background="@color/light_gray"
-                            android:layout_marginStart="@dimen/_8sdp"
-                            android:layout_toStartOf="@id/btnAddTag"/>
 
-                        <ImageButton
-                            android:id="@+id/btnAddTag"
-                            android:layout_width="@dimen/_40sdp"
-                            android:layout_height="@dimen/_40sdp"
-                            android:background="?attr/selectableItemBackgroundBorderless"
-                            android:src="@drawable/ic_plus_24"
-                            android:layout_alignParentEnd="true"/>
+                        <TextView
+                            android:id="@+id/quoteLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="24dp"
+                            android:text="내용"
+                            android:textSize="18sp"
+                            android:textColor="@color/black"
+                            android:textStyle="bold"/>
 
-                    </RelativeLayout>
+                        <EditText
+                            android:id="@+id/etContent"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:background="@android:color/white"
+                            android:elevation="2dp"
+                            android:gravity="top"
+                            android:hint="책에서 읽은 문구를 입력하세요"
+                            android:textColorHint="@color/light_gray"
+                            android:inputType="textMultiLine"
+                            android:padding="12dp" />
 
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/rvTagList"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
 
-                </LinearLayout>
+                            <TextView
+                                android:id="@+id/tagLabel"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="24dp"
+                                android:text="# 태그"
+                                android:textSize="18sp"
+                                android:textColor="@color/black"
+                                android:textStyle="bold" />
 
-            </ScrollView>
+                        </LinearLayout>
 
-            <TextView
-                android:id="@+id/saveButton"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/_50sdp"
-                android:background="@color/black"
-                android:textColor="@color/white"
+
+                        <RelativeLayout
+                            android:id="@+id/rlAddTag"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:paddingVertical="@dimen/_4sdp"
+                            android:orientation="horizontal"
+                            android:clipChildren="false"
+                            android:clipToPadding="false">
+
+                            <EditText
+                                android:id="@+id/etTag"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="8dp"
+                                android:background="@android:color/white"
+                                android:elevation="2dp"
+                                android:hint="태그 입력 후 + 버튼을 눌러주세요."
+                                android:textSize="14sp"
+                                android:textColorHint="@color/light_gray"
+                                android:padding="12dp"
+                                android:layout_toStartOf="@id/vColorSelector"/>
+
+                            <View
+                                android:id="@+id/vColorSelector"
+                                android:layout_width="@dimen/_24sdp"
+                                android:layout_height="@dimen/_24sdp"
+                                android:layout_centerVertical="true"
+                                android:background="@drawable/circle_background"
+                                android:backgroundTint="@color/gray"
+                                android:layout_toStartOf="@id/vDivider"
+                                />
+
+                            <View
+                                android:id="@+id/vDivider"
+                                android:layout_width="@dimen/_1sdp"
+                                android:layout_height="@dimen/_40sdp"
+                                android:background="@color/light_gray"
+                                android:layout_marginStart="@dimen/_8sdp"
+                                android:layout_toStartOf="@id/btnAddTag"/>
+
+                            <ImageButton
+                                android:id="@+id/btnAddTag"
+                                android:layout_width="@dimen/_40sdp"
+                                android:layout_height="@dimen/_40sdp"
+                                android:background="?attr/selectableItemBackgroundBorderless"
+                                android:src="@drawable/ic_plus_24"
+                                android:layout_alignParentEnd="true"/>
+
+                        </RelativeLayout>
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/rvTagList"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+
+                    </LinearLayout>
+
+                </ScrollView>
+
+                <TextView
+                    android:id="@+id/saveButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_50sdp"
+                    android:background="@color/black"
+                    android:textColor="@color/white"
+                    android:gravity="center"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:text="@string/button_save"
+                    android:layout_alignParentBottom="true"/>
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/flColorPallet"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:id="@+id/colorPickerLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="@dimen/_8sdp"
+                android:background="@drawable/background_rounded"
+                android:elevation="4dp"
                 android:gravity="center"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:text="@string/button_save"
-                android:layout_alignParentBottom="true"/>
+                android:visibility="invisible">
 
-        </RelativeLayout>
+                <!-- 예제: 색상 선택 버튼 -->
+                <ImageView
+                    android:id="@+id/colorGray"
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="@dimen/_20sdp"
+                    android:layout_margin="@dimen/_5sdp"
+                    android:background="@drawable/circle_background"
+                    android:backgroundTint="@color/gray"
+                    android:clickable="true" />
+
+                <ImageView
+                    android:id="@+id/colorRed"
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="@dimen/_20sdp"
+                    android:layout_margin="@dimen/_5sdp"
+                    android:background="@drawable/circle_background"
+                    android:backgroundTint="@color/red_pallet"
+                    android:clickable="true" />
+
+                <ImageView
+                    android:id="@+id/colorOrange"
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="@dimen/_20sdp"
+                    android:layout_margin="@dimen/_5sdp"
+                    android:background="@drawable/circle_background"
+                    android:backgroundTint="@color/orange_pallet"
+                    android:clickable="true" />
+
+                <ImageView
+                    android:id="@+id/colorGreen"
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="@dimen/_20sdp"
+                    android:layout_margin="@dimen/_5sdp"
+                    android:background="@drawable/circle_background"
+                    android:backgroundTint="@color/green_pallet"
+                    android:clickable="true" />
+
+                <ImageView
+                    android:id="@+id/colorBlue"
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="@dimen/_20sdp"
+                    android:layout_margin="@dimen/_5sdp"
+                    android:background="@drawable/circle_background"
+                    android:backgroundTint="@color/purple_pallet"
+                    android:clickable="true" />
+
+                <ImageView
+                    android:id="@+id/colorPink"
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="@dimen/_20sdp"
+                    android:layout_margin="@dimen/_5sdp"
+                    android:background="@drawable/circle_background"
+                    android:backgroundTint="@color/pink_pallet"
+                    android:clickable="true" />
+
+            </LinearLayout>
+
+        </FrameLayout>
 
 
-
-
-
-
-    </LinearLayout>
+    </FrameLayout>
 
 </layout>
