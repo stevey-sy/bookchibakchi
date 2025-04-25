@@ -7,10 +7,12 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.core.widget.doAfterTextChanged
+import com.example.bookchigibakchigi.constants.ColorConstants
 import com.example.bookchigibakchigi.databinding.ActivityAddMemoBinding
 import com.example.bookchigibakchigi.databinding.DialogColorPickerBinding
 import com.example.bookchigibakchigi.ui.BaseActivity
 import com.example.bookchigibakchigi.ui.addmemo.adapter.TagListAdapter
+import com.google.android.flexbox.AlignItems
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
@@ -33,18 +35,20 @@ class AddMemoActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityAddMemoBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        
         initRecyclerView()
         
         // copiedText 처리
-        val copiedText = intent.getStringExtra("copiedText")
-        if (!copiedText.isNullOrEmpty()) {
-            binding.etContent.setText(copiedText)
-            viewModel.onEvent(AddMemoEvent.UpdateContent(copiedText))
+        val recognizedText = intent.getStringExtra("recognizedText")
+        if (!recognizedText.isNullOrEmpty()) {
+            binding.etContent.setText(recognizedText)
+            viewModel.onEvent(AddMemoEvent.UpdateContent(recognizedText))
         }
-        
+
         initListeners()
         observeViewModel()
+
+        // 초기 색상 설정
+        binding.vColorSelector.tag = ColorConstants.COLOR_CODES[0]
     }
 
     private fun initRecyclerView() {
@@ -53,6 +57,7 @@ class AddMemoActivity : BaseActivity() {
         val flexboxLayoutManager = FlexboxLayoutManager(this).apply {
             flexDirection = FlexDirection.ROW
             flexWrap = FlexWrap.WRAP
+            alignItems = AlignItems.FLEX_START
         }
 
         binding.rvTagList.apply {
@@ -88,8 +93,10 @@ class AddMemoActivity : BaseActivity() {
 
         binding.btnAddTag.setOnClickListener {
             val tagName = binding.etTag.text.toString().trim()
+            val colorCode = binding.vColorSelector.tag
+            val textColorCode = "#FFFFFF"
             if (tagName.isNotEmpty()) {
-                viewModel.onEvent(AddMemoEvent.AddTag(tagName, "#FF0000", "#FFFFFF"))
+                viewModel.onEvent(AddMemoEvent.AddTag(tagName, colorCode.toString(), textColorCode))
                 binding.etTag.text.clear()
             }
         }
@@ -107,7 +114,6 @@ class AddMemoActivity : BaseActivity() {
             window?.setBackgroundDrawableResource(android.R.color.transparent)
             setCancelable(true)
             
-            // 다이얼로그 크기 설정
             window?.setLayout(
                 (resources.displayMetrics.widthPixels * 0.8).toInt(),
                 android.view.WindowManager.LayoutParams.WRAP_CONTENT
@@ -115,13 +121,13 @@ class AddMemoActivity : BaseActivity() {
         }
 
         with(dialogBinding) {
-            colorGray.setOnClickListener { selectColor("@color/gray") }
-            colorRed.setOnClickListener { selectColor("#FF0000") }
-            colorOrange.setOnClickListener { selectColor("#FFA500") }
-            colorGreen.setOnClickListener { selectColor("#00FF00") }
-            colorBlue.setOnClickListener { selectColor("#0000FF") }
-            colorPurple.setOnClickListener { selectColor("#800080") }
-            colorPink.setOnClickListener { selectColor("#FFC0CB") }
+            colorGray.setOnClickListener { selectColor(ColorConstants.COLOR_CODES[0]) }
+            colorRed.setOnClickListener { selectColor(ColorConstants.COLOR_CODES[1]) }
+            colorOrange.setOnClickListener { selectColor(ColorConstants.COLOR_CODES[2]) }
+            colorGreen.setOnClickListener { selectColor(ColorConstants.COLOR_CODES[3]) }
+            colorBlue.setOnClickListener { selectColor(ColorConstants.COLOR_CODES[4]) }
+            colorPurple.setOnClickListener { selectColor(ColorConstants.COLOR_CODES[5]) }
+            colorPink.setOnClickListener { selectColor(ColorConstants.COLOR_CODES[6]) }
         }
 
         colorPickerDialog?.show()

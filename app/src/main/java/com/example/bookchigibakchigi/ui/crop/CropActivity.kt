@@ -7,8 +7,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.EditText
-import android.widget.TextView
 import android.widget.Toast
 import com.example.bookchigibakchigi.R
 import com.example.bookchigibakchigi.databinding.ActivityCropBinding
@@ -82,9 +80,9 @@ class CropActivity : BaseActivity() {
                     Toast.makeText(this, "텍스트를 인식하지 못했습니다.", Toast.LENGTH_SHORT).show()
                     return@addOnSuccessListener
                 }
-                val copiedText = visionText.text
-                Log.d("OCR_RESULT", "인식된 텍스트: $copiedText")
-                moveToAddMemoActivity(copiedText)
+                val recognizedText = visionText.text
+                Log.d("OCR_RESULT", "인식된 텍스트: $recognizedText")
+                moveToAddMemoActivity(recognizedText)
             }
             .addOnFailureListener { e ->
                 Log.e("OCR_ERROR", "OCR 실패: ${e.message}")
@@ -94,7 +92,7 @@ class CropActivity : BaseActivity() {
 
     private fun moveToAddMemoActivity(copiedText: String) {
         val intent = Intent(this, AddMemoActivity::class.java).apply {
-            putExtra("copiedText", copiedText)
+            putExtra("recognizedText", copiedText)
             putExtra("bookId", intent.getIntExtra("bookId", -1))
         }
         startActivity(intent)

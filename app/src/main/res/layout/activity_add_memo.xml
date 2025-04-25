@@ -130,7 +130,8 @@
                             android:layout_marginEnd="8dp"
                             android:background="@android:color/white"
                             android:elevation="2dp"
-                            android:hint="태그 입력 후 Enter"
+                            android:hint="태그 입력 후 + 버튼을 눌러주세요."
+                            android:textSize="14sp"
                             android:textColorHint="@color/light_gray"
                             android:padding="12dp"
                             android:layout_toStartOf="@id/vColorSelector"/>
