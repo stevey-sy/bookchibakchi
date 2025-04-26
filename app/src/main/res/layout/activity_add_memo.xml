@@ -78,7 +78,8 @@
                             android:layout_marginTop="8dp"
                             android:background="@android:color/white"
                             android:elevation="2dp"
-                            android:hint="ex) 120"
+                            android:hint="페이지를 입력해주세요. ex) 120"
+                            android:textSize="@dimen/_14sdp"
                             android:inputType="number"
                             android:textColorHint="@color/light_gray"
                             android:padding="12dp" />
@@ -248,16 +249,16 @@
                     android:clickable="true" />
 
                 <ImageView
-                    android:id="@+id/colorGreen"
+                    android:id="@+id/colorBlue"
                     android:layout_width="@dimen/_20sdp"
                     android:layout_height="@dimen/_20sdp"
                     android:layout_margin="@dimen/_5sdp"
                     android:background="@drawable/circle_background"
-                    android:backgroundTint="@color/green_pallet"
+                    android:backgroundTint="@color/blue_pallet"
                     android:clickable="true" />
 
                 <ImageView
-                    android:id="@+id/colorBlue"
+                    android:id="@+id/colorPurple"
                     android:layout_width="@dimen/_20sdp"
                     android:layout_height="@dimen/_20sdp"
                     android:layout_margin="@dimen/_5sdp"

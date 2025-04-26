@@ -166,8 +166,8 @@ class AddMemoActivity : BaseActivity() {
         binding.colorGray.setOnClickListener { selectColor(0) }
         binding.colorRed.setOnClickListener { selectColor(1) }
         binding.colorOrange.setOnClickListener { selectColor(2) }
-        binding.colorGreen.setOnClickListener { selectColor(3) }
-        binding.colorBlue.setOnClickListener { selectColor(4) }
+        binding.colorBlue.setOnClickListener { selectColor(3) }
+        binding.colorPurple.setOnClickListener { selectColor(4) }
         binding.colorPink.setOnClickListener { selectColor(5) }
     }
 

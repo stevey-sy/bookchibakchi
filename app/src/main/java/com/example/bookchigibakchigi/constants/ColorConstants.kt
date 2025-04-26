@@ -5,7 +5,6 @@ object ColorConstants {
         "#BEBEBE", // Gray
         "#F1948A", // Red
         "#ffb833", // Orange
-        "#33ff8d", // Green
         "#3380ff", // Blue
         "#c133ff", // Purple
         "#ff33a8"  // Pink
