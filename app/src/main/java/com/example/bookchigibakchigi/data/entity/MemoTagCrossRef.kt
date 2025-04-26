@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 
 @Entity(
-    tableName = "memo_tag_cross_ref",
+    tableName = "memo_tags",
     primaryKeys = ["memoId", "tagId"],
     foreignKeys = [
         ForeignKey(

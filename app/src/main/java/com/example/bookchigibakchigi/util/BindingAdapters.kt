@@ -126,7 +126,8 @@ object BindingAdapters {
 //                } else {
 //                    "${uiState.photoCards.size} Comments"
 //                }
-                "${uiState.photoCards.size} Comments"
+//                "${uiState.photoCards.size} Comments"
+                ""
             }
             else -> {
                 ""

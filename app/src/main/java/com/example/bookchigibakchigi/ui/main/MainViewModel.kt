@@ -5,9 +5,16 @@ import android.view.View
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.bookchigibakchigi.data.PhotoCardWithTextContents
+import com.example.bookchigibakchigi.data.entity.MemoEntity
+import com.example.bookchigibakchigi.data.entity.TagEntity
 import com.example.bookchigibakchigi.data.repository.BookShelfRepository
+import com.example.bookchigibakchigi.data.repository.MemoRepository
 import com.example.bookchigibakchigi.data.repository.PhotoCardRepository
+import com.example.bookchigibakchigi.data.repository.TagRepository
+import com.example.bookchigibakchigi.mapper.MemoMapper
+import com.example.bookchigibakchigi.mapper.TagMapper
 import com.example.bookchigibakchigi.model.BookUiModel
+import com.example.bookchigibakchigi.model.MemoUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,14 +26,17 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val bookShelfRepository: BookShelfRepository,
-    private val photoCardRepository: PhotoCardRepository
+    private val memoRepository: MemoRepository,
+    private val tagRepository: TagRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<MainViewUiState>(MainViewUiState.Loading)
@@ -55,7 +65,7 @@ class MainViewModel @Inject constructor(
     private val _selectedBookId = MutableStateFlow<Int?>(null)
     val selectedBookId: StateFlow<Int?> = _selectedBookId.asStateFlow()
 
-    // 선택된 Todo에 대한 Flow (자동 갱신)
+    // 선택된 book 에 대한 Flow (자동 갱신)
     @OptIn(ExperimentalCoroutinesApi::class)
     val selectedBook: StateFlow<BookUiModel?> = selectedBookId
         .filterNotNull()
@@ -64,10 +74,17 @@ class MainViewModel @Inject constructor(
         }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), null)
 
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val selectedMemoList: StateFlow<List<MemoUiModel>> = selectedBookId
+        .filterNotNull()
+        .flatMapLatest { bookId ->
+            memoRepository.getMemosByBookId(bookId)
+        }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+
     fun setSelectedBook(id: Int) {
         _selectedBookId.value = id
     }
-
 
     init {
         loadBooks()
@@ -87,25 +104,6 @@ class MainViewModel @Inject constructor(
                 } else {
                     _uiState.value = MainViewUiState.MyLibrary(books = books)
                 }
-            }
-        }
-    }
-
-    suspend fun updateCurrentBook(newBook: BookUiModel) {
-        _uiState.value.asBookDetail()?.let { currentState ->
-            try {
-                val photoCards = photoCardRepository.getPhotoCardListByIsbn(newBook.isbn)
-                _uiState.value = currentState.copy(
-                    currentBook = newBook,
-                    photoCards = photoCards,
-                    initialPosition = null
-                )
-                Log.d("TEST TEST TEST ", "updateCurrentBook: ")
-            } catch (e: Exception) {
-                _uiState.value = currentState.copy(
-                    currentBook = newBook,
-                    error = e.message
-                )
             }
         }
     }
@@ -135,15 +133,23 @@ class MainViewModel @Inject constructor(
                 is MainViewUiState.BookDetail -> currentState.books
                 else -> emptyList()
             }
-            
-            val photoCards = photoCardRepository.getPhotoCardListByIsbn(selectedBook.isbn)
+
+//            val memos = memoRepository.getMemosByBookId(selectedBook.itemId)
+//                .map { memoEntities ->
+//                    memoEntities.map { memoEntity ->
+//                        val tags = tagRepository.getTagsByMemoId(memoEntity.memoId)
+//                            .map { tagEntity -> TagMapper.toUiModel(tagEntity) }
+//                        MemoMapper.toUiModel(memoEntity, tags)
+//                    }
+//                }
+//                .first() // ✅ 첫 데이터만 받고 끝내자
+
             _uiState.value = MainViewUiState.BookDetail(
                 books = currentBooks,
                 currentBook = selectedBook,
                 initialPosition = position,
-                photoCards = photoCards
             )
-            
+
             _navigationEventFlow.emit(
                 NavigationEvent.NavigateToBookDetail(
                     book = selectedBook,
@@ -194,7 +200,7 @@ sealed class MainViewUiState {
         val books: List<BookUiModel>,
         val currentBook: BookUiModel,
         val initialPosition: Int? = null,
-        val photoCards: List<PhotoCardWithTextContents>,
+//        val memos: List<MemoUiModel>,
         val isLoading: Boolean = false,
         val error: String? = null
     ) : MainViewUiState()

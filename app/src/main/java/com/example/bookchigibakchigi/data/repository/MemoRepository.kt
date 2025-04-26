@@ -4,13 +4,16 @@ import com.example.bookchigibakchigi.data.dao.MemoDao
 import com.example.bookchigibakchigi.data.entity.MemoEntity
 import com.example.bookchigibakchigi.data.entity.MemoTagCrossRef
 import com.example.bookchigibakchigi.data.entity.TagEntity
+import com.example.bookchigibakchigi.mapper.MemoMapper
+import com.example.bookchigibakchigi.model.MemoUiModel
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class MemoRepository @Inject constructor(
-    private val memoDao: MemoDao
+    private val memoDao: MemoDao,
 ) {
     suspend fun insertMemo(memo: MemoEntity): Long = memoDao.insertMemo(memo)
 
@@ -18,7 +21,13 @@ class MemoRepository @Inject constructor(
 
     suspend fun deleteMemo(memo: MemoEntity) = memoDao.deleteMemo(memo)
 
-    fun getMemosByBookId(bookId: Int): Flow<List<MemoEntity>> = memoDao.getMemosByBookId(bookId)
+    fun getMemosByBookId(bookId: Int): Flow<List<MemoUiModel>> {
+        return memoDao.getMemosByBookId(bookId).map { memos ->
+            memos.map { memo ->
+                MemoMapper.toUiModel(memo)
+            }
+        }
+    }
 
     suspend fun getMemoById(memoId: Long): MemoEntity? = memoDao.getMemoById(memoId)
 

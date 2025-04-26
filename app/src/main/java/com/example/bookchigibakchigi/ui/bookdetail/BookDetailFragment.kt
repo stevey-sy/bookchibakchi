@@ -311,8 +311,8 @@ class BookDetailFragment : Fragment() {
 
         mainViewModel.uiState.value.let { state ->
             if (state is MainViewUiState.BookDetail) {
-                val photoCards = state.photoCards
-                adapter.updateList(photoCards)
+//                val photoCards = state.photoCards
+//                adapter.updateList(photoCards)
             }
         }
 

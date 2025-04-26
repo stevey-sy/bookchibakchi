@@ -12,6 +12,7 @@ import com.example.bookchigibakchigi.data.repository.MemoRepository
 import com.example.bookchigibakchigi.data.repository.PhotoCardRepository
 import com.example.bookchigibakchigi.data.repository.TagRepository
 import com.example.bookchigibakchigi.data.repository.AladinBookRepository
+import com.example.bookchigibakchigi.mapper.MemoMapper
 import com.example.bookchigibakchigi.network.service.AladinBookApiService
 import dagger.Module
 import dagger.Provides

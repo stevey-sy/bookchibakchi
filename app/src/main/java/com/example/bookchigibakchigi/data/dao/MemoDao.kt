@@ -30,10 +30,10 @@ interface MemoDao {
     suspend fun deleteMemoTagCrossRef(crossRef: MemoTagCrossRef)
 
     @Transaction
-    @Query("SELECT * FROM tags WHERE tagId IN (SELECT tagId FROM memo_tag_cross_ref WHERE memoId = :memoId)")
+    @Query("SELECT * FROM tags WHERE tagId IN (SELECT tagId FROM memo_tags WHERE memoId = :memoId)")
     fun getTagsForMemo(memoId: Long): Flow<List<TagEntity>>
 
     @Transaction
-    @Query("SELECT * FROM memos WHERE memoId IN (SELECT memoId FROM memo_tag_cross_ref WHERE tagId = :tagId)")
+    @Query("SELECT * FROM memos WHERE memoId IN (SELECT memoId FROM memo_tags WHERE tagId = :tagId)")
     fun getMemosByTagId(tagId: Long): Flow<List<MemoEntity>>
 } 
