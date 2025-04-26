@@ -231,13 +231,14 @@
                     android:gravity="center">
 
                     <TextView
+                        android:id="@+id/tvComment"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textColor="@color/gray"
                         android:layout_marginHorizontal="@dimen/_20sdp"
                         android:gravity="center"
                         android:textSize="20sp"
-                        app:comment="@{mainViewModel.uiState}"/>
+                        android:text="@{mainViewModel.selectedBook.getMemoListSizeStr()}"/>
 
                     <ImageView
                         android:layout_width="@dimen/_20sdp"

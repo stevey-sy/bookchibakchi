@@ -4,15 +4,9 @@ import android.util.Log
 import android.view.View
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.bookchigibakchigi.data.PhotoCardWithTextContents
-import com.example.bookchigibakchigi.data.entity.MemoEntity
-import com.example.bookchigibakchigi.data.entity.TagEntity
 import com.example.bookchigibakchigi.data.repository.BookShelfRepository
 import com.example.bookchigibakchigi.data.repository.MemoRepository
-import com.example.bookchigibakchigi.data.repository.PhotoCardRepository
 import com.example.bookchigibakchigi.data.repository.TagRepository
-import com.example.bookchigibakchigi.mapper.MemoMapper
-import com.example.bookchigibakchigi.mapper.TagMapper
 import com.example.bookchigibakchigi.model.BookUiModel
 import com.example.bookchigibakchigi.model.MemoUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,10 +19,9 @@ import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
@@ -36,7 +29,6 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
     private val bookShelfRepository: BookShelfRepository,
     private val memoRepository: MemoRepository,
-    private val tagRepository: TagRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<MainViewUiState>(MainViewUiState.Loading)
@@ -70,20 +62,24 @@ class MainViewModel @Inject constructor(
     val selectedBook: StateFlow<BookUiModel?> = selectedBookId
         .filterNotNull()
         .flatMapLatest { id ->
-            bookShelfRepository.getBookById(id)
+            combine(
+                bookShelfRepository.getBookById(id),
+                memoRepository.getMemosByBookId(id)
+            ) { book, memos ->
+                book.copy(memoList = memos)
+            }
         }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), null)
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    val selectedMemoList: StateFlow<List<MemoUiModel>> = selectedBookId
-        .filterNotNull()
-        .flatMapLatest { bookId ->
-            memoRepository.getMemosByBookId(bookId)
-        }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
     fun setSelectedBook(id: Int) {
         _selectedBookId.value = id
+    }
+
+    fun getMemoListLengthStr(): String {
+        val length = selectedBook.value?.memoList?.size ?: 0
+        val result = "Comment $length"
+        return result
     }
 
     init {
@@ -133,16 +129,6 @@ class MainViewModel @Inject constructor(
                 is MainViewUiState.BookDetail -> currentState.books
                 else -> emptyList()
             }
-
-//            val memos = memoRepository.getMemosByBookId(selectedBook.itemId)
-//                .map { memoEntities ->
-//                    memoEntities.map { memoEntity ->
-//                        val tags = tagRepository.getTagsByMemoId(memoEntity.memoId)
-//                            .map { tagEntity -> TagMapper.toUiModel(tagEntity) }
-//                        MemoMapper.toUiModel(memoEntity, tags)
-//                    }
-//                }
-//                .first() // ✅ 첫 데이터만 받고 끝내자
 
             _uiState.value = MainViewUiState.BookDetail(
                 books = currentBooks,

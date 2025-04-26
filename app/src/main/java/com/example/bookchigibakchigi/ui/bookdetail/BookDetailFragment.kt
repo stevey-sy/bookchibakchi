@@ -1,6 +1,7 @@
 package com.example.bookchigibakchigi.ui.bookdetail
 
 import android.animation.ValueAnimator
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -202,6 +203,7 @@ class BookDetailFragment : Fragment() {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun observeViewModel() {
         // 현재 상태를 한 번만 확인하고 처리
         val currentState = mainViewModel.uiState.value
@@ -366,9 +368,9 @@ class BookDetailFragment : Fragment() {
             if (success) {
                 val intent = Intent(requireContext(), CropActivity::class.java).apply {
                     putExtra("IMAGE_URI", capturedImageUri.toString()) // Uri를 String으로 변환하여 전달
-                    mainViewModel.uiState.value.let { state ->
-                        if (state is MainViewUiState.BookDetail) {
-                            putExtra("currentBook", state.currentBook)
+                    mainViewModel.selectedBook.value.let { book ->
+                        book?.let {
+                            putExtra("bookId", book.itemId)
                         }
                     }
                 }

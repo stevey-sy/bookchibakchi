@@ -1,9 +1,5 @@
 package com.example.bookchigibakchigi.model
 
-import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
-
-@Parcelize
 data class BookUiModel(
     val itemId: Int = 0,
     val title: String = "",
@@ -22,7 +18,8 @@ data class BookUiModel(
     var shelfPosition: Int = -1,
     var progressText: String = "",
     var progressPercentage: Int = 0,
-) : Parcelable {
+    val memoList: List<MemoUiModel> = emptyList(),
+) {
     init {
         // 초기화 블록에서 계산된 값들을 설정
         progressPercentage = calculateProgressPercentage()
@@ -39,7 +36,11 @@ data class BookUiModel(
     }
 
     fun getProgressTextStr(): String {
-        return "p. $currentPageCnt / $totalPageCnt"
+        return "P. $currentPageCnt / $totalPageCnt"
+    }
+
+    fun getMemoListSizeStr(): String {
+        return "Comments ${memoList.size}"
     }
 
     private fun getAuthorText(): String {
