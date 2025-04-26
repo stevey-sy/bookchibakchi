@@ -189,6 +189,15 @@ class AddMemoActivity : BaseActivity() {
 
     private fun updateUi(state: AddMemoUiState) {
         binding.saveButton.isEnabled = state.page.isNotEmpty() && state.content.isNotEmpty() && !state.isLoading
+        
+        // 버튼의 배경색과 텍스트 색상 변경
+        if (state.isContentValid) {
+            binding.saveButton.setBackgroundColor(getColor(android.R.color.black))
+        } else {
+            Toast.makeText(this, "내용을 입력해주세요.", Toast.LENGTH_SHORT).show()
+            binding.saveButton.setBackgroundColor(getColor(android.R.color.darker_gray))
+        }
+
         if (state.isSuccess) {
             Toast.makeText(this, "메모가 저장되었습니다.", Toast.LENGTH_SHORT).show()
         }

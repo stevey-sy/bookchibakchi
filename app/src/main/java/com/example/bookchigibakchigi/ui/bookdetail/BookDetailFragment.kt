@@ -40,6 +40,7 @@ import java.io.File
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.viewpager2.widget.ViewPager2
 import com.example.bookchigibakchigi.data.entity.BookEntity
+import com.example.bookchigibakchigi.ui.addmemo.AddMemoActivity
 import com.example.bookchigibakchigi.ui.main.MainViewModel
 import com.example.bookchigibakchigi.ui.main.MainViewUiState
 import com.example.bookchigibakchigi.util.BindingAdapters.setProgressTranslation
@@ -279,7 +280,7 @@ class BookDetailFragment : Fragment() {
         // 추가 로직 (예: 버튼 클릭 이벤트)
         view.findViewById<LinearLayout>(R.id.llMicrophone).setOnClickListener {
             bottomSheetDialog.dismiss()
-            moveToMicrophoneActivity()
+            moveToActivity(MicrophoneActivity::class.java)
         }
         view.findViewById<LinearLayout>(R.id.llCamera).setOnClickListener {
             bottomSheetDialog.dismiss()
@@ -288,6 +289,8 @@ class BookDetailFragment : Fragment() {
 
         view.findViewById<LinearLayout>(R.id.llKeyboard).setOnClickListener {
             // 버튼 클릭 동작
+            bottomSheetDialog.dismiss()
+            moveToActivity(AddMemoActivity::class.java)
         }
     }
 
@@ -326,15 +329,14 @@ class BookDetailFragment : Fragment() {
         }
     }
 
-    private fun moveToMicrophoneActivity() {
-        val intent = Intent(requireContext(), MicrophoneActivity::class.java).apply {
-//            mainViewModel.uiState.value.let { state ->
-//                if (state is MainViewUiState.BookDetail) {
-//                    putExtra("currentBook", state.currentBook)
-//                }
-//            }
+    private fun moveToActivity(activityClass: Class<*>) {
+        val intent = Intent(requireContext(), activityClass).apply {
+            mainViewModel.selectedBook.value.let { book ->
+                book?.let {
+                    putExtra("bookId", book.itemId)
+                }
+            }
         }
-
         startActivity(intent)
     }
 

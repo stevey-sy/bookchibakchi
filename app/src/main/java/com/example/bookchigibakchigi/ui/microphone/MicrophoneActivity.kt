@@ -16,6 +16,7 @@ import androidx.lifecycle.lifecycleScope
 import com.example.bookchigibakchigi.R
 import com.example.bookchigibakchigi.databinding.ActivityMicrophoneBinding
 import com.example.bookchigibakchigi.ui.BaseActivity
+import com.example.bookchigibakchigi.ui.addmemo.AddMemoActivity
 import com.example.bookchigibakchigi.ui.card.CardActivity
 import com.example.bookchigibakchigi.util.SpeechRecognizerUtil
 import com.example.bookchigibakchigi.util.VibrationUtil
@@ -60,11 +61,15 @@ class MicrophoneActivity : BaseActivity() {
         }
 
         binding.tvNext.setOnClickListener {
-            val copiedText = viewModel.recognizedText.value
+            val recognizedText = viewModel.recognizedText.value
+             if (recognizedText.isEmpty()) {
+                 Toast.makeText(this, "인식된 텍스트가 없습니다.", Toast.LENGTH_SHORT).show()
+                 return@setOnClickListener
+             }
             val bookId = intent.getIntExtra("bookId", -1)
-            val intent = Intent(this, CardActivity::class.java).apply {
+            val intent = Intent(this, AddMemoActivity::class.java).apply {
                 putExtra("bookId", bookId)
-                putExtra("copiedText", copiedText)
+                putExtra("recognizedText", recognizedText)
             }
             startActivity(intent)
         }

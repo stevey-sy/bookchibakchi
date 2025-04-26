@@ -23,7 +23,8 @@ data class AddMemoUiState(
     val tagList: List<TagUiModel> = emptyList(),
     val isLoading: Boolean = false,
     val isSuccess: Boolean = false,
-    val error: String? = null
+    val error: String? = null,
+    val isContentValid: Boolean = false
 )
 
 sealed interface AddMemoEvent {
@@ -49,7 +50,10 @@ class AddMemoViewModel @Inject constructor(
                 _uiState.update { it.copy(page = event.page) }
             }
             is AddMemoEvent.UpdateContent -> {
-                _uiState.update { it.copy(content = event.content) }
+                _uiState.update { it.copy(
+                    content = event.content,
+                    isContentValid = event.content.trim().isNotEmpty()
+                ) }
             }
             is AddMemoEvent.AddTag -> {
                 val currentTags = _uiState.value.tagList.toMutableList()
