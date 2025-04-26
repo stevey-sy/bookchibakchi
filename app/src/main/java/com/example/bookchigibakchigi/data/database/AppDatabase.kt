@@ -7,19 +7,33 @@ import androidx.room.RoomDatabase
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.bookchigibakchigi.data.dao.BookDao
+import com.example.bookchigibakchigi.data.dao.MemoDao
 import com.example.bookchigibakchigi.data.dao.PhotoCardDao
+import com.example.bookchigibakchigi.data.dao.TagDao
 import com.example.bookchigibakchigi.data.entity.BookEntity
 import com.example.bookchigibakchigi.data.entity.CardTextEntity
+import com.example.bookchigibakchigi.data.entity.MemoEntity
+import com.example.bookchigibakchigi.data.entity.MemoTagCrossRef
 import com.example.bookchigibakchigi.data.entity.PhotoCardEntity
+import com.example.bookchigibakchigi.data.entity.TagEntity
 
 @Database(
-    entities = [BookEntity::class, PhotoCardEntity::class, CardTextEntity::class],
-    version = 5,
+    entities = [
+        BookEntity::class,
+        PhotoCardEntity::class,
+        CardTextEntity::class,
+        MemoEntity::class,
+        TagEntity::class,
+        MemoTagCrossRef::class
+    ],
+    version = 6,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun bookDao(): BookDao
     abstract fun photoCardDao(): PhotoCardDao
+    abstract fun memoDao(): MemoDao
+    abstract fun tagDao(): TagDao
 
     companion object {
         @Volatile

@@ -71,18 +71,39 @@
                             android:textStyle="bold"
                             android:text="Page" />
 
-                        <EditText
-                            android:id="@+id/etPage"
+                        <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="8dp"
-                            android:background="@android:color/white"
-                            android:elevation="2dp"
-                            android:hint="페이지를 입력해주세요. ex) 120"
-                            android:textSize="@dimen/_14sdp"
-                            android:inputType="number"
-                            android:textColorHint="@color/light_gray"
-                            android:padding="12dp" />
+                            android:orientation="horizontal"
+                            android:gravity="center|start"
+                            android:clipChildren="false"
+                            android:clipToPadding="false"
+                            android:paddingVertical="@dimen/_4sdp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="P. "
+                                android:textStyle="bold"
+                                android:textColor="@color/black"
+                                android:textSize="16sp"
+                                android:layout_marginEnd="@dimen/_6sdp"/>
+
+                            <EditText
+                                android:id="@+id/etPage"
+                                android:layout_width="@dimen/_150sdp"
+                                android:layout_height="wrap_content"
+                                android:background="@android:color/white"
+                                android:elevation="2dp"
+                                android:hint="e.g., 123"
+                                android:textSize="@dimen/_14sdp"
+                                android:inputType="number"
+                                android:textColorHint="@color/light_gray"
+                                android:padding="12dp" />
+
+                        </LinearLayout>
+
 
 
 

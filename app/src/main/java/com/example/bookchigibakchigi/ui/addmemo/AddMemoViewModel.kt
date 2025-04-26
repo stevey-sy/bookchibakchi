@@ -2,8 +2,11 @@ package com.example.bookchigibakchigi.ui.addmemo
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.bookchigibakchigi.data.entity.MemoEntity
 import com.example.bookchigibakchigi.data.entity.TagEntity
 import com.example.bookchigibakchigi.data.repository.BookShelfRepository
+import com.example.bookchigibakchigi.data.repository.MemoRepository
+import com.example.bookchigibakchigi.data.repository.TagRepository
 import com.example.bookchigibakchigi.mapper.TagMapper
 import com.example.bookchigibakchigi.model.TagUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -28,12 +31,13 @@ sealed interface AddMemoEvent {
     data class UpdateContent(val content: String) : AddMemoEvent
     data class AddTag(val name: String, val backgroundColor: String, val textColor: String) : AddMemoEvent
     data class RemoveTag(val tagName: String) : AddMemoEvent
-    object SaveMemo : AddMemoEvent
+    data class SaveMemo(val bookId: Int) : AddMemoEvent
 }
 
 @HiltViewModel
 class AddMemoViewModel @Inject constructor(
-    private val bookShelfRepository: BookShelfRepository
+    private val memoRepository: MemoRepository,
+    private val tagRepository: TagRepository
 ): ViewModel() {
 
     private val _uiState = MutableStateFlow(AddMemoUiState())
@@ -65,18 +69,38 @@ class AddMemoViewModel @Inject constructor(
                 currentTags.removeIf { it.name == event.tagName }
                 _uiState.update { it.copy(tagList = currentTags) }
             }
-            AddMemoEvent.SaveMemo -> {
-                saveMemo()
+            is AddMemoEvent.SaveMemo -> {
+                saveMemo(event.bookId)
             }
         }
     }
 
-    private fun saveMemo() {
+    private fun saveMemo(bookId: Int) {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
             try {
                 val tagEntities = _uiState.value.tagList.map { TagMapper.toEntity(it) }
-                // TODO: 메모 저장 로직 구현
+                
+                // 태그 저장
+                val savedTagIds = mutableListOf<Long>()
+                for (tag in tagEntities) {
+                    val tagId = tagRepository.insertTag(tag)
+                    savedTagIds.add(tagId)
+                }
+
+                // 메모 저장
+                val memo = MemoEntity(
+                    bookId = bookId,
+                    content = _uiState.value.content,
+                    pageNumber = _uiState.value.page.toIntOrNull() ?: 0
+                )
+                val memoId = memoRepository.insertMemo(memo)
+
+                // 메모-태그 관계 저장
+                for (tagId in savedTagIds) {
+                    memoRepository.addTagToMemo(memoId, tagId)
+                }
+
                 _uiState.update { it.copy(isLoading = false, isSuccess = true) }
             } catch (e: Exception) {
                 _uiState.update { it.copy(

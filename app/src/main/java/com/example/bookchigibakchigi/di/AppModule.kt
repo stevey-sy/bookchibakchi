@@ -3,10 +3,14 @@ package com.example.bookchigibakchigi.di
 import android.content.Context
 import androidx.room.Room
 import com.example.bookchigibakchigi.data.dao.BookDao
+import com.example.bookchigibakchigi.data.dao.MemoDao
+import com.example.bookchigibakchigi.data.dao.TagDao
 import com.example.bookchigibakchigi.data.database.AppDatabase
 import com.example.bookchigibakchigi.data.dao.PhotoCardDao
 import com.example.bookchigibakchigi.data.repository.BookShelfRepository
+import com.example.bookchigibakchigi.data.repository.MemoRepository
 import com.example.bookchigibakchigi.data.repository.PhotoCardRepository
+import com.example.bookchigibakchigi.data.repository.TagRepository
 import com.example.bookchigibakchigi.data.repository.AladinBookRepository
 import com.example.bookchigibakchigi.network.service.AladinBookApiService
 import dagger.Module
@@ -60,5 +64,27 @@ object AppModule {
     @Singleton
     fun provideAladinBookRepository(apiService: AladinBookApiService): AladinBookRepository {
         return AladinBookRepository(apiService)
+    }
+
+    @Provides
+    fun provideMemoDao(database: AppDatabase): MemoDao {
+        return database.memoDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideMemoRepository(memoDao: MemoDao): MemoRepository {
+        return MemoRepository(memoDao)
+    }
+
+    @Provides
+    fun provideTagDao(database: AppDatabase): TagDao {
+        return database.tagDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideTagRepository(tagDao: TagDao): TagRepository {
+        return TagRepository(tagDao)
     }
 }

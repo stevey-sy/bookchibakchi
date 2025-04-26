@@ -24,6 +24,7 @@ import kotlinx.coroutines.launch
 import androidx.core.view.isVisible
 import androidx.core.graphics.toColorInt
 import android.graphics.Rect
+import android.widget.Toast
 
 @AndroidEntryPoint
 class AddMemoActivity : BaseActivity() {
@@ -154,7 +155,12 @@ class AddMemoActivity : BaseActivity() {
         }
 
         binding.saveButton.setOnClickListener {
-            viewModel.onEvent(AddMemoEvent.SaveMemo)
+            val bookId = intent.getIntExtra("bookId", -1)
+            if(bookId == -1) {
+                Toast.makeText(this, "책 정보가 없습니다.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            viewModel.onEvent(AddMemoEvent.SaveMemo(bookId))
         }
 
         binding.flColorPallet.setOnClickListener {
@@ -184,7 +190,7 @@ class AddMemoActivity : BaseActivity() {
     private fun updateUi(state: AddMemoUiState) {
         binding.saveButton.isEnabled = state.page.isNotEmpty() && state.content.isNotEmpty() && !state.isLoading
         if (state.isSuccess) {
-            finish()
+            Toast.makeText(this, "메모가 저장되었습니다.", Toast.LENGTH_SHORT).show()
         }
 
         tagListAdapter.submitList(state.tagList)
@@ -204,6 +210,7 @@ class AddMemoActivity : BaseActivity() {
 
     private fun showError(message: String) {
         // 에러 메시지를 표시하는 로직 구현
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
     override fun onDestroy() {
