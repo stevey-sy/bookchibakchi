@@ -26,6 +26,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.bookchigibakchigi.R
 import com.example.bookchigibakchigi.databinding.FragmentBookDetailBinding
@@ -42,6 +43,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.viewpager2.widget.ViewPager2
 import com.example.bookchigibakchigi.data.entity.BookEntity
 import com.example.bookchigibakchigi.ui.addmemo.AddMemoActivity
+import com.example.bookchigibakchigi.ui.bookdetail.adapter.MemoListAdapter
 import com.example.bookchigibakchigi.ui.main.MainViewModel
 import com.example.bookchigibakchigi.ui.main.MainViewUiState
 import com.example.bookchigibakchigi.util.BindingAdapters.setProgressTranslation
@@ -296,6 +298,36 @@ class BookDetailFragment : Fragment() {
         }
     }
 
+    private fun showMemoListDialog() {
+        val bottomSheetDialog = BottomSheetDialog(requireContext(), R.style.CustomBottomSheetDialog)
+        val view = layoutInflater.inflate(R.layout.dialog_memo_list, null)
+        bottomSheetDialog.setContentView(view)
+
+        val recyclerView = view.findViewById<RecyclerView>(R.id.rvPhotoCards)
+//        val staggeredGridLayoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+//        staggeredGridLayoutManager.gapStrategy = StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS
+//        recyclerView.layoutManager = staggeredGridLayoutManager
+
+        // linearLayoutManager for recyclerView
+        val linearLayoutManager = LinearLayoutManager(requireContext())
+        recyclerView.layoutManager = linearLayoutManager
+
+        val adapter = MemoListAdapter() // 초기 리스트 비움
+        recyclerView.adapter = adapter
+
+        // ViewModel의 photoCardList 데이터를 가져와서 어댑터에 설정
+
+        mainViewModel.selectedBook.value.let { selectedBook ->
+            selectedBook?.memoList.apply {
+                if (this == null) {
+                    return
+                }
+                adapter.submitList(this)
+                bottomSheetDialog.show()
+            }
+        }
+    }
+
     private fun showPhotoCardListDialog() {
         val bottomSheetDialog = BottomSheetDialog(requireContext(), R.style.CustomBottomSheetDialog)
         val view = layoutInflater.inflate(R.layout.dialog_photo_card_list, null)
@@ -317,7 +349,6 @@ class BookDetailFragment : Fragment() {
 //                adapter.updateList(photoCards)
             }
         }
-
         bottomSheetDialog.show()
     }
 
@@ -418,7 +449,7 @@ class BookDetailFragment : Fragment() {
         }
 
         binding.llComments.setOnClickListener {
-            showPhotoCardListDialog()
+            showMemoListDialog()
         }
     }
 

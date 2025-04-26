@@ -3,7 +3,7 @@
     android:shape="rectangle">
 
     <!-- 둥근 모서리 반경 -->
-    <corners android:radius="20dp" /> <!-- 원하는 radius 값 설정 -->
+    <corners android:radius="14dp" /> <!-- 원하는 radius 값 설정 -->
 
     <!-- 배경색 -->
     <solid android:color="@color/black" />
