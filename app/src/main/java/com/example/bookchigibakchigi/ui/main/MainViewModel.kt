@@ -22,6 +22,8 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
@@ -29,6 +31,7 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
     private val bookShelfRepository: BookShelfRepository,
     private val memoRepository: MemoRepository,
+    private val tagRepository: TagRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<MainViewUiState>(MainViewUiState.Loading)
@@ -57,7 +60,6 @@ class MainViewModel @Inject constructor(
     private val _selectedBookId = MutableStateFlow<Int?>(null)
     val selectedBookId: StateFlow<Int?> = _selectedBookId.asStateFlow()
 
-    // 선택된 book 에 대한 Flow (자동 갱신)
     @OptIn(ExperimentalCoroutinesApi::class)
     val selectedBook: StateFlow<BookUiModel?> = selectedBookId
         .filterNotNull()
@@ -65,8 +67,20 @@ class MainViewModel @Inject constructor(
             combine(
                 bookShelfRepository.getBookById(id),
                 memoRepository.getMemosByBookId(id)
-            ) { book, memos ->
-                book.copy(memoList = memos)
+            ) { book, memos -> book to memos }   // 1. book과 memos를 하나로 묶음
+        }
+        .flatMapLatest { (book, memos) ->
+            if (memos.isEmpty()) {
+                flowOf(book.copy(memoList = emptyList()))
+            } else {
+                combine(
+                    memos.map { memo ->
+                        tagRepository.getTagsByMemoId(memo.memoId)
+                            .map { tags -> memo.copy(tags = tags) }
+                    }
+                ) { memosWithTags: Array<MemoUiModel> ->  // 2. 명시적으로 타입 지정
+                    book.copy(memoList = memosWithTags.toList())
+                }
             }
         }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), null)
@@ -74,12 +88,6 @@ class MainViewModel @Inject constructor(
 
     fun setSelectedBook(id: Int) {
         _selectedBookId.value = id
-    }
-
-    fun getMemoListLengthStr(): String {
-        val length = selectedBook.value?.memoList?.size ?: 0
-        val result = "Comment $length"
-        return result
     }
 
     init {

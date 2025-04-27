@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface TagDao {
     @Query("SELECT * FROM tags WHERE tagId IN (SELECT tagId FROM memo_tags WHERE memoId = :memoId)")
-    suspend fun getTagsByMemoId(memoId: Long): List<TagEntity>
+    fun getTagsByMemoId(memoId: Long): Flow<List<TagEntity>>
 
     @Insert
     suspend fun insertTag(tag: TagEntity): Long

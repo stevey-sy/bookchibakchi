@@ -6,14 +6,17 @@
     android:layout_marginHorizontal="@dimen/_10sdp"
     android:paddingBottom="@dimen/_10sdp">
 
-    <androidx.cardview.widget.CardView
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="@dimen/_20sdp"
         android:paddingHorizontal="@dimen/_14sdp"
         android:paddingTop="@dimen/_20sdp"
         android:paddingBottom="@dimen/_14sdp"
+        android:layout_marginBottom="@dimen/_10sdp"
+        android:layout_marginEnd="@dimen/_8sdp"
         app:cardCornerRadius="12dp"
+        app:strokeColor="#DDDDDD"
         app:cardElevation="4dp" >
 
         <RelativeLayout
@@ -41,7 +44,8 @@
                 android:text="매모했습니다."
                 android:layout_below="@id/tvCreatedAt"
                 android:layout_above="@id/chipGroup"
-                android:maxLength="3"/>
+                android:maxLines="3"
+                android:ellipsize="end"/>
 
             <com.google.android.material.chip.ChipGroup
                 android:id="@+id/chipGroup"
@@ -53,13 +57,14 @@
 
         </RelativeLayout>
 
-    </androidx.cardview.widget.CardView>
+    </com.google.android.material.card.MaterialCardView>
 
     <View
         android:layout_width="@dimen/_4sdp"
         android:layout_height="match_parent"
         android:background="@color/black"
         android:layout_marginTop="@dimen/_20sdp"
+        android:layout_marginBottom="@dimen/_10sdp"
         android:elevation="10dp"
         />
 
