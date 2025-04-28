@@ -2,14 +2,14 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/_120sdp"
+    android:layout_height="wrap_content"
     android:layout_marginHorizontal="@dimen/_10sdp"
     android:paddingBottom="@dimen/_10sdp">
 
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/_20sdp"
+        android:layout_height="@dimen/_150sdp"
+        android:layout_marginTop="@dimen/_10sdp"
         android:paddingHorizontal="@dimen/_14sdp"
         android:paddingTop="@dimen/_20sdp"
         android:paddingBottom="@dimen/_14sdp"
@@ -31,7 +31,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
-                android:textSize="11sp"
+                android:textSize="14sp"
                 android:text="2025. 04. 16"
                 android:layout_alignParentEnd="true"/>
 
@@ -42,16 +42,18 @@
                 android:textColor="@color/black"
                 android:textSize="14sp"
                 android:text="매모했습니다."
+                android:layout_marginTop="@dimen/_10sdp"
                 android:layout_below="@id/tvCreatedAt"
                 android:layout_above="@id/chipGroup"
                 android:maxLines="3"
-                android:ellipsize="end"/>
+                android:ellipsize="end" />
 
             <com.google.android.material.chip.ChipGroup
                 android:id="@+id/chipGroup"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
+                android:layout_alignParentEnd="true"
                 />
 
 
@@ -63,23 +65,23 @@
         android:layout_width="@dimen/_4sdp"
         android:layout_height="match_parent"
         android:background="@color/black"
-        android:layout_marginTop="@dimen/_20sdp"
+        android:layout_marginTop="@dimen/_10sdp"
         android:layout_marginBottom="@dimen/_10sdp"
-        android:elevation="10dp"
+        android:elevation="5dp"
         />
 
     <TextView
         android:id="@+id/tvPageNumber"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/_30sdp"
+        android:layout_height="@dimen/_24sdp"
         android:background="@drawable/background_rounded_rectangle_black"
         android:elevation="12dp"
-        android:textSize="18sp"
+        android:textSize="16sp"
         android:textStyle="bold"
         android:text="P.42"
         android:textColor="@color/white"
         android:gravity="center"
-        android:layout_marginTop="@dimen/_5sdp"
+        android:layout_marginTop="@dimen/_18sdp"
         android:layout_marginStart="@dimen/_14sdp"
         android:paddingHorizontal="@dimen/_10sdp"/>
 

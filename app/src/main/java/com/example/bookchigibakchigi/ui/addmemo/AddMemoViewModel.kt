@@ -24,7 +24,8 @@ data class AddMemoUiState(
     val isLoading: Boolean = false,
     val isSuccess: Boolean = false,
     val error: String? = null,
-    val isContentValid: Boolean = false
+    val isContentValid: Boolean = false,
+    val shouldNavigateToMain: Boolean = false
 )
 
 sealed interface AddMemoEvent {
@@ -105,7 +106,11 @@ class AddMemoViewModel @Inject constructor(
                     memoRepository.addTagToMemo(memoId, tagId)
                 }
 
-                _uiState.update { it.copy(isLoading = false, isSuccess = true) }
+                _uiState.update { it.copy(
+                    isLoading = false,
+                    isSuccess = true,
+                    shouldNavigateToMain = true
+                ) }
             } catch (e: Exception) {
                 _uiState.update { it.copy(
                     isLoading = false,

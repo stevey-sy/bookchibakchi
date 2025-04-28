@@ -1,6 +1,7 @@
 package com.example.bookchigibakchigi.ui.addmemo
 
 import android.app.Dialog
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.activity.viewModels
@@ -25,6 +26,7 @@ import androidx.core.view.isVisible
 import androidx.core.graphics.toColorInt
 import android.graphics.Rect
 import android.widget.Toast
+import com.example.bookchigibakchigi.ui.main.MainActivity
 
 @AndroidEntryPoint
 class AddMemoActivity : BaseActivity() {
@@ -200,6 +202,13 @@ class AddMemoActivity : BaseActivity() {
 
         if (state.isSuccess) {
             Toast.makeText(this, "메모가 저장되었습니다.", Toast.LENGTH_SHORT).show()
+            if (state.shouldNavigateToMain) {
+                val intent = Intent(this, MainActivity::class.java).apply {
+                    flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
+                }
+                startActivity(intent)
+                finish()
+            }
         }
 
         tagListAdapter.submitList(state.tagList)

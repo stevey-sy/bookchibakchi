@@ -41,7 +41,7 @@ class MemoListAdapter : ListAdapter<MemoUiModel, MemoListAdapter.MemoViewHolder>
                 chipGroup.removeAllViews()
                 memo.tags.forEach { tag ->
                     val chip = com.google.android.material.chip.Chip(chipGroup.context).apply {
-                        text = tag.name
+                        text = "#${tag.name}"
                         isClickable = false
                     }
                     chipGroup.addView(chip)
