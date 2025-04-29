@@ -160,6 +160,19 @@ class MyLibraryFragment : Fragment() {
                             val dummyList = addDummyItems(state.books)
                             val paddedList = updateShelfPosition(dummyList)
                             handleLibraryState(paddedList)
+                            
+                            // 선택된 bookId 처리
+                            mainViewModel.selectedBookId?.let { bookId ->
+                                val book = paddedList.find { it.itemId == bookId.value }
+                                val position = paddedList.indexOf(book)
+                                if (position != -1 && book != null) {
+                                    val viewHolder = binding.rvList.findViewHolderForAdapterPosition(position)
+                                    viewHolder?.itemView?.let { view ->
+                                        handleItemClick(book, position, view.findViewById(R.id.cardView))
+                                    }
+//                                    mainViewModel.clearSelectedBookId()
+                                }
+                            }
                         }
                         is MainViewUiState.Empty -> {
                             showEmptyState()

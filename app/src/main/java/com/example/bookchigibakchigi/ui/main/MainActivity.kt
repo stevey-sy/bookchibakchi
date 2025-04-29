@@ -1,5 +1,6 @@
 package com.example.bookchigibakchigi.ui.main
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.Gravity
 import android.view.Menu
@@ -32,6 +33,12 @@ class MainActivity : BaseActivity() {
 
         initToolbar()
         initNavigation()
+        
+        // AddMemoActivity에서 전달된 bookId 처리
+        val bookId = intent.getIntExtra("bookId", -1)
+        if (bookId != -1) {
+            mainViewModel.setSelectedBook(bookId)
+        }
     }
 
     private fun initToolbar() {

@@ -203,8 +203,10 @@ class AddMemoActivity : BaseActivity() {
         if (state.isSuccess) {
             Toast.makeText(this, "메모가 저장되었습니다.", Toast.LENGTH_SHORT).show()
             if (state.shouldNavigateToMain) {
+                val bookId = intent.getIntExtra("bookId", -1)
                 val intent = Intent(this, MainActivity::class.java).apply {
                     flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
+                    putExtra("bookId", bookId)
                 }
                 startActivity(intent)
                 finish()
