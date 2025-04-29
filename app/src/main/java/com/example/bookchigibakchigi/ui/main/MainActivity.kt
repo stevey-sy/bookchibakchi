@@ -14,6 +14,8 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.appcompat.widget.PopupMenu
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import com.example.bookchigibakchigi.R
 import com.example.bookchigibakchigi.databinding.ActivityMainBinding
 import com.example.bookchigibakchigi.ui.BaseActivity
@@ -24,7 +26,8 @@ class MainActivity : BaseActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private val mainViewModel: MainViewModel by viewModels()
-    private val navController by lazy { findNavController(R.id.nav_host_fragment_activity_main) }
+    private lateinit var myLibraryNavHostFragment: Fragment
+    private lateinit var pickBookNavHostFragment: Fragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,13 +35,8 @@ class MainActivity : BaseActivity() {
         setContentView(binding.root)
 
         initToolbar()
+        initFragments()
         initNavigation()
-        
-        // AddMemoActivity에서 전달된 bookId 처리
-        val bookId = intent.getIntExtra("bookId", -1)
-        if (bookId != -1) {
-            mainViewModel.setSelectedBook(bookId)
-        }
     }
 
     private fun initToolbar() {
@@ -49,42 +47,41 @@ class MainActivity : BaseActivity() {
         }
     }
 
+    private fun initFragments() {
+        myLibraryNavHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_my_library)!!
+        pickBookNavHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_pick_book)!!
+
+        // 처음에는 MyLibrary만 보여주기
+        supportFragmentManager.beginTransaction()
+            .show(myLibraryNavHostFragment)
+            .hide(pickBookNavHostFragment)
+            .commit()
+    }
+
     private fun initNavigation() {
         val navView = binding.navView
-        val appBarConfiguration = AppBarConfiguration(
-            setOf(
-                R.id.navigation_my_library,
-                R.id.navigation_pick_book
-            )
-        )
 
-        navView.setupWithNavController(navController)
-        setupActionBarWithNavController(navController, appBarConfiguration)
-        
         navView.setOnItemSelectedListener { item ->
-            val navOptions = NavOptions.Builder()
-                .setPopUpTo(R.id.navigation_my_library, true)
-                .setLaunchSingleTop(true)
-                .setRestoreState(true)
-                .build()
-
             when (item.itemId) {
                 R.id.navigation_my_library -> {
-                    navController.navigate(R.id.navigation_my_library, null, navOptions)
+                    supportFragmentManager.beginTransaction()
+                        .show(myLibraryNavHostFragment)
+                        .hide(pickBookNavHostFragment)
+                        .commit()
                     true
                 }
                 R.id.navigation_pick_book -> {
-                    navController.navigate(R.id.navigation_community, null, navOptions)
+                    supportFragmentManager.beginTransaction()
+                        .hide(myLibraryNavHostFragment)
+                        .show(pickBookNavHostFragment)
+                        .commit()
                     true
                 }
                 else -> false
             }
         }
-
-        navController.addOnDestinationChangedListener { _, destination, _ ->
-            updateToolbarForDestination(destination.id)
-        }
     }
+
 
     private fun updateToolbarForDestination(destinationId: Int) {
         binding.toolbar.menu.clear()
@@ -108,9 +105,9 @@ class MainActivity : BaseActivity() {
         }
     }
 
-    override fun onSupportNavigateUp(): Boolean {
-        return navController.navigateUp() || super.onSupportNavigateUp()
-    }
+//    override fun onSupportNavigateUp(): Boolean {
+//        return navController.navigateUp() || super.onSupportNavigateUp()
+//    }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_my_library, menu)
@@ -120,7 +117,7 @@ class MainActivity : BaseActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_search -> {
-                navController.navigate(R.id.navigation_search_book)
+//                navController.navigate(R.id.navigation_search_book)
                 true
             }
             R.id.action_filter -> {

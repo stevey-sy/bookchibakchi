@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph_pick_book"
+    app:startDestination="@id/navigation_pick_book">
+
+    <!-- PickBookFragment (책 고르는 화면) -->
+    <fragment
+        android:id="@+id/navigation_pick_book"
+        android:name="com.example.bookchigibakchigi.ui.pickbook.PickBookFragment"
+        android:label="Pick Book" />
+</navigation>
