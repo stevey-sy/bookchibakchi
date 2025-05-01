@@ -31,6 +31,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.bookchigibakchigi.model.BookUiModel
 import com.example.bookchigibakchigi.ui.common.SelectionActionMode
+import com.example.bookchigibakchigi.ui.main.MainActivity
 import com.example.bookchigibakchigi.ui.mylibrary.adapter.BookListAdapter
 
 @AndroidEntryPoint
@@ -59,6 +60,16 @@ class MyLibraryFragment : Fragment() {
         initSelectionActionMode()
         initViews()
         initObservers()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        (activity as? MainActivity)?.updateToolbarTitle(
+            title = "오독오독",
+            fontResId = R.font.dashi,
+            textSizeSp = 30f,
+            menuResId = R.menu.menu_my_library
+        )
     }
 
     private fun initSelectionActionMode() {

@@ -1,21 +1,15 @@
 package com.example.bookchigibakchigi.ui.main
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.TextView
+import androidx.appcompat.widget.Toolbar
 import androidx.activity.viewModels
 import androidx.core.content.res.ResourcesCompat
-import androidx.navigation.NavOptions
-import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupActionBarWithNavController
-import androidx.navigation.ui.setupWithNavController
 import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import com.example.bookchigibakchigi.R
 import com.example.bookchigibakchigi.databinding.ActivityMainBinding
 import com.example.bookchigibakchigi.ui.BaseActivity
@@ -28,6 +22,7 @@ class MainActivity : BaseActivity() {
     private val mainViewModel: MainViewModel by viewModels()
     private lateinit var myLibraryNavHostFragment: Fragment
     private lateinit var pickBookNavHostFragment: Fragment
+    private var currentMenuResId: Int? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -82,6 +77,37 @@ class MainActivity : BaseActivity() {
         }
     }
 
+    fun updateToolbarTitle(
+        title: String,
+        fontResId: Int,
+        textSizeSp: Float,
+        menuResId: Int? = null
+    ) {
+        // 타이틀 제거
+        binding.toolbar.title = ""
+        // 기존 커스텀 뷰 제거
+        binding.toolbar.removeViews(0, binding.toolbar.childCount)
+//        binding.toolbar.menu.clear()
+        // 새로운 타이틀 뷰 추가
+        val titleView = TextView(this).apply {
+            text = title
+            typeface = ResourcesCompat.getFont(context, fontResId)
+            textSize = textSizeSp
+            setTextColor(getColor(android.R.color.black))
+            layoutParams = Toolbar.LayoutParams(
+                Toolbar.LayoutParams.WRAP_CONTENT,
+                Toolbar.LayoutParams.WRAP_CONTENT
+            ).apply {
+                gravity = Gravity.START or Gravity.CENTER_VERTICAL
+            }
+        }
+        binding.toolbar.addView(titleView)
+
+        // 메뉴 설정
+        currentMenuResId = menuResId
+        invalidateOptionsMenu()
+    }
+
 
     private fun updateToolbarForDestination(destinationId: Int) {
         binding.toolbar.menu.clear()
@@ -109,10 +135,17 @@ class MainActivity : BaseActivity() {
 //        return navController.navigateUp() || super.onSupportNavigateUp()
 //    }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_my_library, menu)
-        return true
+//    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+//        menuInflater.inflate(R.menu.menu_my_library, menu)
+//        return true
+//    }
+override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+    menu?.clear()
+    currentMenuResId?.let {
+        menuInflater.inflate(it, menu)
     }
+    return true
+}
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
