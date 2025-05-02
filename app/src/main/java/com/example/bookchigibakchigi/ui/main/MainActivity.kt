@@ -1,6 +1,7 @@
 package com.example.bookchigibakchigi.ui.main
 
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
@@ -9,6 +10,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.activity.viewModels
 import androidx.core.content.res.ResourcesCompat
 import androidx.appcompat.widget.PopupMenu
+import androidx.databinding.adapters.TextViewBindingAdapter.setTextSize
 import androidx.fragment.app.Fragment
 import com.example.bookchigibakchigi.R
 import com.example.bookchigibakchigi.databinding.ActivityMainBinding
@@ -28,7 +30,6 @@ class MainActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
         initToolbar()
         initFragments()
         initNavigation()
@@ -83,17 +84,20 @@ class MainActivity : BaseActivity() {
         textSizeSp: Float,
         menuResId: Int? = null
     ) {
-        // 타이틀 제거
-        binding.toolbar.title = ""
-        // 기존 커스텀 뷰 제거
-        binding.toolbar.removeViews(0, binding.toolbar.childCount)
-//        binding.toolbar.menu.clear()
-        // 새로운 타이틀 뷰 추가
+        // 기존 타이틀 제거
+        supportActionBar?.setDisplayShowTitleEnabled(false) // 기본 타이틀 안 쓰겠다는 선언
+
+        // 기존 타이틀 뷰 제거 (tag로 식별)
+        val existing = binding.toolbar.findViewWithTag<TextView>("customTitle")
+        existing?.let { binding.toolbar.removeView(it) }
+
+        // 새로운 커스텀 TextView 추가
         val titleView = TextView(this).apply {
             text = title
             typeface = ResourcesCompat.getFont(context, fontResId)
             textSize = textSizeSp
             setTextColor(getColor(android.R.color.black))
+            tag = "customTitle"
             layoutParams = Toolbar.LayoutParams(
                 Toolbar.LayoutParams.WRAP_CONTENT,
                 Toolbar.LayoutParams.WRAP_CONTENT
@@ -101,11 +105,17 @@ class MainActivity : BaseActivity() {
                 gravity = Gravity.START or Gravity.CENTER_VERTICAL
             }
         }
+
         binding.toolbar.addView(titleView)
 
         // 메뉴 설정
-        currentMenuResId = menuResId
-        invalidateOptionsMenu()
+        if (menuResId != null) {
+            currentMenuResId = menuResId
+            invalidateOptionsMenu()
+        } else {
+            currentMenuResId = null
+            binding.toolbar.menu.clear()
+        }
     }
 
 
@@ -140,9 +150,10 @@ class MainActivity : BaseActivity() {
 //        return true
 //    }
 override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-    menu?.clear()
+//    menu?.clear()
     currentMenuResId?.let {
         menuInflater.inflate(it, menu)
+        Log.d("ToolbarMenuCheck", "menu size: ${menu?.size()}")
     }
     return true
 }

@@ -44,6 +44,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.example.bookchigibakchigi.data.entity.BookEntity
 import com.example.bookchigibakchigi.ui.addmemo.AddMemoActivity
 import com.example.bookchigibakchigi.ui.bookdetail.adapter.MemoListAdapter
+import com.example.bookchigibakchigi.ui.main.MainActivity
 import com.example.bookchigibakchigi.ui.main.MainViewModel
 import com.example.bookchigibakchigi.ui.main.MainViewUiState
 import com.example.bookchigibakchigi.util.BindingAdapters.setProgressTranslation
@@ -71,6 +72,18 @@ class BookDetailFragment : Fragment() {
         super.onCreate(savedInstanceState)
         initTransitions()
         initLaunchers()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        (activity as? MainActivity)?.apply {
+            updateToolbarTitle(
+                title = "오독오독",
+                fontResId = R.font.dashi,
+                textSizeSp = 30f,
+                menuResId = null
+            )
+        }
     }
 
     override fun onCreateView(

@@ -29,6 +29,7 @@ import kotlinx.coroutines.Job
 import androidx.activity.OnBackPressedCallback
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat.invalidateOptionsMenu
 import com.example.bookchigibakchigi.model.BookUiModel
 import com.example.bookchigibakchigi.ui.common.SelectionActionMode
 import com.example.bookchigibakchigi.ui.main.MainActivity
@@ -64,12 +65,15 @@ class MyLibraryFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        (activity as? MainActivity)?.updateToolbarTitle(
-            title = "오독오독",
-            fontResId = R.font.dashi,
-            textSizeSp = 30f,
-            menuResId = R.menu.menu_my_library
-        )
+        (activity as? MainActivity)?.apply {
+            updateToolbarTitle(
+                title = "오독오독",
+                fontResId = R.font.dashi,
+                textSizeSp = 30f,
+                menuResId = R.menu.menu_my_library
+            )
+            // invalidateOptionsMenu() // ✅ 여기에서 직접 호출 OK
+        }
     }
 
     private fun initSelectionActionMode() {

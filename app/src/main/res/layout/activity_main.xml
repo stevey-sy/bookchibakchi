@@ -24,7 +24,8 @@
                 android:background="@android:color/white"
                 android:elevation="4dp"
                 app:layout_scrollFlags="scroll|enterAlways"
-                app:titleTextColor="@android:color/black" />
+                app:titleTextColor="@android:color/black"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
 
         </com.google.android.material.appbar.AppBarLayout>
 
