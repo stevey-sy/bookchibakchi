@@ -8,12 +8,14 @@ import android.view.MenuItem
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.activity.viewModels
+import androidx.activity.OnBackPressedCallback
 import androidx.core.content.res.ResourcesCompat
 import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.Fragment
 import com.example.bookchigibakchigi.R
 import com.example.bookchigibakchigi.databinding.ActivityMainBinding
 import com.example.bookchigibakchigi.ui.BaseActivity
+import com.example.bookchigibakchigi.ui.dialog.TwoButtonsDialog
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -32,6 +34,29 @@ class MainActivity : BaseActivity() {
         initToolbar()
         initFragments()
         initNavigation()
+        setupBackPressedCallback()
+    }
+
+    private fun setupBackPressedCallback() {
+        val callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                TwoButtonsDialog(
+                    context = this@MainActivity,
+                    title = "알림",
+                    msg = "앱을 종료하시겠습니까?",
+                    btnText1 = "취소",
+                    btnText2 = "종료",
+                    onBtn1Click = {
+                        // 취소 버튼 클릭 시 아무것도 하지 않음
+                    },
+                    onBtn2Click = {
+                        // 종료 버튼 클릭 시 앱 종료
+                        finish()
+                    }
+                ).show()
+            }
+        }
+        onBackPressedDispatcher.addCallback(this, callback)
     }
 
     private fun initToolbar() {
@@ -43,14 +68,15 @@ class MainActivity : BaseActivity() {
     }
 
     private fun initFragments() {
-        myLibraryNavHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_my_library)!!
         communityNavHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_community)!!
+        myLibraryNavHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_my_library)!!
 
         // 처음에는 MyLibrary만 보여주기
         supportFragmentManager.beginTransaction()
-            .show(myLibraryNavHostFragment)
             .hide(communityNavHostFragment)
+            .show(myLibraryNavHostFragment)
             .commit()
+
     }
 
     private fun initNavigation() {
@@ -63,6 +89,12 @@ class MainActivity : BaseActivity() {
                         .show(myLibraryNavHostFragment)
                         .hide(communityNavHostFragment)
                         .commit()
+                    updateToolbarTitle(
+                        title = "오독오독",
+                        fontResId = R.font.dashi,
+                        textSizeSp = 30f,
+                        menuResId = R.menu.menu_my_library
+                    )
                     true
                 }
                 R.id.navigation_community -> {
@@ -70,6 +102,13 @@ class MainActivity : BaseActivity() {
                         .hide(myLibraryNavHostFragment)
                         .show(communityNavHostFragment)
                         .commit()
+
+                    updateToolbarTitle(
+                        title = "오독오독",
+                        fontResId = R.font.dashi,
+                        textSizeSp = 30f,
+                        menuResId = null
+                    )
                     true
                 }
                 else -> false
