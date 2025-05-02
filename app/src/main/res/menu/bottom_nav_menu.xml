@@ -7,9 +7,9 @@
         android:title="@string/title_my_library" />
 
     <item
-        android:id="@+id/navigation_pick_book"
-        android:icon="@drawable/ic_dashboard_black_24dp"
-        android:title="@string/title_pick_book" />
+        android:id="@+id/navigation_community"
+        android:icon="@drawable/chart_24"
+        android:title="@string/title_statistics" />
 
 <!--    <item-->
 <!--        android:id="@+id/navigation_community"-->

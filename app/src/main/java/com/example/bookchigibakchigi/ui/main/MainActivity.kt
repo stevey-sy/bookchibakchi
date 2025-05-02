@@ -10,7 +10,6 @@ import androidx.appcompat.widget.Toolbar
 import androidx.activity.viewModels
 import androidx.core.content.res.ResourcesCompat
 import androidx.appcompat.widget.PopupMenu
-import androidx.databinding.adapters.TextViewBindingAdapter.setTextSize
 import androidx.fragment.app.Fragment
 import com.example.bookchigibakchigi.R
 import com.example.bookchigibakchigi.databinding.ActivityMainBinding
@@ -23,7 +22,7 @@ class MainActivity : BaseActivity() {
     private lateinit var binding: ActivityMainBinding
     private val mainViewModel: MainViewModel by viewModels()
     private lateinit var myLibraryNavHostFragment: Fragment
-    private lateinit var pickBookNavHostFragment: Fragment
+    private lateinit var communityNavHostFragment: Fragment
     private var currentMenuResId: Int? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,12 +44,12 @@ class MainActivity : BaseActivity() {
 
     private fun initFragments() {
         myLibraryNavHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_my_library)!!
-        pickBookNavHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_pick_book)!!
+        communityNavHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_community)!!
 
         // 처음에는 MyLibrary만 보여주기
         supportFragmentManager.beginTransaction()
             .show(myLibraryNavHostFragment)
-            .hide(pickBookNavHostFragment)
+            .hide(communityNavHostFragment)
             .commit()
     }
 
@@ -62,14 +61,14 @@ class MainActivity : BaseActivity() {
                 R.id.navigation_my_library -> {
                     supportFragmentManager.beginTransaction()
                         .show(myLibraryNavHostFragment)
-                        .hide(pickBookNavHostFragment)
+                        .hide(communityNavHostFragment)
                         .commit()
                     true
                 }
-                R.id.navigation_pick_book -> {
+                R.id.navigation_community -> {
                     supportFragmentManager.beginTransaction()
                         .hide(myLibraryNavHostFragment)
-                        .show(pickBookNavHostFragment)
+                        .show(communityNavHostFragment)
                         .commit()
                     true
                 }
