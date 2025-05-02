@@ -78,7 +78,7 @@ class CardActivity : BaseActivity() {
             insets
         }
         adjustBookContentPosition()
-        setupToolbar(binding.toolbar, binding.main)
+        initToolbar(binding.toolbar, binding.main)
         initViewModel(intent)
         initBackgroundSelectView()
         initSnapHelper()

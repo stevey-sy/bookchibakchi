@@ -1,6 +1,10 @@
 package com.example.bookchigibakchigi.ui.main
 
+import android.content.Intent
 import android.os.Bundle
+import android.text.SpannableString
+import android.text.Spannable
+import android.text.style.ForegroundColorSpan
 import android.util.Log
 import android.view.Gravity
 import android.view.Menu
@@ -9,6 +13,8 @@ import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.activity.viewModels
 import androidx.activity.OnBackPressedCallback
+import androidx.appcompat.content.res.AppCompatResources
+import androidx.appcompat.view.ContextThemeWrapper
 import androidx.core.content.res.ResourcesCompat
 import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.Fragment
@@ -16,6 +22,7 @@ import com.example.bookchigibakchigi.R
 import com.example.bookchigibakchigi.databinding.ActivityMainBinding
 import com.example.bookchigibakchigi.ui.BaseActivity
 import com.example.bookchigibakchigi.ui.dialog.TwoButtonsDialog
+import com.example.bookchigibakchigi.ui.searchbook.SearchBookActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -196,17 +203,61 @@ override fun onCreateOptionsMenu(menu: Menu?): Boolean {
     return true
 }
 
+    private fun createSpannableString(text: String, color: Int): SpannableString {
+        return SpannableString(text).apply {
+            setSpan(ForegroundColorSpan(getColor(color)), 0, length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        }
+    }
+
+    private fun setupMenuItem(
+        menuItem: MenuItem?,
+        text: String,
+        isSelected: Boolean = false
+    ) {
+        menuItem?.apply {
+            title = createSpannableString(
+                text = text,
+                color = if (isSelected) android.R.color.black else android.R.color.darker_gray
+            )
+            if (isSelected) {
+                icon = AppCompatResources.getDrawable(applicationContext, R.drawable.ic_check)
+            }
+        }
+    }
+
+    private fun setupFilterMenu(popup: PopupMenu) {
+        when (mainViewModel.filterType.value) {
+            is BookFilterType.Reading -> {
+                setupMenuItem(popup.menu.findItem(R.id.filter_reading), "읽는 중", true)
+                setupMenuItem(popup.menu.findItem(R.id.filter_finished), "완독")
+                setupMenuItem(popup.menu.findItem(R.id.filter_all), "전체")
+            }
+            is BookFilterType.Finished -> {
+                setupMenuItem(popup.menu.findItem(R.id.filter_reading), "읽는 중")
+                setupMenuItem(popup.menu.findItem(R.id.filter_finished), "완독", true)
+                setupMenuItem(popup.menu.findItem(R.id.filter_all), "전체")
+            }
+            is BookFilterType.All -> {
+                setupMenuItem(popup.menu.findItem(R.id.filter_reading), "읽는 중")
+                setupMenuItem(popup.menu.findItem(R.id.filter_finished), "완독")
+                setupMenuItem(popup.menu.findItem(R.id.filter_all), "전체", true)
+            }
+        }
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_search -> {
-//                navController.navigate(R.id.navigation_search_book)
+                val intent = Intent(this, SearchBookActivity::class.java)
+                startActivity(intent)
                 true
             }
             R.id.action_filter -> {
-                val wrapper = android.view.ContextThemeWrapper(this, R.style.menuItem)
-//                val popup = PopupMenu(wrapper, binding.toolbar)
-                val popup = PopupMenu(wrapper, binding.toolbar, Gravity.END,0, R.style.PopupStyle)
+                val wrapper = ContextThemeWrapper(this, R.style.menuItem)
+                val popup = PopupMenu(wrapper, binding.toolbar, Gravity.END, 0, R.style.PopupStyle)
                 popup.menuInflater.inflate(R.menu.menu_filter, popup.menu)
+                
+                setupFilterMenu(popup)
                 
                 popup.setOnMenuItemClickListener { menuItem ->
                     when (menuItem.itemId) {

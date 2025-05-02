@@ -7,14 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ProgressBar
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.example.bookchigibakchigi.R
-import com.google.android.material.progressindicator.CircularProgressIndicator
-import dagger.hilt.android.AndroidEntryPoint
 
 abstract class BaseActivity : AppCompatActivity() {
 
@@ -22,7 +18,6 @@ abstract class BaseActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
         super.onCreate(savedInstanceState, persistentState)
-        configureWindowInsets()
     }
 
     protected fun addProgressBarToLayout(bindingRoot: ViewGroup) {
@@ -44,16 +39,12 @@ abstract class BaseActivity : AppCompatActivity() {
     }
 
     // Toolbar 설정
-    protected fun setupToolbar(toolbar: Toolbar, rootView: View) {
+    protected fun initToolbar(toolbar: Toolbar, rootView: View) {
         setSupportActionBar(toolbar)
         supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(false)
             setHomeButtonEnabled(false)
         }
-    }
-
-    // WindowInsets 설정
-    private fun configureWindowInsets() {
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(android.R.id.content)) { view, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             view.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)

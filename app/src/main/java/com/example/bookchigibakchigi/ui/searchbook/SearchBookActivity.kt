@@ -51,7 +51,7 @@ class SearchBookActivity : BaseActivity() {
     }
 
     private fun initToolbar() {
-        setupToolbar(binding.toolbar, binding.main)
+        initToolbar(binding.toolbar, binding.main)
     }
 
     private fun initView() {

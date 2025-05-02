@@ -34,7 +34,7 @@ class MemoActivity : BaseActivity() {
 
         supportPostponeEnterTransition()
 
-        setupToolbar(binding.toolbar, binding.main)
+        initToolbar(binding.toolbar, binding.main)
 
         val book: BookEntity? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             intent.getParcelableExtra("currentBook", BookEntity::class.java)

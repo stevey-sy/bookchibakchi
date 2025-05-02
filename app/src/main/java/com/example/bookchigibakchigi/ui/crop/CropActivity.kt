@@ -23,7 +23,7 @@ class CropActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityCropBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        setupToolbar(binding.toolbar, binding.main)
+        initToolbar(binding.toolbar, binding.main)
         // Intent로 전달받은 Uri 가져오기
         val uriString = intent.getStringExtra("IMAGE_URI")
         if (uriString != null) {

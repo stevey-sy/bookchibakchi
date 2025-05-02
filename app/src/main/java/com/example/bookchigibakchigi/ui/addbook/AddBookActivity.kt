@@ -10,9 +10,6 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
-import androidx.core.app.ActivityOptionsCompat
-import androidx.core.app.SharedElementCallback
-import androidx.core.util.Pair
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -34,7 +31,7 @@ class AddBookActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityAddBookBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        setupToolbar(binding.toolbar, binding.main)
+        initToolbar(binding.toolbar, binding.main)
 
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
