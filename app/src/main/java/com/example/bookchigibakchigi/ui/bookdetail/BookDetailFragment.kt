@@ -11,6 +11,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.activity.addCallback
@@ -320,6 +321,11 @@ class BookDetailFragment : Fragment() {
 //        val staggeredGridLayoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
 //        staggeredGridLayoutManager.gapStrategy = StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS
 //        recyclerView.layoutManager = staggeredGridLayoutManager
+
+        val closeBtn = view.findViewById<ImageView>(R.id.ivClose)
+        closeBtn.setOnClickListener {
+            bottomSheetDialog.dismiss()
+        }
 
         // linearLayoutManager for recyclerView
         val linearLayoutManager = LinearLayoutManager(requireContext())
