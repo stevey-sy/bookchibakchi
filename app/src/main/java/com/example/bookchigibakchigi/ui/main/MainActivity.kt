@@ -41,29 +41,6 @@ class MainActivity : BaseActivity() {
         initToolbar()
         initFragments()
         initNavigation()
-        setupBackPressedCallback()
-    }
-
-    private fun setupBackPressedCallback() {
-        val callback = object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                TwoButtonsDialog(
-                    context = this@MainActivity,
-                    title = "알림",
-                    msg = "앱을 종료하시겠습니까?",
-                    btnText1 = "취소",
-                    btnText2 = "종료",
-                    onBtn1Click = {
-                        // 취소 버튼 클릭 시 아무것도 하지 않음
-                    },
-                    onBtn2Click = {
-                        // 종료 버튼 클릭 시 앱 종료
-                        finish()
-                    }
-                ).show()
-            }
-        }
-        onBackPressedDispatcher.addCallback(this, callback)
     }
 
     private fun initToolbar() {
