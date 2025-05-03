@@ -218,8 +218,8 @@ class AddMemoActivity : BaseActivity() {
         binding.rvTagList.post {
             lifecycleScope.launch {
                 delay(300) // 필요에 따라 조절
-                val scrollAmount = binding.scrollView.getChildAt(0).height
-                binding.scrollView.smoothScrollTo(0, scrollAmount)
+//                val scrollAmount = binding.scrollView.getChildAt(0).height
+//                binding.scrollView.smoothScrollTo(0, scrollAmount)
             }
         }
 
