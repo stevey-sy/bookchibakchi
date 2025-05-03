@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="# 태그"
+            android:textSize="18sp"
+            android:textColor="@color/black"
+            android:textStyle="bold" />
+
+        <RelativeLayout
+            android:id="@+id/rlAddTag"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:paddingVertical="4dp"
+            android:orientation="horizontal"
+            android:clipChildren="false"
+            android:clipToPadding="false">
+
+            <EditText
+                android:id="@+id/etTag"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:background="@android:color/white"
+                android:elevation="2dp"
+                android:hint="태그 입력 후 + 버튼을 눌러주세요."
+                android:textSize="14sp"
+                android:textColorHint="@color/light_gray"
+                android:padding="12dp"
+                android:layout_toStartOf="@id/vColorSelector"/>
+
+            <View
+                android:id="@+id/vColorSelector"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_centerVertical="true"
+                android:background="@drawable/circle_background"
+                android:backgroundTint="@color/gray"
+                android:layout_toStartOf="@id/vDivider"
+                />
+
+            <View
+                android:id="@+id/vDivider"
+                android:layout_width="1dp"
+                android:layout_height="40dp"
+                android:background="@color/light_gray"
+                android:layout_marginStart="8dp"
+                android:layout_toStartOf="@id/btnAddTag"/>
+
+            <ImageButton
+                android:id="@+id/btnAddTag"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_plus_24"
+                android:layout_alignParentEnd="true"/>
+
+        </RelativeLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvTagList"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginTop="8dp" />
+
+    </LinearLayout>
+</layout> 

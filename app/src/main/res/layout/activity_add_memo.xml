@@ -26,274 +26,163 @@
                 android:contentDescription="닫기 버튼"
                 android:src="@drawable/ic_close_black"/>
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_marginTop="@dimen/_10sdp"
-                    android:paddingHorizontal="@dimen/_12sdp">
-
-                    <TextView
-                        android:id="@+id/tvHeader"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="메모를 추가합니다."
-                        android:textColor="@color/black"
-                        android:textSize="24sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/tvSubtitle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:text="책에서 읽은 문구를 저장하세요"
-                        android:textColor="#666666" />
-
-
-                    <com.google.android.material.card.MaterialCardView
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/_200sdp"
-                        android:layout_marginHorizontal="@dimen/_6sdp"
-                        android:layout_marginVertical="@dimen/_10sdp"
-                        app:cardCornerRadius="12dp"
-                        app:cardElevation="4dp" >
-
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:paddingEnd="@dimen/_20sdp"
-                            android:paddingBottom="@dimen/_16sdp">
-
-                            <TextView
-                                android:id="@+id/tvPageNumber"
-                                android:layout_width="wrap_content"
-                                android:layout_height="@dimen/_24sdp"
-                                android:textSize="16sp"
-                                android:textStyle="bold"
-                                android:fontFamily="@font/maruburi_bold"
-                                android:text="P.42"
-                                android:textColor="@color/black"
-                                android:gravity="center"
-                                android:layout_marginTop="@dimen/_18sdp"
-                                android:layout_marginStart="@dimen/_12sdp"
-                                android:paddingHorizontal="@dimen/_10sdp"/>
-
-                            <EditText
-                                android:id="@+id/tvContent"
-                                android:layout_width="fill_parent"
-                                android:layout_height="wrap_content"
-                                android:gravity="center"
-                                android:layout_below="@id/tvPageNumber"
-                                android:layout_above="@id/tvTags"
-                                android:layout_centerInParent="true"
-                                android:textColor="@color/black"
-                                android:fontFamily="@font/dashi"
-                                android:background="@null"
-                                android:textSize="20sp" />
-
-                            <TextView
-                                android:id="@+id/tvTags"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="@dimen/_16sdp"
-                                android:fontFamily="@font/maruburi_light"
-                                android:gravity="bottom|center"
-                                android:layout_centerInParent="true"
-                                android:layout_above="@id/tvCreatedAt"
-                                android:textSize="14sp"
-                                android:text="#명언 #인생 #위로" />
-
-                            <TextView
-                                android:id="@+id/tvCreatedAt"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="@dimen/_10sdp"
-                                android:layout_centerInParent="true"
-                                android:layout_alignParentBottom="true"
-                                android:textColor="@color/black"
-                                android:fontFamily="@font/maruburi_light"
-                                android:textSize="12sp"
-                                android:text="2025. 04. 16"/>
-
-                        </RelativeLayout>
-
-
-                    </com.google.android.material.card.MaterialCardView>
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
 
                     <ScrollView
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="0dp"
+                        android:layout_weight="1">
 
                         <LinearLayout
+                            android:id="@+id/llContent"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical">
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:layout_marginTop="@dimen/_10sdp"
+                            android:paddingHorizontal="@dimen/_12sdp">
 
                             <TextView
-                                android:id="@+id/pageLabel"
+                                android:id="@+id/tvHeader"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="32dp"
-                                android:textSize="18sp"
+                                android:text="메모를 추가합니다."
                                 android:textColor="@color/black"
-                                android:textStyle="bold"
-                                android:text="Page" />
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="8dp"
-                                android:orientation="horizontal"
-                                android:gravity="center|start"
-                                android:clipChildren="false"
-                                android:clipToPadding="false"
-                                android:paddingVertical="@dimen/_4sdp">
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="P. "
-                                    android:textStyle="bold"
-                                    android:textColor="@color/black"
-                                    android:textSize="16sp"
-                                    android:layout_marginEnd="@dimen/_6sdp"/>
-
-                                <EditText
-                                    android:id="@+id/etPage"
-                                    android:layout_width="@dimen/_150sdp"
-                                    android:layout_height="wrap_content"
-                                    android:background="@android:color/white"
-                                    android:elevation="2dp"
-                                    android:hint="e.g., 123"
-                                    android:textSize="@dimen/_14sdp"
-                                    android:inputType="number"
-                                    android:textColorHint="@color/light_gray"
-                                    android:padding="12dp" />
-
-                            </LinearLayout>
+                                android:textSize="24sp"
+                                android:textStyle="bold" />
 
                             <TextView
-                                android:id="@+id/quoteLabel"
+                                android:id="@+id/tvSubtitle"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="24dp"
-                                android:text="내용"
-                                android:textSize="18sp"
-                                android:textColor="@color/black"
-                                android:textStyle="bold"/>
-
-                            <EditText
-                                android:id="@+id/etContent"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
                                 android:layout_marginTop="8dp"
-                                android:background="@android:color/white"
-                                android:elevation="2dp"
-                                android:gravity="top"
-                                android:hint="책에서 읽은 문구를 입력하세요"
-                                android:textColorHint="@color/light_gray"
-                                android:inputType="textMultiLine"
-                                android:padding="12dp" />
+                                android:text="책에서 읽은 문구를 저장하세요"
+                                android:textColor="#666666" />
 
-                            <LinearLayout
+
+                            <com.google.android.material.card.MaterialCardView
                                 android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="horizontal">
+                                android:layout_height="@dimen/_200sdp"
+                                android:layout_marginHorizontal="@dimen/_6sdp"
+                                android:layout_marginVertical="@dimen/_10sdp"
+                                app:cardCornerRadius="12dp"
+                                app:cardElevation="4dp" >
 
-                                <TextView
-                                    android:id="@+id/tagLabel"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="24dp"
-                                    android:text="# 태그"
-                                    android:textSize="18sp"
-                                    android:textColor="@color/black"
-                                    android:textStyle="bold" />
-
-                            </LinearLayout>
-
-
-                            <RelativeLayout
-                                android:id="@+id/rlAddTag"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="8dp"
-                                android:paddingVertical="@dimen/_4sdp"
-                                android:orientation="horizontal"
-                                android:clipChildren="false"
-                                android:clipToPadding="false">
-
-                                <EditText
-                                    android:id="@+id/etTag"
+                                <RelativeLayout
                                     android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginEnd="8dp"
-                                    android:background="@android:color/white"
-                                    android:elevation="2dp"
-                                    android:hint="태그 입력 후 + 버튼을 눌러주세요."
-                                    android:textSize="14sp"
-                                    android:textColorHint="@color/light_gray"
-                                    android:padding="12dp"
-                                    android:layout_toStartOf="@id/vColorSelector"/>
+                                    android:layout_height="match_parent"
+                                    android:paddingEnd="@dimen/_20sdp"
+                                    android:paddingBottom="@dimen/_16sdp">
 
-                                <View
-                                    android:id="@+id/vColorSelector"
-                                    android:layout_width="@dimen/_24sdp"
-                                    android:layout_height="@dimen/_24sdp"
-                                    android:layout_centerVertical="true"
-                                    android:background="@drawable/circle_background"
-                                    android:backgroundTint="@color/gray"
-                                    android:layout_toStartOf="@id/vDivider"
-                                    />
+                                    <TextView
+                                        android:id="@+id/tvPageNumber"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="@dimen/_24sdp"
+                                        android:textSize="16sp"
+                                        android:textStyle="bold"
+                                        android:fontFamily="@font/maruburi_bold"
+                                        android:text="P.42"
+                                        android:textColor="@color/black"
+                                        android:gravity="center"
+                                        android:layout_marginTop="@dimen/_18sdp"
+                                        android:layout_marginStart="@dimen/_12sdp"
+                                        android:paddingHorizontal="@dimen/_10sdp"/>
 
-                                <View
-                                    android:id="@+id/vDivider"
-                                    android:layout_width="@dimen/_1sdp"
-                                    android:layout_height="@dimen/_40sdp"
-                                    android:background="@color/light_gray"
-                                    android:layout_marginStart="@dimen/_8sdp"
-                                    android:layout_toStartOf="@id/btnAddTag"/>
+                                    <TextView
+                                        android:id="@+id/tvContent"
+                                        android:layout_width="fill_parent"
+                                        android:layout_height="wrap_content"
+                                        android:gravity="center"
+                                        android:layout_below="@id/tvPageNumber"
+                                        android:layout_above="@id/tvTags"
+                                        android:layout_centerInParent="true"
+                                        android:textColor="@color/black"
+                                        android:fontFamily="@font/dashi"
+                                        android:background="@null"
+                                        android:textSize="20sp" />
 
-                                <ImageButton
-                                    android:id="@+id/btnAddTag"
-                                    android:layout_width="@dimen/_40sdp"
-                                    android:layout_height="@dimen/_40sdp"
-                                    android:background="?attr/selectableItemBackgroundBorderless"
-                                    android:src="@drawable/ic_plus_24"
-                                    android:layout_alignParentEnd="true"/>
+                                    <TextView
+                                        android:id="@+id/tvTags"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="@dimen/_16sdp"
+                                        android:fontFamily="@font/maruburi_light"
+                                        android:gravity="bottom|center"
+                                        android:layout_centerInParent="true"
+                                        android:layout_above="@id/tvCreatedAt"
+                                        android:textSize="14sp"
+                                        android:text="#명언 #인생 #위로" />
 
-                            </RelativeLayout>
+                                    <TextView
+                                        android:id="@+id/tvCreatedAt"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="@dimen/_10sdp"
+                                        android:layout_centerInParent="true"
+                                        android:layout_alignParentBottom="true"
+                                        android:textColor="@color/black"
+                                        android:fontFamily="@font/maruburi_light"
+                                        android:textSize="12sp"
+                                        android:text="2025. 04. 16"/>
 
-                            <androidx.recyclerview.widget.RecyclerView
-                                android:id="@+id/rvTagList"
+                                </RelativeLayout>
+
+
+                            </com.google.android.material.card.MaterialCardView>
+
+                            <androidx.viewpager2.widget.ViewPager2
+                                android:id="@+id/viewPager"
                                 android:layout_width="match_parent"
-                                android:layout_height="wrap_content" />
+                                android:layout_height="match_parent"
+                                android:layout_marginBottom="@dimen/_50sdp"/>
+
+                            <com.google.android.material.tabs.TabLayout
+                                android:id="@+id/tabLayout"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                app:tabMode="fixed"
+                                app:tabGravity="fill"
+                                android:visibility="gone">
+
+                                <com.google.android.material.tabs.TabItem
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="페이지" />
+
+                                <com.google.android.material.tabs.TabItem
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="내용" />
+
+                                <com.google.android.material.tabs.TabItem
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="태그" />
+
+                            </com.google.android.material.tabs.TabLayout>
 
                         </LinearLayout>
 
                     </ScrollView>
 
 
+                    <TextView
+                        android:id="@+id/saveButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_50sdp"
+                        android:background="@color/black"
+                        android:textColor="@color/white"
+                        android:gravity="center"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:text="@string/button_save"
+                        android:layout_below="@id/llContent"
+                        android:layout_alignParentBottom="true"
+                        android:visibility="visible"/>
+
                 </LinearLayout>
-
-                <TextView
-                    android:id="@+id/saveButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/_50sdp"
-                    android:background="@color/black"
-                    android:textColor="@color/white"
-                    android:gravity="center"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:text="@string/button_save"
-                    android:layout_alignParentBottom="true"/>
-
-            </RelativeLayout>
 
         </LinearLayout>
 
