@@ -8,10 +8,10 @@
 
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
-        android:layout_height="@dimen/_150sdp"
+        android:layout_height="@dimen/_250sdp"
         android:layout_marginTop="@dimen/_10sdp"
         android:paddingHorizontal="@dimen/_14sdp"
-        android:paddingTop="@dimen/_20sdp"
+        android:paddingTop="@dimen/_10sdp"
         android:paddingBottom="@dimen/_14sdp"
         android:layout_marginBottom="@dimen/_10sdp"
         android:layout_marginEnd="@dimen/_8sdp"
@@ -23,8 +23,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_20sdp"
-            android:layout_marginEnd="@dimen/_12sdp"
-            android:layout_marginStart="@dimen/_30sdp">
+            android:layout_marginEnd="@dimen/_10sdp"
+            android:layout_marginStart="@dimen/_10sdp">
 
             <TextView
                 android:id="@+id/tvCreatedAt"
@@ -32,21 +32,56 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
                 android:textSize="14sp"
+                android:fontFamily="@font/maruburi_semibold"
                 android:text="2025. 04. 16"
                 android:layout_alignParentEnd="true"/>
 
-            <TextView
-                android:id="@+id/tvContent"
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/black"
-                android:textSize="14sp"
-                android:text="매모했습니다."
-                android:layout_marginTop="@dimen/_10sdp"
+                android:layout_height="@dimen/_140sdp"
                 android:layout_below="@id/tvCreatedAt"
                 android:layout_above="@id/chipGroup"
-                android:maxLines="3"
-                android:ellipsize="end" />
+                android:layout_marginVertical="@dimen/_10sdp"
+                android:layout_marginHorizontal="@dimen/_4sdp">
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    >
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/white_paper"
+                        android:scaleType="fitXY"/>
+
+                    <TextView
+                        android:id="@+id/tvContent"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:layout_gravity="center"
+                        android:textColor="@color/black"
+                        android:textSize="16sp"
+                        android:fontFamily="@font/maruburi_bold"/>
+
+                </FrameLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+
+
+<!--            <TextView-->
+<!--                android:id="@+id/tvContent"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:textColor="@color/black"-->
+<!--                android:textSize="14sp"-->
+<!--                android:text="매모했습니다."-->
+<!--                android:layout_marginTop="@dimen/_10sdp"-->
+<!--                android:layout_below="@id/tvCreatedAt"-->
+<!--                android:layout_above="@id/chipGroup"-->
+<!--                android:maxLines="3"-->
+<!--                android:ellipsize="end" />-->
 
             <com.google.android.material.chip.ChipGroup
                 android:id="@+id/chipGroup"
@@ -74,15 +109,15 @@
         android:id="@+id/tvPageNumber"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/_24sdp"
-        android:background="@drawable/background_rounded_rectangle_black"
         android:elevation="12dp"
         android:textSize="16sp"
         android:textStyle="bold"
+        android:fontFamily="@font/maruburi_bold"
         android:text="P.42"
-        android:textColor="@color/white"
+        android:textColor="@color/black"
         android:gravity="center"
         android:layout_marginTop="@dimen/_18sdp"
-        android:layout_marginStart="@dimen/_14sdp"
+        android:layout_marginStart="@dimen/_12sdp"
         android:paddingHorizontal="@dimen/_10sdp"/>
 
 </FrameLayout>

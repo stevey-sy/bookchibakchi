@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginVertical="@dimen/_10sdp"
+    android:layout_marginHorizontal="@dimen/_10sdp">
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/_200sdp"
+        android:layout_marginHorizontal="@dimen/_6sdp"
+        android:layout_marginVertical="@dimen/_10sdp"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="4dp"
+        app:strokeColor="#DDDDDD">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingEnd="@dimen/_20sdp"
+            android:paddingBottom="@dimen/_16sdp"
+            android:background="@drawable/dock_sleeping"
+            tools:ignore="RtlSymmetry">
+
+            <ImageView
+                android:layout_width="@dimen/_20sdp"
+                android:layout_height="@dimen/_20sdp"
+                android:src="@drawable/ic_horizontal_dots"
+                android:layout_marginTop="@dimen/_20sdp"
+                android:layout_alignParentEnd="true" />
+
+            <TextView
+                android:id="@+id/tvPageNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/_24sdp"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:fontFamily="@font/maruburi_bold"
+                android:text="P.42"
+                android:textColor="@color/black"
+                android:gravity="center"
+                android:layout_marginTop="@dimen/_18sdp"
+                android:layout_marginStart="@dimen/_12sdp"
+                android:paddingHorizontal="@dimen/_10sdp"/>
+
+<!--            <TextView-->
+<!--                android:id="@+id/tvDate"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_below="@id/tvPageNumber"-->
+<!--                android:textColor="@color/gray"-->
+<!--                android:fontFamily="@font/maruburi_light"-->
+<!--                android:layout_marginStart="@dimen/_12sdp"-->
+<!--                android:paddingHorizontal="@dimen/_10sdp"-->
+<!--                android:text="2025. 04. 16" />-->
+
+            <TextView
+                android:id="@+id/tvContent"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_below="@id/tvPageNumber"
+                android:layout_above="@id/tvTags"
+                android:layout_centerInParent="true"
+                android:textColor="@color/black"
+                android:fontFamily="@font/dashi"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/tvTags"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_16sdp"
+                android:fontFamily="@font/maruburi_light"
+                android:gravity="bottom|center"
+                android:layout_centerInParent="true"
+                android:layout_above="@id/tvDate"
+                android:textSize="14sp"
+                android:text="#명언 #인생 #위로" />
+
+            <TextView
+                android:id="@+id/tvDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:layout_centerInParent="true"
+                android:layout_alignParentBottom="true"
+                android:textColor="@color/black"
+                android:fontFamily="@font/maruburi_light"
+                android:textSize="12sp"
+                android:text="2025. 04. 16"/>
+
+
+        </RelativeLayout>
+
+
+    </com.google.android.material.card.MaterialCardView>
+
+</FrameLayout>

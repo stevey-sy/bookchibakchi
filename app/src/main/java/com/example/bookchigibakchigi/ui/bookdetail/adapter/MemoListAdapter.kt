@@ -1,10 +1,12 @@
 package com.example.bookchigibakchigi.ui.bookdetail.adapter
 
+import android.graphics.Paint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.bookchigibakchigi.databinding.ItemCardMemoBinding
 import com.example.bookchigibakchigi.databinding.ItemMemoBinding
 import com.example.bookchigibakchigi.model.MemoUiModel
 import java.text.SimpleDateFormat
@@ -13,7 +15,7 @@ import java.util.Locale
 class MemoListAdapter : ListAdapter<MemoUiModel, MemoListAdapter.MemoViewHolder>(MemoDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MemoViewHolder {
-        val binding = ItemMemoBinding.inflate(
+        val binding = ItemCardMemoBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,
             false
@@ -26,26 +28,38 @@ class MemoListAdapter : ListAdapter<MemoUiModel, MemoListAdapter.MemoViewHolder>
     }
 
     class MemoViewHolder(
-        private val binding: ItemMemoBinding
+        private val binding: ItemCardMemoBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
         private val dateFormat = SimpleDateFormat("yyyy. MM. dd", Locale.getDefault())
 
         fun bind(memo: MemoUiModel) {
             binding.apply {
-                tvCreatedAt.text = dateFormat.format(memo.createdAt)
+                tvPageNumber.paintFlags = tvPageNumber.paintFlags or Paint.UNDERLINE_TEXT_FLAG
+//                tvCreatedAt.text = dateFormat.format(memo.createdAt)
                 tvContent.text = memo.content
-                tvPageNumber.text = "P.${memo.pageNumber}"
+//                tvPageNumber.text = "P.${memo.pageNumber}"
+//
+//                // 태그 처리
+//                chipGroup.removeAllViews()
+//                memo.tags.forEach { tag ->
+//                    val chip = com.google.android.material.chip.Chip(chipGroup.context).apply {
+//                        text = "#${tag.name}"
+//                        isClickable = false
+//                        chipBackgroundColor = android.content.res.ColorStateList.valueOf(
+//                            android.graphics.Color.parseColor("#F5F5F5")
+//                        )
+//                        chipStrokeColor = android.content.res.ColorStateList.valueOf(
+//                            android.graphics.Color.parseColor("#DDDDDD")
+//                        )
+//                        chipStrokeWidth = 1f
+//                        setTextColor(android.graphics.Color.parseColor("#666666"))
+//                        chipCornerRadius = 12f
+//                        //typeface = android.graphics.Typeface.createFromAsset(context.assets, "fonts/maruburi_light.ttf")
+//                    }
+//                    chipGroup.addView(chip)
+//                }
 
-                // 태그 처리
-                chipGroup.removeAllViews()
-                memo.tags.forEach { tag ->
-                    val chip = com.google.android.material.chip.Chip(chipGroup.context).apply {
-                        text = "#${tag.name}"
-                        isClickable = false
-                    }
-                    chipGroup.addView(chip)
-                }
             }
         }
     }
