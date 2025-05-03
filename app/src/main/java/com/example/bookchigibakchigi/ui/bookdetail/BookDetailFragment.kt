@@ -45,6 +45,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.example.bookchigibakchigi.data.entity.BookEntity
 import com.example.bookchigibakchigi.ui.addmemo.AddMemoActivity
 import com.example.bookchigibakchigi.ui.bookdetail.adapter.MemoListAdapter
+import com.example.bookchigibakchigi.ui.card.CardActivity
 import com.example.bookchigibakchigi.ui.main.MainActivity
 import com.example.bookchigibakchigi.ui.main.MainViewModel
 import com.example.bookchigibakchigi.ui.main.MainViewUiState
@@ -308,7 +309,8 @@ class BookDetailFragment : Fragment() {
         view.findViewById<LinearLayout>(R.id.llKeyboard).setOnClickListener {
             // 버튼 클릭 동작
             bottomSheetDialog.dismiss()
-            moveToActivity(AddMemoActivity::class.java)
+            // moveToActivity(AddMemoActivity::class.java)
+            moveToActivity(CardActivity::class.java)
         }
     }
 
