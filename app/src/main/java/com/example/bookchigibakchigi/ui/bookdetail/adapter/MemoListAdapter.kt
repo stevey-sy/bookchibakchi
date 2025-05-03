@@ -2,6 +2,7 @@ package com.example.bookchigibakchigi.ui.bookdetail.adapter
 
 import android.graphics.Paint
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -36,10 +37,15 @@ class MemoListAdapter : ListAdapter<MemoUiModel, MemoListAdapter.MemoViewHolder>
         fun bind(memo: MemoUiModel) {
             binding.apply {
                 tvPageNumber.paintFlags = tvPageNumber.paintFlags or Paint.UNDERLINE_TEXT_FLAG
-//                tvCreatedAt.text = dateFormat.format(memo.createdAt)
+                tvCreatedAt.text = dateFormat.format(memo.createdAt)
                 tvContent.text = memo.content
-//                tvPageNumber.text = "P.${memo.pageNumber}"
-//
+                tvPageNumber.text = "p.${memo.pageNumber}"
+                
+                // 태그 처리
+                val tagsText = memo.tags.joinToString(" ") { "#${it.name}" }
+                if(tagsText.isEmpty()) tvTags.visibility = View.GONE
+                tvTags.text = tagsText
+
 //                // 태그 처리
 //                chipGroup.removeAllViews()
 //                memo.tags.forEach { tag ->

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginVertical="@dimen/_10sdp"
+    android:layout_marginVertical="@dimen/_4sdp"
     android:layout_marginHorizontal="@dimen/_10sdp">
 
     <com.google.android.material.card.MaterialCardView
@@ -13,15 +13,14 @@
         android:layout_marginHorizontal="@dimen/_6sdp"
         android:layout_marginVertical="@dimen/_10sdp"
         app:cardCornerRadius="12dp"
-        app:cardElevation="4dp"
-        app:strokeColor="#DDDDDD">
+        app:cardElevation="4dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:paddingEnd="@dimen/_20sdp"
             android:paddingBottom="@dimen/_16sdp"
-            android:background="@drawable/dock_sleeping"
+            android:background="@drawable/white_paper"
             tools:ignore="RtlSymmetry">
 
             <ImageView
@@ -76,12 +75,12 @@
                 android:fontFamily="@font/maruburi_light"
                 android:gravity="bottom|center"
                 android:layout_centerInParent="true"
-                android:layout_above="@id/tvDate"
+                android:layout_above="@id/tvCreatedAt"
                 android:textSize="14sp"
                 android:text="#명언 #인생 #위로" />
 
             <TextView
-                android:id="@+id/tvDate"
+                android:id="@+id/tvCreatedAt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_10sdp"
