@@ -1,4 +1,4 @@
-package com.example.bookchigibakchigi.ui.card.adapter
+package com.example.bookchigibakchigi.ui.addmemo.adapter
 
 import android.view.LayoutInflater
 import android.view.View
@@ -21,11 +21,11 @@ class CardBackgroundAdapter(
             // 아이템 크기 동적 설정
             val layoutParams = itemView.layoutParams
             layoutParams.width = itemWidth // 동적 너비 설정
-            layoutParams.height = itemWidth
+            layoutParams.height = itemWidth // 정사각형으로 설정
             itemView.layoutParams = layoutParams
 
             if (imageRes == R.drawable.img_dummy) {
-                imageView.setImageResource(R.drawable.img_dummy) // Glide 대신 사용
+                imageView.setImageResource(R.drawable.img_dummy)
             } else {
                 Glide.with(imageView.context)
                     .load(imageRes)

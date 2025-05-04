@@ -309,8 +309,8 @@ class BookDetailFragment : Fragment() {
         view.findViewById<LinearLayout>(R.id.llKeyboard).setOnClickListener {
             // 버튼 클릭 동작
             bottomSheetDialog.dismiss()
-            // moveToActivity(AddMemoActivity::class.java)
-            moveToActivity(CardActivity::class.java)
+             moveToActivity(AddMemoActivity::class.java)
+//            moveToActivity(CardActivity::class.java)
         }
     }
 

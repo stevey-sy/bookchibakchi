@@ -7,8 +7,10 @@
             <solid android:color="@android:color/transparent" /> <!-- 내부는 투명 -->
             <stroke
                 android:width="4dp"
-            android:color="@android:color/white" /> <!-- 테두리 색상 (흰색) -->
-            <corners android:radius="10dp" /> <!-- 모서리 둥글기 -->
+                android:color="@android:color/white"
+                android:dashWidth="6dp"
+                android:dashGap="4dp" /> <!-- 점선 스타일 -->
+            <corners android:radius="4dp" /> <!-- 모서리 둥글기 -->
         </shape>
     </item>
 

@@ -30,17 +30,32 @@ import android.graphics.Rect
 import android.widget.Toast
 import com.example.bookchigibakchigi.ui.main.MainActivity
 import androidx.viewpager2.widget.ViewPager2
+import com.example.bookchigibakchigi.R
 
 @AndroidEntryPoint
 class AddMemoActivity : BaseActivity() {
 
     private lateinit var binding: ActivityAddMemoBinding
     private val viewModel: AddMemoViewModel by viewModels()
-    private var pageDebounceJob: Job? = null
-    private var contentDebounceJob: Job? = null
     private lateinit var tagListAdapter: TagListAdapter
     private lateinit var addMemoAdapter: AddMemoAdapter
     private var colorPickerDialog: Dialog? = null
+
+    // 실제 데이터 리스트
+    private val actualImages = listOf(
+        R.drawable.img_dummy,
+        R.drawable.img_dummy,
+        R.drawable.img_light_blue_sky,
+        R.drawable.img_blue_sky,
+        R.drawable.img_night_sky,
+        R.drawable.img_pink_sky,
+        R.drawable.img_forest,
+        R.drawable.img_white_wall,
+        R.drawable.img_gray_wall,
+        R.drawable.img_blue_wall,
+        R.drawable.img_dummy,
+        R.drawable.img_dummy,
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,6 +79,9 @@ class AddMemoActivity : BaseActivity() {
 
     private fun initViewPager() {
         addMemoAdapter = AddMemoAdapter(
+            onBackgroundChanged = { position ->
+                // 배경이 변경되었을 때의 처리
+            },
             onPageChanged = { page ->
                 viewModel.onEvent(AddMemoEvent.UpdatePage(page))
             },
@@ -76,7 +94,8 @@ class AddMemoActivity : BaseActivity() {
                     "#000000", // 기본 색상
                     "#FFFFFF"  // 기본 텍스트 색상
                 ))
-            }
+            },
+            backgroundImages = actualImages
         )
         binding.viewPager.adapter = addMemoAdapter
         binding.viewPager.orientation = ViewPager2.ORIENTATION_VERTICAL

@@ -32,7 +32,7 @@ import com.example.bookchigibakchigi.data.entity.BookEntity
 import com.example.bookchigibakchigi.databinding.ActivityCardBinding
 import com.example.bookchigibakchigi.ui.BaseActivity
 import com.example.bookchigibakchigi.ui.main.MainActivity
-import com.example.bookchigibakchigi.ui.card.adapter.CardBackgroundAdapter
+import com.example.bookchigibakchigi.ui.addmemo.adapter.CardBackgroundAdapter
 import com.example.bookchigibakchigi.ui.card.viewmodel.CreateCardViewModel
 import com.example.bookchigibakchigi.util.VibrationUtil
 import dagger.hilt.android.AndroidEntryPoint
