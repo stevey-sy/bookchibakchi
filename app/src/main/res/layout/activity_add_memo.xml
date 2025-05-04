@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".ui.addmemo.AddMemoActivity">
 
     <FrameLayout
         android:id="@+id/main"
@@ -11,8 +12,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            tools:context=".ui.addmemo.AddMemoActivity">
+            android:orientation="vertical">
 
             <!-- 상단 닫기 버튼 -->
             <ImageView
@@ -26,23 +26,25 @@
                 android:contentDescription="닫기 버튼"
                 android:src="@drawable/ic_close_black"/>
 
-                <LinearLayout
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
+                    android:layout_height="match_parent">
 
                     <ScrollView
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
-                        android:layout_weight="1">
+                        android:fillViewport="true"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toTopOf="@+id/llBottom">
 
                         <LinearLayout
                             android:id="@+id/llContent"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
+                            android:layout_height="wrap_content"
                             android:orientation="vertical"
                             android:layout_marginTop="@dimen/_10sdp"
-                            android:paddingHorizontal="@dimen/_12sdp">
+                            android:paddingHorizontal="@dimen/_12sdp"
+                            android:layout_marginBottom="@dimen/_50sdp">
 
                             <TextView
                                 android:id="@+id/tvHeader"
@@ -129,60 +131,77 @@
 
                                 </RelativeLayout>
 
-
                             </com.google.android.material.card.MaterialCardView>
+
+                            <com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator
+                                android:id="@+id/dotsIndicator"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_marginTop="10dp"
+                                app:dotsColor="@color/black"
+                                app:dotsCornerRadius="4dp"
+                                app:dotsWidthFactor="2.5"
+                                app:dotsSize="@dimen/_10sdp"
+                                android:visibility="visible"/>
 
                             <androidx.viewpager2.widget.ViewPager2
                                 android:id="@+id/viewPager"
                                 android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_marginBottom="@dimen/_50sdp"/>
-
-                            <com.google.android.material.tabs.TabLayout
-                                android:id="@+id/tabLayout"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                app:tabMode="fixed"
-                                app:tabGravity="fill"
-                                android:visibility="gone">
-
-                                <com.google.android.material.tabs.TabItem
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="페이지" />
-
-                                <com.google.android.material.tabs.TabItem
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="내용" />
-
-                                <com.google.android.material.tabs.TabItem
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="태그" />
-
-                            </com.google.android.material.tabs.TabLayout>
+                                android:layout_height="0dp"
+                                android:layout_weight="1"
+                                android:orientation="vertical" />
 
                         </LinearLayout>
-
                     </ScrollView>
 
-
-                    <TextView
-                        android:id="@+id/saveButton"
+                    <LinearLayout
+                        android:id="@+id/llBottom"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/_50sdp"
-                        android:background="@color/black"
-                        android:textColor="@color/white"
-                        android:gravity="center"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        android:text="@string/button_save"
-                        android:layout_below="@id/llContent"
-                        android:layout_alignParentBottom="true"
-                        android:visibility="visible"/>
+                        android:orientation="horizontal"
+                        android:weightSum="2"
+                        app:layout_constraintBottom_toBottomOf="parent">
 
-                </LinearLayout>
+                        <TextView
+                            android:id="@+id/btnPrev"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="match_parent"
+                            android:background="@color/steal_gray"
+                            android:textColor="@color/white"
+                            android:gravity="center"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            android:text="@string/button_prev"
+                            android:visibility="visible"
+                            />
+
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="match_parent"
+                            android:background="@color/white" />
+
+                        <TextView
+                            android:id="@+id/btnNext"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="match_parent"
+                            android:background="@color/black"
+                            android:textColor="@color/white"
+                            android:gravity="center"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            android:text="@string/button_next"
+                            android:visibility="visible"
+                            />
+
+
+                    </LinearLayout>
+
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
         </LinearLayout>
 

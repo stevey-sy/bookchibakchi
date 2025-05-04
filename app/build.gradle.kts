@@ -103,4 +103,7 @@ dependencies {
 
     // flexBox
     implementation("com.google.android.flexbox:flexbox:3.0.0")
+
+    // dot indicator
+    implementation("com.tbuonomo:dotsindicator:5.1.0")
 }

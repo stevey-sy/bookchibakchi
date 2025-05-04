@@ -29,6 +29,7 @@ import androidx.core.graphics.toColorInt
 import android.graphics.Rect
 import android.widget.Toast
 import com.example.bookchigibakchigi.ui.main.MainActivity
+import androidx.viewpager2.widget.ViewPager2
 
 @AndroidEntryPoint
 class AddMemoActivity : BaseActivity() {
@@ -78,15 +79,9 @@ class AddMemoActivity : BaseActivity() {
             }
         )
         binding.viewPager.adapter = addMemoAdapter
-
-        TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
-            tab.text = when (position) {
-                0 -> "페이지"
-                1 -> "내용"
-                2 -> "태그"
-                else -> throw IllegalArgumentException("Invalid position")
-            }
-        }.attach()
+        binding.viewPager.orientation = ViewPager2.ORIENTATION_VERTICAL
+        binding.viewPager.isUserInputEnabled = false
+        binding.dotsIndicator.attachTo(binding.viewPager)
     }
 
     override fun onBackPressed() {
@@ -149,51 +144,19 @@ class AddMemoActivity : BaseActivity() {
             finish()
         }
 
-//        binding.etPage.doAfterTextChanged { text ->
-//            pageDebounceJob?.cancel()
-//            pageDebounceJob = lifecycleScope.launch {
-//                delay(300)
-//                viewModel.onEvent(AddMemoEvent.UpdatePage(text.toString()))
-//            }
-//        }
-//
-//        binding.etContent.doAfterTextChanged { text ->
-//            contentDebounceJob?.cancel()
-//            contentDebounceJob = lifecycleScope.launch {
-//                delay(300)
-//                viewModel.onEvent(AddMemoEvent.UpdateContent(text.toString()))
-//            }
-//        }
-//
-//        binding.vColorSelector.setOnClickListener {
-//            binding.flColorPallet.visibility = View.VISIBLE
-//            binding.colorPickerLayout.visibility = View.VISIBLE
-//            adjustColorPickerPosition()
-//        }
-//
-//        binding.btnAddTag.setOnClickListener {
-//            val tagName = binding.etTag.text.toString().trim()
-//            val colorCode = binding.vColorSelector.tag
-//            val textColorCode = "#FFFFFF"
-//            if (tagName.isNotEmpty()) {
-//                // 같은 이름의 태그가 있는지 확인하고 있다면 제거
-//                val existingTag = tagListAdapter.currentList.find { it.name == tagName }
-//                if (existingTag != null) {
-//                    viewModel.onEvent(AddMemoEvent.RemoveTag(existingTag.name))
-//                }
-//                // 새로운 태그 추가
-//                viewModel.onEvent(AddMemoEvent.AddTag(tagName, colorCode.toString(), textColorCode))
-//                binding.etTag.text.clear()
-//            }
-//        }
-
-        binding.saveButton.setOnClickListener {
-            val bookId = intent.getIntExtra("bookId", -1)
-            if(bookId == -1) {
-                Toast.makeText(this, "책 정보가 없습니다.", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
+        binding.btnPrev.setOnClickListener {
+            val currentItem = binding.viewPager.currentItem
+            if (currentItem > 0) {
+                binding.viewPager.setCurrentItem(currentItem - 1, true)
             }
-            viewModel.onEvent(AddMemoEvent.SaveMemo(bookId))
+        }
+
+        binding.btnNext.setOnClickListener {
+            val currentItem = binding.viewPager.currentItem
+            val itemCount = binding.viewPager.adapter?.itemCount ?: 0
+            if (currentItem < itemCount - 1) {
+                binding.viewPager.setCurrentItem(currentItem + 1, true)
+            }
         }
 
         binding.flColorPallet.setOnClickListener {
@@ -221,15 +184,15 @@ class AddMemoActivity : BaseActivity() {
     }
 
     private fun updateUi(state: AddMemoUiState) {
-        binding.saveButton.isEnabled = state.page.isNotEmpty() && state.content.isNotEmpty() && !state.isLoading
-        
-        // 버튼의 배경색과 텍스트 색상 변경
-        if (state.isContentValid) {
-            binding.saveButton.setBackgroundColor(getColor(android.R.color.black))
-        } else {
-            Toast.makeText(this, "내용을 입력해주세요.", Toast.LENGTH_SHORT).show()
-            binding.saveButton.setBackgroundColor(getColor(android.R.color.darker_gray))
-        }
+//        binding.saveButton.isEnabled = state.page.isNotEmpty() && state.content.isNotEmpty() && !state.isLoading
+//
+//        // 버튼의 배경색과 텍스트 색상 변경
+//        if (state.isContentValid) {
+//            binding.saveButton.setBackgroundColor(getColor(android.R.color.black))
+//        } else {
+//            Toast.makeText(this, "내용을 입력해주세요.", Toast.LENGTH_SHORT).show()
+//            binding.saveButton.setBackgroundColor(getColor(android.R.color.darker_gray))
+//        }
 
         if (state.isSuccess) {
             Toast.makeText(this, "메모가 저장되었습니다.", Toast.LENGTH_SHORT).show()

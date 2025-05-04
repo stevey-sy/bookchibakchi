@@ -6,12 +6,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
+        android:gravity="center|top"
         android:padding="16dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Page"
+            android:text="1. 페이지를 입력해주세요."
             android:textSize="18sp"
             android:textColor="@color/black"
             android:textStyle="bold" />
@@ -21,7 +22,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:orientation="horizontal"
-            android:gravity="center|start"
+            android:gravity="center"
             android:clipChildren="false"
             android:clipToPadding="false"
             android:paddingVertical="4dp">
@@ -50,4 +51,5 @@
         </LinearLayout>
 
     </LinearLayout>
-</layout> 
+
+</layout>
