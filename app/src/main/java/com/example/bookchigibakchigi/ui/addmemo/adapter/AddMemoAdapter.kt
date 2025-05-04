@@ -30,8 +30,8 @@ class AddMemoAdapter(
 
     companion object {
         const val BACKGROUND = 0
-        const val PAGE_PAGE = 1
-        const val PAGE_QUOTE = 2
+        const val PAGE_QUOTE = 1
+        const val PAGE_PAGE = 2
         const val PAGE_TAG = 3
     }
 
@@ -85,13 +85,13 @@ class AddMemoAdapter(
         }
     }
 
-    override fun getItemCount(): Int = 4
+    override fun getItemCount(): Int = 3
 
     override fun getItemViewType(position: Int): Int {
         return when (position) {
             0 -> BACKGROUND
-            1 -> PAGE_PAGE
-            2 -> PAGE_QUOTE
+            1 -> PAGE_QUOTE
+            2 -> PAGE_PAGE
             3 -> PAGE_TAG
             else -> throw IllegalArgumentException("Invalid position")
         }

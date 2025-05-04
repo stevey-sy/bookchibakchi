@@ -23,6 +23,12 @@
     <string name="button_next">다음</string>
     <string name="button_enroll">등록</string>
 
+    <string name="select_background">1) 배경을 선택해주세요.</string>
+    <string name="input_pager_num">3) 페이지를 입력해주세요.</string>
+    <string name="input_content">2) 기록하고 싶은 문구를 입력해주세요.</string>
+    <string name="add_tags">4) 태그를 추가해보세요. (선택사항)</string>
+    <string name="hint_input_content">기록하고 싶은 책의 내용을 입력해주세요.</string>
+
     <string name="hint_search_book">책을 검색해 보세요.</string>
     <string name="no_results_message">검색 결과가 없습니다.</string>
     <!-- TODO: Remove or change this placeholder text -->

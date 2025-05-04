@@ -45,9 +45,9 @@ class AddMemoActivity : BaseActivity() {
     private val actualImages = listOf(
         R.drawable.img_dummy,
         R.drawable.img_dummy,
-        R.drawable.img_light_blue_sky,
-        R.drawable.img_blue_sky,
-        R.drawable.img_night_sky,
+        R.drawable.white_paper,
+        R.drawable.crumpled_paper,
+        R.drawable.dock_sleeping,
         R.drawable.img_pink_sky,
         R.drawable.img_forest,
         R.drawable.img_white_wall,

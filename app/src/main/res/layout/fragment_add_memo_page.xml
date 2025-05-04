@@ -12,7 +12,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="1. 페이지를 입력해주세요."
+            android:text="@string/input_pager_num"
             android:textSize="18sp"
             android:textColor="@color/black"
             android:textStyle="bold" />
@@ -49,6 +49,64 @@
                 android:padding="12dp" />
 
         </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_1sdp"
+            android:background="@color/steal_gray"
+            android:layout_marginTop="@dimen/_10sdp"/>
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/add_tags"
+            android:textSize="18sp"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:layout_marginTop="@dimen/_10sdp"/>
+
+        <RelativeLayout
+            android:id="@+id/rlAddTag"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:paddingVertical="4dp"
+            android:orientation="horizontal"
+            android:clipChildren="false"
+            android:clipToPadding="false">
+
+            <EditText
+                android:id="@+id/etTag"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:background="@android:color/white"
+                android:elevation="2dp"
+                android:hint="태그 입력 후 + 버튼을 눌러주세요."
+                android:textSize="14sp"
+                android:textColorHint="@color/light_gray"
+                android:padding="12dp"
+                android:layout_toStartOf="@id/vDivider"/>
+
+
+            <View
+                android:id="@+id/vDivider"
+                android:layout_width="1dp"
+                android:layout_height="40dp"
+                android:background="@color/light_gray"
+                android:layout_marginStart="8dp"
+                android:layout_toStartOf="@id/btnAddTag"/>
+
+            <ImageButton
+                android:id="@+id/btnAddTag"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_plus_24"
+                android:layout_alignParentEnd="true"/>
+
+        </RelativeLayout>
 
     </LinearLayout>
 
