@@ -12,6 +12,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
 import com.example.bookchigibakchigi.R
 import com.example.bookchigibakchigi.model.BookUiModel
+import com.example.bookchigibakchigi.ui.addmemo.AddMemoUiState
 import com.example.bookchigibakchigi.ui.bookdetail.adapter.BookViewPagerAdapter
 import com.example.bookchigibakchigi.ui.main.MainViewUiState
 import com.example.bookchigibakchigi.ui.microphone.MicrophoneUiState
@@ -435,6 +436,20 @@ object BindingAdapters {
                     is MicrophoneUiState.Error -> R.drawable.ic_microphone_black
                 }
                 setImageResource(newSrc)
+            }
+        }
+    }
+
+    // AddMemoActivity
+    @JvmStatic
+    @BindingAdapter("updatePage")
+    fun TextView.updatePage(uiState: AddMemoUiState?) {
+        text = when (uiState) {
+            is AddMemoUiState -> {
+                "p.${uiState.page}"
+            }
+            else -> {
+                "p.0"
             }
         }
     }

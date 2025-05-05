@@ -18,7 +18,8 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class AddMemoUiState(
-    val page: String = "",
+    val page: String = "0",
+    val backgroundPosition: Int = 0,
     val content: String = "",
     val tagList: List<TagUiModel> = emptyList(),
     val isLoading: Boolean = false,
@@ -34,6 +35,7 @@ sealed interface AddMemoEvent {
     data class AddTag(val name: String, val backgroundColor: String, val textColor: String) : AddMemoEvent
     data class RemoveTag(val tagName: String) : AddMemoEvent
     data class SaveMemo(val bookId: Int) : AddMemoEvent
+    data class UpdateBackground(val position: Int) : AddMemoEvent
 }
 
 @HiltViewModel
@@ -47,6 +49,9 @@ class AddMemoViewModel @Inject constructor(
 
     fun onEvent(event: AddMemoEvent) {
         when (event) {
+            is AddMemoEvent.UpdateBackground -> {
+                _uiState.update { it.copy(backgroundPosition = event.position) }
+            }
             is AddMemoEvent.UpdatePage -> {
                 _uiState.update { it.copy(page = event.page) }
             }

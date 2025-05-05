@@ -27,10 +27,12 @@ import kotlinx.coroutines.launch
 import androidx.core.view.isVisible
 import androidx.core.graphics.toColorInt
 import android.graphics.Rect
+import android.util.Log
 import android.widget.Toast
 import com.example.bookchigibakchigi.ui.main.MainActivity
 import androidx.viewpager2.widget.ViewPager2
 import com.example.bookchigibakchigi.R
+import com.example.bookchigibakchigi.util.VibrationUtil
 
 @AndroidEntryPoint
 class AddMemoActivity : BaseActivity() {
@@ -61,26 +63,28 @@ class AddMemoActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityAddMemoBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        binding.viewModel = viewModel
+        binding.lifecycleOwner = this
         initRecyclerView()
         initViewPager()
-        
+        initListeners()
+        observeViewModel()
+
         // copiedText 처리
         val recognizedText = intent.getStringExtra("recognizedText")
         if (!recognizedText.isNullOrEmpty()) {
             viewModel.onEvent(AddMemoEvent.UpdateContent(recognizedText))
         }
 
-        initListeners()
-        observeViewModel()
-
-        // 초기 색상 설정
-//        binding.vColorSelector.tag = ColorConstants.COLOR_CODES[0]
     }
 
     private fun initViewPager() {
         addMemoAdapter = AddMemoAdapter(
             onBackgroundChanged = { position ->
                 // 배경이 변경되었을 때의 처리
+                Log.d("onBackgroundChanged", position.toString())
+                VibrationUtil.vibrate(this@AddMemoActivity, 100)
+                viewModel.onEvent(AddMemoEvent.UpdateBackground(position))
             },
             onPageChanged = { page ->
                 viewModel.onEvent(AddMemoEvent.UpdatePage(page))
@@ -203,15 +207,8 @@ class AddMemoActivity : BaseActivity() {
     }
 
     private fun updateUi(state: AddMemoUiState) {
-//        binding.saveButton.isEnabled = state.page.isNotEmpty() && state.content.isNotEmpty() && !state.isLoading
-//
-//        // 버튼의 배경색과 텍스트 색상 변경
-//        if (state.isContentValid) {
-//            binding.saveButton.setBackgroundColor(getColor(android.R.color.black))
-//        } else {
-//            Toast.makeText(this, "내용을 입력해주세요.", Toast.LENGTH_SHORT).show()
-//            binding.saveButton.setBackgroundColor(getColor(android.R.color.darker_gray))
-//        }
+        // 페이지 번호 업데이트
+//        binding.tvPageNumber.text = if (state.page.isNotEmpty()) "P.${state.page}" else "P.0"
 
         if (state.isSuccess) {
             Toast.makeText(this, "메모가 저장되었습니다.", Toast.LENGTH_SHORT).show()

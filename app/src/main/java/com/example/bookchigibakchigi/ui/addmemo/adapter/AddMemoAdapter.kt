@@ -179,7 +179,7 @@ class AddMemoAdapter(
                         val layoutManager = recyclerView.layoutManager as LinearLayoutManager
                         val snapView = snapHelper.findSnapView(layoutManager) ?: return
                         val position = layoutManager.getPosition(snapView)
-
+                        onBackgroundChanged(position)
 //                        if (position != lastSelectedPosition) { // 새로운 아이템이 선택되었을 때만 실행
 //                            lastSelectedPosition = position
 //                            VibrationUtil.vibrate(this@CardActivity, 100) // ✅ 진동 효과 실행

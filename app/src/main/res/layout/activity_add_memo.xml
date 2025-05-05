@@ -4,6 +4,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.addmemo.AddMemoActivity">
 
+    <data>
+        <variable
+            name="viewModel"
+            type="com.example.bookchigibakchigi.ui.addmemo.AddMemoViewModel" />
+    </data>
+
     <FrameLayout
         android:id="@+id/main"
         android:layout_width="match_parent"
@@ -73,6 +79,7 @@
                                 app:cardElevation="4dp" >
 
                                 <RelativeLayout
+                                    android:id="@+id/rlCardBackground"
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
                                     android:paddingEnd="@dimen/_20sdp"
@@ -85,12 +92,12 @@
                                         android:textSize="16sp"
                                         android:textStyle="bold"
                                         android:fontFamily="@font/maruburi_bold"
-                                        android:text="P.42"
                                         android:textColor="@color/black"
                                         android:gravity="center"
                                         android:layout_marginTop="@dimen/_18sdp"
                                         android:layout_marginStart="@dimen/_12sdp"
-                                        android:paddingHorizontal="@dimen/_10sdp"/>
+                                        android:paddingHorizontal="@dimen/_10sdp"
+                                        app:updatePage="@{viewModel.uiState}"/>
 
                                     <TextView
                                         android:id="@+id/tvContent"
