@@ -2,6 +2,7 @@ package com.example.bookchigibakchigi.ui.addmemo
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.bookchigibakchigi.constants.CardBackgrounds
 import com.example.bookchigibakchigi.data.entity.MemoEntity
 import com.example.bookchigibakchigi.data.entity.TagEntity
 import com.example.bookchigibakchigi.data.repository.BookShelfRepository
@@ -9,6 +10,7 @@ import com.example.bookchigibakchigi.data.repository.MemoRepository
 import com.example.bookchigibakchigi.data.repository.TagRepository
 import com.example.bookchigibakchigi.mapper.TagMapper
 import com.example.bookchigibakchigi.model.TagUiModel
+import com.example.bookchigibakchigi.util.DateUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -20,8 +22,9 @@ import javax.inject.Inject
 data class AddMemoUiState(
     val page: String = "0",
     val backgroundPosition: Int = 2,
-    val content: String = "",
+    val content: String = "내용을 입력해 주세요.",
     val tagList: List<TagUiModel> = emptyList(),
+    val createdAt: String = DateUtil.getFormattedToday(),
     val isLoading: Boolean = false,
     val isSuccess: Boolean = false,
     val error: String? = null,
@@ -102,7 +105,8 @@ class AddMemoViewModel @Inject constructor(
                 val memo = MemoEntity(
                     bookId = bookId,
                     content = _uiState.value.content,
-                    pageNumber = _uiState.value.page.toIntOrNull() ?: 0
+                    pageNumber = _uiState.value.page.toIntOrNull() ?: 0,
+                    background = CardBackgrounds.IMAGE_LIST[_uiState.value.backgroundPosition]
                 )
                 val memoId = memoRepository.insertMemo(memo)
 

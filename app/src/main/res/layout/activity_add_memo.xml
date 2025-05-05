@@ -37,6 +37,7 @@
                     android:layout_height="match_parent">
 
                     <ScrollView
+                        android:id="@+id/scrollView"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
                         android:fillViewport="true"
@@ -98,7 +99,7 @@
                                         android:layout_marginTop="@dimen/_18sdp"
                                         android:layout_marginStart="@dimen/_12sdp"
                                         android:paddingHorizontal="@dimen/_10sdp"
-                                        app:updatePage="@{viewModel.uiState}"/>
+                                        app:bindPage="@{viewModel.uiState}"/>
 
                                     <TextView
                                         android:id="@+id/tvContent"
@@ -111,7 +112,8 @@
                                         android:textColor="@color/black"
                                         android:fontFamily="@font/dashi"
                                         android:background="@null"
-                                        android:textSize="20sp" />
+                                        android:textSize="20sp"
+                                        app:bindContent="@{viewModel.uiState}"/>
 
                                     <TextView
                                         android:id="@+id/tvTags"
@@ -123,7 +125,7 @@
                                         android:layout_centerInParent="true"
                                         android:layout_above="@id/tvCreatedAt"
                                         android:textSize="14sp"
-                                        android:text="#명언 #인생 #위로" />
+                                        app:bindTags="@{viewModel.uiState}" />
 
                                     <TextView
                                         android:id="@+id/tvCreatedAt"
@@ -135,7 +137,8 @@
                                         android:textColor="@color/black"
                                         android:fontFamily="@font/maruburi_light"
                                         android:textSize="12sp"
-                                        android:text="2025. 04. 16"/>
+                                        app:bindCreatedAt="@{viewModel.uiState}"
+                                        />
 
                                 </RelativeLayout>
 
@@ -156,7 +159,7 @@
                             <androidx.viewpager2.widget.ViewPager2
                                 android:id="@+id/viewPager"
                                 android:layout_width="match_parent"
-                                android:layout_height="@dimen/_200sdp"
+                                android:layout_height="@dimen/_190sdp"
                                 android:orientation="vertical" />
 
                         </LinearLayout>

@@ -23,17 +23,17 @@
     <string name="button_next">다음</string>
     <string name="button_enroll">등록</string>
 
-    <string name="select_background">1) 배경을 선택해주세요.</string>
-    <string name="input_pager_num">3) 페이지를 입력해주세요.</string>
-    <string name="input_content">2) 기록하고 싶은 문구를 입력해주세요.</string>
-    <string name="add_tags">4) 태그를 추가해보세요. (선택사항)</string>
-    <string name="hint_input_content">기록하고 싶은 책의 내용을 입력해주세요.</string>
+    <string name="select_background">1) 배경을 선택해 주세요.</string>
+    <string name="input_pager_num">2) 페이지를 입력해 주세요.</string>
+    <string name="input_content">3) 기록하고 싶은 문구를 입력해 주세요.</string>
+    <string name="add_tags">4) 태그를 추가해 보세요. (선택사항)</string>
+    <string name="hint_input_content">기록하고 싶은 책의 내용을 입력해 주세요.</string>
 
     <string name="hint_search_book">책을 검색해 보세요.</string>
     <string name="no_results_message">검색 결과가 없습니다.</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="empty_book_description">독서 진행도와 기억하고 싶은 문구를 기록할 수 있어요</string>
-    <string name="empty_book_message">당신의 첫 번째 책을 추가해보세요</string>
+    <string name="empty_book_message">당신의 첫 번째 책을 추가해 보세요</string>
     <string name="search_book">책 검색하기</string>
 </resources>

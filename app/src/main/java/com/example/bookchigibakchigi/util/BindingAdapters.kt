@@ -12,6 +12,7 @@ import androidx.databinding.BindingAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
 import com.example.bookchigibakchigi.R
+import com.example.bookchigibakchigi.constants.CardBackgrounds
 import com.example.bookchigibakchigi.model.BookUiModel
 import com.example.bookchigibakchigi.ui.addmemo.AddMemoUiState
 import com.example.bookchigibakchigi.ui.bookdetail.adapter.BookViewPagerAdapter
@@ -443,8 +444,8 @@ object BindingAdapters {
 
     // AddMemoActivity
     @JvmStatic
-    @BindingAdapter("updatePage")
-    fun TextView.updatePage(uiState: AddMemoUiState?) {
+    @BindingAdapter("bindPage")
+    fun TextView.bindPage(uiState: AddMemoUiState?) {
         text = when (uiState) {
             is AddMemoUiState -> {
                 "p.${uiState.page}"
@@ -455,27 +456,59 @@ object BindingAdapters {
         }
     }
 
+    // AddMemoActivity
+    @JvmStatic
+    @BindingAdapter("bindContent")
+    fun TextView.bindContent(uiState: AddMemoUiState?) {
+        text = when (uiState) {
+            is AddMemoUiState -> {
+                uiState.content
+            }
+            else -> {
+                ""
+            }
+        }
+    }
+
+    // AddMemoActivity
+    @JvmStatic
+    @BindingAdapter("bindTags")
+    fun TextView.bindTags(uiState: AddMemoUiState?) {
+        text = when (uiState) {
+            is AddMemoUiState -> {
+                if (uiState.tagList.isEmpty()) {
+                    ""
+                } else {
+                    uiState.tagList.joinToString(" ") { "#${it.name}" }
+                }
+            }
+            else -> {
+                ""
+            }
+        }
+    }
+
+    // AddMemoActivity
+    @JvmStatic
+    @BindingAdapter("bindCreatedAt")
+    fun TextView.bindCreatedAt(uiState: AddMemoUiState?) {
+        text = when (uiState) {
+            is AddMemoUiState -> {
+                uiState.createdAt
+            }
+            else -> {
+                ""
+            }
+        }
+    }
+
     // AddMemoActivity Card Background
     @JvmStatic
     @BindingAdapter("bindCardBackground")
-    fun RelativeLayout.bindCardBackground(uiState: StateFlow<AddMemoUiState>?) {
-        uiState?.let { flow ->
-            val actualImages = listOf(
-                R.drawable.img_dummy,
-                R.drawable.img_dummy,
-                R.drawable.white_paper,
-                R.drawable.crumpled_paper,
-                R.drawable.dock_sleeping,
-                R.drawable.img_pink_sky,
-                R.drawable.img_forest,
-                R.drawable.img_white_wall,
-                R.drawable.img_gray_wall,
-                R.drawable.img_blue_wall,
-                R.drawable.img_dummy,
-                R.drawable.img_dummy,
-            )
+    fun RelativeLayout.bindCardBackground(uiState: AddMemoUiState?) {
+        uiState?.let { it ->
             post {
-                setBackgroundResource(actualImages[flow.value.backgroundPosition])
+                setBackgroundResource(CardBackgrounds.IMAGE_LIST[it.backgroundPosition])
             }
         }
     }

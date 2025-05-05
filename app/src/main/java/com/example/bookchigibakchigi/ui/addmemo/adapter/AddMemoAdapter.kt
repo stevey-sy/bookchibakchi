@@ -14,6 +14,7 @@ import com.example.bookchigibakchigi.databinding.FragmentAddMemoBackgroundBindin
 import com.example.bookchigibakchigi.databinding.FragmentAddMemoPageBinding
 import com.example.bookchigibakchigi.databinding.FragmentAddMemoQuoteBinding
 import com.example.bookchigibakchigi.databinding.FragmentAddMemoTagBinding
+import com.example.bookchigibakchigi.model.TagUiModel
 import com.example.bookchigibakchigi.ui.card.CardActivity
 import com.example.bookchigibakchigi.util.VibrationUtil
 import kotlinx.coroutines.Job
@@ -21,22 +22,27 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class AddMemoAdapter(
+    private val initialPage: String = "",
+    private val initialContent: String = "",
+    private val initialTags: List<TagUiModel> = emptyList(),
     private val onBackgroundChanged: (Int) -> Unit,
     private val onPageChanged: (String) -> Unit,
     private val onContentChanged: (String) -> Unit,
     private val onTagAdded: (String) -> Unit,
+    private val onTagRemoved: (String)-> Unit,
     private val backgroundImages: List<Int>
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
         const val BACKGROUND = 0
-        const val PAGE_QUOTE = 1
-        const val PAGE_PAGE = 2
+        const val PAGE_PAGE = 1
+        const val PAGE_QUOTE = 2
         const val PAGE_TAG = 3
     }
 
     private var pageDebounceJob: Job? = null
     private var contentDebounceJob: Job? = null
+    private val tags = initialTags.toMutableList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
@@ -80,18 +86,18 @@ class AddMemoAdapter(
         when (holder) {
             is BackgroundViewHolder -> holder.bind(onBackgroundChanged)
             is PageViewHolder -> holder.bind(onPageChanged)
-            is QuoteViewHolder -> holder.bind(onContentChanged)
-            is TagViewHolder -> holder.bind(onTagAdded)
+            is QuoteViewHolder -> holder.bind(initialContent, onContentChanged)
+            is TagViewHolder -> holder.bind(initialTags, onTagAdded)
         }
     }
 
-    override fun getItemCount(): Int = 3
+    override fun getItemCount(): Int = 4
 
     override fun getItemViewType(position: Int): Int {
         return when (position) {
             0 -> BACKGROUND
-            1 -> PAGE_QUOTE
-            2 -> PAGE_PAGE
+            1 -> PAGE_PAGE
+            2 -> PAGE_QUOTE
             3 -> PAGE_TAG
             else -> throw IllegalArgumentException("Invalid position")
         }
@@ -154,15 +160,6 @@ class AddMemoAdapter(
                         layoutManager.scrollToPositionWithOffset(0, offset)
 
                         binding.llAim.bringToFront()
-
-                        // SnapHelper로 중앙 위치 강제 스냅
-                        snapHelper.findSnapView(binding.rvBackground.layoutManager)?.let { snapView ->
-                            val position = layoutManager.getPosition(snapView)
-//                            if (position != lastSelectedPosition) {
-//                                lastSelectedPosition = position
-//                                Glide.with(this@CardActivity).load(paddedImages[position]).into(binding.ivBackground)
-//                            }
-                        }
                     }
                 }
             }
@@ -180,17 +177,6 @@ class AddMemoAdapter(
                         val snapView = snapHelper.findSnapView(layoutManager) ?: return
                         val position = layoutManager.getPosition(snapView)
                         onBackgroundChanged(position)
-//                        if (position != lastSelectedPosition) { // 새로운 아이템이 선택되었을 때만 실행
-//                            lastSelectedPosition = position
-//                            VibrationUtil.vibrate(this@CardActivity, 100) // ✅ 진동 효과 실행
-//
-//                            // 선택된 이미지 변경
-//                            Glide.with(this@CardActivity)
-//                                .load(paddedImages[position])
-//                                .into(binding.ivBackground)
-//
-//                            binding.etBookTitle.bringToFront();
-//                        }
                     }
                 }
             })
@@ -212,7 +198,8 @@ class AddMemoAdapter(
 
     inner class QuoteViewHolder(private val binding: FragmentAddMemoQuoteBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(onContentChanged: (String) -> Unit) {
+        fun bind(initialContent:(String), onContentChanged: (String) -> Unit) {
+            binding.etContent.setText(initialContent)
             binding.etContent.doAfterTextChanged { text ->
                 contentDebounceJob?.cancel()
                 contentDebounceJob = kotlinx.coroutines.MainScope().launch {
@@ -225,18 +212,37 @@ class AddMemoAdapter(
 
     inner class TagViewHolder(private val binding: FragmentAddMemoTagBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(onTagAdded: (String) -> Unit) {
-            binding.etTag.doAfterTextChanged { text ->
-                // 태그 입력 관련 처리
+
+        fun bind(initialTags: List<TagUiModel>, onTagAdded: (String) -> Unit) {
+            // 초기 태그들 추가
+            initialTags.forEach { tag ->
+                addChip(tag)
             }
 
             binding.btnAddTag.setOnClickListener {
                 val tagName = binding.etTag.text.toString().trim()
-                if (tagName.isNotEmpty()) {
+                if (tagName.isNotEmpty() && !tags.any { it.name == tagName }) {
+                    val newTag = TagUiModel(name = tagName)
+                    addChip(newTag)
+                    tags.add(newTag)
                     onTagAdded(tagName)
+//                    onTagsUpdated(tags)
                     binding.etTag.text.clear()
                 }
             }
+        }
+
+        private fun addChip(tag: TagUiModel) {
+            val chip = com.google.android.material.chip.Chip(binding.root.context).apply {
+                text = tag.name
+                isCloseIconVisible = true
+                setOnCloseIconClickListener {
+                    binding.chipGroup.removeView(this)
+                    tags.remove(tag)
+                    onTagRemoved(tag.name)
+                }
+            }
+            binding.chipGroup.addView(chip)
         }
     }
 } 

@@ -32,32 +32,16 @@ import android.widget.Toast
 import com.example.bookchigibakchigi.ui.main.MainActivity
 import androidx.viewpager2.widget.ViewPager2
 import com.example.bookchigibakchigi.R
+import com.example.bookchigibakchigi.constants.CardBackgrounds
 import com.example.bookchigibakchigi.util.VibrationUtil
+import com.example.bookchigibakchigi.ui.dialog.TwoButtonsDialog
 
 @AndroidEntryPoint
 class AddMemoActivity : BaseActivity() {
 
     private lateinit var binding: ActivityAddMemoBinding
     private val viewModel: AddMemoViewModel by viewModels()
-    private lateinit var tagListAdapter: TagListAdapter
     private lateinit var addMemoAdapter: AddMemoAdapter
-    private var colorPickerDialog: Dialog? = null
-
-    // 실제 데이터 리스트
-    private val actualImages = listOf(
-        R.drawable.img_dummy,
-        R.drawable.img_dummy,
-        R.drawable.white_paper,
-        R.drawable.crumpled_paper,
-        R.drawable.dock_sleeping,
-        R.drawable.img_pink_sky,
-        R.drawable.img_forest,
-        R.drawable.img_white_wall,
-        R.drawable.img_gray_wall,
-        R.drawable.img_blue_wall,
-        R.drawable.img_dummy,
-        R.drawable.img_dummy,
-    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,21 +49,21 @@ class AddMemoActivity : BaseActivity() {
         setContentView(binding.root)
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
-        initRecyclerView()
-        initViewPager()
-        initListeners()
-        observeViewModel()
 
         // copiedText 처리
-        val recognizedText = intent.getStringExtra("recognizedText")
+        var recognizedText = intent.getStringExtra("recognizedText")
         if (!recognizedText.isNullOrEmpty()) {
             viewModel.onEvent(AddMemoEvent.UpdateContent(recognizedText))
         }
-
+        initViewPager(recognizedText)
+        initListeners()
+        observeViewModel()
     }
 
-    private fun initViewPager() {
+    private fun initViewPager(initialContent : String?) {
+        
         addMemoAdapter = AddMemoAdapter(
+            initialContent = initialContent ?: "",
             onBackgroundChanged = { position ->
                 // 배경이 변경되었을 때의 처리
                 Log.d("onBackgroundChanged", position.toString())
@@ -98,69 +82,22 @@ class AddMemoActivity : BaseActivity() {
                     "#000000", // 기본 색상
                     "#FFFFFF"  // 기본 텍스트 색상
                 ))
+                // 태그 추가 후 스크롤을 최하단으로 이동
+                binding.scrollView.post {
+                    val scrollAmount = binding.scrollView.getChildAt(0).height
+                    binding.scrollView.smoothScrollTo(0, scrollAmount)
+                }
             },
-            backgroundImages = actualImages
+            onTagRemoved = { tagName ->
+                viewModel.onEvent(AddMemoEvent.RemoveTag(tagName))
+            },
+            backgroundImages = CardBackgrounds.IMAGE_LIST
         )
         binding.viewPager.adapter = addMemoAdapter
         binding.viewPager.orientation = ViewPager2.ORIENTATION_VERTICAL
         binding.viewPager.isUserInputEnabled = false
         binding.dotsIndicator.attachTo(binding.viewPager)
     }
-
-    override fun onBackPressed() {
-        if (binding.colorPickerLayout.isVisible) {
-            binding.flColorPallet.visibility = View.GONE
-            binding.colorPickerLayout.visibility = View.INVISIBLE
-        } else {
-            super.onBackPressed()
-        }
-    }
-
-    private fun initRecyclerView() {
-        tagListAdapter = TagListAdapter { tag ->
-            viewModel.onEvent(AddMemoEvent.RemoveTag(tag.name))
-        }
-
-        val flexboxLayoutManager = FlexboxLayoutManager(this).apply {
-            flexDirection = FlexDirection.ROW
-            flexWrap = FlexWrap.WRAP
-            alignItems = AlignItems.FLEX_START
-        }
-
-//        binding.rvTagList.apply {
-//            layoutManager = flexboxLayoutManager
-//            adapter = tagListAdapter
-//        }
-    }
-
-//    private fun selectColor(colorIndex: Int) {
-//        binding.vColorSelector.backgroundTintList = android.content.res.ColorStateList.valueOf(
-//            ColorConstants.COLOR_CODES[colorIndex].toColorInt()
-//        )
-//        binding.vColorSelector.tag = ColorConstants.COLOR_CODES[colorIndex]
-//        binding.colorPickerLayout.visibility = View.INVISIBLE
-//        binding.flColorPallet.visibility = View.GONE
-//    }
-
-    private fun isKeyboardVisible(): Boolean {
-        val r = Rect()
-        binding.root.getWindowVisibleDisplayFrame(r)
-        val screenHeight = binding.root.rootView.height
-        val keypadHeight = screenHeight - r.bottom
-        return keypadHeight > screenHeight * 0.15
-    }
-
-//    private fun adjustColorPickerPosition() {
-//        val keyboardVisible = isKeyboardVisible()
-//        binding.colorPickerLayout.x = binding.tagLabel.right.toFloat() + 80
-//        binding.colorPickerLayout.y = if (keyboardVisible) {
-////            binding.rlAddTag.top.toFloat() - 20 - (binding.root.rootView.height * 0.3).toFloat()
-//            binding.etContent.bottom.toFloat() - 200
-////            binding.saveButton.top.toFloat()
-//        } else {
-//            binding.rlAddTag.top.toFloat() - 20
-//        }
-//    }
 
     private fun initListeners() {
         binding.btnClose.setOnClickListener {
@@ -179,6 +116,22 @@ class AddMemoActivity : BaseActivity() {
             val itemCount = binding.viewPager.adapter?.itemCount ?: 0
             if (currentItem < itemCount - 1) {
                 binding.viewPager.setCurrentItem(currentItem + 1, true)
+            } else {
+                // 마지막 페이지에서 저장 확인 다이얼로그 표시
+                TwoButtonsDialog(
+                    context = this,
+                    title = "메모 저장",
+                    msg = "메모를 저장하시겠습니까?",
+                    btnText1 = "취소",
+                    btnText2 = "저장",
+                    onBtn1Click = {
+                        // 취소 시 아무 동작 없음
+                    },
+                    onBtn2Click = {
+                        val bookId = intent.getIntExtra("bookId", -1)
+                        viewModel.onEvent(AddMemoEvent.SaveMemo(bookId))
+                    }
+                ).show()
             }
         }
 
@@ -186,14 +139,6 @@ class AddMemoActivity : BaseActivity() {
             binding.colorPickerLayout.visibility = View.INVISIBLE
             binding.flColorPallet.visibility = View.GONE
         }
-
-        // 색상 버튼 클릭 리스너 추가
-//        binding.colorGray.setOnClickListener { selectColor(0) }
-//        binding.colorRed.setOnClickListener { selectColor(1) }
-//        binding.colorOrange.setOnClickListener { selectColor(2) }
-//        binding.colorBlue.setOnClickListener { selectColor(3) }
-//        binding.colorPurple.setOnClickListener { selectColor(4) }
-//        binding.colorPink.setOnClickListener { selectColor(5) }
     }
 
     private fun observeViewModel() {
@@ -208,8 +153,6 @@ class AddMemoActivity : BaseActivity() {
 
     private fun updateUi(state: AddMemoUiState) {
         // 페이지 번호 업데이트
-//        binding.tvPageNumber.text = if (state.page.isNotEmpty()) "P.${state.page}" else "P.0"
-
         if (state.isSuccess) {
             Toast.makeText(this, "메모가 저장되었습니다.", Toast.LENGTH_SHORT).show()
             if (state.shouldNavigateToMain) {
@@ -223,16 +166,6 @@ class AddMemoActivity : BaseActivity() {
             }
         }
 
-        tagListAdapter.submitList(state.tagList)
-        // 태그 리스트가 업데이트된 후 최하단으로 스크롤
-//        binding.rvTagList.post {
-//            lifecycleScope.launch {
-//                delay(300) // 필요에 따라 조절
-////                val scrollAmount = binding.scrollView.getChildAt(0).height
-////                binding.scrollView.smoothScrollTo(0, scrollAmount)
-//            }
-//        }
-
         state.error?.let { error ->
             showError(error)
         }
@@ -241,10 +174,5 @@ class AddMemoActivity : BaseActivity() {
     private fun showError(message: String) {
         // 에러 메시지를 표시하는 로직 구현
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        colorPickerDialog?.dismiss()
     }
 }

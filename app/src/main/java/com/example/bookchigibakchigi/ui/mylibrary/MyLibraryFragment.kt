@@ -1,5 +1,6 @@
 package com.example.bookchigibakchigi.ui.mylibrary
 
+import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
 import android.util.Log
@@ -35,6 +36,7 @@ import com.example.bookchigibakchigi.ui.common.SelectionActionMode
 import com.example.bookchigibakchigi.ui.dialog.TwoButtonsDialog
 import com.example.bookchigibakchigi.ui.main.MainActivity
 import com.example.bookchigibakchigi.ui.mylibrary.adapter.BookListAdapter
+import com.example.bookchigibakchigi.ui.searchbook.SearchBookActivity
 
 @AndroidEntryPoint
 class MyLibraryFragment : Fragment() {
@@ -147,7 +149,8 @@ class MyLibraryFragment : Fragment() {
 
     private fun initClickListeners() {
         binding.btnSearchBook.setOnClickListener {
-            findNavController().navigate(R.id.navigation_search_book)
+            val intent = Intent(requireContext(), SearchBookActivity::class.java)
+            startActivity(intent)
         }
         setupBackPressedCallback()
     }
