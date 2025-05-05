@@ -19,7 +19,7 @@ import javax.inject.Inject
 
 data class AddMemoUiState(
     val page: String = "0",
-    val backgroundPosition: Int = 0,
+    val backgroundPosition: Int = 2,
     val content: String = "",
     val tagList: List<TagUiModel> = emptyList(),
     val isLoading: Boolean = false,

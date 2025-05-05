@@ -5,6 +5,7 @@ import android.graphics.drawable.ColorDrawable
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
@@ -450,6 +451,31 @@ object BindingAdapters {
             }
             else -> {
                 "p.0"
+            }
+        }
+    }
+
+    // AddMemoActivity Card Background
+    @JvmStatic
+    @BindingAdapter("bindCardBackground")
+    fun RelativeLayout.bindCardBackground(uiState: StateFlow<AddMemoUiState>?) {
+        uiState?.let { flow ->
+            val actualImages = listOf(
+                R.drawable.img_dummy,
+                R.drawable.img_dummy,
+                R.drawable.white_paper,
+                R.drawable.crumpled_paper,
+                R.drawable.dock_sleeping,
+                R.drawable.img_pink_sky,
+                R.drawable.img_forest,
+                R.drawable.img_white_wall,
+                R.drawable.img_gray_wall,
+                R.drawable.img_blue_wall,
+                R.drawable.img_dummy,
+                R.drawable.img_dummy,
+            )
+            post {
+                setBackgroundResource(actualImages[flow.value.backgroundPosition])
             }
         }
     }

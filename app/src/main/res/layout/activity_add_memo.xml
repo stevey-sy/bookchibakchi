@@ -83,7 +83,8 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
                                     android:paddingEnd="@dimen/_20sdp"
-                                    android:paddingBottom="@dimen/_16sdp">
+                                    android:paddingBottom="@dimen/_16sdp"
+                                    app:bindCardBackground="@{viewModel.uiState}">
 
                                     <TextView
                                         android:id="@+id/tvPageNumber"
