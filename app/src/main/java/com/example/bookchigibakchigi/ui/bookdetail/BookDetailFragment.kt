@@ -354,6 +354,7 @@ class BookDetailFragment : Fragment() {
             mainViewModel.selectedBook.collect { selectedBook ->
                 selectedBook?.memoList?.let { memoList ->
                     adapter.submitList(memoList)
+                    if(memoList.isEmpty()) bottomSheetDialog.dismiss()
                 }
             }
         }
