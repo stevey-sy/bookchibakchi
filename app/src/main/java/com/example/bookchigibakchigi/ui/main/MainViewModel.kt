@@ -166,6 +166,12 @@ class MainViewModel @Inject constructor(
             _filterType.value = newFilterType
         }
     }
+
+    fun deleteMemoById(memoId: Long) {
+        viewModelScope.launch {
+            memoRepository.deleteMemoById(memoId)
+        }
+    }
 }
 
 sealed class NavigationEvent {

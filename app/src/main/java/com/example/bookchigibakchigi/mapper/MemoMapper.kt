@@ -13,6 +13,7 @@ object MemoMapper {
             pageNumber = entity.pageNumber,
             createdAt = entity.createdAt,
             updatedAt = entity.updatedAt,
+            background = entity.background,
             tags = tags
         )
     }
@@ -24,7 +25,8 @@ object MemoMapper {
             content = uiModel.content,
             pageNumber = uiModel.pageNumber,
             createdAt = uiModel.createdAt,
-            updatedAt = uiModel.updatedAt
+            updatedAt = uiModel.updatedAt,
+            background = uiModel.background
         )
     }
 } 

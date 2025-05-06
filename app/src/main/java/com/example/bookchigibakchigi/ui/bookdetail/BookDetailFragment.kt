@@ -320,10 +320,6 @@ class BookDetailFragment : Fragment() {
         bottomSheetDialog.setContentView(view)
 
         val recyclerView = view.findViewById<RecyclerView>(R.id.rvPhotoCards)
-//        val staggeredGridLayoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-//        staggeredGridLayoutManager.gapStrategy = StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS
-//        recyclerView.layoutManager = staggeredGridLayoutManager
-
         val closeBtn = view.findViewById<ImageView>(R.id.ivClose)
         closeBtn.setOnClickListener {
             bottomSheetDialog.dismiss()
@@ -333,20 +329,36 @@ class BookDetailFragment : Fragment() {
         val linearLayoutManager = LinearLayoutManager(requireContext())
         recyclerView.layoutManager = linearLayoutManager
 
-        val adapter = MemoListAdapter() // 초기 리스트 비움
+        val adapter = MemoListAdapter(
+            onModifyClicked = { memoId ->
+                // 메모 수정 로직
+                val intent = Intent(requireContext(), AddMemoActivity::class.java).apply {
+                    putExtra("memoId", memoId)
+                    mainViewModel.selectedBook.value?.let { book ->
+                        putExtra("bookId", book.itemId)
+                    }
+                }
+                startActivity(intent)
+            },
+            onDeleteClicked = { memoId ->
+                // 메모 삭제 로직
+                mainViewModel.selectedBook.value?.let { book ->
+                    mainViewModel.deleteMemoById(memoId)
+                }
+            }
+        )
         recyclerView.adapter = adapter
 
-        // ViewModel의 photoCardList 데이터를 가져와서 어댑터에 설정
-
-        mainViewModel.selectedBook.value.let { selectedBook ->
-            selectedBook?.memoList.apply {
-                if (this == null) {
-                    return
+        // selectedBook의 Flow를 구독하여 메모 리스트 업데이트
+        viewLifecycleOwner.lifecycleScope.launch {
+            mainViewModel.selectedBook.collect { selectedBook ->
+                selectedBook?.memoList?.let { memoList ->
+                    adapter.submitList(memoList)
                 }
-                adapter.submitList(this)
-                bottomSheetDialog.show()
             }
         }
+
+        bottomSheetDialog.show()
     }
 
     private fun showPhotoCardListDialog() {

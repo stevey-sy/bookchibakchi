@@ -31,6 +31,8 @@ class MemoRepository @Inject constructor(
 
     suspend fun getMemoById(memoId: Long): MemoEntity? = memoDao.getMemoById(memoId)
 
+    suspend fun deleteMemoById(memoId: Long) = memoDao.deleteMemoById(memoId)
+
     suspend fun addTagToMemo(memoId: Long, tagId: Long) {
         memoDao.insertMemoTagCrossRef(MemoTagCrossRef(memoId, tagId))
     }
