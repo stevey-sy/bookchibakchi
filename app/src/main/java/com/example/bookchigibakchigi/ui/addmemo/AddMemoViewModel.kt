@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.collections.map
 
 data class AddMemoUiState(
     val isModify: Boolean = false,
@@ -33,6 +34,8 @@ data class AddMemoUiState(
     val error: String? = null,
     val isContentValid: Boolean = false,
     val shouldNavigateToMain: Boolean = false,
+    val memoId: Long? = null,
+    val bookId: Int? = null,
 )
 
 sealed interface AddMemoEvent {
@@ -41,8 +44,9 @@ sealed interface AddMemoEvent {
     data class AddTag(val name: String, val backgroundColor: String, val textColor: String) : AddMemoEvent
     data class RemoveTag(val tagName: String) : AddMemoEvent
     data class SaveMemo(val bookId: Int) : AddMemoEvent
+    object UpdateMemo : AddMemoEvent
     data class UpdateBackground(val position: Int) : AddMemoEvent
-    data class LoadMemo(val memoId: Long) : AddMemoEvent
+    data class LoadMemo(val bookId: Int, val memoId: Long) : AddMemoEvent
 }
 
 @HiltViewModel
@@ -57,6 +61,12 @@ class AddMemoViewModel @Inject constructor(
     fun onEvent(event: AddMemoEvent) {
         when (event) {
             is AddMemoEvent.LoadMemo -> {
+                _uiState.update { currentState ->
+                    currentState.copy(
+                        memoId = event.memoId,
+                        bookId = event.bookId,
+                    )
+                }
                 loadMemo(event.memoId)
             }
             is AddMemoEvent.UpdateBackground -> {
@@ -91,6 +101,9 @@ class AddMemoViewModel @Inject constructor(
             }
             is AddMemoEvent.SaveMemo -> {
                 saveMemo(event.bookId)
+            }
+            is AddMemoEvent.UpdateMemo -> {
+                updateMemo()
             }
         }
     }
@@ -157,6 +170,60 @@ class AddMemoViewModel @Inject constructor(
                 _uiState.update { it.copy(
                     isLoading = false,
                     error = e.message ?: "메모 저장 중 오류가 발생했습니다."
+                ) }
+            }
+        }
+    }
+
+    private fun updateMemo() {
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true) }
+            try {
+                // 현재 UI의 태그 목록
+                val currentTagEntities = _uiState.value.tagList.map { TagMapper.toEntity(it) }
+                
+                // 기존 태그 목록 가져오기
+                val existingTags = memoRepository.getTagsForMemo(_uiState.value.memoId!!).first()
+                
+                // 태그 변경 사항 확인
+                val tagsToAdd = currentTagEntities.filter { newTag ->
+                    !existingTags.any { existingTag -> existingTag.name == newTag.name }
+                }
+                
+                val tagsToRemove = existingTags.filter { existingTag ->
+                    !currentTagEntities.any { newTag -> newTag.name == existingTag.name }
+                }
+
+                // 메모 업데이트
+                val updatedMemo = MemoEntity(
+                    memoId = _uiState.value.memoId!!,
+                    bookId = _uiState.value.bookId!!,
+                    content = _uiState.value.content,
+                    pageNumber = _uiState.value.page.toIntOrNull() ?: 0,
+                    background = CardBackgrounds.IMAGE_LIST[_uiState.value.backgroundPosition],
+                )
+                memoRepository.updateMemo(updatedMemo)
+
+                // 새로운 태그 저장 및 관계 추가
+                for (tag in tagsToAdd) {
+                    val tagId = tagRepository.insertTag(tag)
+                    memoRepository.addTagToMemo(updatedMemo.memoId, tagId)
+                }
+
+                // 제거된 태그 관계 삭제
+                for (tag in tagsToRemove) {
+                    memoRepository.removeTagFromMemo(updatedMemo.memoId, tag.tagId)
+                }
+
+                _uiState.update { it.copy(
+                    isLoading = false,
+                    isSuccess = true,
+                    shouldNavigateToMain = true
+                ) }
+            } catch (e: Exception) {
+                _uiState.update { it.copy(
+                    isLoading = false,
+                    error = e.message ?: "메모 수정 중 오류가 발생했습니다."
                 ) }
             }
         }

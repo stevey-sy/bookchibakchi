@@ -39,9 +39,10 @@ class AddMemoActivity : BaseActivity() {
         if(intent.hasExtra("isModify")) {
             val isModify = intent.getBooleanExtra("isModify", false)
             if(isModify) {
+                val bookId = intent.getIntExtra("bookId", -1)
                 val memoId = intent.getLongExtra("memoId", -1)
                 if (memoId != -1L) {
-                    viewModel.onEvent(AddMemoEvent.LoadMemo(memoId))
+                    viewModel.onEvent(AddMemoEvent.LoadMemo(bookId, memoId))
                 }
             }
         } else {
@@ -126,7 +127,11 @@ class AddMemoActivity : BaseActivity() {
                     },
                     onBtn2Click = {
                         val bookId = intent.getIntExtra("bookId", -1)
-                        viewModel.onEvent(AddMemoEvent.SaveMemo(bookId))
+                        if (viewModel.uiState.value.isModify) {
+                            viewModel.onEvent(AddMemoEvent.UpdateMemo)
+                        } else {
+                            viewModel.onEvent(AddMemoEvent.SaveMemo(bookId))
+                        }
                     }
                 ).show()
             }
