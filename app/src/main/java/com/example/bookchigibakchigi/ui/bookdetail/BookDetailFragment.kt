@@ -483,7 +483,11 @@ class BookDetailFragment : Fragment() {
         }
 
         binding.llComments.setOnClickListener {
-            showMemoListDialog()
+            mainViewModel.selectedBook.value.let { book ->
+                book?.let {
+                    if(book.memoList.isNotEmpty()) showMemoListDialog()
+                }
+            }
         }
     }
 
