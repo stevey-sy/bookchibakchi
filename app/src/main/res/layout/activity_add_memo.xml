@@ -36,7 +36,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-                    <ScrollView
+                    <androidx.core.widget.NestedScrollView
                         android:id="@+id/scrollView"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
@@ -73,16 +73,18 @@
 
                             <com.google.android.material.card.MaterialCardView
                                 android:layout_width="match_parent"
-                                android:layout_height="@dimen/_200sdp"
+                                android:layout_height="wrap_content"
+                                android:minHeight="@dimen/_200sdp"
                                 android:layout_marginHorizontal="@dimen/_6sdp"
                                 android:layout_marginVertical="@dimen/_10sdp"
                                 app:cardCornerRadius="12dp"
                                 app:cardElevation="4dp" >
 
-                                <RelativeLayout
+                                <androidx.constraintlayout.widget.ConstraintLayout
                                     android:id="@+id/rlCardBackground"
                                     android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:minHeight="@dimen/_200sdp"
                                     android:paddingEnd="@dimen/_20sdp"
                                     android:paddingBottom="@dimen/_16sdp"
                                     app:bindCardBackground="@{viewModel.uiState}">
@@ -99,48 +101,55 @@
                                         android:layout_marginTop="@dimen/_18sdp"
                                         android:layout_marginStart="@dimen/_12sdp"
                                         android:paddingHorizontal="@dimen/_10sdp"
-                                        app:bindPage="@{viewModel.uiState}"/>
+                                        app:bindPage="@{viewModel.uiState}"
+                                        app:layout_constraintTop_toTopOf="parent"
+                                        app:layout_constraintStart_toStartOf="parent" />
 
                                     <TextView
                                         android:id="@+id/tvContent"
-                                        android:layout_width="fill_parent"
+                                        android:layout_width="0dp"
                                         android:layout_height="wrap_content"
-                                        android:gravity="center"
-                                        android:layout_below="@id/tvPageNumber"
-                                        android:layout_above="@id/tvTags"
-                                        android:layout_centerInParent="true"
-                                        android:textColor="@color/black"
-                                        android:fontFamily="@font/dashi"
-                                        android:background="@null"
                                         android:textSize="20sp"
-                                        app:bindContent="@{viewModel.uiState}"/>
+                                        android:fontFamily="@font/dashi"
+                                        android:minLines="3"
+                                        android:gravity="center"
+                                        android:textColor="@color/black"
+                                        android:background="@null"
+                                        android:layout_marginTop="@dimen/_12sdp"
+                                        app:bindContent="@{viewModel.uiState}"
+                                        app:layout_constraintTop_toBottomOf="@id/tvPageNumber"
+                                        app:layout_constraintStart_toStartOf="parent"
+                                        app:layout_constraintEnd_toEndOf="parent" />
 
                                     <TextView
                                         android:id="@+id/tvTags"
-                                        android:layout_width="match_parent"
+                                        android:layout_width="0dp"
                                         android:layout_height="wrap_content"
-                                        android:layout_marginTop="@dimen/_16sdp"
-                                        android:fontFamily="@font/maruburi_light"
-                                        android:gravity="bottom|center"
-                                        android:layout_centerInParent="true"
-                                        android:layout_above="@id/tvCreatedAt"
                                         android:textSize="14sp"
-                                        app:bindTags="@{viewModel.uiState}" />
+                                        android:fontFamily="@font/maruburi_light"
+                                        android:gravity="center"
+                                        android:layout_marginTop="@dimen/_12sdp"
+                                        app:bindTags="@{viewModel.uiState}"
+                                        app:layout_constraintTop_toBottomOf="@id/tvContent"
+                                        app:layout_constraintStart_toStartOf="parent"
+                                        app:layout_constraintEnd_toEndOf="parent" />
 
                                     <TextView
                                         android:id="@+id/tvCreatedAt"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:layout_marginTop="@dimen/_10sdp"
-                                        android:layout_centerInParent="true"
-                                        android:layout_alignParentBottom="true"
-                                        android:textColor="@color/black"
-                                        android:fontFamily="@font/maruburi_light"
                                         android:textSize="12sp"
+                                        android:fontFamily="@font/maruburi_light"
+                                        android:textColor="@color/black"
+                                        android:layout_marginTop="@dimen/_8sdp"
                                         app:bindCreatedAt="@{viewModel.uiState}"
-                                        />
+                                        app:layout_constraintTop_toBottomOf="@id/tvTags"
+                                        app:layout_constraintBottom_toBottomOf="parent"
+                                        app:layout_constraintStart_toStartOf="parent"
+                                        app:layout_constraintEnd_toEndOf="parent" />
 
-                                </RelativeLayout>
+                                </androidx.constraintlayout.widget.ConstraintLayout>
+
 
                             </com.google.android.material.card.MaterialCardView>
 
@@ -163,7 +172,7 @@
                                 android:orientation="vertical" />
 
                         </LinearLayout>
-                    </ScrollView>
+                    </androidx.core.widget.NestedScrollView>
 
                     <LinearLayout
                         android:id="@+id/llBottom"

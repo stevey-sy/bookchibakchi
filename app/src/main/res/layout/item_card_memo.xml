@@ -8,29 +8,30 @@
     android:layout_marginHorizontal="@dimen/_10sdp">
 
     <com.google.android.material.card.MaterialCardView
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/_200sdp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="@dimen/_200sdp"
         android:layout_marginHorizontal="@dimen/_6sdp"
         android:layout_marginVertical="@dimen/_10sdp"
         app:cardCornerRadius="12dp"
         app:cardElevation="4dp">
 
-        <RelativeLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/rlCardBackground"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="@dimen/_200sdp"
             android:paddingEnd="@dimen/_20sdp"
-            android:paddingBottom="@dimen/_16sdp"
-            android:background="@drawable/white_paper"
-            tools:ignore="RtlSymmetry">
+            android:paddingBottom="@dimen/_16sdp">
 
             <ImageView
                 android:id="@+id/ivOptions"
-                android:layout_width="@dimen/_20sdp"
-                android:layout_height="@dimen/_20sdp"
+                android:layout_width="@dimen/_18sdp"
+                android:layout_height="@dimen/_18sdp"
                 android:src="@drawable/ic_horizontal_dots"
-                android:layout_marginTop="@dimen/_20sdp"
-                android:layout_alignParentEnd="true" />
+                android:layout_marginTop="@dimen/_18sdp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
 
             <TextView
                 android:id="@+id/tvPageNumber"
@@ -39,62 +40,69 @@
                 android:textSize="16sp"
                 android:textStyle="bold"
                 android:fontFamily="@font/maruburi_bold"
-                android:text="P.42"
                 android:textColor="@color/black"
                 android:gravity="center"
                 android:layout_marginTop="@dimen/_18sdp"
                 android:layout_marginStart="@dimen/_12sdp"
-                android:paddingHorizontal="@dimen/_10sdp"/>
-
-<!--            <TextView-->
-<!--                android:id="@+id/tvDate"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_below="@id/tvPageNumber"-->
-<!--                android:textColor="@color/gray"-->
-<!--                android:fontFamily="@font/maruburi_light"-->
-<!--                android:layout_marginStart="@dimen/_12sdp"-->
-<!--                android:paddingHorizontal="@dimen/_10sdp"-->
-<!--                android:text="2025. 04. 16" />-->
+                android:paddingHorizontal="@dimen/_10sdp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
 
             <TextView
                 android:id="@+id/tvContent"
-                android:layout_width="fill_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:layout_below="@id/tvPageNumber"
-                android:layout_above="@id/tvTags"
-                android:layout_centerInParent="true"
-                android:textColor="@color/black"
+                android:textSize="20sp"
                 android:fontFamily="@font/dashi"
-                android:textSize="20sp" />
+                android:minLines="3"
+                android:gravity="center"
+                android:textColor="@color/black"
+                android:background="@null"
+                android:layout_marginTop="@dimen/_12sdp"
+                app:layout_constraintTop_toBottomOf="@id/tvPageNumber"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <TextView
+                android:id="@+id/tvExpand"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="..더보기"
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                android:fontFamily="@font/maruburi_bold"
+                android:layout_marginTop="4dp"
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@id/tvContent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
 
             <TextView
                 android:id="@+id/tvTags"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_16sdp"
-                android:fontFamily="@font/maruburi_light"
-                android:gravity="bottom|center"
-                android:layout_centerInParent="true"
-                android:layout_above="@id/tvCreatedAt"
                 android:textSize="14sp"
-                android:text="#명언 #인생 #위로" />
+                android:fontFamily="@font/maruburi_light"
+                android:gravity="center"
+                android:layout_marginTop="@dimen/_12sdp"
+                app:layout_constraintTop_toBottomOf="@id/tvExpand"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
 
             <TextView
                 android:id="@+id/tvCreatedAt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_10sdp"
-                android:layout_centerInParent="true"
-                android:layout_alignParentBottom="true"
-                android:textColor="@color/black"
-                android:fontFamily="@font/maruburi_light"
                 android:textSize="12sp"
-                android:text="2025. 04. 16"/>
+                android:fontFamily="@font/maruburi_light"
+                android:textColor="@color/black"
+                android:layout_marginTop="@dimen/_8sdp"
+                app:layout_constraintTop_toBottomOf="@id/tvTags"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
 
-
-        </RelativeLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
 
     </com.google.android.material.card.MaterialCardView>

@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
 import androidx.viewpager2.widget.ViewPager2
@@ -505,7 +506,7 @@ object BindingAdapters {
     // AddMemoActivity Card Background
     @JvmStatic
     @BindingAdapter("bindCardBackground")
-    fun RelativeLayout.bindCardBackground(uiState: AddMemoUiState?) {
+    fun ConstraintLayout.bindCardBackground(uiState: AddMemoUiState?) {
         uiState?.let { it ->
             post {
                 setBackgroundResource(CardBackgrounds.IMAGE_LIST[it.backgroundPosition])

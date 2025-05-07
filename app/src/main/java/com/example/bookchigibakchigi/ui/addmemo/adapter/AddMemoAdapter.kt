@@ -2,6 +2,7 @@ package com.example.bookchigibakchigi.ui.addmemo.adapter
 
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import androidx.core.widget.doAfterTextChanged
@@ -226,6 +227,16 @@ class AddMemoAdapter(
                     delay(300)
                     onContentChanged(text.toString())
                 }
+            }
+
+            binding.etContent.setOnTouchListener { v, event ->
+                if (v.hasFocus()) {
+                    v.parent.requestDisallowInterceptTouchEvent(true)
+                    when (event.action and MotionEvent.ACTION_MASK) {
+                        MotionEvent.ACTION_UP -> v.parent.requestDisallowInterceptTouchEvent(false)
+                    }
+                }
+                false
             }
         }
     }
