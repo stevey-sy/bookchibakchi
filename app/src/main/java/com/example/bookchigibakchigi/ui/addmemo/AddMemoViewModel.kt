@@ -86,7 +86,7 @@ class AddMemoViewModel @Inject constructor(
                 val newTag = TagEntity(
                     name = event.name,
                     backgroundColor = event.backgroundColor,
-                    textColor = event.textColor
+                    textColor = event.textColor,
                 )
                 val newTagUiModel = TagMapper.toUiModel(newTag)
                 if (!currentTags.any { it.name == newTagUiModel.name }) {
@@ -122,6 +122,7 @@ class AddMemoViewModel @Inject constructor(
                         content = memo.content,
                         backgroundPosition = CardBackgrounds.IMAGE_LIST.indexOf(memo.background),
                         tagList = tags.map { TagMapper.toUiModel(it) },
+                        createdAt = DateUtil.formatDateFromMillis(memo.createdAt),
                         isLoading = false
                     )
                 }
@@ -152,7 +153,8 @@ class AddMemoViewModel @Inject constructor(
                     bookId = bookId,
                     content = _uiState.value.content,
                     pageNumber = _uiState.value.page.toIntOrNull() ?: 0,
-                    background = CardBackgrounds.IMAGE_LIST[_uiState.value.backgroundPosition]
+                    background = CardBackgrounds.IMAGE_LIST[_uiState.value.backgroundPosition],
+                    createdAt = System.currentTimeMillis()
                 )
                 val memoId = memoRepository.insertMemo(memo)
 
@@ -201,6 +203,7 @@ class AddMemoViewModel @Inject constructor(
                     content = _uiState.value.content,
                     pageNumber = _uiState.value.page.toIntOrNull() ?: 0,
                     background = CardBackgrounds.IMAGE_LIST[_uiState.value.backgroundPosition],
+                    createdAt = DateUtil.getMillisFromDate(_uiState.value.createdAt)
                 )
                 memoRepository.updateMemo(updatedMemo)
 

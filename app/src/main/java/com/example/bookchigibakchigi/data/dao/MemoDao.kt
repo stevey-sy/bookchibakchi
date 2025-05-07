@@ -17,7 +17,7 @@ interface MemoDao {
     @Delete
     suspend fun deleteMemo(memo: MemoEntity)
 
-    @Query("SELECT * FROM memos WHERE bookId = :bookId ORDER BY createdAt DESC")
+    @Query("SELECT * FROM memos WHERE bookId = :bookId ORDER BY memoId DESC")
     fun getMemosByBookId(bookId: Int): Flow<List<MemoEntity>>
 
     @Query("SELECT * FROM memos WHERE memoId = :memoId")

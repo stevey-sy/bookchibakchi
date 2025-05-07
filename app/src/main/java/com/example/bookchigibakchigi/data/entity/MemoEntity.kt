@@ -22,6 +22,6 @@ data class MemoEntity(
     val pageNumber: Int,
     val background: Int = 0,
     val imgUrl: String = "",
-    val createdAt: Long = System.currentTimeMillis(),
+    val createdAt: Long,
     val updatedAt: Long = System.currentTimeMillis()
 ) 

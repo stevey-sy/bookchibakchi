@@ -21,13 +21,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:minHeight="@dimen/_200sdp"
-            android:paddingEnd="@dimen/_20sdp"
             android:paddingBottom="@dimen/_16sdp">
 
             <ImageView
                 android:id="@+id/ivOptions"
                 android:layout_width="@dimen/_18sdp"
                 android:layout_height="@dimen/_18sdp"
+                android:layout_marginEnd="@dimen/_20sdp"
                 android:src="@drawable/ic_horizontal_dots"
                 android:layout_marginTop="@dimen/_18sdp"
                 app:layout_constraintTop_toTopOf="parent"

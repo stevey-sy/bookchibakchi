@@ -9,4 +9,16 @@ object DateUtil {
         val dateFormat = SimpleDateFormat("yyyy. MM. dd", Locale.KOREA)
         return dateFormat.format(Date())
     }
+
+    fun formatDateFromMillis(timeMillis: Long): String {
+        val dateFormat = SimpleDateFormat("yyyy. MM. dd", Locale.KOREA)
+        return dateFormat.format(timeMillis)
+    }
+
+    // getMillisFromDate
+    fun getMillisFromDate(dateString: String): Long {
+        val dateFormat = SimpleDateFormat("yyyy. MM. dd", Locale.KOREA)
+        val date = dateFormat.parse(dateString)
+        return date?.time ?: 0L
+    }
 } 
