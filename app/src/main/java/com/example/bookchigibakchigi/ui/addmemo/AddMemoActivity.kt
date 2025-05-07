@@ -1,6 +1,5 @@
 package com.example.bookchigibakchigi.ui.addmemo
 
-import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -8,31 +7,18 @@ import androidx.activity.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.core.widget.doAfterTextChanged
-import com.example.bookchigibakchigi.constants.ColorConstants
 import com.example.bookchigibakchigi.databinding.ActivityAddMemoBinding
-import com.example.bookchigibakchigi.databinding.DialogColorPickerBinding
 import com.example.bookchigibakchigi.ui.BaseActivity
 import com.example.bookchigibakchigi.ui.addmemo.adapter.AddMemoAdapter
-import com.example.bookchigibakchigi.ui.addmemo.adapter.TagListAdapter
-import com.google.android.flexbox.AlignItems
-import com.google.android.flexbox.FlexDirection
-import com.google.android.flexbox.FlexWrap
-import com.google.android.flexbox.FlexboxLayoutManager
-import com.google.android.material.tabs.TabLayoutMediator
+
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import androidx.core.view.isVisible
-import androidx.core.graphics.toColorInt
-import android.graphics.Rect
 import android.util.Log
 import android.widget.Toast
 import com.example.bookchigibakchigi.ui.main.MainActivity
 import androidx.viewpager2.widget.ViewPager2
-import com.example.bookchigibakchigi.R
 import com.example.bookchigibakchigi.constants.CardBackgrounds
+import com.example.bookchigibakchigi.model.TagUiModel
 import com.example.bookchigibakchigi.util.VibrationUtil
 import com.example.bookchigibakchigi.ui.dialog.TwoButtonsDialog
 
@@ -50,22 +36,38 @@ class AddMemoActivity : BaseActivity() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
 
-        // copiedText 처리
-        var recognizedText = intent.getStringExtra("recognizedText")
-        if (!recognizedText.isNullOrEmpty()) {
-            viewModel.onEvent(AddMemoEvent.UpdateContent(recognizedText))
+        if(intent.hasExtra("isModify")) {
+            val isModify = intent.getBooleanExtra("isModify", false)
+            if(isModify) {
+                val memoId = intent.getLongExtra("memoId", -1)
+                if (memoId != -1L) {
+                    viewModel.onEvent(AddMemoEvent.LoadMemo(memoId))
+                }
+            }
+        } else {
+            var recognizedText = intent.getStringExtra("recognizedText")
+            if (!recognizedText.isNullOrEmpty()) {
+                viewModel.onEvent(AddMemoEvent.UpdateContent(recognizedText))
+            }
+            initViewPager(content = recognizedText ?: "")
         }
-        initViewPager(recognizedText)
+
         initListeners()
         observeViewModel()
     }
 
-    private fun initViewPager(initialContent : String?) {
-        
+    private fun initViewPager(
+        content: String,
+        page: String = "",
+        backgroundPosition: Int = 2,
+        tags: List<TagUiModel> = emptyList()
+    ) {
         addMemoAdapter = AddMemoAdapter(
-            initialContent = initialContent ?: "",
+            initialContent = content,
+            initialPage = page,
+            initialBackgroundPosition = backgroundPosition,
+            initialTags = tags,
             onBackgroundChanged = { position ->
-                // 배경이 변경되었을 때의 처리
                 Log.d("onBackgroundChanged", position.toString())
                 VibrationUtil.vibrate(this@AddMemoActivity, 100)
                 viewModel.onEvent(AddMemoEvent.UpdateBackground(position))
@@ -77,12 +79,7 @@ class AddMemoActivity : BaseActivity() {
                 viewModel.onEvent(AddMemoEvent.UpdateContent(content))
             },
             onTagAdded = { tagName ->
-                viewModel.onEvent(AddMemoEvent.AddTag(
-                    tagName,
-                    "#000000", // 기본 색상
-                    "#FFFFFF"  // 기본 텍스트 색상
-                ))
-                // 태그 추가 후 스크롤을 최하단으로 이동
+                viewModel.onEvent(AddMemoEvent.AddTag(tagName, "#000000", "#FFFFFF"))
                 binding.scrollView.post {
                     val scrollAmount = binding.scrollView.getChildAt(0).height
                     binding.scrollView.smoothScrollTo(0, scrollAmount)
@@ -145,34 +142,42 @@ class AddMemoActivity : BaseActivity() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { state ->
-                    updateUi(state)
+                    when {
+                        state.isSuccess -> {
+                            Toast.makeText(this@AddMemoActivity, "메모가 저장되었습니다.", Toast.LENGTH_SHORT).show()
+                            if (state.shouldNavigateToMain) {
+                                val bookId = intent.getIntExtra("bookId", -1)
+                                val intent = Intent(this@AddMemoActivity, MainActivity::class.java).apply {
+                                    flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
+                                    putExtra("bookId", bookId)
+                                }
+                                startActivity(intent)
+                                finish()
+                            }
+                        }
+                        state.error != null -> {
+                            showError(state.error)
+                        }
+                    }
+
+                    // 메모 로딩 완료 후 ViewPager 초기화 또는 갱신
+                    if (state.isModify && !state.isLoading) {
+                        // 최초 1회만 ViewPager 초기화
+                        if (!::addMemoAdapter.isInitialized) {
+                            initViewPager(
+                                content = state.content,
+                                page = state.page,
+                                backgroundPosition = state.backgroundPosition,
+                                tags = state.tagList
+                            )
+                        }
+                    }
                 }
             }
-        }
-    }
-
-    private fun updateUi(state: AddMemoUiState) {
-        // 페이지 번호 업데이트
-        if (state.isSuccess) {
-            Toast.makeText(this, "메모가 저장되었습니다.", Toast.LENGTH_SHORT).show()
-            if (state.shouldNavigateToMain) {
-                val bookId = intent.getIntExtra("bookId", -1)
-                val intent = Intent(this, MainActivity::class.java).apply {
-                    flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
-                    putExtra("bookId", bookId)
-                }
-                startActivity(intent)
-                finish()
-            }
-        }
-
-        state.error?.let { error ->
-            showError(error)
         }
     }
 
     private fun showError(message: String) {
-        // 에러 메시지를 표시하는 로직 구현
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 }

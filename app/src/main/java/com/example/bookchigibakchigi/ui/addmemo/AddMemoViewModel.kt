@@ -15,11 +15,14 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class AddMemoUiState(
+    val isModify: Boolean = false,
     val page: String = "0",
     val backgroundPosition: Int = 2,
     val content: String = "내용을 입력해 주세요.",
@@ -29,7 +32,7 @@ data class AddMemoUiState(
     val isSuccess: Boolean = false,
     val error: String? = null,
     val isContentValid: Boolean = false,
-    val shouldNavigateToMain: Boolean = false
+    val shouldNavigateToMain: Boolean = false,
 )
 
 sealed interface AddMemoEvent {
@@ -39,6 +42,7 @@ sealed interface AddMemoEvent {
     data class RemoveTag(val tagName: String) : AddMemoEvent
     data class SaveMemo(val bookId: Int) : AddMemoEvent
     data class UpdateBackground(val position: Int) : AddMemoEvent
+    data class LoadMemo(val memoId: Long) : AddMemoEvent
 }
 
 @HiltViewModel
@@ -52,6 +56,9 @@ class AddMemoViewModel @Inject constructor(
 
     fun onEvent(event: AddMemoEvent) {
         when (event) {
+            is AddMemoEvent.LoadMemo -> {
+                loadMemo(event.memoId)
+            }
             is AddMemoEvent.UpdateBackground -> {
                 _uiState.update { it.copy(backgroundPosition = event.position) }
             }
@@ -84,6 +91,32 @@ class AddMemoViewModel @Inject constructor(
             }
             is AddMemoEvent.SaveMemo -> {
                 saveMemo(event.bookId)
+            }
+        }
+    }
+
+    private fun loadMemo(memoId: Long) {
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true) }
+            try {
+                val memo = memoRepository.getMemoById(memoId)
+                val tags = memoRepository.getTagsForMemo(memoId).first()
+                
+                _uiState.update { currentState ->
+                    currentState.copy(
+                        isModify = true,
+                        page = memo!!.pageNumber.toString(),
+                        content = memo.content,
+                        backgroundPosition = CardBackgrounds.IMAGE_LIST.indexOf(memo.background),
+                        tagList = tags.map { TagMapper.toUiModel(it) },
+                        isLoading = false
+                    )
+                }
+            } catch (e: Exception) {
+                _uiState.update { it.copy(
+                    isLoading = false,
+                    error = e.message ?: "메모 로드 중 오류가 발생했습니다."
+                ) }
             }
         }
     }

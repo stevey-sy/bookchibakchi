@@ -22,9 +22,10 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class AddMemoAdapter(
-    private val initialPage: String = "",
-    private val initialContent: String = "",
-    private val initialTags: List<TagUiModel> = emptyList(),
+    private var initialPage: String = "",
+    private var initialContent: String = "",
+    private var initialBackgroundPosition: Int = 2,
+    private var initialTags: List<TagUiModel> = emptyList(),
     private val onBackgroundChanged: (Int) -> Unit,
     private val onPageChanged: (String) -> Unit,
     private val onContentChanged: (String) -> Unit,
@@ -84,8 +85,8 @@ class AddMemoAdapter(
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
-            is BackgroundViewHolder -> holder.bind(onBackgroundChanged)
-            is PageViewHolder -> holder.bind(onPageChanged)
+            is BackgroundViewHolder -> holder.bind(initialBackgroundPosition, onBackgroundChanged)
+            is PageViewHolder -> holder.bind(initialPage, onPageChanged)
             is QuoteViewHolder -> holder.bind(initialContent, onContentChanged)
             is TagViewHolder -> holder.bind(initialTags, onTagAdded)
         }
@@ -103,9 +104,22 @@ class AddMemoAdapter(
         }
     }
 
+    fun updateInitialData(
+        content: String,
+        page: String,
+        backgroundPosition: Int,
+        tags: List<TagUiModel>
+    ) {
+        initialContent = content
+        initialPage = page
+        initialBackgroundPosition = backgroundPosition
+        initialTags = tags
+        notifyDataSetChanged()
+    }
+
     inner class BackgroundViewHolder(private val binding: FragmentAddMemoBackgroundBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(onBackgroundChanged: (Int) -> Unit) {
+        fun bind(initialBackgroundPosition: Int, onBackgroundChanged: (Int) -> Unit) {
             // 화면 너비 계산
             val displayMetrics = binding.root.context.resources.displayMetrics
             val screenWidth = displayMetrics.widthPixels
@@ -131,7 +145,12 @@ class AddMemoAdapter(
 
             // PagerSnapHelper 적용
             val snapHelper = PagerSnapHelper()
-            snapHelper.attachToRecyclerView(binding.rvBackground)
+            // snapHelper.attachToRecyclerView(binding.rvBackground)
+            if (binding.rvBackground.onFlingListener == null) {
+                snapHelper?.attachToRecyclerView(binding.rvBackground)
+            } else {
+                Log.d("SnapHelper", "이미 SnapHelper가 설정되어 있음")
+            }
 
             // llAim의 렌더링 완료 후 RecyclerView 초기 위치 설정
             val globalLayoutListener = object : ViewTreeObserver.OnGlobalLayoutListener {
@@ -145,7 +164,7 @@ class AddMemoAdapter(
 
                     // RecyclerView 세 번째 아이템의 시작점
                     val layoutManager = binding.rvBackground.layoutManager as LinearLayoutManager
-                    val snapView = layoutManager.findViewByPosition(2) // 세 번째 아이템 뷰
+                    val snapView = layoutManager.findViewByPosition(initialBackgroundPosition) // 세 번째 아이템 뷰
 
                     // SnapView(세 번째 아이템)가 존재할 경우 위치 조정
                     snapView?.let {
@@ -185,7 +204,8 @@ class AddMemoAdapter(
 
     inner class PageViewHolder(private val binding: FragmentAddMemoPageBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(onPageChanged: (String) -> Unit) {
+        fun bind(initialPage: String, onPageChanged: (String) -> Unit) {
+            binding.etPage.setText(initialPage)
             binding.etPage.doAfterTextChanged { text ->
                 pageDebounceJob?.cancel()
                 pageDebounceJob = kotlinx.coroutines.MainScope().launch {
@@ -198,7 +218,7 @@ class AddMemoAdapter(
 
     inner class QuoteViewHolder(private val binding: FragmentAddMemoQuoteBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(initialContent:(String), onContentChanged: (String) -> Unit) {
+        fun bind(initialContent: String, onContentChanged: (String) -> Unit) {
             binding.etContent.setText(initialContent)
             binding.etContent.doAfterTextChanged { text ->
                 contentDebounceJob?.cancel()
@@ -212,8 +232,11 @@ class AddMemoAdapter(
 
     inner class TagViewHolder(private val binding: FragmentAddMemoTagBinding) :
         RecyclerView.ViewHolder(binding.root) {
-
         fun bind(initialTags: List<TagUiModel>, onTagAdded: (String) -> Unit) {
+            // 기존 태그들 제거
+            binding.chipGroup.removeAllViews()
+            tags.clear()
+            
             // 초기 태그들 추가
             initialTags.forEach { tag ->
                 addChip(tag)
@@ -226,7 +249,6 @@ class AddMemoAdapter(
                     addChip(newTag)
                     tags.add(newTag)
                     onTagAdded(tagName)
-//                    onTagsUpdated(tags)
                     binding.etTag.text.clear()
                 }
             }
