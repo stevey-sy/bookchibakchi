@@ -56,7 +56,6 @@ class MemoListAdapter(
                 tvTags.text = tagsText
 
                 tvContent.maxLines = if (memo.isExpanded) Int.MAX_VALUE else 5
-//                tvContent.ellipsize = if (memo.isExpanded) null else TextUtils.TruncateAt.END
                 tvExpand.text = if (memo.isExpanded) "접기" else "...더보기"
                 tvExpand.paintFlags = tvExpand.paintFlags or Paint.UNDERLINE_TEXT_FLAG
 
