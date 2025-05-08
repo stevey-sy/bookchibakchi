@@ -3,10 +3,12 @@ package com.example.bookchigibakchigi.ui.searchbook
 import android.content.Intent
 import android.os.Bundle
 import android.transition.Transition
+import android.util.Log
 import android.view.KeyEvent
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.animation.AnimationUtils
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -61,6 +63,9 @@ class SearchBookActivity : BaseActivity() {
 //            adapter = this@SearchBookActivity.adapter
 //            layoutManager = LinearLayoutManager(this@SearchBookActivity)
 //        }
+//        val controller = AnimationUtils.loadLayoutAnimation(this, R.anim.layout_fall_down)
+//        binding.recyclerView.layoutAnimation = controller
+//        binding.recyclerView.scheduleLayoutAnimation()
         adapter = BookPagingAdapter(::onBookItemClicked)
         binding.recyclerView.adapter = adapter
         binding.recyclerView.layoutManager = LinearLayoutManager(this@SearchBookActivity)
@@ -75,9 +80,10 @@ class SearchBookActivity : BaseActivity() {
     }
 
     private fun initClickListeners() {
-        binding.searchButton.setOnClickListener {
+        binding.flSearchBtn.setOnClickListener {
 //            viewModel.onSearchClick(binding.searchEditText.text.toString())
 //            KeyboardUtil.hideKeyboard(this, binding.searchEditText)
+            Log.d("initClickListeners", "initClickListeners: ")
 
             lifecycleScope.launch {
                 viewModel.searchBooks(binding.searchEditText.text.toString()).collectLatest { pagingData ->
