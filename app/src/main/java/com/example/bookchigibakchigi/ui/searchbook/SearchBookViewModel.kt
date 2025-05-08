@@ -52,40 +52,6 @@ class SearchBookViewModel @Inject constructor(
             .map { pagingData -> pagingData.map { BookMapper.toSearchBookUiModel(it) } }
             .cachedIn(viewModelScope)
     }
-
-//    private fun searchBooks(query: String) {
-//        viewModelScope.launch {
-//            _uiState.value = SearchBookUiState.Loading
-//            try {
-//                val books = repository.searchBooks(query)
-//                val searchBookUiModels = BookMapper.toSearchBookUiModels(books)
-//                if (searchBookUiModels.isEmpty()) {
-//                    _uiState.value = SearchBookUiState.NoResult
-//                } else {
-//                    _uiState.value = SearchBookUiState.Success(searchBookUiModels)
-//                }
-//            } catch (e: Exception) {
-//                _uiState.value = SearchBookUiState.Error("검색 중 오류가 발생했습니다: ${e.message}")
-//            }
-//        }
-//    }
-
-//    private fun searchBooks(query: String) {
-//        viewModelScope.launch {
-//            _uiState.value = SearchBookUiState.Loading
-//            try {
-//                val books = repository.searchBooks(query)
-//                val searchBookUiModels = BookMapper.toSearchBookUiModels(books)
-//                if (searchBookUiModels.isEmpty()) {
-//                    _uiState.value = SearchBookUiState.NoResult
-//                } else {
-//                    _uiState.value = SearchBookUiState.Success(searchBookUiModels)
-//                }
-//            } catch (e: Exception) {
-//                _uiState.value = SearchBookUiState.Error("검색 중 오류가 발생했습니다: ${e.message}")
-//            }
-//        }
-//    }
 }
 
 sealed class SearchBookUiState {

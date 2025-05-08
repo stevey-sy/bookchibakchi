@@ -44,19 +44,6 @@ class BookPagingAdapter(
                     }
                 }
             }
-
-            // View 애니메이션
-            if (position > lastAnimatedPosition) {
-                binding.root.alpha = 0f
-                binding.root.translationY = 30f
-                binding.root.animate()
-                    .alpha(1f)
-                    .translationY(0f)
-                    .setDuration(300)
-                    .start()
-
-                lastAnimatedPosition = adapterPosition
-            }
         }
     }
 

@@ -15,6 +15,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.core.app.ActivityOptionsCompat
 import androidx.lifecycle.lifecycleScope
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bookchigibakchigi.R
@@ -58,31 +59,15 @@ class SearchBookActivity : BaseActivity() {
     }
 
     private fun initView() {
-//        adapter = BookSearchAdapter(::onBookItemClicked)
-//        binding.recyclerView.apply {
-//            adapter = this@SearchBookActivity.adapter
-//            layoutManager = LinearLayoutManager(this@SearchBookActivity)
-//        }
-//        val controller = AnimationUtils.loadLayoutAnimation(this, R.anim.layout_fall_down)
-//        binding.recyclerView.layoutAnimation = controller
-//        binding.recyclerView.scheduleLayoutAnimation()
         adapter = BookPagingAdapter(::onBookItemClicked)
         binding.recyclerView.adapter = adapter
         binding.recyclerView.layoutManager = LinearLayoutManager(this@SearchBookActivity)
-        adapter.addLoadStateListener { loadState ->
-            println("📊 itemCount = ${adapter.itemCount}")
-        }
-//        binding.recyclerView.apply {
-//            adapter = this@SearchBookActivity.adapter
-//            layoutManager = LinearLayoutManager(this@SearchBookActivity)
-//        }
-
     }
 
     private fun initClickListeners() {
         binding.flSearchBtn.setOnClickListener {
 //            viewModel.onSearchClick(binding.searchEditText.text.toString())
-//            KeyboardUtil.hideKeyboard(this, binding.searchEditText)
+            KeyboardUtil.hideKeyboard(this, binding.searchEditText)
             Log.d("initClickListeners", "initClickListeners: ")
 
             lifecycleScope.launch {
