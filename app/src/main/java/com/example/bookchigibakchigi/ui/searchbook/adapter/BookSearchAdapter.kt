@@ -8,12 +8,13 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.bookchigibakchigi.databinding.ItemBookSearchBinding
+import com.example.bookchigibakchigi.model.SearchBookUiModel
 import com.example.bookchigibakchigi.network.model.AladinBookItem
 import com.example.bookchigibakchigi.network.model.BookItem
 
 class BookSearchAdapter(
-    private val onBookClick: (AladinBookItem, View) -> Unit
-) : ListAdapter<AladinBookItem, BookSearchAdapter.BookViewHolder>(BookDiffCallback()) {
+    private val onBookClick: (SearchBookUiModel, View) -> Unit
+) : ListAdapter<SearchBookUiModel, BookSearchAdapter.BookViewHolder>(BookDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BookViewHolder {
         val binding = ItemBookSearchBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -26,7 +27,7 @@ class BookSearchAdapter(
     }
 
     inner class BookViewHolder(private val binding: ItemBookSearchBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(bookItem: AladinBookItem) {
+        fun bind(bookItem: SearchBookUiModel) {
             binding.book = bookItem  // 바인딩 객체에 데이터 설정
             binding.executePendingBindings()
 
@@ -40,12 +41,12 @@ class BookSearchAdapter(
         }
     }
 
-    class BookDiffCallback : DiffUtil.ItemCallback<AladinBookItem>() {
-        override fun areItemsTheSame(oldItem: AladinBookItem, newItem: AladinBookItem): Boolean {
+    class BookDiffCallback : DiffUtil.ItemCallback<SearchBookUiModel>() {
+        override fun areItemsTheSame(oldItem: SearchBookUiModel, newItem: SearchBookUiModel): Boolean {
             return oldItem.isbn == newItem.isbn
         }
 
-        override fun areContentsTheSame(oldItem: AladinBookItem, newItem: AladinBookItem): Boolean {
+        override fun areContentsTheSame(oldItem: SearchBookUiModel, newItem: SearchBookUiModel): Boolean {
             return oldItem == newItem
         }
     }

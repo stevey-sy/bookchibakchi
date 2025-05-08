@@ -2,6 +2,8 @@ package com.example.bookchigibakchigi.mapper
 
 import com.example.bookchigibakchigi.data.entity.BookEntity
 import com.example.bookchigibakchigi.model.BookUiModel
+import com.example.bookchigibakchigi.model.SearchBookUiModel
+import com.example.bookchigibakchigi.network.model.AladinBookItem
 
 object BookMapper {
     fun toUiModel(entity: BookEntity): BookUiModel {
@@ -49,5 +51,22 @@ object BookMapper {
 
     fun toEntities(uiModels: List<BookUiModel>): List<BookEntity> {
         return uiModels.map { toEntity(it) }
+    }
+
+    fun toSearchBookUiModel(aladinBookItem: AladinBookItem): SearchBookUiModel {
+        return SearchBookUiModel(
+            title = aladinBookItem.title,
+            author = aladinBookItem.author,
+            publisher = aladinBookItem.publisher,
+            isbn = aladinBookItem.isbn,
+            cover = aladinBookItem.cover,
+            page = 0, // AladinBookItem에는 페이지 정보가 없어 기본값 0으로 설정
+            description = aladinBookItem.description ?: "",
+            rate = aladinBookItem.customerReviewRank
+        )
+    }
+
+    fun toSearchBookUiModels(aladinBookItems: List<AladinBookItem>): List<SearchBookUiModel> {
+        return aladinBookItems.map { toSearchBookUiModel(it) }
     }
 } 

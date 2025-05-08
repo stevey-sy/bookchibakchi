@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bookchigibakchigi.R
 import com.example.bookchigibakchigi.databinding.ActivitySearchBookBinding
+import com.example.bookchigibakchigi.model.SearchBookUiModel
 import com.example.bookchigibakchigi.network.model.AladinBookItem
 import com.example.bookchigibakchigi.ui.BaseActivity
 import com.example.bookchigibakchigi.ui.addbook.AddBookActivity
@@ -105,15 +106,6 @@ class SearchBookActivity : BaseActivity() {
                     is SearchBookUiState.Error -> {
                         Toast.makeText(this@SearchBookActivity, state.message, Toast.LENGTH_SHORT).show()
                     }
-                    is SearchBookUiState.Empty -> {
-                        // 초기 상태 처리
-                    }
-                    is SearchBookUiState.NoResult -> {
-                        // 검색 결과 없음 처리
-                    }
-                    is SearchBookUiState.Loading -> {
-                        // 로딩 상태 처리
-                    }
                     else -> {} // 다른 상태는 XML에서 처리
                 }
             }
@@ -135,9 +127,9 @@ class SearchBookActivity : BaseActivity() {
         }
     }
 
-    private fun onBookItemClicked(bookItem: AladinBookItem, sharedView: View) {
+    private fun onBookItemClicked(bookItem: SearchBookUiModel, sharedView: View) {
         val intent = Intent(this, AddBookActivity::class.java).apply {
-            val itemId = bookItem.isbn13.takeIf { !it.isNullOrEmpty() } ?: bookItem.isbn
+            val itemId = bookItem.isbn.takeIf { !it.isNullOrEmpty() } ?: bookItem.isbn
             putExtra("itemId", itemId)
             val coverUrl = bookItem.cover.takeIf { !it.isNullOrEmpty() } ?: bookItem.cover
             putExtra("coverUrl", coverUrl)

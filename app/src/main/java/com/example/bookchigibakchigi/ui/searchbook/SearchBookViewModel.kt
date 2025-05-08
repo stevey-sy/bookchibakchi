@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.bookchigibakchigi.network.model.AladinBookItem
 import com.example.bookchigibakchigi.data.repository.AladinBookRepository
+import com.example.bookchigibakchigi.mapper.BookMapper
+import com.example.bookchigibakchigi.model.SearchBookUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -38,10 +40,11 @@ class SearchBookViewModel @Inject constructor(
             _uiState.value = SearchBookUiState.Loading
             try {
                 val books = repository.searchBooks(query)
-                if (books.isEmpty()) {
+                val searchBookUiModels = BookMapper.toSearchBookUiModels(books)
+                if (searchBookUiModels.isEmpty()) {
                     _uiState.value = SearchBookUiState.NoResult
                 } else {
-                    _uiState.value = SearchBookUiState.Success(books)
+                    _uiState.value = SearchBookUiState.Success(searchBookUiModels)
                 }
             } catch (e: Exception) {
                 _uiState.value = SearchBookUiState.Error("검색 중 오류가 발생했습니다: ${e.message}")
@@ -52,7 +55,7 @@ class SearchBookViewModel @Inject constructor(
 
 sealed class SearchBookUiState {
     data object Loading : SearchBookUiState()
-    data class Success(val books: List<AladinBookItem>) : SearchBookUiState()
+    data class Success(val books: List<SearchBookUiModel>) : SearchBookUiState()
     data class Error(val message: String) : SearchBookUiState()
     data object Empty : SearchBookUiState()
     data object NoResult : SearchBookUiState()
