@@ -93,7 +93,6 @@
                 android:paddingTop="10dp"
                 android:clipToPadding="false"
                 android:scrollbars="vertical"
-                android:visibility="@{viewModel.uiState instanceof SearchBookUiState.Success ? View.VISIBLE : View.GONE}"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 tools:listitem="@layout/item_book_search"/>
 

@@ -20,6 +20,7 @@ import com.example.bookchigibakchigi.databinding.ActivitySearchBookBinding
 import com.example.bookchigibakchigi.model.SearchBookUiModel
 import com.example.bookchigibakchigi.ui.BaseActivity
 import com.example.bookchigibakchigi.ui.addbook.AddBookActivity
+import com.example.bookchigibakchigi.ui.searchbook.adapter.BookPagingAdapter
 import com.example.bookchigibakchigi.ui.searchbook.adapter.BookSearchAdapter
 import com.example.bookchigibakchigi.util.KeyboardUtil
 import dagger.hilt.android.AndroidEntryPoint
@@ -30,7 +31,7 @@ import kotlinx.coroutines.launch
 class SearchBookActivity : BaseActivity() {
     private val viewModel: SearchBookViewModel by viewModels()
     private lateinit var binding: ActivitySearchBookBinding
-    private lateinit var adapter: BookSearchAdapter
+    private lateinit var adapter: BookPagingAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,17 +56,35 @@ class SearchBookActivity : BaseActivity() {
     }
 
     private fun initView() {
-        adapter = BookSearchAdapter(::onBookItemClicked)
-        binding.recyclerView.apply {
-            adapter = this@SearchBookActivity.adapter
-            layoutManager = LinearLayoutManager(this@SearchBookActivity)
+//        adapter = BookSearchAdapter(::onBookItemClicked)
+//        binding.recyclerView.apply {
+//            adapter = this@SearchBookActivity.adapter
+//            layoutManager = LinearLayoutManager(this@SearchBookActivity)
+//        }
+        adapter = BookPagingAdapter(::onBookItemClicked)
+        binding.recyclerView.adapter = adapter
+        binding.recyclerView.layoutManager = LinearLayoutManager(this@SearchBookActivity)
+        adapter.addLoadStateListener { loadState ->
+            println("📊 itemCount = ${adapter.itemCount}")
         }
+//        binding.recyclerView.apply {
+//            adapter = this@SearchBookActivity.adapter
+//            layoutManager = LinearLayoutManager(this@SearchBookActivity)
+//        }
+
     }
 
     private fun initClickListeners() {
         binding.searchButton.setOnClickListener {
-            viewModel.onSearchClick(binding.searchEditText.text.toString())
-            KeyboardUtil.hideKeyboard(this, binding.searchEditText)
+//            viewModel.onSearchClick(binding.searchEditText.text.toString())
+//            KeyboardUtil.hideKeyboard(this, binding.searchEditText)
+
+            lifecycleScope.launch {
+                viewModel.searchBooks(binding.searchEditText.text.toString()).collectLatest { pagingData ->
+                    adapter.submitData(pagingData)
+                    KeyboardUtil.hideKeyboard(this@SearchBookActivity, binding.searchEditText)
+                }
+            }
         }
 
         binding.searchEditText.setOnEditorActionListener { textView, actionId, event ->
@@ -100,7 +119,8 @@ class SearchBookActivity : BaseActivity() {
             viewModel.uiState.collectLatest { state ->
                 when (state) {
                     is SearchBookUiState.Success -> {
-                        adapter.submitList(state.books)
+//                        adapter.submitList(state.books)
+
                     }
                     is SearchBookUiState.Error -> {
                         Toast.makeText(this@SearchBookActivity, state.message, Toast.LENGTH_SHORT).show()

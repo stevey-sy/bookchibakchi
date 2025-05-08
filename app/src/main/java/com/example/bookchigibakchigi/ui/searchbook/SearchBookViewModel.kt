@@ -2,13 +2,21 @@ package com.example.bookchigibakchigi.ui.searchbook
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
+import androidx.paging.map
+import com.example.bookchigibakchigi.data.paging.BookPagingSource
 import com.example.bookchigibakchigi.data.repository.AladinBookRepository
 import com.example.bookchigibakchigi.mapper.BookMapper
 import com.example.bookchigibakchigi.model.SearchBookUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -34,27 +42,55 @@ class SearchBookViewModel @Inject constructor(
         return false
     }
 
-    private fun searchBooks(query: String) {
-        viewModelScope.launch {
-            _uiState.value = SearchBookUiState.Loading
-            try {
-                val books = repository.searchBooks(query)
-                val searchBookUiModels = BookMapper.toSearchBookUiModels(books)
-                if (searchBookUiModels.isEmpty()) {
-                    _uiState.value = SearchBookUiState.NoResult
-                } else {
-                    _uiState.value = SearchBookUiState.Success(searchBookUiModels)
-                }
-            } catch (e: Exception) {
-                _uiState.value = SearchBookUiState.Error("검색 중 오류가 발생했습니다: ${e.message}")
+    fun searchBooks(query: String): Flow<PagingData<SearchBookUiModel>> {
+        return Pager(
+            config = PagingConfig(pageSize = 10),
+            pagingSourceFactory = {
+                BookPagingSource(repository, query)
             }
-        }
+        ).flow
+            .map { pagingData -> pagingData.map { BookMapper.toSearchBookUiModel(it) } }
+            .cachedIn(viewModelScope)
     }
+
+//    private fun searchBooks(query: String) {
+//        viewModelScope.launch {
+//            _uiState.value = SearchBookUiState.Loading
+//            try {
+//                val books = repository.searchBooks(query)
+//                val searchBookUiModels = BookMapper.toSearchBookUiModels(books)
+//                if (searchBookUiModels.isEmpty()) {
+//                    _uiState.value = SearchBookUiState.NoResult
+//                } else {
+//                    _uiState.value = SearchBookUiState.Success(searchBookUiModels)
+//                }
+//            } catch (e: Exception) {
+//                _uiState.value = SearchBookUiState.Error("검색 중 오류가 발생했습니다: ${e.message}")
+//            }
+//        }
+//    }
+
+//    private fun searchBooks(query: String) {
+//        viewModelScope.launch {
+//            _uiState.value = SearchBookUiState.Loading
+//            try {
+//                val books = repository.searchBooks(query)
+//                val searchBookUiModels = BookMapper.toSearchBookUiModels(books)
+//                if (searchBookUiModels.isEmpty()) {
+//                    _uiState.value = SearchBookUiState.NoResult
+//                } else {
+//                    _uiState.value = SearchBookUiState.Success(searchBookUiModels)
+//                }
+//            } catch (e: Exception) {
+//                _uiState.value = SearchBookUiState.Error("검색 중 오류가 발생했습니다: ${e.message}")
+//            }
+//        }
+//    }
 }
 
 sealed class SearchBookUiState {
     data object Loading : SearchBookUiState()
-    data class Success(val books: List<SearchBookUiModel>) : SearchBookUiState()
+    data class Success(val books: Flow<PagingData<SearchBookUiModel>>) : SearchBookUiState()
     data class Error(val message: String) : SearchBookUiState()
     data object Empty : SearchBookUiState()
     data object NoResult : SearchBookUiState()
