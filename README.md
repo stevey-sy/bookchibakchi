@@ -62,9 +62,18 @@ UI 레이어는 사용자와 상호작용할 수 있는 화면을 구성하는 U
 데이터 레이어는 로컬 데이터베이스에서 데이터를 조회하거나 네트워크로부터 원격 데이터를 요청하는 등 비즈니스 로직을 처리하는 리포지토리로 구성됩니다.
 
 ### License
+```xml
+Designed and developed by 2022 stevey-sy (Seyoung Shin)
 
-Designed and developed by 2025 stevey-sy (Seyoung Shin).
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-Licensed under the Apache License, Version 2.0.  
-You may not use this file except in compliance with the License.  
-You may obtain a copy of the License at [http://www.apache.org/licenses/LICENSE-2.0](http://www.apache.org/licenses/LICENSE-2.0)
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+```
