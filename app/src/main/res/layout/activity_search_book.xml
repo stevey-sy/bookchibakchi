@@ -70,8 +70,7 @@
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true">
 
-                        <ImageButton
-                            android:id="@+id/searchButton"
+                        <ImageView
                             android:layout_width="25dp"
                             android:layout_height="25dp"
                             android:background="@drawable/ic_search_white"
