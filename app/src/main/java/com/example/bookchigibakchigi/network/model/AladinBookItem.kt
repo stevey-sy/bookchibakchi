@@ -3,7 +3,6 @@ package com.example.bookchigibakchigi.network.model
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
-@Parcelize
 data class AladinBookItem(
     val title: String,
     val link: String,
@@ -27,13 +26,5 @@ data class AladinBookItem(
     val bestRank: Int?,
     val seriesInfo: SeriesInfo?,
     val subInfo: SubInfo?
-) : Parcelable {
-    fun getAuthorText(): String {
-        val authorText = if (author.contains("(지은이)")) {
-            author.substringBefore("(지은이)").trim() // "(지은이)" 이전 문자열 추출 및 공백 제거
-        } else {
-            author
-        }
-        return authorText
-    }
+) {
 }

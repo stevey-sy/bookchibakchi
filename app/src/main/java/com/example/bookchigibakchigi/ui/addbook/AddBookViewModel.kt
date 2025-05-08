@@ -2,15 +2,14 @@ package com.example.bookchigibakchigi.ui.addbook
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.bookchigibakchigi.data.entity.BookEntity
-import com.example.bookchigibakchigi.network.model.AladinBookItem
 import com.example.bookchigibakchigi.data.repository.AladinBookRepository
 import com.example.bookchigibakchigi.data.database.AppDatabase
+import com.example.bookchigibakchigi.mapper.BookMapper
+import com.example.bookchigibakchigi.model.SearchBookUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -24,8 +23,8 @@ class AddBookViewModel @Inject constructor(
     val uiState: StateFlow<AddBookUiState> = _uiState.asStateFlow()
 
     // DataBinding을 위한 데이터
-    private val _bookItem = MutableStateFlow<AladinBookItem?>(null)
-    val bookItem: StateFlow<AladinBookItem?> = _bookItem.asStateFlow()
+    private val _bookItem = MutableStateFlow<SearchBookUiModel?>(null)
+    val bookItem: StateFlow<SearchBookUiModel?> = _bookItem.asStateFlow()
 
     private val _coverUrl = MutableStateFlow<String?>(null)
     val coverUrl: StateFlow<String?> = _coverUrl.asStateFlow()
@@ -36,12 +35,13 @@ class AddBookViewModel @Inject constructor(
     fun getBookItem(itemId: String, coverUrl: String) {
         viewModelScope.launch {
             try {
-                val book = repository.getBookDetail(itemId)
-                _bookItem.value = book[0]
+                val books = repository.getBookDetail(itemId)
+                val searchBookUiModel = BookMapper.toSearchBookUiModel(books[0])
+                _bookItem.value = searchBookUiModel
                 _coverUrl.value = coverUrl
-                _rating.value = book[0].customerReviewRank /2f
+                _rating.value = searchBookUiModel.rate
                 _uiState.value = AddBookUiState.Success(
-                    book = book[0],
+                    book = searchBookUiModel,
                     coverUrl = coverUrl
                 )
             } catch (e: Exception) {
@@ -57,21 +57,9 @@ class AddBookViewModel @Inject constructor(
         viewModelScope.launch {
             val currentBookItem = _bookItem.value ?: return@launch
             
-            val book = BookEntity(
-                title = currentBookItem.title,
-                author = currentBookItem.author,
-                publisher = currentBookItem.publisher,
-                isbn = currentBookItem.isbn,
-                coverImageUrl = currentBookItem.cover,
-                bookType = "0",
-                totalPageCnt = currentBookItem.subInfo?.itemPage ?: 0,
-                challengePageCnt = 0,
-                startDate = "",
-                endDate = "",
-                currentPageCnt = 0
-            )
+            val bookEntity = BookMapper.toEntityFromSearchBook(currentBookItem)
 
-            if(book.title.isEmpty() || book.author.isEmpty() || book.publisher.isEmpty() || book.isbn.isEmpty()) {
+            if(bookEntity.title.isEmpty() || bookEntity.author.isEmpty() || bookEntity.publisher.isEmpty() || bookEntity.isbn.isEmpty()) {
                 _uiState.value = AddBookUiState.Error(
                     message = "책 저장에 실패했습니다. 잠시 후에 다시 시도해주세요.",
                     retryAction = { addBook() }
@@ -81,7 +69,7 @@ class AddBookViewModel @Inject constructor(
 
             try {
                 val bookDao = database.bookDao()
-                val isExists = bookDao.isBookExists(book.isbn) > 0
+                val isExists = bookDao.isBookExists(bookEntity.isbn) > 0
                 
                 if (isExists) {
                     _uiState.value = AddBookUiState.Error(
@@ -91,7 +79,7 @@ class AddBookViewModel @Inject constructor(
                     return@launch
                 }
 
-                val savedBook = bookDao.insertAndGetBook(book)
+                val savedBook = bookDao.insertAndGetBook(bookEntity)
                 _uiState.value = AddBookUiState.Success(
                     book = currentBookItem,
                     coverUrl = _coverUrl.value ?: "",
@@ -113,7 +101,7 @@ sealed class AddBookUiState {
     data object Loading : AddBookUiState()  // 데이터 로딩 중
     // 성공 상태
     data class Success(
-        val book: AladinBookItem,  // 선택된 책 정보
+        val book: SearchBookUiModel,  // 선택된 책 정보
         val coverUrl: String,      // 책 커버 URL
         val isSaved: Boolean = false,  // 저장 완료 여부
         val savedItemId: Int? = null  // 저장된 책의 itemId

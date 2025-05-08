@@ -58,9 +58,9 @@ object BookMapper {
             title = aladinBookItem.title,
             author = aladinBookItem.author,
             publisher = aladinBookItem.publisher,
-            isbn = aladinBookItem.isbn,
+            isbn = aladinBookItem.isbn13,
             cover = aladinBookItem.cover,
-            page = 0, // AladinBookItem에는 페이지 정보가 없어 기본값 0으로 설정
+            page = aladinBookItem.subInfo?.itemPage ?: 0, // AladinBookItem에는 페이지 정보가 없어 기본값 0으로 설정
             description = aladinBookItem.description ?: "",
             rate = aladinBookItem.customerReviewRank
         )
@@ -68,5 +68,23 @@ object BookMapper {
 
     fun toSearchBookUiModels(aladinBookItems: List<AladinBookItem>): List<SearchBookUiModel> {
         return aladinBookItems.map { toSearchBookUiModel(it) }
+    }
+
+    fun toEntityFromSearchBook(searchBook: SearchBookUiModel): BookEntity {
+        return BookEntity(
+            title = searchBook.title,
+            author = searchBook.author,
+            publisher = searchBook.publisher,
+            isbn = searchBook.isbn,
+            coverImageUrl = searchBook.cover,
+            bookType = "0",
+            totalPageCnt = searchBook.page,
+            challengePageCnt = 0,
+            startDate = "",
+            endDate = "",
+            currentPageCnt = 0,
+            elapsedTimeInSeconds = 0,
+            completedReadingCnt = 0
+        )
     }
 } 
