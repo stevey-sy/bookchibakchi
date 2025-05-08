@@ -77,8 +77,8 @@ class BookListAdapter(
             binding.apply {
                 cardView.transitionName = "sharedView_${bookUiModel.itemId}"
 
-                flDim.visibility = if (isSelectionMode) View.VISIBLE else View.GONE
-                checkBox.visibility = if (isSelectionMode) View.VISIBLE else View.GONE
+                flDim.visibility = if (isSelectionMode && bookUiModel.itemId >= 0) View.VISIBLE else View.GONE
+                checkBox.visibility = if (isSelectionMode && bookUiModel.itemId >= 0) View.VISIBLE else View.GONE
                 checkBox.isChecked = selectedItems.contains(bookUiModel)
                 cardView.visibility = View.GONE
                 
@@ -111,6 +111,7 @@ class BookListAdapter(
                     if (isSelectionMode) {
                         toggleItemSelection(position)
                     } else {
+                        if(bookUiModel.itemId < 0) return@setOnClickListener
                         onItemClick(bookUiModel, position, cardView)
                     }
                 }
