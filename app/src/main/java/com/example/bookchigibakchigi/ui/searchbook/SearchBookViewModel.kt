@@ -2,7 +2,6 @@ package com.example.bookchigibakchigi.ui.searchbook
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.bookchigibakchigi.network.model.AladinBookItem
 import com.example.bookchigibakchigi.data.repository.AladinBookRepository
 import com.example.bookchigibakchigi.mapper.BookMapper
 import com.example.bookchigibakchigi.model.SearchBookUiModel

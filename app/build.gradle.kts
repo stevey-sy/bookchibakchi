@@ -73,24 +73,32 @@ dependencies {
     implementation(libs.androidx.legacy.support.v4)
     implementation(libs.androidx.fragment.ktx)
     implementation(libs.androidx.activity)
+
+    // 사이즈
     implementation(libs.sdp.android)
+
+    // lottie 애니메이션
     implementation(libs.lottie)
+
+    // ocr
     implementation (libs.text.recognition)
     implementation (libs.text.recognition.korean)
+
+    // image cropper
     implementation(libs.android.image.cropper)
 
     // Hilt Core
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
+
     // 네트워크 통신용 Retrofit
     implementation (libs.retrofit)
     implementation (libs.converter.gson)
+    implementation (libs.logging.interceptor)
 
     // 코루틴
     implementation (libs.kotlinx.coroutines.core)
     implementation (libs.kotlinx.coroutines.android)
-
-    implementation (libs.logging.interceptor)
 
     // glide
     implementation (libs.github.glide)
@@ -106,4 +114,7 @@ dependencies {
 
     // dot indicator
     implementation("com.tbuonomo:dotsindicator:5.1.0")
+
+    // paging 3
+    implementation ("androidx.paging:paging-runtime:3.3.6")
 }

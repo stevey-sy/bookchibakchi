@@ -1,4 +1,4 @@
-package com.example.bookchigibakchigi.network.model
+package com.example.bookchigibakchigi.data.network.model
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize

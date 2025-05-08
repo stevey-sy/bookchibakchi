@@ -1,7 +1,4 @@
-package com.example.bookchigibakchigi.network.model
-
-import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
+package com.example.bookchigibakchigi.data.network.model
 
 data class AladinBookItem(
     val title: String,

@@ -1,4 +1,4 @@
-package com.example.bookchigibakchigi.network.model
+package com.example.bookchigibakchigi.data.network.model
 
 data class AladinBookDetailResponse (
     val version: String,

@@ -1,15 +1,12 @@
-package com.example.bookchigibakchigi.network.service
+package com.example.bookchigibakchigi.data.network.service
 
-import androidx.core.os.BuildCompat
 import com.example.bookchigibakchigi.BuildConfig
-import com.example.bookchigibakchigi.network.model.NaverBookResponse
+import com.example.bookchigibakchigi.data.network.model.NaverBookResponse
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
-import retrofit2.http.Headers
 import retrofit2.http.Query
 
 interface NaverBookService {

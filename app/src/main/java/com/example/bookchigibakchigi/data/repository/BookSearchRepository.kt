@@ -2,8 +2,8 @@ package com.example.bookchigibakchigi.data.repository
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.bookchigibakchigi.network.model.NaverBookResponse
-import com.example.bookchigibakchigi.network.service.NaverBookService
+import com.example.bookchigibakchigi.data.network.model.NaverBookResponse
+import com.example.bookchigibakchigi.data.network.service.NaverBookService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 

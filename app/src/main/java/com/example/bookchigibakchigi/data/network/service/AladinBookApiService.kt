@@ -1,9 +1,9 @@
-package com.example.bookchigibakchigi.network.service
+package com.example.bookchigibakchigi.data.network.service
 
 
 import com.example.bookchigibakchigi.BuildConfig
-import com.example.bookchigibakchigi.network.model.AladinBookDetailResponse
-import com.example.bookchigibakchigi.network.model.AladinBookSearchResponse
+import com.example.bookchigibakchigi.data.network.model.AladinBookDetailResponse
+import com.example.bookchigibakchigi.data.network.model.AladinBookSearchResponse
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.Response

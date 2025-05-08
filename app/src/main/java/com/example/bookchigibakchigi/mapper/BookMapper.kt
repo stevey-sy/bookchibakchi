@@ -3,7 +3,7 @@ package com.example.bookchigibakchigi.mapper
 import com.example.bookchigibakchigi.data.entity.BookEntity
 import com.example.bookchigibakchigi.model.BookUiModel
 import com.example.bookchigibakchigi.model.SearchBookUiModel
-import com.example.bookchigibakchigi.network.model.AladinBookItem
+import com.example.bookchigibakchigi.data.network.model.AladinBookItem
 
 object BookMapper {
     fun toUiModel(entity: BookEntity): BookUiModel {

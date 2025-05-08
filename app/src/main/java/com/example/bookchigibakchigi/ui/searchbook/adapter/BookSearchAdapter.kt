@@ -9,8 +9,6 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.bookchigibakchigi.databinding.ItemBookSearchBinding
 import com.example.bookchigibakchigi.model.SearchBookUiModel
-import com.example.bookchigibakchigi.network.model.AladinBookItem
-import com.example.bookchigibakchigi.network.model.BookItem
 
 class BookSearchAdapter(
     private val onBookClick: (SearchBookUiModel, View) -> Unit

@@ -1,7 +1,7 @@
 package com.example.bookchigibakchigi.data.repository
 
-import com.example.bookchigibakchigi.network.model.AladinBookItem
-import com.example.bookchigibakchigi.network.service.AladinBookApiService
+import com.example.bookchigibakchigi.data.network.model.AladinBookItem
+import com.example.bookchigibakchigi.data.network.service.AladinBookApiService
 
 class AladinBookRepository(private val apiService: AladinBookApiService) {
 
