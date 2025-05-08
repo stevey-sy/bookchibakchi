@@ -3,9 +3,11 @@ package com.example.bookchigibakchigi.ui.searchbook.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.example.bookchigibakchigi.R
 import com.example.bookchigibakchigi.databinding.ItemBookSearchBinding
 import com.example.bookchigibakchigi.model.SearchBookUiModel
 import com.example.bookchigibakchigi.ui.searchbook.adapter.BookPagingAdapter.BookViewHolder
@@ -26,9 +28,19 @@ class BookPagingAdapter(
         val item = getItem(position)
         item?.let {
             holder.bind(it)
+            // 애니메이션 적용
+            if (position > lastAnimatedPosition) {
+                val animation = AnimationUtils.loadAnimation(holder.itemView.context, R.anim.item_animation_slide_right)
+                holder.itemView.startAnimation(animation)
+                lastAnimatedPosition = position
+            }
         }
     }
 
+    override fun onViewDetachedFromWindow(holder: BookViewHolder) {
+        super.onViewDetachedFromWindow(holder)
+        holder.itemView.clearAnimation()
+    }
 
     inner class BookViewHolder(private val binding: ItemBookSearchBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(bookItem: SearchBookUiModel) {

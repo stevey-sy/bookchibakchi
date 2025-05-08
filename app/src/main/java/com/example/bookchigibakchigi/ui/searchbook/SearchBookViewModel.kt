@@ -43,20 +43,37 @@ class SearchBookViewModel @Inject constructor(
     }
 
     fun searchBooks(query: String): Flow<PagingData<SearchBookUiModel>> {
+        if (query.isBlank()) {
+            _uiState.value = SearchBookUiState.Empty
+            return Pager(
+                config = PagingConfig(pageSize = 10),
+                pagingSourceFactory = {
+                    BookPagingSource(repository, query)
+                }
+            ).flow
+                .map { pagingData -> pagingData.map { BookMapper.toSearchBookUiModel(it) } }
+                .cachedIn(viewModelScope)
+        }
+
+        _uiState.value = SearchBookUiState.Loading
         return Pager(
             config = PagingConfig(pageSize = 10),
             pagingSourceFactory = {
                 BookPagingSource(repository, query)
             }
         ).flow
-            .map { pagingData -> pagingData.map { BookMapper.toSearchBookUiModel(it) } }
+            .map { pagingData -> 
+                val mappedData = pagingData.map { BookMapper.toSearchBookUiModel(it) }
+                _uiState.value = SearchBookUiState.Success(mappedData)
+                mappedData
+            }
             .cachedIn(viewModelScope)
     }
 }
 
 sealed class SearchBookUiState {
     data object Loading : SearchBookUiState()
-    data class Success(val books: Flow<PagingData<SearchBookUiModel>>) : SearchBookUiState()
+    data class Success(val books: PagingData<SearchBookUiModel>) : SearchBookUiState()
     data class Error(val message: String) : SearchBookUiState()
     data object Empty : SearchBookUiState()
     data object NoResult : SearchBookUiState()

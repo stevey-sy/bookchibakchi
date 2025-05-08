@@ -110,13 +110,20 @@ class SearchBookActivity : BaseActivity() {
             viewModel.uiState.collectLatest { state ->
                 when (state) {
                     is SearchBookUiState.Success -> {
-//                        adapter.submitList(state.books)
-
+                        // PagingData는 이미 adapter.submitData()로 처리되므로 여기서는 추가 작업이 필요 없습니다
                     }
                     is SearchBookUiState.Error -> {
                         Toast.makeText(this@SearchBookActivity, state.message, Toast.LENGTH_SHORT).show()
                     }
-                    else -> {} // 다른 상태는 XML에서 처리
+                    is SearchBookUiState.Loading -> {
+                        // 로딩 상태 처리 (필요한 경우 로딩 인디케이터 표시)
+                    }
+                    is SearchBookUiState.Empty -> {
+                        // 빈 상태 처리
+                    }
+                    is SearchBookUiState.NoResult -> {
+                        // 검색 결과 없음 상태 처리
+                    }
                 }
             }
         }
