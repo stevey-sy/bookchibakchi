@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
+import androidx.paging.PagingData
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -40,6 +41,11 @@ class BookPagingAdapter(
     override fun onViewDetachedFromWindow(holder: BookViewHolder) {
         super.onViewDetachedFromWindow(holder)
         holder.itemView.clearAnimation()
+    }
+
+    suspend fun submitDataWithAnimation(pagingData: PagingData<SearchBookUiModel>) {
+        lastAnimatedPosition = -1  // 새로운 데이터가 제출될 때 lastAnimatedPosition 초기화
+        submitData(pagingData)
     }
 
     inner class BookViewHolder(private val binding: ItemBookSearchBinding) : RecyclerView.ViewHolder(binding.root) {

@@ -66,13 +66,12 @@ class SearchBookActivity : BaseActivity() {
 
     private fun initClickListeners() {
         binding.flSearchBtn.setOnClickListener {
-//            viewModel.onSearchClick(binding.searchEditText.text.toString())
             KeyboardUtil.hideKeyboard(this, binding.searchEditText)
             Log.d("initClickListeners", "initClickListeners: ")
 
             lifecycleScope.launch {
                 viewModel.searchBooks(binding.searchEditText.text.toString()).collectLatest { pagingData ->
-                    adapter.submitData(pagingData)
+                    adapter.submitDataWithAnimation(pagingData)
                     KeyboardUtil.hideKeyboard(this@SearchBookActivity, binding.searchEditText)
                 }
             }
@@ -80,8 +79,14 @@ class SearchBookActivity : BaseActivity() {
 
         binding.searchEditText.setOnEditorActionListener { textView, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH || event?.keyCode == KeyEvent.KEYCODE_ENTER) {
-                viewModel.onSearchAction(textView.text.toString())
-                KeyboardUtil.hideKeyboard(this, binding.searchEditText)
+//                viewModel.onSearchAction(textView.text.toString())
+//                KeyboardUtil.hideKeyboard(this, binding.searchEditText)
+                lifecycleScope.launch {
+                    viewModel.searchBooks(binding.searchEditText.text.toString()).collectLatest { pagingData ->
+                        adapter.submitDataWithAnimation(pagingData)
+                        KeyboardUtil.hideKeyboard(this@SearchBookActivity, binding.searchEditText)
+                    }
+                }
                 true
             } else {
                 false
