@@ -39,7 +39,7 @@
 
 **오독오독** 의 전체 아키텍처는 UI 레이어와 데이터 레이어의 두 계층으로 구성되어 있으며, 각 계층은 고유한 컴포넌트와 역할을 가지고 있습니다.
 
-### Architecture Overview
+## Architecture Overview
 
 ![architecture](/figure/figure1.png)
 
@@ -48,20 +48,20 @@
 
 이와 같이 느슨하게 결합된 아키텍처를 통해 컴포넌트의 재사용성과 앱의 확장성을 높일 수 있습니다.
 
-### UI Layer
+## UI Layer
 
 ![architecture](/figure/figure2.png)
 
 UI 레이어는 사용자와 상호작용할 수 있는 화면을 구성하는 UI 요소들과, 앱 상태를 유지하고 구성 변경 시 데이터를 복원하는 [ViewModel](https://developer.android.com/topic/libraries/architecture/viewmodel) 로 구성됩니다.
 - UI 요소는 [DataBinding](https://developer.android.com/topic/libraries/data-binding)을 통해 데이터 흐름을 관찰하며, 이는 MVVM 아키텍처에서 핵심적인 역할을 합니다.
 
-### Data Layer
+## Data Layer
 
 ![architecture](/figure/figure3.png)
 
 데이터 레이어는 로컬 데이터베이스에서 데이터를 조회하거나 네트워크로부터 원격 데이터를 요청하는 등 비즈니스 로직을 처리하는 리포지토리로 구성됩니다.
 
-### License
+## License
 ```xml
 Designed and developed by 2022 stevey-sy (Seyoung Shin)
 
