@@ -12,7 +12,6 @@ import android.view.MenuItem
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.activity.viewModels
-import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.core.content.res.ResourcesCompat
@@ -21,7 +20,6 @@ import androidx.fragment.app.Fragment
 import com.example.bookchigibakchigi.R
 import com.example.bookchigibakchigi.databinding.ActivityMainBinding
 import com.example.bookchigibakchigi.ui.BaseActivity
-import com.example.bookchigibakchigi.ui.dialog.TwoButtonsDialog
 import com.example.bookchigibakchigi.ui.searchbook.SearchBookActivity
 import dagger.hilt.android.AndroidEntryPoint
 
