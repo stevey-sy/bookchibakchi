@@ -334,7 +334,7 @@ class BookDetailFragment : Fragment() {
                 // 메모 수정 로직
                 val intent = Intent(requireContext(), AddMemoActivity::class.java).apply {
                     mainViewModel.selectedBook.value?.let { book ->
-                        putExtra("isModify", true)
+                        putExtra("isEditMode", true)
                         putExtra("bookId", book.itemId)
                         putExtra("memoId", memoId)
                     }

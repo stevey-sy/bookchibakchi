@@ -9,6 +9,7 @@ import com.example.bookchigibakchigi.data.repository.BookShelfRepository
 import com.example.bookchigibakchigi.data.repository.MemoRepository
 import com.example.bookchigibakchigi.data.repository.TagRepository
 import com.example.bookchigibakchigi.mapper.TagMapper
+import com.example.bookchigibakchigi.model.AddMemoFormUiModel
 import com.example.bookchigibakchigi.model.TagUiModel
 import com.example.bookchigibakchigi.util.DateUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,21 +23,29 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.collections.map
 
-data class AddMemoUiState(
-    val isModify: Boolean = false,
-    val page: String = "0",
-    val backgroundPosition: Int = 2,
-    val content: String = "내용을 입력해 주세요.",
-    val tagList: List<TagUiModel> = emptyList(),
-    val createdAt: String = DateUtil.getFormattedToday(),
-    val isLoading: Boolean = false,
-    val isSuccess: Boolean = false,
-    val error: String? = null,
-    val isContentValid: Boolean = false,
-    val shouldNavigateToMain: Boolean = false,
-    val memoId: Long? = null,
-    val bookId: Int? = null,
-)
+//data class AddMemoUiState(
+//    val isModify: Boolean = false,
+//    val page: String = "0",
+//    val backgroundPosition: Int = 2,
+//    val content: String = "내용을 입력해 주세요.",
+//    val tagList: List<TagUiModel> = emptyList(),
+//    val createdAt: String = DateUtil.getFormattedToday(),
+//    val isLoading: Boolean = false,
+//    val isSuccess: Boolean = false,
+//    val error: String? = null,
+//    val isContentValid: Boolean = false,
+//    val shouldNavigateToMain: Boolean = false,
+//    val memoId: Long? = null,
+//    val bookId: Int? = null,
+//)
+
+sealed class AddMemoUiState {
+    data object Loading : AddMemoUiState()
+    data class CreateMode(val form: AddMemoFormUiModel) : AddMemoUiState()
+    data class EditMode(val form: AddMemoFormUiModel) : AddMemoUiState()
+    data object Success : AddMemoUiState()
+    data class Error(val message: String) : AddMemoUiState()
+}
 
 sealed interface AddMemoEvent {
     data class UpdatePage(val page: String) : AddMemoEvent
@@ -55,49 +64,51 @@ class AddMemoViewModel @Inject constructor(
     private val tagRepository: TagRepository
 ): ViewModel() {
 
-    private val _uiState = MutableStateFlow(AddMemoUiState())
+    private val _uiState = MutableStateFlow<AddMemoUiState>(AddMemoUiState.CreateMode(AddMemoFormUiModel()))
     val uiState: StateFlow<AddMemoUiState> = _uiState.asStateFlow()
+
+    fun setCreateMode(memoContent: String?) {
+        _uiState.value = AddMemoUiState.CreateMode(AddMemoFormUiModel(content = memoContent ?: ""))
+    }
 
     fun onEvent(event: AddMemoEvent) {
         when (event) {
             is AddMemoEvent.LoadMemo -> {
-                _uiState.update { currentState ->
-                    currentState.copy(
-                        memoId = event.memoId,
-                        bookId = event.bookId,
-                    )
-                }
-                loadMemo(event.memoId)
+                loadMemo(event.memoId, event.bookId)
             }
             is AddMemoEvent.UpdateBackground -> {
-                _uiState.update { it.copy(backgroundPosition = event.position) }
+                updateForm { it.copy(backgroundPosition = event.position) }
             }
             is AddMemoEvent.UpdatePage -> {
-                _uiState.update { it.copy(page = event.page) }
+                updateForm { it.copy(page = event.page) }
             }
             is AddMemoEvent.UpdateContent -> {
-                _uiState.update { it.copy(
+                updateForm { it.copy(
                     content = event.content,
                     isContentValid = event.content.trim().isNotEmpty()
                 ) }
             }
             is AddMemoEvent.AddTag -> {
-                val currentTags = _uiState.value.tagList.toMutableList()
                 val newTag = TagEntity(
                     name = event.name,
                     backgroundColor = event.backgroundColor,
                     textColor = event.textColor,
                 )
                 val newTagUiModel = TagMapper.toUiModel(newTag)
-                if (!currentTags.any { it.name == newTagUiModel.name }) {
-                    currentTags.add(newTagUiModel)
-                    _uiState.update { it.copy(tagList = currentTags) }
+                updateForm { currentForm ->
+                    if (!currentForm.tagList.any { it.name == newTagUiModel.name }) {
+                        currentForm.copy(tagList = currentForm.tagList + newTagUiModel)
+                    } else {
+                        currentForm
+                    }
                 }
             }
             is AddMemoEvent.RemoveTag -> {
-                val currentTags = _uiState.value.tagList.toMutableList()
-                currentTags.removeIf { it.name == event.tagName }
-                _uiState.update { it.copy(tagList = currentTags) }
+                updateForm { currentForm ->
+                    currentForm.copy(
+                        tagList = currentForm.tagList.filter { it.name != event.tagName }
+                    )
+                }
             }
             is AddMemoEvent.SaveMemo -> {
                 saveMemo(event.bookId)
@@ -108,38 +119,51 @@ class AddMemoViewModel @Inject constructor(
         }
     }
 
-    private fun loadMemo(memoId: Long) {
+    private fun updateForm(update: (AddMemoFormUiModel) -> AddMemoFormUiModel) {
+        _uiState.update { currentState ->
+            when (currentState) {
+                is AddMemoUiState.CreateMode -> AddMemoUiState.CreateMode(update(currentState.form))
+                is AddMemoUiState.EditMode -> AddMemoUiState.EditMode(update(currentState.form))
+                else -> currentState
+            }
+        }
+    }
+
+    private fun loadMemo(memoId: Long, bookId: Int) {
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true) }
+            _uiState.value = AddMemoUiState.Loading
             try {
                 val memo = memoRepository.getMemoById(memoId)
                 val tags = memoRepository.getTagsForMemo(memoId).first()
                 
-                _uiState.update { currentState ->
-                    currentState.copy(
-                        isModify = true,
-                        page = memo!!.pageNumber.toString(),
-                        content = memo.content,
-                        backgroundPosition = CardBackgrounds.IMAGE_LIST.indexOf(memo.background),
-                        tagList = tags.map { TagMapper.toUiModel(it) },
-                        createdAt = DateUtil.formatDateFromMillis(memo.createdAt),
-                        isLoading = false
-                    )
-                }
+                val form = AddMemoFormUiModel(
+                    isModify = true,
+                    page = memo!!.pageNumber.toString(),
+                    content = memo.content,
+                    backgroundPosition = CardBackgrounds.IMAGE_LIST.indexOf(memo.background),
+                    tagList = tags.map { TagMapper.toUiModel(it) },
+                    createdAt = DateUtil.formatDateFromMillis(memo.createdAt),
+                    memoId = memoId,
+                    bookId = bookId
+                )
+                _uiState.value = AddMemoUiState.EditMode(form)
             } catch (e: Exception) {
-                _uiState.update { it.copy(
-                    isLoading = false,
-                    error = e.message ?: "메모 로드 중 오류가 발생했습니다."
-                ) }
+                _uiState.value = AddMemoUiState.Error(e.message ?: "메모 로드 중 오류가 발생했습니다.")
             }
         }
     }
 
     private fun saveMemo(bookId: Int) {
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true) }
+//            _uiState.value = AddMemoUiState.Loading
             try {
-                val tagEntities = _uiState.value.tagList.map { TagMapper.toEntity(it) }
+                val form = when (val currentState = _uiState.value) {
+                    is AddMemoUiState.CreateMode -> currentState.form
+                    is AddMemoUiState.EditMode -> currentState.form
+                    else -> return@launch
+                }
+
+                val tagEntities = form.tagList.map { TagMapper.toEntity(it) }
                 
                 // 태그 저장
                 val savedTagIds = mutableListOf<Long>()
@@ -151,9 +175,9 @@ class AddMemoViewModel @Inject constructor(
                 // 메모 저장
                 val memo = MemoEntity(
                     bookId = bookId,
-                    content = _uiState.value.content,
-                    pageNumber = _uiState.value.page.toIntOrNull() ?: 0,
-                    background = CardBackgrounds.IMAGE_LIST[_uiState.value.backgroundPosition],
+                    content = form.content,
+                    pageNumber = form.page.toIntOrNull() ?: 0,
+                    background = CardBackgrounds.IMAGE_LIST[form.backgroundPosition],
                     createdAt = System.currentTimeMillis()
                 )
                 val memoId = memoRepository.insertMemo(memo)
@@ -163,29 +187,27 @@ class AddMemoViewModel @Inject constructor(
                     memoRepository.addTagToMemo(memoId, tagId)
                 }
 
-                _uiState.update { it.copy(
-                    isLoading = false,
-                    isSuccess = true,
-                    shouldNavigateToMain = true
-                ) }
+                _uiState.value = AddMemoUiState.Success
             } catch (e: Exception) {
-                _uiState.update { it.copy(
-                    isLoading = false,
-                    error = e.message ?: "메모 저장 중 오류가 발생했습니다."
-                ) }
+                _uiState.value = AddMemoUiState.Error(e.message ?: "메모 저장 중 오류가 발생했습니다.")
             }
         }
     }
 
     private fun updateMemo() {
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true) }
+            _uiState.value = AddMemoUiState.Loading
             try {
+                val form = when (val currentState = _uiState.value) {
+                    is AddMemoUiState.EditMode -> currentState.form
+                    else -> return@launch
+                }
+
                 // 현재 UI의 태그 목록
-                val currentTagEntities = _uiState.value.tagList.map { TagMapper.toEntity(it) }
+                val currentTagEntities = form.tagList.map { TagMapper.toEntity(it) }
                 
                 // 기존 태그 목록 가져오기
-                val existingTags = memoRepository.getTagsForMemo(_uiState.value.memoId!!).first()
+                val existingTags = memoRepository.getTagsForMemo(form.memoId!!).first()
                 
                 // 태그 변경 사항 확인
                 val tagsToAdd = currentTagEntities.filter { newTag ->
@@ -198,12 +220,12 @@ class AddMemoViewModel @Inject constructor(
 
                 // 메모 업데이트
                 val updatedMemo = MemoEntity(
-                    memoId = _uiState.value.memoId!!,
-                    bookId = _uiState.value.bookId!!,
-                    content = _uiState.value.content,
-                    pageNumber = _uiState.value.page.toIntOrNull() ?: 0,
-                    background = CardBackgrounds.IMAGE_LIST[_uiState.value.backgroundPosition],
-                    createdAt = DateUtil.getMillisFromDate(_uiState.value.createdAt)
+                    memoId = form.memoId!!,
+                    bookId = form.bookId!!,
+                    content = form.content,
+                    pageNumber = form.page.toIntOrNull() ?: 0,
+                    background = CardBackgrounds.IMAGE_LIST[form.backgroundPosition],
+                    createdAt = DateUtil.getMillisFromDate(form.createdAt)
                 )
                 memoRepository.updateMemo(updatedMemo)
 
@@ -218,16 +240,9 @@ class AddMemoViewModel @Inject constructor(
                     memoRepository.removeTagFromMemo(updatedMemo.memoId, tag.tagId)
                 }
 
-                _uiState.update { it.copy(
-                    isLoading = false,
-                    isSuccess = true,
-                    shouldNavigateToMain = true
-                ) }
+                _uiState.value = AddMemoUiState.Success
             } catch (e: Exception) {
-                _uiState.update { it.copy(
-                    isLoading = false,
-                    error = e.message ?: "메모 수정 중 오류가 발생했습니다."
-                ) }
+                _uiState.value = AddMemoUiState.Error(e.message ?: "메모 수정 중 오류가 발생했습니다.")
             }
         }
     }

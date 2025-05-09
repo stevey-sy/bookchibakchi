@@ -21,6 +21,7 @@ import com.example.bookchigibakchigi.constants.CardBackgrounds
 import com.example.bookchigibakchigi.model.TagUiModel
 import com.example.bookchigibakchigi.util.VibrationUtil
 import com.example.bookchigibakchigi.ui.dialog.TwoButtonsDialog
+import kotlinx.coroutines.flow.collectLatest
 
 @AndroidEntryPoint
 class AddMemoActivity : BaseActivity() {
@@ -36,25 +37,23 @@ class AddMemoActivity : BaseActivity() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
 
-        if(intent.hasExtra("isModify")) {
-            val isModify = intent.getBooleanExtra("isModify", false)
-            if(isModify) {
-                val bookId = intent.getIntExtra("bookId", -1)
-                val memoId = intent.getLongExtra("memoId", -1)
-                if (memoId != -1L) {
-                    viewModel.onEvent(AddMemoEvent.LoadMemo(bookId, memoId))
-                }
+
+        // 진입 시 intent 로 부터 editMode 인지, createMode 인지 구분.
+        val isEditMode = intent.getBooleanExtra("isEditMode", false)
+        if(isEditMode) {
+            val bookId = intent.getIntExtra("bookId", -1)
+            val memoId = intent.getLongExtra("memoId", -1)
+            if (memoId != -1L) {
+                viewModel.onEvent(AddMemoEvent.LoadMemo(bookId, memoId))
             }
         } else {
+            // createMode 인 경우.
             var recognizedText = intent.getStringExtra("recognizedText")
-            if (!recognizedText.isNullOrEmpty()) {
-                viewModel.onEvent(AddMemoEvent.UpdateContent(recognizedText))
-            }
-            initViewPager(content = recognizedText ?: "")
+            viewModel.setCreateMode(recognizedText)
         }
 
         initListeners()
-        observeViewModel()
+        observeUiState()
     }
 
     private fun initViewPager(
@@ -127,7 +126,7 @@ class AddMemoActivity : BaseActivity() {
                     },
                     onBtn2Click = {
                         val bookId = intent.getIntExtra("bookId", -1)
-                        if (viewModel.uiState.value.isModify) {
+                        if (viewModel.uiState.value is AddMemoUiState.EditMode) {
                             viewModel.onEvent(AddMemoEvent.UpdateMemo)
                         } else {
                             viewModel.onEvent(AddMemoEvent.SaveMemo(bookId))
@@ -143,38 +142,44 @@ class AddMemoActivity : BaseActivity() {
         }
     }
 
-    private fun observeViewModel() {
+    private fun observeUiState() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.uiState.collect { state ->
-                    when {
-                        state.isSuccess -> {
-                            Toast.makeText(this@AddMemoActivity, "메모가 저장되었습니다.", Toast.LENGTH_SHORT).show()
-                            if (state.shouldNavigateToMain) {
-                                val bookId = intent.getIntExtra("bookId", -1)
-                                val intent = Intent(this@AddMemoActivity, MainActivity::class.java).apply {
-                                    flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
-                                    putExtra("bookId", bookId)
-                                }
-                                startActivity(intent)
-                                finish()
+                viewModel.uiState.collectLatest { state ->
+                    when (state) {
+                        is AddMemoUiState.Loading -> {
+                            // shimmer
+                        }
+                        is AddMemoUiState.CreateMode -> {
+                            if (!::addMemoAdapter.isInitialized) {
+                                initViewPager(content = state.form.content)
                             }
                         }
-                        state.error != null -> {
-                            showError(state.error)
-                        }
-                    }
 
-                    // 메모 로딩 완료 후 ViewPager 초기화 또는 갱신
-                    if (state.isModify && !state.isLoading) {
-                        // 최초 1회만 ViewPager 초기화
-                        if (!::addMemoAdapter.isInitialized) {
-                            initViewPager(
-                                content = state.content,
-                                page = state.page,
-                                backgroundPosition = state.backgroundPosition,
-                                tags = state.tagList
-                            )
+                        is AddMemoUiState.EditMode -> {
+                            if (!::addMemoAdapter.isInitialized) {
+                                initViewPager(
+                                    content = state.form.content,
+                                    page = state.form.page,
+                                    backgroundPosition = state.form.backgroundPosition,
+                                    tags = state.form.tagList
+                                )
+                            }
+                        }
+
+                        is AddMemoUiState.Success -> {
+                            Toast.makeText(this@AddMemoActivity, "메모가 저장되었습니다.", Toast.LENGTH_SHORT).show()
+                            val bookId = intent.getIntExtra("bookId", -1)
+                            val intent = Intent(this@AddMemoActivity, MainActivity::class.java).apply {
+                                flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
+                                putExtra("bookId", bookId)
+                            }
+                            startActivity(intent)
+                            finish()
+                        }
+
+                        is AddMemoUiState.Error -> {
+                            showError(state.message)
                         }
                     }
                 }

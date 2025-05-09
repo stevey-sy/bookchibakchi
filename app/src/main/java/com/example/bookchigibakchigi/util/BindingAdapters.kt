@@ -449,8 +449,11 @@ object BindingAdapters {
     @BindingAdapter("bindPage")
     fun TextView.bindPage(uiState: AddMemoUiState?) {
         text = when (uiState) {
-            is AddMemoUiState -> {
-                "p.${uiState.page}"
+            is AddMemoUiState.CreateMode -> {
+                "p.${uiState.form.page}"
+            }
+            is AddMemoUiState.EditMode -> {
+                "p.${uiState.form.page}"
             }
             else -> {
                 "p.0"
@@ -463,8 +466,11 @@ object BindingAdapters {
     @BindingAdapter("bindContent")
     fun TextView.bindContent(uiState: AddMemoUiState?) {
         text = when (uiState) {
-            is AddMemoUiState -> {
-                uiState.content
+            is AddMemoUiState.CreateMode -> {
+                uiState.form.content
+            }
+            is AddMemoUiState.EditMode -> {
+                uiState.form.content
             }
             else -> {
                 ""
@@ -474,14 +480,38 @@ object BindingAdapters {
 
     // AddMemoActivity
     @JvmStatic
+    @BindingAdapter("bindTagsVisibility")
+    fun View.bindTagsVisibility(uiState: AddMemoUiState?) {
+        val visibility = when (uiState) {
+            is AddMemoUiState.CreateMode -> {
+                if(uiState.form.tagList.isEmpty()) View.GONE else View.VISIBLE
+            }
+            is AddMemoUiState.EditMode -> {
+                if(uiState.form.tagList.isEmpty()) View.GONE else View.VISIBLE
+            }
+            else -> View.GONE
+        }
+        setVisibility(visibility)
+    }
+
+
+    // AddMemoActivity
+    @JvmStatic
     @BindingAdapter("bindTags")
     fun TextView.bindTags(uiState: AddMemoUiState?) {
         text = when (uiState) {
-            is AddMemoUiState -> {
-                if (uiState.tagList.isEmpty()) {
+            is AddMemoUiState.CreateMode -> {
+                if (uiState.form.tagList.isEmpty()) {
                     ""
                 } else {
-                    uiState.tagList.joinToString(" ") { "#${it.name}" }
+                    uiState.form.tagList.joinToString(" ") { "#${it.name}" }
+                }
+            }
+            is AddMemoUiState.EditMode -> {
+                if (uiState.form.tagList.isEmpty()) {
+                    ""
+                } else {
+                    uiState.form.tagList.joinToString(" ") { "#${it.name}" }
                 }
             }
             else -> {
@@ -495,8 +525,11 @@ object BindingAdapters {
     @BindingAdapter("bindCreatedAt")
     fun TextView.bindCreatedAt(uiState: AddMemoUiState?) {
         text = when (uiState) {
-            is AddMemoUiState -> {
-                uiState.createdAt
+            is AddMemoUiState.CreateMode -> {
+                uiState.form.createdAt
+            }
+            is AddMemoUiState.EditMode -> {
+                uiState.form.createdAt
             }
             else -> {
                 ""
@@ -510,7 +543,12 @@ object BindingAdapters {
     fun ConstraintLayout.bindCardBackground(uiState: AddMemoUiState?) {
         uiState?.let { it ->
             post {
-                setBackgroundResource(CardBackgrounds.IMAGE_LIST[it.backgroundPosition])
+                val backgroundPosition = when (it) {
+                    is AddMemoUiState.CreateMode -> it.form.backgroundPosition
+                    is AddMemoUiState.EditMode -> it.form.backgroundPosition
+                    else -> 2
+                }
+                setBackgroundResource(CardBackgrounds.IMAGE_LIST[backgroundPosition])
             }
         }
     }
