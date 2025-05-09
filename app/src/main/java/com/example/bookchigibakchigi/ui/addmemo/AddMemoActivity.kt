@@ -15,7 +15,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import android.util.Log
 import android.widget.Toast
-import com.example.bookchigibakchigi.ui.main.MainActivity
 import androidx.viewpager2.widget.ViewPager2
 import com.example.bookchigibakchigi.constants.CardBackgrounds
 import com.example.bookchigibakchigi.model.TagUiModel
@@ -169,12 +168,6 @@ class AddMemoActivity : BaseActivity() {
 
                         is AddMemoUiState.Success -> {
                             Toast.makeText(this@AddMemoActivity, "메모가 저장되었습니다.", Toast.LENGTH_SHORT).show()
-                            val bookId = intent.getIntExtra("bookId", -1)
-                            val intent = Intent(this@AddMemoActivity, MainActivity::class.java).apply {
-                                flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
-                                putExtra("bookId", bookId)
-                            }
-                            startActivity(intent)
                             finish()
                         }
 

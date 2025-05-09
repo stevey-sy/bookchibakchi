@@ -72,6 +72,7 @@ class MicrophoneActivity : BaseActivity() {
                 putExtra("recognizedText", recognizedText)
             }
             startActivity(intent)
+            finish()
         }
     }
 

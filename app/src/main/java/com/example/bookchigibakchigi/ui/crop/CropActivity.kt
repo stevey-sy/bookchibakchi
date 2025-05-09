@@ -96,5 +96,6 @@ class CropActivity : BaseActivity() {
             putExtra("bookId", intent.getIntExtra("bookId", -1))
         }
         startActivity(intent)
+        finish()
     }
 }

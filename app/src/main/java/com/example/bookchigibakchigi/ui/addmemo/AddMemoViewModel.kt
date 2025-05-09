@@ -196,7 +196,6 @@ class AddMemoViewModel @Inject constructor(
 
     private fun updateMemo() {
         viewModelScope.launch {
-            _uiState.value = AddMemoUiState.Loading
             try {
                 val form = when (val currentState = _uiState.value) {
                     is AddMemoUiState.EditMode -> currentState.form
