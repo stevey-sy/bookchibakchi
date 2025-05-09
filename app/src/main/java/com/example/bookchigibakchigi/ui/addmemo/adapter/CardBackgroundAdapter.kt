@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.bookchigibakchigi.R
 
 class CardBackgroundAdapter(
@@ -30,6 +31,8 @@ class CardBackgroundAdapter(
                 Glide.with(imageView.context)
                     .load(imageRes)
                     .centerCrop()
+                    .skipMemoryCache(true) // 메모리 캐시 사용 안 함
+                    .diskCacheStrategy(DiskCacheStrategy.NONE) // 디스크 캐시 사용 안 함
                     .into(imageView)
             }
         }
