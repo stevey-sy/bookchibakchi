@@ -20,6 +20,7 @@ import com.example.bookchigibakchigi.ui.bookdetail.adapter.BookViewPagerAdapter
 import com.example.bookchigibakchigi.ui.main.MainViewUiState
 import com.example.bookchigibakchigi.ui.microphone.MicrophoneUiState
 import com.example.bookchigibakchigi.ui.record.RecordUiState
+import com.example.bookchigibakchigi.ui.searchbook.SearchBookUiState
 import kotlinx.coroutines.flow.StateFlow
 
 object BindingAdapters {
@@ -510,6 +511,51 @@ object BindingAdapters {
         uiState?.let { it ->
             post {
                 setBackgroundResource(CardBackgrounds.IMAGE_LIST[it.backgroundPosition])
+            }
+        }
+    }
+
+    // SearchBookActivity
+    @JvmStatic
+    @BindingAdapter("bindSearchBookResultVisibility")
+    fun View.bindSearchBookResultVisibility(uiState: StateFlow<SearchBookUiState>?) {
+        uiState?.let { flow ->
+            post {
+                val visibility = when (flow.value) {
+                    is SearchBookUiState.Success -> View.VISIBLE
+                    else -> View.GONE
+                }
+                setVisibility(visibility)
+            }
+        }
+    }
+
+    // SearchBookActivity
+    @JvmStatic
+    @BindingAdapter("bindSearchNoResultVisibility")
+    fun View.bindSearchNoResultVisibility(uiState: StateFlow<SearchBookUiState>?) {
+        uiState?.let { flow ->
+            post {
+                val visibility = when (flow.value) {
+                    is SearchBookUiState.NoResult -> View.VISIBLE
+                    else -> View.GONE
+                }
+                setVisibility(visibility)
+            }
+        }
+    }
+
+    // SearchBookActivity
+    @JvmStatic
+    @BindingAdapter("bindSearchProgressVisibility")
+    fun View.bindSearchProgressVisibility(uiState: StateFlow<SearchBookUiState>?) {
+        uiState?.let { flow ->
+            post {
+                val visibility = when (flow.value) {
+                    is SearchBookUiState.Loading -> View.VISIBLE
+                    else -> View.GONE
+                }
+                setVisibility(visibility)
             }
         }
     }

@@ -42,6 +42,10 @@ class SearchBookViewModel @Inject constructor(
         return false
     }
 
+    fun setNoResult() {
+        _uiState.value = SearchBookUiState.NoResult
+    }
+
     fun searchBooks(query: String): Flow<PagingData<SearchBookUiModel>> {
         if (query.isBlank()) {
             _uiState.value = SearchBookUiState.Empty

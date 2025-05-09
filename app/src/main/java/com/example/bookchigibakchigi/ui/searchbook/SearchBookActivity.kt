@@ -25,8 +25,10 @@ import com.example.bookchigibakchigi.ui.BaseActivity
 import com.example.bookchigibakchigi.ui.addbook.AddBookActivity
 import com.example.bookchigibakchigi.ui.searchbook.adapter.BookPagingAdapter
 import com.example.bookchigibakchigi.ui.searchbook.adapter.BookSearchAdapter
+import com.example.bookchigibakchigi.ui.searchbook.adapter.ShimmerAdapter
 import com.example.bookchigibakchigi.util.KeyboardUtil
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -35,6 +37,10 @@ class SearchBookActivity : BaseActivity() {
     private val viewModel: SearchBookViewModel by viewModels()
     private lateinit var binding: ActivitySearchBookBinding
     private lateinit var adapter: BookPagingAdapter
+    private lateinit var shimmerAdapter: ShimmerAdapter
+
+    private var loadingStartTime: Long = 0
+    private val MIN_SHIMMER_DURATION = 1000L
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,8 +66,18 @@ class SearchBookActivity : BaseActivity() {
 
     private fun initView() {
         adapter = BookPagingAdapter(::onBookItemClicked)
-        binding.recyclerView.adapter = adapter
+        shimmerAdapter = ShimmerAdapter()
+        binding.recyclerView.adapter = shimmerAdapter
         binding.recyclerView.layoutManager = LinearLayoutManager(this@SearchBookActivity)
+
+        // 결과 감지
+        adapter.addLoadStateListener { loadState ->
+            val isLoaded = loadState.source.refresh is LoadState.NotLoading
+            val isEmpty = adapter.itemCount == 0
+            if (isLoaded && isEmpty) {
+                viewModel.setNoResult()
+            }
+        }
     }
 
     private fun initClickListeners() {
@@ -113,8 +129,14 @@ class SearchBookActivity : BaseActivity() {
     private fun observeUiState() {
         lifecycleScope.launch {
             viewModel.uiState.collectLatest { state ->
+                var progressBarVisibility = View.GONE
                 when (state) {
                     is SearchBookUiState.Success -> {
+                        val elapsed = System.currentTimeMillis() - loadingStartTime
+                        if (elapsed < MIN_SHIMMER_DURATION) {
+                            delay(MIN_SHIMMER_DURATION - elapsed)
+                        }
+                        binding.recyclerView.adapter = adapter
                         // PagingData는 이미 adapter.submitData()로 처리되므로 여기서는 추가 작업이 필요 없습니다
                     }
                     is SearchBookUiState.Error -> {
@@ -122,14 +144,16 @@ class SearchBookActivity : BaseActivity() {
                     }
                     is SearchBookUiState.Loading -> {
                         // 로딩 상태 처리 (필요한 경우 로딩 인디케이터 표시)
+                        progressBarVisibility= View.VISIBLE
+                        loadingStartTime = System.currentTimeMillis()
+                        binding.recyclerView.adapter = shimmerAdapter
                     }
-                    is SearchBookUiState.Empty -> {
-                        // 빈 상태 처리
-                    }
-                    is SearchBookUiState.NoResult -> {
-                        // 검색 결과 없음 상태 처리
+                    else -> {
+
                     }
                 }
+
+                binding.progressBar.visibility = progressBarVisibility
             }
         }
     }
