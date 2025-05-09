@@ -115,6 +115,7 @@
                                         android:textColor="@color/black"
                                         android:background="@null"
                                         android:layout_marginTop="@dimen/_12sdp"
+                                        android:paddingHorizontal="@dimen/_10sdp"
                                         app:bindContent="@{viewModel.uiState}"
                                         app:layout_constraintTop_toBottomOf="@id/tvPageNumber"
                                         app:layout_constraintStart_toStartOf="parent"
