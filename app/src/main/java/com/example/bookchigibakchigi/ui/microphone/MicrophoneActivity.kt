@@ -37,7 +37,6 @@ class MicrophoneActivity : BaseActivity() {
         initClickListeners()
         checkMicrophonePermission()
         initializeSpeechRecognizer()
-//        observeViewModel()
     }
 
     private fun initBinding() {
@@ -100,26 +99,6 @@ class MicrophoneActivity : BaseActivity() {
         viewModel.stopRecording()
         speechRecognizerUtil.stopListening()
     }
-
-//    private fun observeViewModel() {
-//        lifecycleScope.launch {
-//            viewModel.uiState.collectLatest { state ->
-//                when (state) {
-//                    MicrophoneUiState.Recording -> {
-//                        window.statusBarColor = ContextCompat.getColor(this@MicrophoneActivity, R.color.black)
-//                    }
-//                    MicrophoneUiState.NotRecording -> {
-//                        window.statusBarColor = ContextCompat.getColor(this@MicrophoneActivity, R.color.white)
-//                    }
-//                    MicrophoneUiState.Error -> {
-//                        window.statusBarColor = ContextCompat.getColor(this@MicrophoneActivity, R.color.white)
-//                        Toast.makeText(this@MicrophoneActivity, "음성 인식 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
-//                    }
-//                }
-//            }
-//        }
-//    }
-
 
     private fun checkMicrophonePermission() {
         val requestPermissionLauncher = registerForActivityResult(
