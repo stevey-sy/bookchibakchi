@@ -1,5 +1,6 @@
 package com.example.bookchigibakchigi.ui.main
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.SpannableString
@@ -22,6 +23,9 @@ import com.example.bookchigibakchigi.databinding.ActivityMainBinding
 import com.example.bookchigibakchigi.ui.BaseActivity
 import com.example.bookchigibakchigi.ui.searchbook.SearchBookActivity
 import dagger.hilt.android.AndroidEntryPoint
+import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
 
 @AndroidEntryPoint
 class MainActivity : BaseActivity() {
@@ -39,7 +43,25 @@ class MainActivity : BaseActivity() {
         initToolbar()
         initFragments()
         initNavigation()
+//        copyDatabaseFile(this)
     }
+
+//    fun copyDatabaseFile(context: Context) {
+//        val dbName = "book_database" // .db 없음!
+//        val dbFile = context.getDatabasePath(dbName)
+//        val destFile = File(context.getExternalFilesDir(null), "$dbName.backup")
+//
+//        try {
+//            FileInputStream(dbFile).use { input ->
+//                FileOutputStream(destFile).use { output ->
+//                    input.copyTo(output)
+//                }
+//            }
+//            Log.d("DB_COPY", "DB copied to: ${destFile.absolutePath}")
+//        } catch (e: Exception) {
+//            Log.e("DB_COPY", "Error copying DB", e)
+//        }
+//    }
 
     private fun initToolbar() {
         setSupportActionBar(binding.toolbar)
