@@ -13,7 +13,7 @@
 <img src="/previews/preview.gif" align="right" width="240"/>
 
 
-<h3>Tech stack & Open-source libraries</h3>
+<h3>Tech stack</h3>
 
 - [Kotlin](https://kotlinlang.org/) 
 - [Coroutines](https://github.com/Kotlin/kotlinx.coroutines)
@@ -27,6 +27,8 @@
 - Architecture
   - MVVM Architecture (View - DataBinding - ViewModel - Model)
   - Repository Pattern
+<br>
+<h3>Open-source libraries</h3>
 - [Material-Components](https://github.com/material-components/material-components-android): 구글의 공식 디자인 시스템을 기반으로 모던하고 일관된 UI 컴포넌트를 구현하기 위해 사용했습니다.
 - [Retrofit2 & OkHttp3](https://github.com/square/retrofit): REST API 통신을 효율적으로 처리하고, 네트워크 요청의 로깅 및 커스터마이징을 위해 사용했습니다.
 - [Glide](https://github.com/bumptech/glide): 이미지의 비동기 로딩, 캐싱, 리사이징 등을 최적화하여 UI 성능을 향상시키기 위해 활용했습니다.
