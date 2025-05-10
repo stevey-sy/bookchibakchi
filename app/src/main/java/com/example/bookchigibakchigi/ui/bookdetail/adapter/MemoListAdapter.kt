@@ -61,7 +61,7 @@ class MemoListAdapter(
 
                 tvContent.post {
                     val shouldShowExpand =
-                        (tvContent.lineCount >= 5 && !memo.isExpanded) || memo.isExpanded
+                        (tvContent.lineCount > 5 && !memo.isExpanded) || memo.isExpanded
                     tvExpand.visibility = if (shouldShowExpand) View.VISIBLE else View.GONE
                 }
 
