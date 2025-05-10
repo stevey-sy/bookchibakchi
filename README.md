@@ -63,7 +63,7 @@
       키워드를 입력하면 자동완성과 함께 검색 결과를 빠르게 제공합니다.
     </td>
     <td>
-      <img src="previews/time2.gif" width="240"/>
+      <img src="previews/time3.gif" width="240"/>
     </td>
   </tr>
 </table>
