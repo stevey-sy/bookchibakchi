@@ -56,10 +56,17 @@
 <details>
 <summary>📖 책 검색 기능</summary>
 
-[//]: # (![책 검색 기능]&#40;/previews/time2.gif&#41;)
-<img src="/previews/time2.gif" width="240" />
-
-사용자가 책 제목을 검색하여 원하는 책을 조회할 수 있습니다.
+<table>
+  <tr>
+    <td>
+      사용자가 책 제목을 검색하여 원하는 책을 조회할 수 있는 기능입니다.  
+      키워드를 입력하면 자동완성과 함께 검색 결과를 빠르게 제공합니다.
+    </td>
+    <td>
+      <img src="previews/time2.gif" width="240"/>
+    </td>
+  </tr>
+</table>
 </details>
 
 - 서재 관리
