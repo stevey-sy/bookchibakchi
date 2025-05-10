@@ -1,5 +1,7 @@
 import java.util.Properties
 import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+import org.gradle.kotlin.dsl.debug
+import org.gradle.kotlin.dsl.release
 
 plugins {
     alias(libs.plugins.android.application)
@@ -11,12 +13,12 @@ plugins {
 
 android {
     namespace = "com.example.bookchigibakchigi"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.example.bookchigibakchigi"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 //        buildConfigField("String", "API_KEY", getApiKey("API_KEY"))
@@ -40,6 +42,7 @@ android {
             buildConfigField("String", "NAVER_CLIENT_SECRET", gradleLocalProperties(rootDir, providers).getProperty("NAVER_CLIENT_SECRET"))
             buildConfigField("String", "ALADIN_TTB_KEY", gradleLocalProperties(rootDir, providers).getProperty("ALADIN_TTB_KEY"))
         }
+
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -58,7 +61,6 @@ android {
 }
 
 dependencies {
-    val room_version = "2.6.1"
     implementation(libs.androidx.room.runtime)
     kapt (libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
