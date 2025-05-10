@@ -45,6 +45,13 @@
 
 **오독오독** 은 도서 정보 검색 기능을 위해 [알라딘 OpenAPI](https://blog.aladin.co.kr/openapi)를 사용하고 있습니다.
 
+## 주요 기능
+
+- 서재 관리
+- 도서 검색
+- 독서 시간 기록
+- 메모 기록
+
 ## Architecture
 **오독오독** 은 [Google의 공식 아키텍처 가이드](https://developer.android.com/topic/architecture) 를 기반으로 한 MVVM 아키텍처와 Repository 패턴을 사용하여 설계되었습니다.
 
