@@ -56,7 +56,8 @@
 <details>
 <summary>📖 책 검색 기능</summary>
 
-![책 검색 기능](/previews/time2.gif)
+[//]: # (![책 검색 기능]&#40;/previews/time2.gif&#41;)
+<img src="/previews/time2.gif" width="240" />
 
 사용자가 책 제목을 검색하여 원하는 책을 조회할 수 있습니다.
 </details>
