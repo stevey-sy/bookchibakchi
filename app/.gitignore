@@ -1,1 +1,9 @@
 /build
+/release.jks
+/release/output-metadata.json
+/release/app-release.apk
+/release/baselineProfiles/0/app-release.dm
+/release/baselineProfiles/1/app-release.dm
+/src/main/assets/book_database.db
+/src/main/assets/book_database.db-shm
+/src/main/assets/book_database.db-wal
