@@ -60,7 +60,6 @@
   <tr>
    <td valign="top">
       독서 시간 기록 기능
-      - 12345
     </td>
     <td>
       <img src="previews/time3.gif" width="240"/>
