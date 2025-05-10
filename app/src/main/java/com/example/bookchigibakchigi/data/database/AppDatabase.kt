@@ -45,6 +45,7 @@ abstract class AppDatabase : RoomDatabase() {
                     AppDatabase::class.java,
                     "book_database"
                 )
+                    .createFromAsset("book_database.db")
                     // 아래에 마이그레이션을 등록
 //                    .addMigrations(MIGRATION_4_5)
 
