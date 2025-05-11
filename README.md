@@ -126,7 +126,13 @@
 <table>
   <tr>
    <td valign="top" width="600">
-      독서 중 기억에 남는 문구를 메모할 수 있습니다.
+      - 독서 중 기억에 남는 문구를 메모하는 기능<br>
+      - 메모 공간을 카드처럼 구현하여 배경을 선택, tag 추가 기능<br>
+      - 책 내용을 보다 쉽게 가져오기 위해, OCR 기능 추가<br>
+      - 음성 인식으로 텍스트 입력 가능<br>
+      - 메모 컨텐츠의 길이에 맞춰 펼치기, 접기 가능<br>
+      <br><br><br>
+      <img src="previews/addmemo_architecture.png"/>
     </td>
     <td>
       <img src="previews/memoList.gif" width="240"/>
