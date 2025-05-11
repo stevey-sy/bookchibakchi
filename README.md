@@ -53,8 +53,7 @@
 **오독오독** 의 전체 아키텍처는 UI 레이어와 데이터 레이어의 두 계층으로 구성되어 있으며, 각 계층은 고유한 컴포넌트와 역할을 가지고 있습니다.
 
 ## 주요 기능
-<details>
-<summary> 도서 검색 기능 </summary>
+<h3>도서 검색 기능</h3>
 <table>
   <tr>
    <td valign="top" width="600">
@@ -65,10 +64,8 @@
     </td>
   </tr>
 </table>
-</details>
 
-<details>
-<summary> 서재 관리 </summary>
+<h3>서재 관리</h3>
 <table>
   <tr>
    <td valign="top" width="600">
@@ -79,10 +76,8 @@
     </td>
   </tr>
 </table>
-</details>
 
-<details>
-<summary> 독서 진행도 기록 </summary>
+<h3>독서 진행도 기록</h3>
 <table>
   <tr>
    <td valign="top" width="600">
@@ -93,10 +88,8 @@
     </td>
   </tr>
 </table>
-</details>
 
-<details>
-<summary> 메모 기록 </summary>
+<h3>메모 기록</h3>
 <table>
   <tr>
    <td valign="top" width="600">
@@ -108,9 +101,8 @@
     </td>
   </tr>
 </table>
-</details>
-[//]: # (## Architecture Overview)
 
+[//]: # (## Architecture Overview)
 [//]: # ()
 [//]: # (![architecture]&#40;/figure/figure1.png&#41;)
 
