@@ -23,22 +23,6 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.collections.map
 
-//data class AddMemoUiState(
-//    val isModify: Boolean = false,
-//    val page: String = "0",
-//    val backgroundPosition: Int = 2,
-//    val content: String = "내용을 입력해 주세요.",
-//    val tagList: List<TagUiModel> = emptyList(),
-//    val createdAt: String = DateUtil.getFormattedToday(),
-//    val isLoading: Boolean = false,
-//    val isSuccess: Boolean = false,
-//    val error: String? = null,
-//    val isContentValid: Boolean = false,
-//    val shouldNavigateToMain: Boolean = false,
-//    val memoId: Long? = null,
-//    val bookId: Int? = null,
-//)
-
 sealed class AddMemoUiState {
     data object Loading : AddMemoUiState()
     data class CreateMode(val form: AddMemoFormUiModel) : AddMemoUiState()

@@ -1,6 +1,6 @@
 package com.example.bookchigibakchigi.data.repository
 
-import com.example.bookchigibakchigi.data.dao.TagDao
+import com.example.bookchigibakchigi.data.datasource.TagLocalDataSource
 import com.example.bookchigibakchigi.data.entity.MemoTagCrossRef
 import com.example.bookchigibakchigi.data.entity.TagEntity
 import com.example.bookchigibakchigi.mapper.TagMapper
@@ -12,10 +12,10 @@ import javax.inject.Singleton
 
 @Singleton
 class TagRepository @Inject constructor(
-    private val tagDao: TagDao
+    private val localDataSource: TagLocalDataSource
 ) {
     fun getTagsByMemoId(memoId: Long): Flow<List<TagUiModel>> {
-        return tagDao.getTagsByMemoId(memoId).map { tags ->
+        return localDataSource.getTagsByMemoId(memoId).map { tags ->
             tags.map { tag ->
                 TagMapper.toUiModel(tag)
             }
@@ -23,36 +23,36 @@ class TagRepository @Inject constructor(
     }
 
     suspend fun insertTag(tag: TagEntity): Long {
-        return tagDao.insertTag(tag)
+        return localDataSource.insertTag(tag)
     }
 
     suspend fun deleteTag(tag: TagEntity) {
-        tagDao.deleteTag(tag)
+        localDataSource.deleteTag(tag)
     }
 
     suspend fun updateTag(tag: TagEntity) {
-        tagDao.updateTag(tag)
+        localDataSource.updateTag(tag)
     }
 
     fun getAllTags(): Flow<List<TagEntity>> {
-        return tagDao.getAllTags()
+        return localDataSource.getAllTags()
     }
 
     suspend fun getTagById(tagId: Long): TagEntity? {
-        return tagDao.getTagById(tagId)
+        return localDataSource.getTagById(tagId)
     }
 
-    suspend fun getTagByName(name: String): TagEntity? = tagDao.getTagByName(name)
+    suspend fun getTagByName(name: String): TagEntity? = localDataSource.getTagByName(name)
 
     suspend fun addTagToMemo(memoId: Long, tagId: Long) {
-        tagDao.insertMemoTagCrossRef(MemoTagCrossRef(memoId, tagId))
+        localDataSource.insertMemoTagCrossRef(MemoTagCrossRef(memoId, tagId))
     }
 
     suspend fun removeTagFromMemo(memoId: Long, tagId: Long) {
-        tagDao.deleteMemoTagCrossRef(MemoTagCrossRef(memoId, tagId))
+        localDataSource.deleteMemoTagCrossRef(MemoTagCrossRef(memoId, tagId))
     }
 
     suspend fun removeAllTagsFromMemo(memoId: Long) {
-        tagDao.deleteAllMemoTags(memoId)
+        localDataSource.deleteAllMemoTags(memoId)
     }
 } 

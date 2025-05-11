@@ -8,7 +8,9 @@ import com.example.bookchigibakchigi.data.dao.TagDao
 import com.example.bookchigibakchigi.data.database.AppDatabase
 import com.example.bookchigibakchigi.data.dao.PhotoCardDao
 import com.example.bookchigibakchigi.data.datasource.BookLocalDataSource
+import com.example.bookchigibakchigi.data.datasource.MemoLocalDataSource
 import com.example.bookchigibakchigi.data.datasource.SearchBookRemoteDataSource
+import com.example.bookchigibakchigi.data.datasource.TagLocalDataSource
 import com.example.bookchigibakchigi.data.repository.BookShelfRepository
 import com.example.bookchigibakchigi.data.repository.MemoRepository
 import com.example.bookchigibakchigi.data.repository.PhotoCardRepository
@@ -89,8 +91,14 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideMemoRepository(memoDao: MemoDao): MemoRepository {
-        return MemoRepository(memoDao)
+    fun provideMemoLocalDataSource(memoDao: MemoDao): MemoLocalDataSource {
+        return MemoLocalDataSource(memoDao)
+    }
+
+    @Provides
+    @Singleton
+    fun provideMemoRepository(localDataSource: MemoLocalDataSource): MemoRepository {
+        return MemoRepository(localDataSource)
     }
 
     @Provides
@@ -100,7 +108,13 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideTagRepository(tagDao: TagDao): TagRepository {
-        return TagRepository(tagDao)
+    fun provideTagLocalDataSource(tagDao: TagDao): TagLocalDataSource {
+        return TagLocalDataSource(tagDao)
+    }
+
+    @Provides
+    @Singleton
+    fun provideTagRepository(localDataSource: TagLocalDataSource): TagRepository {
+        return TagRepository(localDataSource)
     }
 }
