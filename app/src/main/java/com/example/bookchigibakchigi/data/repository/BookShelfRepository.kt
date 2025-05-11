@@ -26,29 +26,8 @@ class BookShelfRepository @Inject constructor(
         return localDataSource.getBookById(itemId).map { book -> BookMapper.toUiModel(book) }
     }
 
-    fun observeBookById(itemId: Int): Flow<BookUiModel> {
-        return localDataSource.getBookById(itemId)
-            .map { book -> BookMapper.toUiModel(book) }
-    }
-
-    suspend fun insertBook(book: BookEntity) {
-        localDataSource.insertBook(book)
-    }
-
-    suspend fun deleteBook(book: BookEntity) {
-        localDataSource.deleteBook(book)
-    }
-
     suspend fun deleteBook(book: BookUiModel) {
         localDataSource.deleteBook(BookMapper.toEntity(book))
-    }
-
-    suspend fun deleteAllBooks() {
-        localDataSource.deleteAllBooks()
-    }
-
-    suspend fun isBookExists(isbn: String): Boolean {
-        return localDataSource.isBookExists(isbn)
     }
 
     suspend fun updateReadingProgress(itemId: Int, page: Int, elapsedTime: Int): Boolean {
