@@ -104,7 +104,7 @@
     </td>
     <td>
       <img src="previews/memoList.gif" width="240"/>
-      <img src="previews/addMemo.gif" width="240"/>
+      <img src="previews/addMemo2.gif" width="240"/>
     </td>
   </tr>
 </table>
