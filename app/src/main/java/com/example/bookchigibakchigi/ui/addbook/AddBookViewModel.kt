@@ -2,7 +2,7 @@ package com.example.bookchigibakchigi.ui.addbook
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.bookchigibakchigi.data.repository.AladinBookRepository
+import com.example.bookchigibakchigi.data.repository.BookSearchRepository
 import com.example.bookchigibakchigi.data.database.AppDatabase
 import com.example.bookchigibakchigi.mapper.BookMapper
 import com.example.bookchigibakchigi.model.SearchBookUiModel
@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AddBookViewModel @Inject constructor(
-    private val repository: AladinBookRepository,
+    private val repository: BookSearchRepository,
     private val database: AppDatabase
 ) : ViewModel() {
 

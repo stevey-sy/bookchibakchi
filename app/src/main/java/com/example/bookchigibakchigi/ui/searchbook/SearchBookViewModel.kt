@@ -8,7 +8,7 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
 import com.example.bookchigibakchigi.data.paging.BookPagingSource
-import com.example.bookchigibakchigi.data.repository.AladinBookRepository
+import com.example.bookchigibakchigi.data.repository.BookSearchRepository
 import com.example.bookchigibakchigi.mapper.BookMapper
 import com.example.bookchigibakchigi.model.SearchBookUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,12 +17,11 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class SearchBookViewModel @Inject constructor(
-    private val repository: AladinBookRepository
+    private val repository: BookSearchRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<SearchBookUiState>(SearchBookUiState.Empty)
