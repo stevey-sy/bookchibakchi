@@ -57,13 +57,14 @@
 <table>
   <tr>
    <td valign="top" width="600">
-       - 검색어를 입력하여 책을 검색할 수 있습니다.<br>
-       - 도서 정보 출력을 위해  알라딘 OPEN API 를 사용하였습니다.<br>
-       - 대량의 도서 데이터를 효율적으로 불러오기 위해 Paging 라이브러리를 도입, 사용자의 스크롤에 따라 데이터를 점진적으로 로드합니다.<br>
-       - 효율적인 리스트 UI 구현을 위해 ListAdapter를 적용하였으며, DiffUtil을 활용한 데이터 변경 감지로 불필요한 View 바인딩을 줄여 성능을 개선하였습니다.<br>
-       - 검색된 책의 상세 정보를 확인하고 저장할 수 있습니다.<br>
+       - 검색어를 입력하여 책을 검색할 수 있음<br>
+       - 도서 정보 출력을 위해  알라딘 OPEN API 를 사용<br>
+       - 대량의 도서 데이터를 효율적으로 불러오기 위해 Paging 라이브러리를 도입<br>
+       - 사용자의 스크롤에 따라 데이터를 점진적으로 로드<br>
+       - ListAdapter를 적용, DiffUtil을 활용한 데이터 변경 감지로 불필요한 View 바인딩을 줄임<br>
+       - 검색된 책의 상세 정보를 확인하고 저장 가능.<br>
        <br><br><br>
-      <img src="previews/search_book_architecture.png"/>
+      <img src="previews/search_architecture.png"/>
     </td>
     <td>
       <img src="previews/search2.gif" width="240"/>
