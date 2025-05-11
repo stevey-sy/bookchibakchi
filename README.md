@@ -64,7 +64,7 @@
        - ListAdapter를 적용, DiffUtil을 활용한 데이터 변경 감지로 불필요한 View 바인딩을 줄임<br>
        - 검색된 책의 상세 정보를 확인하고 저장 가능.<br>
        <br><br><br>
-      <img src="previews/search_architecture.png"/>
+      <img src="previews/search_architecture.png" />
     </td>
     <td>
       <img src="previews/search2.gif" width="240"/>
@@ -76,10 +76,14 @@
 <table>
   <tr>
    <td valign="top" width="600">
-      나의 서재에 저장된 책을 조회, 수정, 삭제할 수 있습니다.
+      - 나의 서재에 저장된 책을 조회, 수정, 삭제 가능.<br>
+      - RecyclerView를 책장처럼 보이도록 UI 구현<br>
+      - 다 읽은 책 구분 가능하도록 Filtering 기능 제공<br>
+      - ListAdapter 를 적용하여, Filter 애니메이션을 보다 부드럽게 표현<br>
+      <br><br><br>
     </td>
     <td>
-      <img src="previews/manage.gif" width="240"/>
+      <img src="previews/manage_architecture.png" />
     </td>
   </tr>
 </table>
