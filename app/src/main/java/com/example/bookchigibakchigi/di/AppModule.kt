@@ -7,6 +7,7 @@ import com.example.bookchigibakchigi.data.dao.MemoDao
 import com.example.bookchigibakchigi.data.dao.TagDao
 import com.example.bookchigibakchigi.data.database.AppDatabase
 import com.example.bookchigibakchigi.data.dao.PhotoCardDao
+import com.example.bookchigibakchigi.data.datasource.BookLocalDataSource
 import com.example.bookchigibakchigi.data.datasource.SearchBookRemoteDataSource
 import com.example.bookchigibakchigi.data.repository.BookShelfRepository
 import com.example.bookchigibakchigi.data.repository.MemoRepository
@@ -43,8 +44,14 @@ object AppModule {
     }
 
     @Provides
-    fun provideBookShelfRepository(bookDao: BookDao): BookShelfRepository {
-        return BookShelfRepository(bookDao)
+    @Singleton
+    fun provideBookLocalDataSource(bookDao: BookDao): BookLocalDataSource {
+        return BookLocalDataSource(bookDao)
+    }
+
+    @Provides
+    fun provideBookShelfRepository(localDataSource: BookLocalDataSource): BookShelfRepository {
+        return BookShelfRepository(localDataSource)
     }
 
     @Provides

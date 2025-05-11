@@ -1,6 +1,6 @@
 package com.example.bookchigibakchigi.data.repository
 
-import com.example.bookchigibakchigi.data.dao.BookDao
+import com.example.bookchigibakchigi.data.datasource.BookLocalDataSource
 import com.example.bookchigibakchigi.data.entity.BookEntity
 import com.example.bookchigibakchigi.mapper.BookMapper
 import com.example.bookchigibakchigi.model.BookUiModel
@@ -12,46 +12,46 @@ import javax.inject.Singleton
 
 @Singleton
 class BookShelfRepository @Inject constructor(
-    private val bookDao: BookDao
+    private val localDataSource: BookLocalDataSource
 ) {
     fun getShelfItems(bookFilterType: BookFilterType): Flow<List<BookUiModel>> {
         return when (bookFilterType) {
-            BookFilterType.Reading -> bookDao.getReadingBooks()
-            BookFilterType.Finished -> bookDao.getFinishedBooks()
-            BookFilterType.All -> bookDao.getAllBooks()
+            BookFilterType.Reading -> localDataSource.getReadingBooks()
+            BookFilterType.Finished -> localDataSource.getFinishedBooks()
+            BookFilterType.All -> localDataSource.getAllBooks()
         }.map { books -> BookMapper.toUiModels(books) }
     }
 
     fun getBookById(itemId: Int): Flow<BookUiModel> {
-        return bookDao.getBookById(itemId).map { book -> BookMapper.toUiModel(book) }
+        return localDataSource.getBookById(itemId).map { book -> BookMapper.toUiModel(book) }
     }
 
     fun observeBookById(itemId: Int): Flow<BookUiModel> {
-        return bookDao.getBookById(itemId)
+        return localDataSource.getBookById(itemId)
             .map { book -> BookMapper.toUiModel(book) }
     }
 
     suspend fun insertBook(book: BookEntity) {
-        bookDao.insertBook(book)
+        localDataSource.insertBook(book)
     }
 
     suspend fun deleteBook(book: BookEntity) {
-        bookDao.deleteBook(book)
+        localDataSource.deleteBook(book)
     }
 
     suspend fun deleteBook(book: BookUiModel) {
-        bookDao.deleteBook(BookMapper.toEntity(book))
+        localDataSource.deleteBook(BookMapper.toEntity(book))
     }
 
     suspend fun deleteAllBooks() {
-        bookDao.deleteAllBooks()
+        localDataSource.deleteAllBooks()
     }
 
     suspend fun isBookExists(isbn: String): Boolean {
-        return bookDao.isBookExists(isbn) > 0
+        return localDataSource.isBookExists(isbn)
     }
 
     suspend fun updateReadingProgress(itemId: Int, page: Int, elapsedTime: Int): Boolean {
-        return bookDao.updateReadingProgress(itemId, page, elapsedTime) > 0
+        return localDataSource.updateReadingProgress(itemId, page, elapsedTime)
     }
 }
