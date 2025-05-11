@@ -103,18 +103,12 @@
       메모 기록
     </td>
     <td>
-      <img src="previews/time3.gif" width="240"/>
+      <img src="previews/memoList.gif" width="240"/>
+      <img src="previews/addMemo.gif" width="240"/>
     </td>
   </tr>
 </table>
 </details>
-
-- 서재 관리
-
-- 도서 검색
-- 독서 시간 기록
-- 메모 기록
-
 [//]: # (## Architecture Overview)
 
 [//]: # ()
