@@ -3,13 +3,13 @@ package com.example.bookchigibakchigi.data.repository
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import com.example.bookchigibakchigi.data.datasource.BookSearchRemoteDataSource
+import com.example.bookchigibakchigi.data.datasource.SearchBookRemoteDataSource
 import com.example.bookchigibakchigi.data.network.model.AladinBookItem
 import com.example.bookchigibakchigi.data.network.model.AladinBookSearchResponse
 import com.example.bookchigibakchigi.data.paging.BookPagingSource
 import kotlinx.coroutines.flow.Flow
 
-class BookSearchRepository(private val remoteDataSource: BookSearchRemoteDataSource) {
+class SearchBookRepository(private val remoteDataSource: SearchBookRemoteDataSource) {
 
     suspend fun searchBooks(query: String): List<AladinBookItem> {
         return remoteDataSource.searchBooks(query)

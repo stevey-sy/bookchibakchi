@@ -7,12 +7,12 @@ import com.example.bookchigibakchigi.data.dao.MemoDao
 import com.example.bookchigibakchigi.data.dao.TagDao
 import com.example.bookchigibakchigi.data.database.AppDatabase
 import com.example.bookchigibakchigi.data.dao.PhotoCardDao
-import com.example.bookchigibakchigi.data.datasource.BookSearchRemoteDataSource
+import com.example.bookchigibakchigi.data.datasource.SearchBookRemoteDataSource
 import com.example.bookchigibakchigi.data.repository.BookShelfRepository
 import com.example.bookchigibakchigi.data.repository.MemoRepository
 import com.example.bookchigibakchigi.data.repository.PhotoCardRepository
 import com.example.bookchigibakchigi.data.repository.TagRepository
-import com.example.bookchigibakchigi.data.repository.BookSearchRepository
+import com.example.bookchigibakchigi.data.repository.SearchBookRepository
 import com.example.bookchigibakchigi.data.network.service.AladinBookApiService
 import dagger.Module
 import dagger.Provides
@@ -65,14 +65,14 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideBookSearchRemoteDataSource(apiService: AladinBookApiService): BookSearchRemoteDataSource {
-        return BookSearchRemoteDataSource(apiService)
+    fun provideBookSearchRemoteDataSource(apiService: AladinBookApiService): SearchBookRemoteDataSource {
+        return SearchBookRemoteDataSource(apiService)
     }
 
     @Provides
     @Singleton
-    fun provideAladinBookRepository(dataSource: BookSearchRemoteDataSource): BookSearchRepository {
-        return BookSearchRepository(dataSource)
+    fun provideAladinBookRepository(dataSource: SearchBookRemoteDataSource): SearchBookRepository {
+        return SearchBookRepository(dataSource)
     }
 
     @Provides

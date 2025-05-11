@@ -4,7 +4,7 @@ import com.example.bookchigibakchigi.data.network.model.AladinBookItem
 import com.example.bookchigibakchigi.data.network.model.AladinBookSearchResponse
 import com.example.bookchigibakchigi.data.network.service.AladinBookApiService
 
-class BookSearchRemoteDataSource(private val apiService: AladinBookApiService) {
+class SearchBookRemoteDataSource(private val apiService: AladinBookApiService) {
 
     suspend fun searchBooks(query: String): List<AladinBookItem> {
         val response = apiService.searchBooks(query = query)
