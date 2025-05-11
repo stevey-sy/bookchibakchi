@@ -57,7 +57,9 @@
 <table>
   <tr>
    <td valign="top" width="600">
-      도서 검색 기능
+      책을 검색하여 나의 서재에 저장할 수 있습니다.<br>
+      검색된 책은 자동으로 표지, 제목, 저자 정보를 포함합니다<br>
+      <img src="previews/search_book_architecture.png"/>
     </td>
     <td>
       <img src="previews/search2.gif" width="240"/>
@@ -69,7 +71,7 @@
 <table>
   <tr>
    <td valign="top" width="600">
-      서재 관리
+      나의 서재에 저장된 책을 조회, 수정, 삭제할 수 있습니다.
     </td>
     <td>
       <img src="previews/manage.gif" width="240"/>
@@ -81,7 +83,7 @@
 <table>
   <tr>
    <td valign="top" width="600">
-      독서 진행도 기록
+      독서 진행도를 측정하고 기록할 수 있습니다.
     </td>
     <td>
       <img src="previews/time3.gif" width="240"/>
@@ -93,7 +95,7 @@
 <table>
   <tr>
    <td valign="top" width="600">
-      메모 기록
+      독서 중 기억에 남는 문구를 메모할 수 있습니다.
     </td>
     <td>
       <img src="previews/memoList.gif" width="240"/>
