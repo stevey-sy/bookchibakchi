@@ -54,12 +54,53 @@
 
 ## 주요 기능
 <details>
-<summary>📖 책 검색 기능</summary>
-
+<summary> 도서 검색 기능 </summary>
 <table>
   <tr>
    <td valign="top" width="600">
-      독서 시간 기록 기능
+      도서 검색 기능
+    </td>
+    <td>
+      <img src="previews/search2.gif" width="240"/>
+    </td>
+  </tr>
+</table>
+</details>
+
+<details>
+<summary> 서재 관리 </summary>
+<table>
+  <tr>
+   <td valign="top" width="600">
+      서재 관리
+    </td>
+    <td>
+      <img src="previews/manage.gif" width="240"/>
+    </td>
+  </tr>
+</table>
+</details>
+
+<details>
+<summary> 독서 진행도 기록 </summary>
+<table>
+  <tr>
+   <td valign="top" width="600">
+      독서 진행도 기록
+    </td>
+    <td>
+      <img src="previews/time3.gif" width="240"/>
+    </td>
+  </tr>
+</table>
+</details>
+
+<details>
+<summary> 메모 기록 </summary>
+<table>
+  <tr>
+   <td valign="top" width="600">
+      메모 기록
     </td>
     <td>
       <img src="previews/time3.gif" width="240"/>
