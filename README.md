@@ -45,6 +45,9 @@
 
 **오독오독** 은 도서 정보 검색 기능을 위해 [알라딘 OpenAPI](https://blog.aladin.co.kr/openapi)를 사용하고 있습니다.
 
+## Download
+**오독오독** 은 [Releases](https://github.com/stevey-sy/bookchibakchi/tags) 에서 다운로드 가능합니다.
+
 ## Architecture
 **오독오독** 은 [Google의 공식 아키텍처 가이드](https://developer.android.com/topic/architecture) 를 기반으로 한 MVVM 아키텍처와 Repository 패턴을 사용하여 설계되었습니다.
 

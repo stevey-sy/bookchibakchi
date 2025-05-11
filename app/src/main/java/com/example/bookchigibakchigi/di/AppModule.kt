@@ -36,7 +36,7 @@ object AppModule {
             AppDatabase::class.java,
             "book_database"
         )
-            .createFromAsset("book_database.db")
+//            .createFromAsset("book_database.db")
             .build()
     }
 
