@@ -81,7 +81,7 @@
       - 다 읽은 책 구분 가능하도록 Filtering 기능 제공<br>
       - ListAdapter 를 적용하여, Filter 애니메이션을 보다 부드럽게 표현<br>
       <br><br><br>
-      <img src="previews/manage_architecture.png"/>
+      <img src="previews/manage_architecture2.png"/>
     </td>
     <td>
       <img src="previews/manage.gif" width="240"/>
