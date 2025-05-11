@@ -110,7 +110,11 @@
 <table>
   <tr>
    <td valign="top" width="600">
-      독서 진행도를 측정하고 기록할 수 있습니다.
+      - 독서 진행도를 타이머로 측정, 기록하는 기능<br>
+      - 마지막으로 읽은 페이지를 입력하여 현재 진행도를 백분율로 측정<br>
+      - 책을 완독 시 벡터 기반의 애니메이션(Lottie)을 추가, 앱의 생동감, 시각적 완성도를 향상<br>
+      <br><br><br>
+      <img src="previews/record_architecture.png"/>
     </td>
     <td>
       <img src="previews/time3.gif" width="240"/>
