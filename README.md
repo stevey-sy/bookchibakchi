@@ -58,7 +58,8 @@
   <tr>
    <td valign="top" width="600">
       책을 검색하여 나의 서재에 저장할 수 있습니다.<br>
-      검색된 책은 자동으로 표지, 제목, 저자 정보를 포함합니다<br>
+       - 알라딘 OPEN API 를 사용하여 구현하였습니다.<br>
+       - 
       <img src="previews/search_book_architecture.png"/>
     </td>
     <td>
