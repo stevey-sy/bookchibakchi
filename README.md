@@ -89,6 +89,23 @@
   </tr>
 </table>
 
+<h3>서재 상세 화면</h3>
+<table>
+  <tr>
+   <td valign="top" width="600">
+      - 책 리스트에서 선택한 책의 상세 정보를 조회 가능<br>
+      - RecyclerView -> ViewPager2 로 화면 이동 간 transition 효과를 추가하여,<br>
+        책장에서 선택하는 느낌이 들도록 구현<br>
+      - 선택한 책의 현재 독서 진행도, 메모 리스트 조회 가능<br>
+      <br><br><br>
+      <img src="previews/detail_architecture.png"/>
+    </td>
+    <td>
+      <img src="previews/preview.gif" width="240"/>
+    </td>
+  </tr>
+</table>
+
 <h3>독서 진행도 기록</h3>
 <table>
   <tr>
