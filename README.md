@@ -58,7 +58,7 @@
 
 <table>
   <tr>
-   <td valign="top" width="60%">
+   <td valign="top" width="400">
       독서 시간 기록 기능
     </td>
     <td>
