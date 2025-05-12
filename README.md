@@ -107,7 +107,7 @@
   <tr>
    <td valign="top" width="600">
       - 책 리스트에서 선택한 책의 상세 정보를 조회 가능<br>
-      - RecyclerView -> ViewPager2 로 화면 이동 간 transition 효과를 추가하여,<br>
+      - RecyclerView -> ViewPager2 로 화면 이동 간 Shared Element Transition 추가,<br>
         책장에서 선택하는 느낌이 들도록 구현<br>
       - 선택한 책의 현재 독서 진행도, 메모 리스트 조회 가능<br>
       <br><br><br>
