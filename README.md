@@ -46,7 +46,7 @@
 **오독오독** 은 도서 정보 검색 기능을 위해 [알라딘 OpenAPI](https://blog.aladin.co.kr/openapi)를 사용하고 있습니다.
 
 ## Download
-**오독오독** 은 [Releases](https://github.com/stevey-sy/bookchibakchi/releases/tag/1.0.0) 에서 다운로드 가능합니다.
+**오독오독** 은 [Releases](https://github.com/stevey-sy/bookchibakchi/releases/tag/1.0.1) 에서 다운로드 가능합니다.
 
 ## Architecture
 **오독오독** 은 [Google의 공식 아키텍처 가이드](https://developer.android.com/topic/architecture) 를 기반으로 한 MVVM 아키텍처와 Repository 패턴을 사용하여 설계되었습니다.
@@ -80,7 +80,7 @@
       <img src="previews/search_architecture.png"/>
     </td>
     <td>
-      <img src="previews/search2.gif" width="240"/>
+      <img src="previews/search.gif" width="240"/>
     </td>
   </tr>
 </table>
@@ -94,7 +94,7 @@
       - 다 읽은 책 구분 가능하도록 Filtering 기능 제공<br>
       - ListAdapter 를 적용하여, Filter 애니메이션을 보다 부드럽게 표현<br>
       <br><br><br>
-      <img src="previews/manage_architecture2.png"/>
+      <img src="previews/manage_architecture.png"/>
     </td>
     <td>
       <img src="previews/manage.gif" width="240"/>
@@ -130,7 +130,7 @@
       <img src="previews/record_architecture.png"/>
     </td>
     <td>
-      <img src="previews/time3.gif" width="240"/>
+      <img src="previews/time.gif" width="240"/>
     </td>
   </tr>
 </table>
@@ -149,7 +149,7 @@
     </td>
     <td>
       <img src="previews/memoList.gif" width="240"/>
-      <img src="previews/addMemo2.gif" width="240"/>
+      <img src="previews/addMemo.gif" width="240"/>
     </td>
   </tr>
 </table>
