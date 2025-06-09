@@ -9,6 +9,8 @@
 <img src="/previews/intro.png"/>
 </p>
 
+> [!TIP]
+> 오독오독의 Compose version 을 보고싶으시다면, [OdokCompose](https://github.com/stevey-sy/odok-compose) 에서 가능합니다.
 
 <img src="/previews/preview.gif" align="right" width="240"/>
 
